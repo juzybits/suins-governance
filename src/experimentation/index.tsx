@@ -2,41 +2,16 @@ import { GrowthBook, GrowthBookProvider } from "@growthbook/growthbook-react";
 import type { ReactNode } from "react";
 
 export interface AppFeatures {
-  "recognized-packages": string[];
-  "wallet-balance-refetch-interval": number;
-  "wallet-fee-address": string;
-  "wallet-onramp-banxa": boolean;
-  "wallet-onramp-coinbase": boolean;
-  "wallet-onramp-moonpay": boolean;
-  "wallet-onramp-transak": boolean;
+  // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
   "token-name-overrides": {
     [coinType: string]: string;
   };
+  // eslint-disable-next-line @typescript-eslint/consistent-indexed-object-style
   "token-metadata-overrides": {
     [coinType: string]: {
       name?: string;
       iconUrl?: string;
     };
-  };
-  buynlargev2: {
-    enabled: boolean;
-    objectType: string;
-    sheetTitle: string;
-    sheetDescription: string;
-    homeDescription: string;
-    homeImage: string;
-    backgroundColor: string;
-  }[];
-  "wallet-ad-campaign": {
-    enabled: boolean;
-    sheetImage: string;
-    sheetButtonText: string;
-    sheetButtonColor: string;
-    sheetButtonLink: string;
-    sheetDismissKey: string;
-    homeDescription: string;
-    homeImage: string;
-    homeBannerBgColor: string;
   };
 }
 
@@ -49,7 +24,7 @@ export const growthbook = new GrowthBook<AppFeatures>({
 });
 
 // Start loading features as soon as possible:
-growthbook.loadFeatures();
+void growthbook.loadFeatures();
 
 export function ExperimentationProvider({ children }: { children: ReactNode }) {
   return (
