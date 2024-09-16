@@ -1,0 +1,50 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap");
+
+/* Define @font-face for TWKEverett-Super */
+@font-face {
+  font-family: "TWKEverettSuper";
+  src:
+    local("TWKEverettSuper"),
+    url("/fonts/TWKEverett/super.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Define @font-face for TWKEverett-ExtraBold */
+@font-face {
+  font-family: "TWKEverettExtraBold";
+  src:
+    local("TWKEverettExtraBold"),
+    url("/fonts/TWKEverett/TWKEverett-Extrabold.otf") format("opentype");
+  font-weight: 750;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "TWKEverettRegular";
+  font-weight: 400;
+  src:
+    local("TWKEverettRegular"),
+    url("/fonts/TWKEverett/TWKEverett-Regular.otf") format("opentype");
+}
+
+@font-face {
+  font-family: "TWKEverettRegular";
+  font-weight: 400;
+  src:
+    local("TWKEverettRegular"),
+    url("/fonts/TWKEverett/TWKEverett-Regular.otf") format("opentype");
+}
+
+/* Define @font-face for InterTight */
+/* We may need to move this fonts out to minimize bandwidth size */
+@font-face {
+  font-family: "InterTight";
+  src:
+    local("InterTight"),
+    url("/fonts/InterTight/InterTight-VariableFont_wght.ttf") format("truetype");
+  font-style: normal;
+  font-display: swap;
+}

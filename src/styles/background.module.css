@@ -1,0 +1,249 @@
+body {
+  -webkit-font-smoothing: antialiased; /* For WebKit browsers */
+  -moz-osx-font-smoothing: grayscale; /* For Firefox on macOS */
+}
+
+.gradient_fill_background_green_orange_pink_blue {
+  position: relative;
+  overflow: hidden;
+}
+
+.gradient_fill_background_green_orange_pink_blue::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    109deg,
+    rgba(75, 255, 166, 0.05) 10.42%,
+    rgba(235, 136, 101, 0.05) 40.76%,
+    rgba(211, 75, 255, 0.05) 59.1%,
+    rgba(76, 162, 255, 0.05) 98.19%
+  );
+  opacity: 0;
+  transition: opacity 200ms ease-in-out;
+  pointer-events: none;
+}
+
+.gradient_fill_background_green_orange_pink_blue:hover::before {
+  opacity: 1;
+}
+
+.blobs {
+  position: relative;
+  height: 1400px;
+}
+
+.blobs__item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1400px;
+  height: 620px;
+  margin: -310px 0 0 -700px;
+  border-radius: 50%;
+  opacity: 0.25;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+  filter: blur(125px);
+}
+
+.blobs__item__green {
+  width: 1040px;
+  height: 560px;
+  margin: -280px 0 0 -520px;
+  background-color: #4bffa6;
+  rotate: 20deg;
+  translate: -430px -280px;
+  animation-name: blobs__item__green;
+  animation-duration: 30s;
+}
+
+@keyframes blobs__item__green {
+  0% {
+    rotate: -23deg;
+    translate: -430px -280px;
+  }
+  25% {
+    rotate: -68deg;
+    translate: 430px -280px;
+  }
+  50% {
+    rotate: -113deg;
+    translate: 430px 280px;
+  }
+  75% {
+    rotate: -158deg;
+    translate: -430px 280px;
+  }
+  100% {
+    rotate: -203deg;
+    translate: -430px -280px;
+  }
+}
+
+.blobs__item__blue {
+  background-color: #4ca2ff;
+  rotate: -23deg;
+  translate: 0 250px;
+  animation-name: blobs__item__blue;
+  animation-duration: 33s;
+}
+
+@keyframes blobs__item__blue {
+  0% {
+    rotate: -23deg;
+    translate: 0 250px;
+  }
+  25% {
+    rotate: -68deg;
+    translate: 0 -250px;
+  }
+  50% {
+    rotate: -113deg;
+    translate: 0 250px;
+  }
+  75% {
+    rotate: -158deg;
+    translate: 0 -250px;
+  }
+  100% {
+    rotate: -203deg;
+    translate: 0 250px;
+  }
+}
+
+.blobs__item__pink {
+  background-color: #d34bff;
+  rotate: 20deg;
+  translate: -430px -280px;
+  animation-name: blobs__item__pink;
+  animation-duration: 36s;
+}
+
+@keyframes blobs__item__pink {
+  0% {
+    rotate: 20deg;
+    translate: -430px -280px;
+  }
+  25% {
+    rotate: 65deg;
+    translate: 430px -280px;
+  }
+  50% {
+    rotate: 110deg;
+    translate: 430px 280px;
+  }
+  75% {
+    rotate: 155deg;
+    translate: -430px 280px;
+  }
+  100% {
+    rotate: 200deg;
+    translate: -430px -280px;
+  }
+}
+
+.blobs__item__orange {
+  background-color: #ff794b;
+  rotate: -12deg;
+  translate: 630px -260px;
+  animation-name: blobs__item__orange;
+  animation-duration: 39s;
+}
+
+@keyframes blobs__item__orange {
+  0% {
+    rotate: -12deg;
+    translate: 630px -260px;
+  }
+  25% {
+    rotate: -57deg;
+    translate: 630px 260px;
+  }
+  50% {
+    rotate: -102deg;
+    translate: -630px 260px;
+  }
+  75% {
+    rotate: -147deg;
+    translate: -630px -260px;
+  }
+  100% {
+    rotate: -192deg;
+    translate: 630px -260px;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .blobs {
+    height: 2374px;
+  }
+
+  .blobs__item__green {
+    translate: 0 -730px;
+    animation-name: blobs__item__green-sm;
+  }
+
+  @keyframes blobs__item__green-sm {
+    0% {
+      translate: 0 -730px;
+    }
+    50% {
+      translate: 0 730px;
+    }
+    100% {
+      translate: 0 -730px;
+    }
+  }
+  .blobs__item__pink {
+    translate: 0 -270px;
+    animation-name: blobs__item__pink-sm;
+  }
+
+  @keyframes blobs__item__pink-sm {
+    0% {
+      translate: 0 -270px;
+    }
+    50% {
+      translate: 0 270px;
+    }
+    100% {
+      translate: 0 -270px;
+    }
+  }
+  .blobs__item__blue {
+    translate: 0 620px;
+    animation-name: blobs__item__blue-sm;
+  }
+
+  @keyframes blobs__item__blue-sm {
+    0% {
+      translate: 0 620px;
+    }
+    50% {
+      translate: 0 -620px;
+    }
+    100% {
+      translate: 0 620px;
+    }
+  }
+  .blobs__item__orange {
+    translate: 0 140px;
+    animation-name: blobs__item__orange-sm;
+  }
+
+  @keyframes blobs__item__orange-sm {
+    0% {
+      translate: 0 140px;
+    }
+    50% {
+      translate: 0 -140px;
+    }
+    100% {
+      translate: 0 140px;
+    }
+  }
+}

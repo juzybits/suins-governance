@@ -1,0 +1,119 @@
+.btn_base {
+  --green-color: #4bffa6;
+  --blue-color: #4ca2ff;
+  --pink-color: #d34bff;
+  --orange-color: #ff794b;
+
+  --green-color-disabled: rgba(75, 255, 166, 0.3);
+  --blue-color-disabled: rgba(76, 162, 255, 0.3);
+  --pink-color-disabled: rgba(211, 75, 255, 0.3);
+  --orange-color-disabled: rgba(255, 121, 75, 0.3);
+}
+
+.btn_hover {
+  background-size: 200% 100%;
+  background-position: 100% 0; /* Start position to the right */
+
+  moz-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn_hover:not(:disabled):hover {
+  background-position: 0 0; /* Move to the left on hover */
+}
+
+.btn_solid_good {
+  background-image: linear-gradient(
+    135deg,
+    var(--pink-color),
+    var(--blue-color),
+    var(--green-color) 50%
+  );
+}
+
+.btn_solid_good:disabled {
+  background-image: linear-gradient(
+    135deg,
+    var(--pink-color-disabled),
+    var(--blue-color-disabled),
+    var(--green-color-disabled) 50%
+  );
+}
+
+.btn_green_blue_pink {
+  background-image: linear-gradient(
+    135deg,
+    var(--pink-color),
+    var(--green-color) 50%,
+    var(--blue-color),
+    var(--pink-color)
+  );
+}
+
+.btn_green_blue_pink:disabled {
+  background-image: linear-gradient(
+    135deg,
+    var(--pink-color-disabled),
+    var(--green-color-disabled) 50%,
+    var(--blue-color-disabled),
+    var(--pink-color-disabled)
+  );
+}
+
+.btn_orange_pink_blue {
+  background-image: linear-gradient(
+    135deg,
+    var(--green-color),
+    var(--orange-color) 50%,
+    var(--pink-color),
+    var(--blue-color)
+  );
+}
+
+.btn_orange_pink_blue:disabled {
+  background-image: linear-gradient(
+    135deg,
+    var(--green-color-disabled),
+    var(--orange-color-disabled) 50%,
+    var(--pink-color-disabled),
+    var(--blue-color-disabled)
+  );
+}
+
+.btn_pink_green {
+  background-image: linear-gradient(
+    175deg,
+    var(--pink-color),
+    var(--green-color)
+  );
+}
+
+.btn_pink_green:disabled {
+  background-image: linear-gradient(
+    175deg,
+    var(--pink-color-disabled),
+    var(--green-color-disabled)
+  );
+}
+
+.btn_green_orange_pink {
+  background-image: linear-gradient(
+    135deg,
+    var(--pink-color),
+    var(--green-color) 50%,
+    var(--orange-color),
+    var(--pink-color)
+  );
+}
+
+.btn_green_orange_pink:disabled {
+  background-image: linear-gradient(
+    135deg,
+    var(--pink-color-disabled),
+    var(--green-color-disabled) 50%,
+    var(--orange-color-disabled),
+    var(--pink-color-disabled)
+  );
+}
