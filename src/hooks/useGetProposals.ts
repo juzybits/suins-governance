@@ -47,6 +47,7 @@ export function useGetProposalsIds() {
         ),
       );
 
+      // eslint-disable-next-line @typescript-eslint/prefer-find
       return resp
         .map((item) => {
           if (item.status !== "fulfilled") return null;
