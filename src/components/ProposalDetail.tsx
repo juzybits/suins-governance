@@ -13,15 +13,16 @@ import { useExplorerLink } from "@/hooks/useExplorerLink";
 export function ProposalDetail({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
   const resp = data ? parseProposalVotes(data) : null;
+  const explorerLink = useExplorerLink({
+    type: "address",
+    id: data?.fields?.id.id ?? "",
+  });
   if (!data) return null;
   const timestampMs = parseInt(data.fields.valid_until_timestamp_ms, 10);
   const formattedDate = format(new Date(timestampMs), "MMM d, yyyy");
 
   const isProposalClosed = isPast(new Date(timestampMs));
-  const explorerLink = useExplorerLink({
-    type: "address",
-    id: data.fields.id.id,
-  });
+
   // 1727154000000
   return (
     <SectionLayout title="Information" isLoading={isLoading}>

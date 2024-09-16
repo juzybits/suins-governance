@@ -11,7 +11,7 @@ import { NSAmount } from "@/components/ui/NSAmount";
 export function YourVote() {
   const currentAccount = useCurrentAccount();
   const address = currentAccount?.address;
-  const { data, isLoading } = useGetAccountInfo({ address });
+  const { data } = useGetAccountInfo({ address });
 
   if (!address) {
     return null;

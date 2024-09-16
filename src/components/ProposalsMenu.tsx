@@ -12,7 +12,7 @@ import SvgChevronRight from "@/icons/ChevronRight";
 import FileText from "@/icons/FileText";
 import Link from "next/link";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { useGetProposalsIds } from "@/hooks/useGetProposals";
 import { ProposalStatus } from "./ui/ProposalStatus";

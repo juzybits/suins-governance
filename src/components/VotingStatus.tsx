@@ -83,40 +83,40 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
   const resp = data ? parseProposalVotes(data) : null;
 
   const totalVotes =
-    (resp?.yesVote || 0) + (resp?.noVote || 0) + (resp?.abstainVote || 0) || 1;
+    (resp?.yesVote ?? 0) + (resp?.noVote ?? 0) + (resp?.abstainVote ?? 0) || 1;
 
   const yesVotesPecentage = roundFloat(
-    ((resp?.yesVote || 0) / totalVotes) * 100,
+    ((resp?.yesVote ?? 0) / totalVotes) * 100,
   );
 
-  const noVotesPecentage = roundFloat(((resp?.noVote || 0) / totalVotes) * 100);
+  const noVotesPecentage = roundFloat(((resp?.noVote ?? 0) / totalVotes) * 100);
   const abstainVotesPecentage = roundFloat(
-    ((resp?.abstainVote || 0) / totalVotes) * 100,
+    ((resp?.abstainVote ?? 0) / totalVotes) * 100,
   );
   const ThresholdPercentage = roundFloat((totalVotes / THREAD_HOLD) * 100);
   return (
     <SectionLayout title="Voting Status">
       <VoteProgressBar
-        yesVotes={resp?.yesVote || 0}
-        noVotes={resp?.noVote || 0}
-        abstainVotes={resp?.abstainVote || 0}
+        yesVotes={resp?.yesVote ?? 0}
+        noVotes={resp?.noVote ?? 0}
+        abstainVotes={resp?.abstainVote ?? 0}
         totalVotes={THREAD_HOLD}
       />
       <div className="flex flex-col justify-between gap-2">
         <VotingState
           votedState="Yes"
           percentage={yesVotesPecentage}
-          votes={resp?.yesVote || 0}
+          votes={resp?.yesVote ?? 0}
         />
         <VotingState
           votedState="No"
           percentage={noVotesPecentage}
-          votes={resp?.noVote || 0}
+          votes={resp?.noVote ?? 0}
         />
         <VotingState
           votedState="Abstain"
           percentage={abstainVotesPecentage}
-          votes={resp?.abstainVote || 0}
+          votes={resp?.abstainVote ?? 0}
         />
       </div>
       <MinimumThreshHold

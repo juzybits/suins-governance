@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { FocusEvent, forwardRef, HTMLAttributes } from "react";
+import { type FocusEvent, forwardRef, type HTMLAttributes } from "react";
 
 import { GradientBorder } from "@/components/gradient-border";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
@@ -17,10 +17,10 @@ export const MaxTokenInput = forwardRef<HTMLInputElement, SearchProps>(
     {
       onBlur,
       onFocus,
-      clearable,
-      onClear,
+      // clearable,
+      //onClear,
       disabled,
-      loading,
+      // loading,
       ...props
     }: SearchProps,
     ref,

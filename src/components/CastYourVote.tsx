@@ -17,7 +17,7 @@ const VOTE_OPTIONS = ["Yes", "No", "Abstain"] as const;
 export function CastYourVote() {
   const [selectedValue, setSelectedValue] = useState("yes");
   const currentAccount = useCurrentAccount();
-  const { currentWallet, isConnecting, isDisconnected } = useCurrentWallet();
+  const { isConnecting, isDisconnected } = useCurrentWallet();
   const isLoggedOut = (!currentAccount && !isConnecting) || isDisconnected;
   return (
     <SectionLayout title="Cast Your Votes">

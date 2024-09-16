@@ -35,34 +35,6 @@ export interface CountDownTimerProps extends VariantProps<typeof timeStyle> {
   endLabel?: string;
 }
 
-const Completionist = () => <span>You are good to go!</span>;
-const renderer = ({
-  days,
-  hours,
-  minutes,
-  seconds,
-  completed,
-}: {
-  days: number;
-  hours: number;
-  minutes: number;
-  seconds: number;
-  completed: boolean;
-}) => {
-  if (completed) {
-    // Render a completed state
-    return <Completionist />;
-  } else {
-    const b = days * 24 + hours;
-    // Render a countdown
-    return (
-      <span>
-        {b}:{minutes}:{seconds}
-      </span>
-    );
-  }
-};
-
 type CountdownProps = {
   days: number;
   hours: number;
@@ -119,7 +91,7 @@ export function CountDownTimer({ timestamp }: CountDownTimerProps) {
           seconds,
           completed,
         }: CountdownProps) => {
-          const hoursInDays = days * 24 + hours;
+          // const hoursInDays = days * 24 + hours;
           if (completed) {
             return null;
           }

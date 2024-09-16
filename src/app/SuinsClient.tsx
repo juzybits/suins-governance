@@ -1,5 +1,5 @@
 import { SuinsClient } from "@mysten/suins";
-import { getFullnodeUrl, SuiClient } from "@mysten/sui/client";
+import { SuiClient } from "@mysten/sui/client";
 import { createContext, type ReactNode, useContext } from "react";
 import { NETWORK } from "@/constants/env";
 import { SUINS_ENDPOINTS } from "@/constants/endpoints";

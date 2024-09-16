@@ -1,10 +1,10 @@
 import { useFeatureValue } from "@growthbook/growthbook-react";
 import { useSuiClient } from "@mysten/dapp-kit";
-import { CoinMetadata } from "@mysten/sui/client";
+import { type CoinMetadata } from "@mysten/sui/client";
 import { SUI_TYPE_ARG } from "@mysten/sui/utils";
 import { useQuery } from "@tanstack/react-query";
 
-import { AppFeatures } from "@/experimentation";
+import { type AppFeatures } from "@/experimentation";
 
 export function useCoinMetadata({
   coinType,
@@ -46,8 +46,8 @@ export function useCoinMetadata({
       if (data?.name && coinType) {
         return {
           ...data,
-          name: tokenMetadataOverrides[coinType]?.name || data.name,
-          iconUrl: tokenMetadataOverrides[coinType]?.iconUrl || data.iconUrl,
+          name: tokenMetadataOverrides[coinType]?.name ?? data.name,
+          iconUrl: tokenMetadataOverrides[coinType]?.iconUrl ?? data.iconUrl,
         };
       }
       return data;
