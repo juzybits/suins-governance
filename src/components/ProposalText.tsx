@@ -7,6 +7,7 @@ import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { ProposalStatus } from "./ui/ProposalStatus";
 import { Button } from "./ui/button/Button";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
+import { isPast } from "date-fns";
 
 // TODO: Add hook to fetch proposal data
 export function ProposalText({ proposalId }: { proposalId: string }) {
@@ -15,22 +16,29 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
   const [isOverflowing, setIsOverflowing] = useState(false); // Check if the content overflows
   const contentRef = useRef<HTMLDivElement>(null);
   const { data, isLoading, error } = useGetProposalDetail({ proposalId });
-  const toggleExpanded = () => setIsExpanded(!isExpanded);
 
-  console.log(data, error);
+  const toggleExpanded = () => setIsExpanded(!isExpanded);
+  const description = data?.fields.description.split(
+    "\n[PARAGRAPH_SEPARATOR]\n",
+  );
 
   useEffect(() => {
     // Check if the content height is more than 350px
     if (contentRef.current && contentRef.current.scrollHeight > 350) {
       setIsOverflowing(true); // Show "Show More" button if height exceeds 350px
     }
-  }, []);
+  }, [isLoading]);
+
+  const isClosed = isPast(
+    new Date(Number(data?.fields.valid_until_timestamp_ms ?? 0)),
+  );
+  if (!description || isLoading) return null;
   return (
-    <section className="relative flex flex-col gap-2024_4XL sm:gap-2024_5XL">
+    <section className="relative flex w-full flex-col gap-2024_4XL sm:gap-2024_5XL">
       <div className="flex flex-col gap-2024_XL">
-        <ProposalStatus status="active" />
+        <ProposalStatus status={isClosed ? "closed" : "active"} />
         <Heading variant="H3/extraBold" className="text-start capitalize">
-          Proposal Title Goes Here
+          {data?.fields.title}
         </Heading>
       </div>
       <div className="flex flex-col gap-2024_3XL">
@@ -48,66 +56,15 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
             transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
             className="relative flex flex-col gap-2024_S overflow-hidden"
           >
-            <Text
-              variant={isSmallOrAbove ? "P1/regular" : "P2/regular"}
-              color="fillContent-primary"
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </Text>
-            <Text
-              variant={isSmallOrAbove ? "P1/regular" : "P2/regular"}
-              color="fillContent-primary"
-            >
-              Cras fermentum odio eu feugiat pretium nibh ipsum consequat nisl.
-              Consectetur a erat nam at lectus urna duis convallis. Amet justo
-              donec enim diam. Ultrices neque ornare aenean euismod elementum
-              nisi quis eleifend. Nec feugiat nisl pretium fusce id velit. Ut
-              tellus elementum sagittis vitae et leo. Accumsan lacus vel
-              facilisis volutpat est. Tellus in metus vulputate eu scelerisque
-              felis imperdiet
-            </Text>
-            <Text
-              variant={isSmallOrAbove ? "P1/regular" : "P2/regular"}
-              color="fillContent-primary"
-            >
-              Cras fermentum odio eu feugiat pretium nibh ipsum consequat nisl.
-              Consectetur a erat nam at lectus urna duis convallis. Amet justo
-              donec enim diam. Ultrices neque ornare aenean euismod elementum
-              nisi quis eleifend. Nec feugiat nisl pretium fusce id velit. Ut
-              tellus elementum sagittis vitae et leo. Accumsan lacus vel
-              facilisis volutpat est. Tellus in metus vulputate eu scelerisque
-              felis imperdiet
-            </Text>
-            <Text
-              variant={isSmallOrAbove ? "P1/regular" : "P2/regular"}
-              color="fillContent-primary"
-            >
-              Cras fermentum odio eu feugiat pretium nibh ipsum consequat nisl.
-              Consectetur a erat nam at lectus urna duis convallis. Amet justo
-              donec enim diam. Ultrices neque ornare aenean euismod elementum
-              nisi quis eleifend. Nec feugiat nisl pretium fusce id velit. Ut
-              tellus elementum sagittis vitae et leo. Accumsan lacus vel
-              facilisis volutpat est. Tellus in metus vulputate eu scelerisque
-              felis imperdiet
-            </Text>
-            <Text
-              variant={isSmallOrAbove ? "P1/regular" : "P2/regular"}
-              color="fillContent-primary"
-            >
-              Cras fermentum odio eu feugiat pretium nibh ipsum consequat nisl.
-              Consectetur a erat nam at lectus urna duis convallis. Amet justo
-              donec enim diam. Ultrices neque ornare aenean euismod elementum
-              nisi quis eleifend. Nec feugiat nisl pretium fusce id velit. Ut
-              tellus elementum sagittis vitae et leo. Accumsan lacus vel
-              facilisis volutpat est. Tellus in metus vulputate eu scelerisque
-              felis imperdiet
-            </Text>
+            {description?.map((desc, index) => (
+              <Text
+                variant={isSmallOrAbove ? "P1/regular" : "P2/regular"}
+                color="fillContent-primary"
+                key={index + desc.substring(0, 20)}
+              >
+                {desc}
+              </Text>
+            ))}
           </motion.div>
           {/* Fade effect */}
           {!isExpanded && isOverflowing && (

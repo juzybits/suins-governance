@@ -9,7 +9,7 @@ import { Header } from "@/components/header/Header";
 import { Footer } from "@/components/footer/Footer";
 
 export const metadata: Metadata = {
-  title: "SuiNS Governance site",
+  title: "SuiNS Governance",
   description: "Join today and voice your opinion on upcoming changes to SuiNS",
   icons: [{ rel: "icon", url: "/images/apple-touch-icon.png" }],
 };

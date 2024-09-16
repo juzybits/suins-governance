@@ -18,12 +18,12 @@ const proposalDetailSchema = z.object({
     voters: z.object({
       type: z.string(),
       fields: z.object({
-        head: z.string(),
+        head: z.string().nullable(), // Updated to allow null
         id: z.object({
           id: z.string(),
         }),
         size: z.string(),
-        tail: z.string(),
+        tail: z.string().nullable(), // Updated to allow null
       }),
     }),
     votes: z.object({
@@ -35,9 +35,7 @@ const proposalDetailSchema = z.object({
             fields: z.object({
               key: z.object({
                 type: z.string(),
-                fields: z.object({
-                  pos0: z.string(),
-                }),
+                fields: z.record(z.string(), z.string()),
               }),
               value: z.string(),
             }),
@@ -68,6 +66,7 @@ export const proposalRouter = createTRPCRouter({
           },
         });
         const objDetail = proposalDetailSchema.safeParse(resp?.data?.content);
+        console.log(JSON.stringify(objDetail.error), "objDetail");
         if (objDetail.error) {
           return new TRPCError({
             code: "BAD_REQUEST",

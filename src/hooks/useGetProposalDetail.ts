@@ -1,8 +1,9 @@
-import { useSuiClientQuery } from "@mysten/dapp-kit";
 import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@/app/SuinsClient";
+import { CoinFormat, formatBalance } from "@/utils/coins";
 
+const DECIMAL_PLACES = 8;
 const proposalDetailSchema = z.object({
   dataType: z.literal("moveObject"),
   type: z.string(),
@@ -17,12 +18,12 @@ const proposalDetailSchema = z.object({
     voters: z.object({
       type: z.string(),
       fields: z.object({
-        head: z.string(),
+        head: z.string().nullable(),
         id: z.object({
           id: z.string(),
         }),
         size: z.string(),
-        tail: z.string(),
+        tail: z.string().nullable(),
       }),
     }),
     votes: z.object({
@@ -34,9 +35,7 @@ const proposalDetailSchema = z.object({
             fields: z.object({
               key: z.object({
                 type: z.string(),
-                fields: z.object({
-                  pos0: z.string(),
-                }),
+                fields: z.record(z.string()),
               }),
               value: z.string(),
             }),
@@ -47,6 +46,88 @@ const proposalDetailSchema = z.object({
     winning_option: z.null(),
   }),
 });
+
+type ProposalDataType = z.infer<typeof proposalDetailSchema>;
+
+export function parseProposalVotes(data: ProposalDataType) {
+  // Initialize the proposal field name
+  let proposalFieldName = "";
+
+  // Initialize the vote counts
+  let yesVote = 0;
+  let noVote = 0;
+  let abstainVote = 0;
+
+  const contents = data.fields.votes.fields.contents;
+
+  for (const entry of contents) {
+    const keyFields = entry.fields.key.fields;
+    const fieldNames = Object.keys(keyFields);
+
+    // Check that there is exactly one dynamic field name
+    if (fieldNames.length !== 1) {
+      // Handle error or skip
+      continue;
+    }
+
+    const fieldName = fieldNames[0];
+
+    if (typeof fieldName !== "string") {
+      continue;
+    }
+    const option = keyFields[fieldName];
+    const value = parseInt(entry.fields.value, 10);
+
+    // Set the proposal field name if it hasn't been set yet
+    if (!proposalFieldName && fieldName) {
+      proposalFieldName = fieldName;
+    } else if (proposalFieldName !== fieldName) {
+      // Handle case where field names differ if necessary
+      // For now, we'll assume all field names are the same
+    }
+
+    // Accumulate the vote counts based on the option
+    switch (option) {
+      case "Yes":
+        yesVote += value;
+        break;
+      case "No":
+        noVote += value;
+        break;
+      case "Abstain":
+        abstainVote += value;
+        break;
+      default:
+        // Handle unknown options if necessary
+        break;
+    }
+  }
+
+  return {
+    proposal: proposalFieldName,
+    yesVote: Number(
+      formatBalance({
+        balance: yesVote,
+        decimals: DECIMAL_PLACES,
+        format: CoinFormat.FULL,
+      }),
+    ),
+    noVote: Number(
+      formatBalance({
+        balance: noVote,
+        decimals: DECIMAL_PLACES,
+        format: CoinFormat.FULL,
+      }),
+    ),
+    abstainVote: Number(
+      formatBalance({
+        balance: abstainVote,
+        decimals: DECIMAL_PLACES,
+        format: CoinFormat.FULL,
+      }),
+    ),
+  };
+}
 
 export function useGetProposalDetail({ proposalId }: { proposalId: string }) {
   return useQuery({
@@ -62,6 +143,7 @@ export function useGetProposalDetail({ proposalId }: { proposalId: string }) {
         },
       });
       const objDetail = proposalDetailSchema.safeParse(resp?.data?.content);
+
       if (objDetail.error) {
         throw new Error("Invalid proposal detail");
       }

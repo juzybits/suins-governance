@@ -1,3 +1,4 @@
+"use client";
 import {
   DropdownMenuContent,
   DropdownMenuItem,
@@ -5,7 +6,6 @@ import {
   Trigger,
 } from "@radix-ui/react-dropdown-menu";
 
-import { useCurrentAccount } from "@mysten/dapp-kit";
 import { isPast } from "date-fns";
 import SvgChevronDown from "@/icons/ChevronDown";
 import SvgChevronRight from "@/icons/ChevronRight";
@@ -22,8 +22,7 @@ import { GradientBorder } from "./gradient-border";
 import { Heading } from "./ui/Heading";
 import { Divide } from "@/components/ui/Divide";
 import { truncatedText } from "@/utils/truncatedText";
-import { useGetAllBalances } from "@/hooks/useGetAllBalances";
-import { useGetBalance } from "@/hooks/useGetBalance";
+import { usePathname } from "next/navigation";
 
 function ProposalPreview({
   proposalId,
@@ -39,15 +38,26 @@ function ProposalPreview({
     new Date(Number(data.fields.valid_until_timestamp_ms ?? 0)),
   );
   const fields = data.fields;
-  const truncatedDescription = truncatedText({ text: fields.description });
+  const truncatedDescription = truncatedText({
+    text: fields.description,
+    maxLength: 100,
+  });
 
   const PreviewContent = (
     <div className="flex flex-col gap-2024_R">
       <ProposalStatus status={isClosed ? "closed" : "active"} />
-      <Text variant="B4/bold" color="fillContent-primary">
-        {fields.title}
+      <Text
+        variant="B4/bold"
+        color="fillContent-primary"
+        className="leading-none"
+      >
+        {truncatedText({ text: fields.title, maxLength: 50 })}
       </Text>
-      <Text variant="B4/regular" color="fillContent-secondary">
+      <Text
+        variant="B4/regular"
+        color="fillContent-secondary"
+        className="leading-normal"
+      >
         {truncatedDescription}
       </Text>
       <Divide />
@@ -70,7 +80,7 @@ function ProposalPreview({
     </GradientBorder>
   ) : (
     <div className="flex w-full items-center justify-center rounded-2024_XS border-0 bg-[#62519c66] p-2024_M">
-      <Link href={`/proposals/${proposalId}`}>{PreviewContent}</Link>
+      <Link href={`/proposal/${proposalId}`}>{PreviewContent}</Link>
     </div>
   );
 }
@@ -78,18 +88,13 @@ function ProposalPreview({
 export function ProposalsMenu() {
   const isSmallOrAbove = useBreakpoint("sm");
   const { data } = useGetProposalsIds();
-  const currentAccount = useCurrentAccount();
-  const address = currentAccount?.address;
+  const pathName = usePathname();
   // TODO: sort proposals by most recent
   const proposals = data ? Object.values(data) : [];
-  // TODO: use type
-  const { data: rawCoinBalances, isPending } = useGetBalance({
-    coinType:
-      "0xe3c2291f345d6dd96855e0f9415e58fd981cf95fd18331f0fb899d91a8969293::ns::NS",
-    owner: address,
-  });
-  const { data: raw } = useGetAllBalances(address ?? "");
-  console.log(rawCoinBalances, "rawCoinBalances", raw);
+
+  const currentPathName = pathName.replace("/proposal/", "");
+  const currentId =
+    currentPathName !== "/" && currentPathName !== "" ? currentPathName : null;
 
   return (
     <Root>
@@ -137,7 +142,10 @@ export function ProposalsMenu() {
                     </Text>
                     {proposalsList?.map((proposalId) => (
                       <DropdownMenuItem key={proposalId}>
-                        <ProposalPreview proposalId={proposalId} isActive />
+                        <ProposalPreview
+                          proposalId={proposalId}
+                          isActive={proposalId === currentId}
+                        />
                       </DropdownMenuItem>
                     ))}
                   </div>

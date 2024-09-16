@@ -6,10 +6,13 @@ import { Text } from "@/components/ui/Text";
 import NSToken from "@/icons/NSToken";
 import { YourVote } from "./YourVote";
 import { Divide } from "@/components/ui/Divide";
+import {
+  useGetProposalDetail,
+  parseProposalVotes,
+} from "@/hooks/useGetProposalDetail";
+import { roundFloat } from "@/utils/roundFloat";
 
-const yesVotes = 2400;
-const noVotes = 500;
-const abstainVotes = 125;
+const THREAD_HOLD = 5_000_000;
 
 function MinimumThreshHold({
   thresholdPercentage,
@@ -29,14 +32,14 @@ function MinimumThreshHold({
       </Text>
       <GradientProgressBar percentage={thresholdPercentage} />
       <div className="flex w-full items-center justify-between gap-1">
-        <Text variant="B7/regular" color="fillContent-secondary">
-          Minimum Voting Threshold: {thresholdPercentage}%
-        </Text>
         <Text
           variant="B7/regular"
           color="fillContent-secondary"
-          className="text-[#00F9FB]"
+          className="!tracking-tighter"
         >
+          Minimum Voting Threshold: {thresholdPercentage}%
+        </Text>
+        <Text variant="B7/regular" color={isReached ? "cyan" : "warning"}>
           {isReached ? "Reached" : "Not Reached"}
         </Text>
       </div>
@@ -51,12 +54,6 @@ type VotedStateProps = {
 };
 
 function VotingState({ votedState, percentage, votes }: VotedStateProps) {
-  const statusColor =
-    votedState === "Yes"
-      ? "good"
-      : votedState === "No"
-        ? "issue-dark"
-        : "warning";
   return (
     <div className="flex w-full items-center justify-between gap-2">
       <div className="flex basis-3/5 items-start">
@@ -79,25 +76,53 @@ function VotingState({ votedState, percentage, votes }: VotedStateProps) {
   );
 }
 
-export function VotingStatus() {
+export function VotingStatus({ proposalId }: { proposalId: string }) {
+  const { data, isLoading } = useGetProposalDetail({ proposalId });
+
+  if (isLoading) return null;
+  const resp = data ? parseProposalVotes(data) : null;
+
+  const totalVotes =
+    (resp?.yesVote || 0) + (resp?.noVote || 0) + (resp?.abstainVote || 0) || 1;
+
+  const yesVotesPecentage = roundFloat(
+    ((resp?.yesVote || 0) / totalVotes) * 100,
+  );
+
+  const noVotesPecentage = roundFloat(((resp?.noVote || 0) / totalVotes) * 100);
+  const abstainVotesPecentage = roundFloat(
+    ((resp?.abstainVote || 0) / totalVotes) * 100,
+  );
+  const ThresholdPercentage = roundFloat((totalVotes / THREAD_HOLD) * 100);
   return (
     <SectionLayout title="Voting Status">
       <VoteProgressBar
-        yesVotes={yesVotes}
-        noVotes={noVotes}
-        abstainVotes={abstainVotes}
-        totalVotes={4000}
+        yesVotes={resp?.yesVote || 0}
+        noVotes={resp?.noVote || 0}
+        abstainVotes={resp?.abstainVote || 0}
+        totalVotes={THREAD_HOLD}
       />
       <div className="flex flex-col justify-between gap-2">
-        <VotingState votedState="Yes" percentage={60} votes={yesVotes} />
-        <VotingState votedState="No" percentage={12.5} votes={noVotes} />
+        <VotingState
+          votedState="Yes"
+          percentage={yesVotesPecentage}
+          votes={resp?.yesVote || 0}
+        />
+        <VotingState
+          votedState="No"
+          percentage={noVotesPecentage}
+          votes={resp?.noVote || 0}
+        />
         <VotingState
           votedState="Abstain"
-          percentage={3.125}
-          votes={abstainVotes}
+          percentage={abstainVotesPecentage}
+          votes={resp?.abstainVote || 0}
         />
       </div>
-      <MinimumThreshHold thresholdPercentage={96} isReached={true} />
+      <MinimumThreshHold
+        thresholdPercentage={ThresholdPercentage}
+        isReached={totalVotes >= THREAD_HOLD}
+      />
       <Divide />
       <YourVote />
     </SectionLayout>

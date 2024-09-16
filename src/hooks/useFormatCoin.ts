@@ -31,7 +31,7 @@ export function useFormatCoin(
 
     if (!isFetched) return "...";
 
-    return formatBalance({balance, decimals: data?.decimals ?? 0, format});
+    return formatBalance({ balance, decimals: data?.decimals ?? 0, format });
   }, [data?.decimals, isFetched, balance, format]);
 
   return [

@@ -209,6 +209,7 @@ export default {
             light: "#C1B8F6",
           },
           issue: "#EB5A29",
+          cyan: "#00F9FB",
         },
         "2024_fillBackground": {
           good: "#4BFFA6",
