@@ -11,6 +11,7 @@ import {
   parseProposalVotes,
 } from "@/hooks/useGetProposalDetail";
 import { roundFloat } from "@/utils/roundFloat";
+import { useGetVoteCasted } from "@/hooks/useGetVoteCasted";
 
 const THREAD_HOLD = 5_000_000;
 
@@ -37,7 +38,7 @@ function MinimumThreshHold({
           color="fillContent-secondary"
           className="!tracking-tighter"
         >
-          Minimum Voting Threshold: {thresholdPercentage}%
+          Minimum Voting Threshold: {1}%
         </Text>
         <Text variant="B7/regular" color={isReached ? "cyan" : "warning"}>
           {isReached ? "Reached" : "Not Reached"}
@@ -57,7 +58,7 @@ function VotingState({ votedState, percentage, votes }: VotedStateProps) {
   return (
     <div className="flex w-full items-center justify-between gap-2">
       <div className="flex basis-3/5 items-start">
-        <VoteIndicator votedStatus={votedState} />
+        <VoteIndicator votedStatus={votedState} onlyStatus />
       </div>
       <div className="flex basis-1/5 items-center justify-end gap-1">
         <Text variant="P3/medium" color="fillContent-secondary">
@@ -78,6 +79,13 @@ function VotingState({ votedState, percentage, votes }: VotedStateProps) {
 
 export function VotingStatus({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
+  const { data: accountData } = useGetVoteCasted({
+    proposalId: proposalId,
+    address:
+      "0xba097bfb05f1af3b1b022ad4fe597bcce53ff068a323b901dae0e96f3af68a7d",
+  });
+
+  console.log(accountData, "accountData");
 
   if (isLoading) return null;
   const resp = data ? parseProposalVotes(data) : null;

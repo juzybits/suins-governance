@@ -8,7 +8,9 @@ import {
 
 import { isPast } from "date-fns";
 import SvgChevronDown from "@/icons/ChevronDown";
+import { api } from "@/trpc/react";
 import SvgChevronRight from "@/icons/ChevronRight";
+import SvgActiveIcon from "@/icons/ActiveIcon";
 import FileText from "@/icons/FileText";
 import Link from "next/link";
 
@@ -89,6 +91,7 @@ export function ProposalsMenu() {
   const isSmallOrAbove = useBreakpoint("sm");
   const { data } = useGetProposalsIds();
   const pathName = usePathname();
+  const { data: isActiveProposal } = api.post.getIsProposalActive.useQuery();
   // TODO: sort proposals by most recent
   const proposals = data ? Object.values(data) : [];
 
@@ -101,7 +104,9 @@ export function ProposalsMenu() {
       <Trigger asChild>
         <button className='group relative flex w-full items-center justify-between gap-2 rounded-2024_M bg-2024_fillContent-tertiary p-2024_S shadow-previewMenu before:absolute before:inset-[2px] before:rounded-[99px] before:bg-[#2e2747] before:content-[""] hover:bg-2024_button-gradient focus:outline-none data-[state=open]:bg-[] data-[state="open"]:bg-2024_button-gradient before:data-[state=open]:bg-2024_gradient-active md:p-2024_M'>
           <FileText className="relative h-2024_XL w-2024_XL" />
-
+          {isActiveProposal?.isProposalActive && (
+            <SvgActiveIcon className="absolute right-0 top-1 h-3 w-3" />
+          )}
           <div className="h-2024_M w-2024_M">
             <SvgChevronDown className="relative h-2024_M w-2024_M text-2024_fillContent-tertiary group-hover:text-2024_fillContent-primary group-data-[state=open]:text-2024_fillContent-primary" />
           </div>

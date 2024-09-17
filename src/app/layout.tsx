@@ -22,9 +22,9 @@ export default function RootLayout({
       lang="en"
       className={clsx(twkEverett.variable, inter.variable, redHatMono.variable)}
     >
-      <body>
+      <body className="bg-2024_fillBackground-primary">
         <Providers>
-          <div className="top bg-2024_fillBackground-primary bg-suins-background bg-auto bg-repeat-x antialiased max-lg:bg-200">
+          <div className="top min-h-screen bg-2024_fillBackground-primary bg-suins-background bg-auto bg-repeat-x antialiased max-lg:bg-200">
             <section className="mx-auto flex min-h-screen w-full flex-col items-center justify-between gap-2024_3XL sm:gap-2024_5XL">
               <Header />
               {children}

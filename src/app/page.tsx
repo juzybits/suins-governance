@@ -1,16 +1,15 @@
-"use client";
-
-import { useGetProposalsIds } from "@/hooks/useGetProposals";
 import { ProposalContent } from "@/components/ProposalContent";
+import { api } from "@/trpc/server";
+import { Suspense } from "react";
+import Loader from "@/components/ui/Loader";
 
-export default function HomePage() {
-  const { data } = useGetProposalsIds();
-  const proposals = data ? Object.values(data) : [];
-  // TODO : verify the best way to get the latest proposal
-  const latestProposal = proposals?.[0]?.length ? proposals[0].at(-1) : null;
+export default async function HomePage() {
+  const data = await api.post.getIsProposalActive();
+  const latestProposal = data?.isProposalActive ?? data?.defaultProposalId;
 
-  // TODO: Add a loading state
-  if (!latestProposal) return null;
-
-  return <ProposalContent proposalId={latestProposal} />;
+  return (
+    <Suspense fallback={<Loader className="h-5 w-5" />}>
+      <ProposalContent proposalId={latestProposal ?? ""} />
+    </Suspense>
+  );
 }

@@ -15,7 +15,7 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isOverflowing, setIsOverflowing] = useState(false); // Check if the content overflows
   const contentRef = useRef<HTMLDivElement>(null);
-  const { data, isLoading, error } = useGetProposalDetail({ proposalId });
+  const { data, isLoading } = useGetProposalDetail({ proposalId });
 
   const toggleExpanded = () => setIsExpanded(!isExpanded);
   const description = data?.fields.description.split(

@@ -3,86 +3,113 @@ import { TRPCError } from "@trpc/server";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 import { clients } from "@/lib/rpc";
 import { NETWORK } from "@/constants/env";
+import { SUINS_PACKAGES } from "@/constants/endpoints";
+import { isFuture } from "date-fns";
+import {
+  proposalDetailSchema,
+  votingObjectContentSchema,
+} from "@/response/proposalResponseSchema";
 
-const proposalDetailSchema = z.object({
-  dataType: z.literal("moveObject"),
-  type: z.string(),
-  hasPublicTransfer: z.boolean(),
-  fields: z.object({
-    description: z.string(),
-    id: z.object({
-      id: z.string(),
-    }),
-    title: z.string(),
-    valid_until_timestamp_ms: z.string(),
-    voters: z.object({
-      type: z.string(),
-      fields: z.object({
-        head: z.string().nullable(), // Updated to allow null
-        id: z.object({
-          id: z.string(),
-        }),
-        size: z.string(),
-        tail: z.string().nullable(), // Updated to allow null
+async function getProposalsIds() {
+  const network = NETWORK === "mainnet" ? "mainnet" : "testnet";
+  const getActiveDiscounts = await clients[NETWORK].getDynamicFields({
+    parentId: SUINS_PACKAGES[network].governanceObjectID,
+    limit: 20,
+  });
+
+  const resp = await Promise.allSettled(
+    getActiveDiscounts.data.map((item) =>
+      clients[NETWORK].getObject({
+        id: item.objectId,
+        options: {
+          showContent: true,
+          showOwner: true,
+          showType: true,
+        },
       }),
-    }),
-    votes: z.object({
-      type: z.string(),
-      fields: z.object({
-        contents: z.array(
-          z.object({
-            type: z.string(),
-            fields: z.object({
-              key: z.object({
-                type: z.string(),
-                fields: z.record(z.string(), z.string()),
-              }),
-              value: z.string(),
-            }),
-          }),
-        ),
-      }),
-    }),
-    winning_option: z.null(),
-  }),
-});
+    ),
+  );
+
+  // eslint-disable-next-line @typescript-eslint/prefer-find
+  return resp
+    .map((item) => {
+      if (item.status !== "fulfilled") return null;
+
+      const data = votingObjectContentSchema.safeParse(
+        item.value.data?.content,
+      );
+      if (data.error) return null;
+      return data.data.fields.value.fields;
+    })
+    .filter(Boolean)[0];
+}
+
+async function getProposalDetail({ proposalId }: { proposalId: string }) {
+  try {
+    const resp = await clients[NETWORK].getObject({
+      id: proposalId,
+      options: {
+        showContent: true,
+        showDisplay: true,
+        showOwner: true,
+        showType: true,
+      },
+    });
+    const objDetail = proposalDetailSchema.safeParse(resp?.data?.content);
+
+    if (objDetail.error) {
+      return new TRPCError({
+        code: "BAD_REQUEST",
+        message: objDetail.error.message,
+      });
+    }
+    return objDetail.data;
+  } catch (cause) {
+    if (cause instanceof TRPCError) {
+      // An error from tRPC occurred
+
+      return new TRPCError({
+        code: "BAD_REQUEST",
+        message: cause.message,
+      });
+    }
+  }
+}
 
 export const proposalRouter = createTRPCRouter({
+  getProposalsIds: publicProcedure.query(getProposalsIds),
+
   getProposalDetail: publicProcedure
     .input(
       z.object({
         proposalId: z.string(),
       }),
     )
-    .query(async ({ input: { proposalId } }) => {
-      try {
-        const resp = await clients[NETWORK].getObject({
-          id: proposalId,
-          options: {
-            showContent: true,
-            showDisplay: true,
-            showOwner: true,
-            showType: true,
-          },
-        });
-        const objDetail = proposalDetailSchema.safeParse(resp?.data?.content);
-        console.log(JSON.stringify(objDetail.error), "objDetail");
-        if (objDetail.error) {
-          return new TRPCError({
-            code: "BAD_REQUEST",
-            message: "Invalid proposal detail",
-          });
-        }
-        return objDetail.data;
-      } catch (cause) {
-        if (cause instanceof TRPCError) {
-          // An error from tRPC occurred
+    .query(async ({ input: { proposalId } }) =>
+      getProposalDetail({ proposalId }),
+    ),
 
-          return new TRPCError({
-            code: "BAD_REQUEST",
-            message: "Invalid proposal detail",
-          });
-        }
-      }
-    }),
+  getIsProposalActive: publicProcedure.query(async () => {
+    const proposalIds = await getProposalsIds();
+    const proposals = Object.values(proposalIds ?? {})[0];
+    if (!proposals) return null;
+    const proposalsDetail = await Promise.all(
+      proposals.map((item) => getProposalDetail({ proposalId: item })),
+    );
+    const proposalsIDs = proposalIds ? Object.values(proposalIds) : [];
+    const proposal = proposalsDetail.find(
+      (item) =>
+        item &&
+        "fields" in item &&
+        isFuture(new Date(Number(item.fields.valid_until_timestamp_ms ?? 0))),
+    );
+
+    return {
+      isProposalActive:
+        proposal && "fields" in proposal ? proposal.fields.id.id : null,
+      defaultProposalId: proposalsIDs?.[0]?.length
+        ? proposalsIDs[0].at(-1)
+        : null,
+    };
+  }),
 });

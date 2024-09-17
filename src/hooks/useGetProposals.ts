@@ -39,7 +39,6 @@ export function useGetProposalsIds() {
             id: item.objectId,
             options: {
               showContent: true,
-              showDisplay: true,
               showOwner: true,
               showType: true,
             },
