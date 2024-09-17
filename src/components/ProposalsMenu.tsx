@@ -117,7 +117,7 @@ export function ProposalsMenu() {
         alignOffset={isSmallOrAbove ? 0 : -182}
         align="end"
         asChild
-        className="z-50 w-2024_menuWidth max-sm:w-[90vw]"
+        className="z-50 w-2024_menuWidth max-w-[416px] max-sm:w-[90vw]"
       >
         {proposals && proposals.length > 0 && (
           <motion.div

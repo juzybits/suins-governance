@@ -42,9 +42,7 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
         </Heading>
       </div>
       <div className="flex flex-col gap-2024_3XL">
-        <Heading variant="H4/super" className="max-sm:hidden">
-          Description
-        </Heading>
+        <Heading variant="H4/super">Description</Heading>
         <div className="flex flex-col gap-2024_L">
           <motion.div
             ref={contentRef}
