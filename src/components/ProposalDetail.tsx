@@ -14,7 +14,7 @@ export function ProposalDetail({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
   const resp = data ? parseProposalVotes(data) : null;
   const explorerLink = useExplorerLink({
-    type: "address",
+    type: "object",
     id: data?.fields?.id.id ?? "",
   });
   if (!data) return null;
@@ -23,7 +23,6 @@ export function ProposalDetail({ proposalId }: { proposalId: string }) {
 
   const isProposalClosed = isPast(new Date(timestampMs));
 
-  // 1727154000000
   return (
     <SectionLayout title="Information" isLoading={isLoading}>
       <div className="flex flex-col gap-4">

@@ -2,8 +2,8 @@ import { z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@/app/SuinsClient";
 import { CoinFormat, formatBalance } from "@/utils/coins";
+import { NS_COINTYPE_DECIMAL_PLACES } from "@/constants/common";
 
-const DECIMAL_PLACES = 8;
 const proposalDetailSchema = z.object({
   dataType: z.literal("moveObject"),
   type: z.string(),
@@ -108,21 +108,21 @@ export function parseProposalVotes(data: ProposalDataType) {
     yesVote: Number(
       formatBalance({
         balance: yesVote,
-        decimals: DECIMAL_PLACES,
+        decimals: NS_COINTYPE_DECIMAL_PLACES,
         format: CoinFormat.FULL,
       }),
     ),
     noVote: Number(
       formatBalance({
         balance: noVote,
-        decimals: DECIMAL_PLACES,
+        decimals: NS_COINTYPE_DECIMAL_PLACES,
         format: CoinFormat.FULL,
       }),
     ),
     abstainVote: Number(
       formatBalance({
         balance: abstainVote,
-        decimals: DECIMAL_PLACES,
+        decimals: NS_COINTYPE_DECIMAL_PLACES,
         format: CoinFormat.FULL,
       }),
     ),

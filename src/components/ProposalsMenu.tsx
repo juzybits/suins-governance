@@ -2,6 +2,7 @@
 import {
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuPortal,
   Root,
   Trigger,
 } from "@radix-ui/react-dropdown-menu";
@@ -12,7 +13,7 @@ import { api } from "@/trpc/react";
 import SvgChevronRight from "@/icons/ChevronRight";
 import SvgActiveIcon from "@/icons/ActiveIcon";
 import FileText from "@/icons/FileText";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { motion } from "framer-motion";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
@@ -36,6 +37,7 @@ function ProposalPreview({
   const { data, isLoading } = useGetProposalDetail({ proposalId });
 
   if (!data || isLoading) return null;
+
   const isClosed = isPast(
     new Date(Number(data.fields.valid_until_timestamp_ms ?? 0)),
   );
@@ -46,14 +48,14 @@ function ProposalPreview({
   });
 
   const PreviewContent = (
-    <div className="flex flex-col gap-2024_R">
+    <div className="flex cursor-pointer flex-col gap-2024_R">
       <ProposalStatus status={isClosed ? "closed" : "active"} />
       <Text
         variant="B4/bold"
         color="fillContent-primary"
         className="leading-none"
       >
-        {truncatedText({ text: fields.title, maxLength: 50 })}
+        {fields.title}
       </Text>
       <Text
         variant="B4/regular"
@@ -82,7 +84,7 @@ function ProposalPreview({
     </GradientBorder>
   ) : (
     <div className="flex w-full items-center justify-center rounded-2024_XS border-0 bg-[#62519c66] p-2024_M">
-      <Link href={`/proposal/${proposalId}`}>{PreviewContent}</Link>
+      {PreviewContent}
     </div>
   );
 }
@@ -94,10 +96,7 @@ export function ProposalsMenu() {
   const { data: isActiveProposal } = api.post.getIsProposalActive.useQuery();
   // TODO: sort proposals by most recent
   const proposals = data ? Object.values(data) : [];
-
-  const currentPathName = pathName.replace("/proposal/", "");
-  const currentId =
-    currentPathName !== "/" && currentPathName !== "" ? currentPathName : null;
+  const router = useRouter();
 
   return (
     <Root>
@@ -112,53 +111,63 @@ export function ProposalsMenu() {
           </div>
         </button>
       </Trigger>
-      <DropdownMenuContent
-        sideOffset={12}
-        alignOffset={isSmallOrAbove ? 0 : -182}
-        align="end"
-        asChild
-        className="z-50 w-2024_menuWidth max-w-[416px] max-sm:w-[90vw]"
-      >
-        {proposals && proposals.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="w-full text-left"
-          >
-            {proposals?.length &&
-              proposals.map((proposalsList, index) => (
-                <div
-                  className="relative flex h-full w-full min-w-full flex-col items-start justify-start gap-2024_2XL overflow-hidden rounded-2024_R border border-2024_fillContent-tertiary bg-2024_fillBackground-searchBg p-2024_2XL text-left focus:outline-none focus:placeholder:text-transparent md:w-2024_menuWidth md:min-w-[416px]"
-                  key={index}
-                >
-                  <Heading
-                    variant="H6/super"
-                    className="w-full text-left font-[750]"
+      <DropdownMenuPortal>
+        <DropdownMenuContent
+          sideOffset={12}
+          alignOffset={isSmallOrAbove ? 0 : -182}
+          align="end"
+          asChild
+          className="z-50 w-2024_menuWidth max-w-[416px] max-sm:w-[90vw]"
+        >
+          {proposals && proposals.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="w-full text-left"
+            >
+              {proposals?.length &&
+                proposals.map((proposalsList, index) => (
+                  <div
+                    className="relative flex h-full w-full min-w-full flex-col items-start justify-start gap-2024_2XL overflow-hidden rounded-2024_R border border-2024_fillContent-tertiary bg-2024_fillBackground-searchBg p-2024_2XL text-left focus:outline-none focus:placeholder:text-transparent md:w-2024_menuWidth md:min-w-[416px]"
+                    key={index}
                   >
-                    Proposals
-                  </Heading>
-                  <div className="flex flex-col gap-2024_M">
-                    <Text variant="B6/bold" color="fillContent-primary">
-                      {index === 0
-                        ? `NEW (${index + 1})`
-                        : `PREVIOUS (${index + 1})`}
-                    </Text>
-                    {proposalsList?.map((proposalId) => (
-                      <DropdownMenuItem key={proposalId}>
-                        <ProposalPreview
-                          proposalId={proposalId}
-                          isActive={proposalId === currentId}
-                        />
-                      </DropdownMenuItem>
-                    ))}
+                    <Heading
+                      variant="H6/super"
+                      className="w-full text-left font-[750]"
+                    >
+                      Proposals
+                    </Heading>
+                    <div className="flex flex-col gap-2024_M">
+                      <Text variant="B6/bold" color="fillContent-primary">
+                        {index === 0
+                          ? `NEW (${index + 1})`
+                          : `PREVIOUS (${index + 1})`}
+                      </Text>
+                      {proposalsList?.map((proposalId) => (
+                        <DropdownMenuItem
+                          key={proposalId}
+                          onSelect={() =>
+                            router.push(`/proposal/${proposalId}`)
+                          }
+                        >
+                          <ProposalPreview
+                            proposalId={proposalId}
+                            isActive={
+                              proposalId === isActiveProposal?.isProposalActive
+                            }
+                            key={proposalId}
+                          />
+                        </DropdownMenuItem>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
-          </motion.div>
-        )}
-      </DropdownMenuContent>
+                ))}
+            </motion.div>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenuPortal>
     </Root>
   );
 }

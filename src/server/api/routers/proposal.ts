@@ -8,17 +8,17 @@ import { isFuture } from "date-fns";
 import {
   proposalDetailSchema,
   votingObjectContentSchema,
-} from "@/response/proposalResponseSchema";
+} from "@/schemas/proposalResponseSchema";
 
 async function getProposalsIds() {
   const network = NETWORK === "mainnet" ? "mainnet" : "testnet";
-  const getActiveDiscounts = await clients[NETWORK].getDynamicFields({
+  const getProposalsContent = await clients[NETWORK].getDynamicFields({
     parentId: SUINS_PACKAGES[network].governanceObjectID,
     limit: 20,
   });
 
   const resp = await Promise.allSettled(
-    getActiveDiscounts.data.map((item) =>
+    getProposalsContent.data.map((item) =>
       clients[NETWORK].getObject({
         id: item.objectId,
         options: {
@@ -56,6 +56,7 @@ async function getProposalDetail({ proposalId }: { proposalId: string }) {
       },
     });
     const objDetail = proposalDetailSchema.safeParse(resp?.data?.content);
+    console.log(proposalId);
 
     if (objDetail.error) {
       return new TRPCError({

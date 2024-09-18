@@ -5,13 +5,12 @@ import { GradientProgressBar } from "./ui/GradientProgressBar";
 import { Text } from "@/components/ui/Text";
 import NSToken from "@/icons/NSToken";
 import { YourVote } from "./YourVote";
-import { Divide } from "@/components/ui/Divide";
+
 import {
   useGetProposalDetail,
   parseProposalVotes,
 } from "@/hooks/useGetProposalDetail";
 import { roundFloat } from "@/utils/roundFloat";
-import { useGetVoteCasted } from "@/hooks/useGetVoteCasted";
 
 const THREAD_HOLD = 5_000_000;
 
@@ -50,15 +49,21 @@ function MinimumThreshHold({
 
 type VotedStateProps = {
   votedState: "Yes" | "No" | "Abstain";
-  percentage: number;
+  percentage?: number;
   votes: number;
+  onlyStatus?: boolean;
 };
 
-function VotingState({ votedState, percentage, votes }: VotedStateProps) {
+export function VotingState({
+  votedState,
+  percentage,
+  votes,
+  onlyStatus,
+}: VotedStateProps) {
   return (
     <div className="flex w-full items-center justify-between gap-2">
       <div className="flex basis-3/5 items-start">
-        <VoteIndicator votedStatus={votedState} onlyStatus />
+        <VoteIndicator votedStatus={votedState} onlyStatus={onlyStatus} />
       </div>
       <div className="flex basis-1/5 items-center justify-end gap-1">
         <Text variant="P3/medium" color="fillContent-secondary">
@@ -66,26 +71,21 @@ function VotingState({ votedState, percentage, votes }: VotedStateProps) {
         </Text>
         <NSToken className="h-3 w-3" color="white" />
       </div>
-      <Text
-        variant="P3/medium"
-        color="fillContent-secondary"
-        className="flex min-w-[60px] justify-end"
-      >
-        {percentage}%
-      </Text>
+      {percentage !== undefined && (
+        <Text
+          variant="P3/medium"
+          color="fillContent-secondary"
+          className="flex min-w-[60px] justify-end"
+        >
+          {percentage}%
+        </Text>
+      )}
     </div>
   );
 }
 
 export function VotingStatus({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
-  const { data: accountData } = useGetVoteCasted({
-    proposalId: proposalId,
-    address:
-      "0xba097bfb05f1af3b1b022ad4fe597bcce53ff068a323b901dae0e96f3af68a7d",
-  });
-
-  console.log(accountData, "accountData");
 
   if (isLoading) return null;
   const resp = data ? parseProposalVotes(data) : null;
@@ -115,24 +115,27 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
           votedState="Yes"
           percentage={yesVotesPecentage}
           votes={resp?.yesVote ?? 0}
+          onlyStatus
         />
         <VotingState
           votedState="No"
           percentage={noVotesPecentage}
           votes={resp?.noVote ?? 0}
+          onlyStatus
         />
         <VotingState
           votedState="Abstain"
           percentage={abstainVotesPecentage}
           votes={resp?.abstainVote ?? 0}
+          onlyStatus
         />
       </div>
       <MinimumThreshHold
         thresholdPercentage={ThresholdPercentage}
         isReached={totalVotes >= THREAD_HOLD}
       />
-      <Divide />
-      <YourVote />
+
+      <YourVote proposalId={proposalId} />
     </SectionLayout>
   );
 }

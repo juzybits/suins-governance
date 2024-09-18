@@ -29,12 +29,12 @@ export function useGetProposalsIds() {
   return useQuery({
     queryKey: ["governanceObject-dynamic-fields-objects"],
     queryFn: async () => {
-      const getActiveDiscounts = await client.getDynamicFields({
+      const getProposalsContent = await client.getDynamicFields({
         parentId: SUINS_PACKAGES[network].governanceObjectID,
         limit: 20,
       });
       const resp = await Promise.allSettled(
-        getActiveDiscounts.data.map((item) =>
+        getProposalsContent.data.map((item) =>
           client.getObject({
             id: item.objectId,
             options: {

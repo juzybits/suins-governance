@@ -20,7 +20,7 @@ export function CastYourVote() {
   const { isConnecting, isDisconnected } = useCurrentWallet();
   const isLoggedOut = (!currentAccount && !isConnecting) || isDisconnected;
   return (
-    <SectionLayout title="Cast Your Votes">
+    <SectionLayout title="Cast Your Votes" isLarge>
       <div className="flex w-full flex-col items-center justify-start gap-2024_R py-2024_S">
         <RadioGroup.Root
           className="flex w-full flex-col items-center justify-start gap-2024_R"
@@ -42,7 +42,7 @@ export function CastYourVote() {
                     alwaysAnimate
                     className="flex w-full items-center justify-start overflow-hidden rounded-[16px] border-2024_3"
                   >
-                    <div className="flex w-full justify-start rounded-none bg-transparent px-2024_XL py-2024_L">
+                    <div className="flex w-full justify-start rounded-none !bg-2024_fillBackground-secondary-Highlight bg-transparent px-2024_XL py-2024_L">
                       <div className="w-content flex">
                         <VoteIndicator votedStatus={option} size="medium" />
                       </div>
@@ -75,7 +75,7 @@ export function CastYourVote() {
                   autoComplete="off"
                   type="text"
                   className={clsx(
-                    "h-full w-full rounded-2024_20 bg-2024_fillContent-primary-darker px-2024_XL py-2024_M pl-[48px] text-2024_body3 font-bold leading-none text-2024_fillContent-secondary caret-2024_pink transition-all placeholder:text-2024_fillContent-primary-inactive focus:outline-none focus:placeholder:text-transparent",
+                    "h-full w-full rounded-2024_20 bg-2024_fillContent-primary-darker px-2024_XL py-2024_M pl-[50px] text-2024_body3 font-bold leading-none text-2024_fillContent-secondary caret-2024_pink transition-all placeholder:text-2024_fillContent-primary-inactive focus:outline-none focus:placeholder:text-transparent",
                   )}
                   placeholder="280.0"
                 />
@@ -84,9 +84,9 @@ export function CastYourVote() {
                     <Text
                       variant="B7/medium"
                       color="pink"
-                      className="text-start opacity-30"
+                      className="text-start"
                     >
-                      Max
+                      MAX
                     </Text>
                   </button>
                 </div>

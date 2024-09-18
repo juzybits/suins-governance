@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { ReactNode } from "react";
 import { Heading } from "@/components/ui/Heading";
 import Loader from "@/components/ui/Loader";
 
@@ -6,10 +6,12 @@ export function SectionLayout({
   children,
   title,
   isLoading,
+  isLarge,
 }: {
   title: string;
   children: ReactNode;
   isLoading?: boolean;
+  isLarge?: boolean;
 }) {
   if (isLoading)
     return (
@@ -19,7 +21,10 @@ export function SectionLayout({
     );
   return (
     <div className="relative flex w-full flex-col gap-2024_XL rounded-2024_S bg-2024_fillBackground-searchBg p-2024_XL">
-      <Heading variant="H6/super" className="font-[750]">
+      <Heading
+        variant={isLarge ? "H5/super" : "H6/super"}
+        className="font-[750]"
+      >
         {title}
       </Heading>
       {children}
