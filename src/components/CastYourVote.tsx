@@ -45,7 +45,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
       autoClose: 10000,
       hideProgressBar: true,
       closeButton: false,
-      closeOnClick: true,
+      closeOnClick: false,
       pauseOnHover: true,
       draggable: false,
       bodyStyle: {
@@ -60,7 +60,6 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
       },
       className:
         "!bg-[#4BFFA6] !h-[22px] !w-full !text-[18px] !py-0 !rounded-[20px] !px-[24px] !py-[12px]",
-      progress: undefined,
     });
 
   const notifyFailure = () =>
@@ -69,7 +68,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
       autoClose: 10000,
       hideProgressBar: true,
       closeButton: false,
-      closeOnClick: true,
+      closeOnClick: false,
       pauseOnHover: true,
       draggable: false,
       bodyStyle: {
@@ -84,7 +83,6 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
       },
       className:
         "!bg-[#FF1D53] !h-[22px] !w-full !text-[18px] !py-0 !rounded-[20px] !px-[24px] !py-[12px]",
-      progress: undefined,
     });
   const {
     mutate: vote,
@@ -183,7 +181,6 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                     <button
                       onClick={() => {
                         setValue("amount", tokenBalance);
-                        notifySuccess();
                       }}
                     >
                       <Text

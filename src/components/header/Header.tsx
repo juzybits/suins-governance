@@ -57,7 +57,7 @@ export function Header({
         autoClose: 10000,
         hideProgressBar: true,
         closeButton: false,
-        closeOnClick: true,
+        closeOnClick: false,
         pauseOnHover: true,
         draggable: false,
         bodyStyle: {
@@ -72,7 +72,6 @@ export function Header({
         },
         className:
           "!bg-[#FF1D53] !h-[22px] !w-full !text-[18px] !py-0 !rounded-[20px] !px-[24px] !py-[12px]",
-        progress: undefined,
       });
     },
   });
@@ -86,10 +85,10 @@ export function Header({
       >
         <div
           className={cn(
-            "flex w-full items-center justify-between gap-2024_2XL",
+            "flex w-full items-center justify-between gap-[4px] md:gap-2024_2XL",
           )}
         >
-          <Link href="/" className="w-[200px]" onClick={logoAction}>
+          <Link href="/" className="max-w-[200px]" onClick={logoAction}>
             <SuiNSLogo
               variant={logoVariant}
               className="h-2024_2XL sm:h-2024_3XL"
@@ -105,7 +104,7 @@ export function Header({
                 <GradientBorder
                   variant="green_pink_blue"
                   animateOnHover
-                  className="flex w-full items-center justify-center rounded-2024_S border-2 bg-[#62519c66] px-2024_S py-2024_M"
+                  className="flex w-full items-center justify-center rounded-2024_S border-2 bg-[#62519c66] px-1 py-2024_S md:px-2024_S md:py-2024_M"
                 >
                   <Text
                     variant="B6/bold"

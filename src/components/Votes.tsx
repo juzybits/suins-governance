@@ -75,7 +75,7 @@ function VoterDetail({
         color="fillContent-primary"
         className="w-full text-start md:min-w-[224px]"
       >
-        {formattedName ?? formattedAddress}x
+        {formattedName ?? formattedAddress}
       </Text>
       {votes && (
         <div className="flex flex-row items-center justify-center gap-2">
@@ -246,15 +246,17 @@ function TopVoters({
       <Heading variant="H6/super" className="font-[750]">
         Top Voters
       </Heading>
-      {voters?.map((voter, index) => (
-        <VoterDetail
-          key={voter.name.value}
-          objID={voter.objectId}
-          voterAddress={voter.name.value}
-          position={index + 1}
-          isTopVoter
-        />
-      ))}
+      <div className="grid grid-cols-5 gap-0">
+        {voters?.map((voter, index) => (
+          <VoterDetail
+            key={voter.name.value}
+            objID={voter.objectId}
+            voterAddress={voter.name.value}
+            position={index + 1}
+            isTopVoter
+          />
+        ))}
+      </div>
       <Divide />
       <div className="flex flex-col-reverse items-center justify-between gap-2024_L md:flex-row">
         <button
