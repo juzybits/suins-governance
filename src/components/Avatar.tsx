@@ -21,7 +21,7 @@ export function Avatar({
       fallback={
         <SvgSuinsFallbackAvatar
           className={cn(
-            "h-2024_2XL w-2024_2XL rounded-full object-cover text-white sm:h-[36px] sm:w-[36px]",
+            "h-2024_2XL w-2024_2XL rounded-full object-cover text-white",
             className,
           )}
         />
