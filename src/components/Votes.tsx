@@ -49,7 +49,7 @@ function VoterDetail({
         </div>
         <div className="flex max-w-[118px] flex-col items-center justify-center gap-2024_R">
           <Avatar address={voterAddress} className="h-[44px] w-[44px]" />
-          <NSAmount amount={votes.votes} isMedium  />
+          <NSAmount amount={votes.votes} isMedium />
           <VoteIndicator votedStatus={votes.key as VoteType} onlyStatus />
           <Text
             variant="B6/bold"
