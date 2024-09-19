@@ -7,6 +7,8 @@ import { Providers } from "@/app/Providers";
 import clsx from "clsx";
 import { Header } from "@/components/header/Header";
 import { Footer } from "@/components/footer/Footer";
+import { Toaster } from "sonner";
+import { Toast } from "@/components/ui/Toast";
 
 export const metadata: Metadata = {
   title: "SuiNS Governance",
@@ -34,6 +36,7 @@ export default function RootLayout({
             </section>
           </div>
         </Providers>
+        <Toast />
       </body>
     </html>
   );

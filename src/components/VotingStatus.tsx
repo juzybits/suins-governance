@@ -142,7 +142,6 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
         yesVotes={resp?.yesVote ?? 0}
         noVotes={resp?.noVote ?? 0}
         abstainVotes={resp?.abstainVote ?? 0}
-        totalVotes={THREAD_HOLD}
       />
       <div className="flex flex-col justify-between gap-2">
         <VotingState

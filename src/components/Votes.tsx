@@ -246,7 +246,7 @@ function TopVoters({
       <Heading variant="H6/super" className="font-[750]">
         Top Voters
       </Heading>
-      <div className="grid grid-cols-5 gap-0">
+      <div className="grid grid-cols-5 gap-2024_3XL">
         {voters?.map((voter, index) => (
           <VoterDetail
             key={voter.name.value}

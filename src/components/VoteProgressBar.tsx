@@ -5,13 +5,11 @@ type VoteProgressBarProps = {
   yesVotes: number;
   noVotes: number;
   abstainVotes: number;
-  totalVotes: number;
 };
 export function VoteProgressBar({
   yesVotes,
   noVotes,
   abstainVotes,
-  totalVotes,
 }: VoteProgressBarProps) {
   const totalVotesCasted = yesVotes + noVotes + abstainVotes;
 
@@ -19,7 +17,7 @@ export function VoteProgressBar({
   const yesPercentage = (yesVotes / totalVotesCasted) * 100;
   const noPercentage = (noVotes / totalVotesCasted) * 100;
   const abstainPercentage = (abstainVotes / totalVotesCasted) * 100;
-  const votesCast = ((yesVotes + noVotes + abstainVotes) / totalVotes) * 100;
+  const votesCast = abstainPercentage + noPercentage + yesPercentage;
 
   const gradient = `linear-gradient(
     to right,

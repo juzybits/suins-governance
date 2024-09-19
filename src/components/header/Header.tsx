@@ -10,7 +10,7 @@ import { GradientBorder } from "../gradient-border";
 import { Text } from "../ui/Text";
 import { NETWORK } from "@/constants/env";
 import { useGetTestTokenMutation } from "@/hooks/useGetTestTokenMutation";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "sonner";
 
 export interface HeaderProps {
   logoVariant?: "outline" | "fill";
@@ -28,51 +28,10 @@ export function Header({
 }: HeaderProps) {
   const getTokens = useGetTestTokenMutation({
     onSuccess: () => {
-      toast("Testnet NS token sent to your address", {
-        position: "bottom-right",
-        autoClose: 10000,
-        hideProgressBar: true,
-        closeButton: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: false,
-        bodyStyle: {
-          backgroundColor: "#4BFFA6",
-          color: "#221C36",
-          fontSize: "18px",
-          fontWeight: "bold",
-          borderRadius: "20px",
-          height: "42px",
-          padding: "0px important",
-          lineHeight: "100%",
-        },
-        className:
-          "!bg-[#4BFFA6] !h-[22px] !w-full !text-[18px] !py-0 !rounded-[20px] !px-[24px] !py-[12px]",
-        progress: undefined,
-      });
+      toast.success("Testnet NS token sent to your address");
     },
     onError: (error) => {
-      toast(error.message, {
-        position: "bottom-right",
-        autoClose: 10000,
-        hideProgressBar: true,
-        closeButton: false,
-        closeOnClick: false,
-        pauseOnHover: true,
-        draggable: false,
-        bodyStyle: {
-          backgroundColor: "#FF1D53",
-          color: "#FFFFFF",
-          fontSize: "18px",
-          fontWeight: "bold",
-          borderRadius: "20px",
-
-          padding: "0px important",
-          lineHeight: "100%",
-        },
-        className:
-          "!bg-[#FF1D53] !h-[22px] !w-full !text-[18px] !py-0 !rounded-[20px] !px-[24px] !py-[12px]",
-      });
+      toast.error(error.message);
     },
   });
   return (
@@ -124,7 +83,6 @@ export function Header({
           </div>
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 }

@@ -1,10 +1,10 @@
 import clsx from "clsx";
 import { useCurrentAccount, useCurrentWallet } from "@mysten/dapp-kit";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "sonner";
 import { z } from "zod";
 
 import { SectionLayout } from "@/components/SectionLayout";
-import { Button } from "./ui/button/Button";
+import { Button } from "@/components/ui/button/Button";
 import { GradientBorder } from "./gradient-border";
 import { VoteIndicator } from "./ui/VoteIndicator";
 import { Text } from "@/components/ui/Text";
@@ -16,7 +16,7 @@ import { useGetBalance } from "@/hooks/useGetBalance";
 import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { motion } from "framer-motion";
-import "react-toastify/dist/ReactToastify.css";
+
 import { RadioGroupField } from "./form/RadioGroupField";
 
 const VOTE_OPTIONS = ["Yes", "No", "Abstain"] as const;
@@ -39,51 +39,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
       vote: z.enum(VOTE_OPTIONS, { message: "A vote selection is required" }),
     }),
   });
-  const notifySuccess = () =>
-    toast("Successfully voted", {
-      position: "bottom-right",
-      autoClose: 10000,
-      hideProgressBar: true,
-      closeButton: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: false,
-      bodyStyle: {
-        backgroundColor: "#4BFFA6",
-        color: "#221C36",
-        fontSize: "18px",
-        fontWeight: "bold",
-        borderRadius: "20px",
-        height: "42px",
-        padding: "0px important",
-        lineHeight: "100%",
-      },
-      className:
-        "!bg-[#4BFFA6] !h-[22px] !w-full !text-[18px] !py-0 !rounded-[20px] !px-[24px] !py-[12px]",
-    });
 
-  const notifyFailure = () =>
-    toast("Something went wrong. Try voting again.", {
-      position: "bottom-right",
-      autoClose: 10000,
-      hideProgressBar: true,
-      closeButton: false,
-      closeOnClick: false,
-      pauseOnHover: true,
-      draggable: false,
-      bodyStyle: {
-        backgroundColor: "#FF1D53",
-        color: "#FFFFFF",
-        fontSize: "18px",
-        fontWeight: "bold",
-        borderRadius: "20px",
-
-        padding: "0px important",
-        lineHeight: "100%",
-      },
-      className:
-        "!bg-[#FF1D53] !h-[22px] !w-full !text-[18px] !py-0 !rounded-[20px] !px-[24px] !py-[12px]",
-    });
   const {
     mutate: vote,
     isPending,
@@ -93,11 +49,10 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
     onSuccess: () => {
       reset();
       resetForm();
-      notifySuccess();
+      toast.success("Successfully voted");
     },
-    onError: () => {
-      console.log("error");
-      notifyFailure();
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
   const {
@@ -264,7 +219,6 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
           </div>
         </div>
       </Form>
-      <ToastContainer />
     </SectionLayout>
   );
 }

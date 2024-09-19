@@ -6,6 +6,7 @@ import {
   Root,
   Trigger,
 } from "@radix-ui/react-dropdown-menu";
+import { useMemo } from "react";
 
 import { isPast } from "date-fns";
 import SvgChevronDown from "@/icons/ChevronDown";
@@ -25,7 +26,6 @@ import { GradientBorder } from "./gradient-border";
 import { Heading } from "./ui/Heading";
 import { Divide } from "@/components/ui/Divide";
 import { truncatedText } from "@/utils/truncatedText";
-import { usePathname } from "next/navigation";
 
 function ProposalPreview({
   proposalId,
@@ -92,20 +92,21 @@ function ProposalPreview({
 export function ProposalsMenu() {
   const isSmallOrAbove = useBreakpoint("sm");
   const { data } = useGetProposalsIds();
-  const pathName = usePathname();
   const { data: isActiveProposal } = api.post.getIsProposalActive.useQuery();
   // TODO: sort proposals by most recent
-  const proposals = data ? Object.values(data) : [];
+  const proposals = useMemo(() => {
+    return data ? Object.values(data).flatMap((x) => x) : [];
+  }, [data]);
   const router = useRouter();
+
+  if (proposals?.length < 2) return null;
 
   return (
     <Root>
       <Trigger asChild>
         <button className='group relative flex w-full items-center justify-between gap-2 rounded-2024_M bg-2024_fillContent-tertiary p-2024_S shadow-previewMenu before:absolute before:inset-[2px] before:rounded-[99px] before:bg-[#2e2747] before:content-[""] hover:bg-2024_button-gradient focus:outline-none data-[state=open]:bg-[] data-[state="open"]:bg-2024_button-gradient before:data-[state=open]:bg-2024_gradient-active md:p-2024_M'>
           <FileText className="relative h-2024_XL w-2024_XL" />
-          {isActiveProposal?.isProposalActive && (
-            <SvgActiveIcon className="absolute right-0 top-1 h-3 w-3" />
-          )}
+
           <div className="h-2024_M w-2024_M">
             <SvgChevronDown className="relative h-2024_M w-2024_M text-2024_fillContent-tertiary group-hover:text-2024_fillContent-primary group-data-[state=open]:text-2024_fillContent-primary" />
           </div>
@@ -119,53 +120,43 @@ export function ProposalsMenu() {
           asChild
           className="z-50 w-2024_menuWidth max-w-[416px] max-sm:w-[90vw]"
         >
-          {proposals && proposals.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="w-full text-left"
-            >
-              {proposals?.length &&
-                proposals.map((proposalsList, index) => (
-                  <div
-                    className="relative flex h-full w-full min-w-full flex-col items-start justify-start gap-2024_2XL overflow-hidden rounded-2024_R border border-2024_fillContent-tertiary bg-2024_fillBackground-searchBg p-2024_2XL text-left focus:outline-none focus:placeholder:text-transparent md:w-2024_menuWidth md:min-w-[416px]"
-                    key={index}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="w-full text-left"
+          >
+            <div className="relative flex h-full w-full min-w-full flex-col items-start justify-start gap-2024_2XL overflow-hidden rounded-2024_R border border-2024_fillContent-tertiary bg-2024_fillBackground-searchBg p-2024_2XL text-left focus:outline-none focus:placeholder:text-transparent md:w-2024_menuWidth md:min-w-[416px]">
+              <Heading
+                variant="H6/super"
+                className="w-full text-left font-[750]"
+              >
+                Proposals
+              </Heading>
+              {proposals.map((proposalId, index) => (
+                <div className="flex flex-col gap-2024_M" key={proposalId}>
+                  <Text variant="B6/bold" color="fillContent-primary">
+                    {isActiveProposal?.isProposalActive === proposalId
+                      ? `NEW (${index + 1})`
+                      : `PREVIOUS (${index + 1})`}
+                  </Text>
+                  <DropdownMenuItem
+                    key={proposalId}
+                    onSelect={() => router.push(`/proposal/${proposalId}`)}
                   >
-                    <Heading
-                      variant="H6/super"
-                      className="w-full text-left font-[750]"
-                    >
-                      Proposals
-                    </Heading>
-                    <div className="flex flex-col gap-2024_M">
-                      <Text variant="B6/bold" color="fillContent-primary">
-                        {index === 0
-                          ? `NEW (${index + 1})`
-                          : `PREVIOUS (${index + 1})`}
-                      </Text>
-                      {proposalsList?.map((proposalId) => (
-                        <DropdownMenuItem
-                          key={proposalId}
-                          onSelect={() =>
-                            router.push(`/proposal/${proposalId}`)
-                          }
-                        >
-                          <ProposalPreview
-                            proposalId={proposalId}
-                            isActive={
-                              proposalId === isActiveProposal?.isProposalActive
-                            }
-                            key={proposalId}
-                          />
-                        </DropdownMenuItem>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-            </motion.div>
-          )}
+                    <ProposalPreview
+                      proposalId={proposalId}
+                      isActive={
+                        proposalId === isActiveProposal?.isProposalActive
+                      }
+                      key={proposalId}
+                    />
+                  </DropdownMenuItem>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </DropdownMenuContent>
       </DropdownMenuPortal>
     </Root>

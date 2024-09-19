@@ -42,16 +42,7 @@ export function ProposalDetail({ proposalId }: { proposalId: string }) {
             {formattedDate}
           </Text>
         </div>
-        <div className="flex justify-between">
-          <Text variant="LABEL/bold" color="fillContent-secondary">
-            Package
-          </Text>
-          <Link href={explorerLink} target="_blank">
-            <Text variant="LABEL/semibold" color="fillContent-link" mono>
-              {formatAddress(data.fields.id.id)}
-            </Text>
-          </Link>
-        </div>
+
         {!isProposalClosed && (
           <div className="flex flex-col gap-4">
             <CountDownTimer timestamp={timestampMs} />
