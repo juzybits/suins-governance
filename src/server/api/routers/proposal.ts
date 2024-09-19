@@ -56,7 +56,6 @@ async function getProposalDetail({ proposalId }: { proposalId: string }) {
       },
     });
     const objDetail = proposalDetailSchema.safeParse(resp?.data?.content);
-    console.log(proposalId);
 
     if (objDetail.error) {
       return new TRPCError({

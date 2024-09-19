@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { useCurrentAccount, useCurrentWallet } from "@mysten/dapp-kit";
-import * as RadioGroup from "@radix-ui/react-radio-group";
-import { motion } from "framer-motion";
+import { ToastContainer, toast } from "react-toastify";
+import { z } from "zod";
 
 import { SectionLayout } from "@/components/SectionLayout";
 import { Button } from "./ui/button/Button";
@@ -9,28 +9,122 @@ import { GradientBorder } from "./gradient-border";
 import { VoteIndicator } from "./ui/VoteIndicator";
 import { Text } from "@/components/ui/Text";
 import NSToken from "@/icons/NSToken";
-
-import { useState } from "react";
+import { useVoteMutation } from "@/hooks/useVoteMutation";
+import { useZodForm } from "@/hooks/useZodForm";
+import { Form } from "@/components/form/Form";
+import { useGetBalance } from "@/hooks/useGetBalance";
+import { NETWORK } from "@/constants/env";
+import { SUINS_PACKAGES } from "@/constants/endpoints";
+import { motion } from "framer-motion";
+import "react-toastify/dist/ReactToastify.css";
+import { RadioGroupField } from "./form/RadioGroupField";
 
 const VOTE_OPTIONS = ["Yes", "No", "Abstain"] as const;
 
-export function CastYourVote() {
-  const [selectedValue, setSelectedValue] = useState("yes");
+export function CastYourVote({ proposalId }: { proposalId: string }) {
   const currentAccount = useCurrentAccount();
   const { isConnecting, isDisconnected } = useCurrentWallet();
-  const isLoggedOut = (!currentAccount && !isConnecting) || isDisconnected;
+  const address = currentAccount?.address;
+  const { data: balance } = useGetBalance({
+    owner: address,
+    coinType: SUINS_PACKAGES[NETWORK].votingTokenType,
+  });
+  const tokenBalance = Number(balance?.formatted?.replaceAll(",", "") ?? 0);
+  const isLoggedOut = (!currentAccount && !isConnecting) ?? isDisconnected;
+  const form = useZodForm({
+    mode: "all",
+    schema: z.object({
+      amount: z.coerce.number().int().positive().max(tokenBalance),
+
+      vote: z.enum(VOTE_OPTIONS, { message: "A vote selection is required" }),
+    }),
+  });
+  const notifySuccess = () =>
+    toast("Successfully voted", {
+      position: "bottom-right",
+      autoClose: 10000,
+      hideProgressBar: true,
+      closeButton: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: false,
+      bodyStyle: {
+        backgroundColor: "#4BFFA6",
+        color: "#221C36",
+        fontSize: "18px",
+        fontWeight: "bold",
+        borderRadius: "20px",
+        height: "42px",
+        padding: "0px important",
+        lineHeight: "100%",
+      },
+      className:
+        "!bg-[#4BFFA6] !h-[22px] !w-full !text-[18px] !py-0 !rounded-[20px] !px-[24px] !py-[12px]",
+      progress: undefined,
+    });
+
+  const notifyFailure = () =>
+    toast("Something went wrong. Try voting again.", {
+      position: "bottom-right",
+      autoClose: 10000,
+      hideProgressBar: true,
+      closeButton: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: false,
+      bodyStyle: {
+        backgroundColor: "#FF1D53",
+        color: "#FFFFFF",
+        fontSize: "18px",
+        fontWeight: "bold",
+        borderRadius: "20px",
+
+        padding: "0px important",
+        lineHeight: "100%",
+      },
+      className:
+        "!bg-[#FF1D53] !h-[22px] !w-full !text-[18px] !py-0 !rounded-[20px] !px-[24px] !py-[12px]",
+      progress: undefined,
+    });
+  const {
+    mutate: vote,
+    isPending,
+    reset,
+    isSuccess,
+  } = useVoteMutation({
+    onSuccess: () => {
+      reset();
+      resetForm();
+      notifySuccess();
+    },
+    onError: () => {
+      console.log("error");
+      notifyFailure();
+    },
+  });
+  const {
+    watch,
+    setValue,
+    formState: { isValid, errors, isSubmitting },
+    register,
+    reset: resetForm,
+  } = form;
+
+  const amount = watch("amount");
   return (
     <SectionLayout title="Cast Your Votes" isLarge>
-      <div className="flex w-full flex-col items-center justify-start gap-2024_R py-2024_S">
-        <RadioGroup.Root
-          className="flex w-full flex-col items-center justify-start gap-2024_R"
-          value={selectedValue}
-          onValueChange={(value) => setSelectedValue(value)}
-          disabled={isLoggedOut}
-        >
-          {VOTE_OPTIONS.map((option) => (
-            <RadioGroup.Item value={option} className="w-full" key={option}>
-              {option === selectedValue ? (
+      <Form form={form} onSubmit={() => console.log("submitted")}>
+        <div className="flex w-full flex-col items-center justify-start gap-2024_R py-2024_S">
+          <RadioGroupField
+            name="vote"
+            className="flex w-full flex-col items-center justify-start gap-2024_R"
+            options={VOTE_OPTIONS.map((value) => ({
+              value,
+              disabled: value === "Abstain",
+            }))}
+            disabled={isLoggedOut}
+            renderOption={(option, selected) =>
+              selected ? (
                 <motion.div
                   layout
                   initial={{ opacity: 0, scale: 1 }}
@@ -44,7 +138,10 @@ export function CastYourVote() {
                   >
                     <div className="flex w-full justify-start rounded-none !bg-2024_fillBackground-secondary-Highlight bg-transparent px-2024_XL py-2024_L">
                       <div className="w-content flex">
-                        <VoteIndicator votedStatus={option} size="medium" />
+                        <VoteIndicator
+                          votedStatus={option.value as "Yes" | "No" | "Abstain"}
+                          size="medium"
+                        />
                       </div>
                     </div>
                   </GradientBorder>
@@ -58,78 +155,119 @@ export function CastYourVote() {
                 >
                   <div className="flex w-full justify-start rounded-[16px] border border-2024_fillContent-tertiary bg-transparent px-2024_XL py-2024_L">
                     <div className="w-content flex">
-                      <VoteIndicator votedStatus={option} size="medium" />
+                      <VoteIndicator
+                        votedStatus={option.value as "Yes" | "No" | "Abstain"}
+                        size="medium"
+                      />
                     </div>
                   </div>
                 </motion.div>
-              )}
-            </RadioGroup.Item>
-          ))}
-        </RadioGroup.Root>
-        <div className="flex w-full flex-col gap-2024_S">
-          <div className="flex w-full flex-col items-center justify-between gap-2024_L md:flex-row">
-            {!isLoggedOut && (
-              <div className="relative w-full rounded-2024_20 bg-2024_fillContent-primary-darker">
-                <NSToken className="absolute left-2024_XL top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-white" />
-                <input
-                  autoComplete="off"
-                  type="text"
-                  className={clsx(
-                    "h-full w-full rounded-2024_20 bg-2024_fillContent-primary-darker px-2024_XL py-2024_M pl-[50px] text-2024_body3 font-bold leading-none text-2024_fillContent-secondary caret-2024_pink transition-all placeholder:text-2024_fillContent-primary-inactive focus:outline-none focus:placeholder:text-transparent",
-                  )}
-                  placeholder="280.0"
-                />
-                <div className="absolute right-2024_XL top-1/2 -translate-y-1/2">
-                  <button>
-                    <Text
-                      variant="B7/medium"
-                      color="pink"
-                      className="text-start"
+              )
+            }
+          />
+
+          <div className="flex w-full flex-col gap-2024_S">
+            <div className="flex w-full flex-col items-center justify-between gap-2024_L md:flex-row">
+              {!isLoggedOut && (
+                <div className="relative w-full rounded-2024_20 bg-2024_fillContent-primary-darker">
+                  <NSToken className="absolute left-2024_XL top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-white" />
+                  <input
+                    type="number"
+                    {...register("amount")}
+                    className={clsx(
+                      "flex h-full w-full items-center rounded-2024_20 bg-2024_fillContent-primary-darker px-2024_XL py-2024_M pl-[50px] text-2024_body3 font-bold leading-normal text-2024_fillContent-secondary caret-2024_pink transition-all placeholder:text-2024_body4 placeholder:!leading-normal placeholder:text-2024_fillContent-primary-inactive focus:outline-none focus:placeholder:text-transparent",
+                    )}
+                    placeholder="Enter token amount"
+                  />
+                  <div className="absolute right-2024_XL top-1/2 -translate-y-1/2">
+                    <button
+                      onClick={() => {
+                        setValue("amount", tokenBalance);
+                        notifySuccess();
+                      }}
                     >
-                      MAX
-                    </Text>
-                  </button>
+                      <Text
+                        variant="B7/medium"
+                        color={tokenBalance <= amount ? "pink" : "darkPink"}
+                        className="text-start"
+                      >
+                        MAX
+                      </Text>
+                    </button>
+                  </div>
                 </div>
+              )}
+
+              <Button
+                gradient="fill/orange_pink_blue"
+                className={clsx(
+                  "h-2024_3.5XL w-full max-w-full items-center !rounded-2024_M md:max-w-[151px]",
+                  isLoggedOut && "!max-w-full",
+                )}
+                disabled={isLoggedOut || !isValid || isPending}
+                onClick={() => {
+                  vote({
+                    proposalId,
+                    amount: watch("amount"),
+                    vote: watch("vote"),
+                  });
+                }}
+              >
+                <Text
+                  variant="B4/bold"
+                  color="fillContent-primary-darker"
+                  className="text-start"
+                >
+                  Vote
+                </Text>
+              </Button>
+            </div>
+            {!isLoggedOut && (
+              <div className="mt-2 flex w-full flex-col gap-0.5">
+                {!!errors ? (
+                  <div className="mb-2 flex flex-col gap-2">
+                    {errors.vote && (
+                      <Text
+                        variant="B7/medium"
+                        color="fillContent-issue"
+                        className="w-full text-start"
+                      >
+                        {" "}
+                        {errors.vote.message}
+                      </Text>
+                    )}
+                    {errors.amount && (
+                      <Text
+                        variant="B7/medium"
+                        color="fillContent-issue"
+                        className="w-full text-start"
+                      >
+                        {" "}
+                        {errors.amount.message}
+                      </Text>
+                    )}
+                  </div>
+                ) : null}
+                <Text
+                  variant="B7/medium"
+                  color="fillContent-secondary"
+                  className="w-full text-start"
+                >
+                  You have <b>{balance?.formatted}NS</b> tokens.
+                </Text>
+                <Text
+                  variant="B7/medium"
+                  color="fillContent-secondary"
+                  className="w-full text-start"
+                >
+                  Tokens can not be withdrawn until the end of the voting period
+                </Text>
               </div>
             )}
-
-            <Button
-              gradient="fill/orange_pink_blue"
-              className={clsx(
-                "h-2024_3.5XL w-full max-w-full !rounded-2024_M md:max-w-[151px]",
-                isLoggedOut && "!max-w-full",
-              )}
-              disabled={isLoggedOut}
-            >
-              <Text
-                variant="B4/bold"
-                color="fillContent-primary-darker"
-                className="text-start"
-              >
-                Vote
-              </Text>
-            </Button>
           </div>
-          {!isLoggedOut && (
-            <div className="flex w-full flex-col">
-              <Text
-                variant="B7/medium"
-                color="fillContent-secondary"
-                className="w-full text-start"
-              >
-                You have <b>280.00 $NS</b> tokens.
-              </Text>
-              <Text
-                variant="B7/medium"
-                color="fillContent-secondary"
-                className="w-full text-start"
-              >
-                Tokens can not be withdrawn until the end of the voting period.
-              </Text>
-            </div>
-          )}
         </div>
-      </div>
+      </Form>
+      <ToastContainer />
     </SectionLayout>
   );
 }

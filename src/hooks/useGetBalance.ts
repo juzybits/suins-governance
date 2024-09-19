@@ -29,7 +29,7 @@ export function useGetBalance({
         const formatted = formatBalance({
           balance: data.totalBalance,
           decimals: coinMetadata?.decimals ?? 0,
-          format: CoinFormat.ROUNDED,
+          format: CoinFormat.FULL,
         });
         return {
           ...data,

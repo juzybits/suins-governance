@@ -10,18 +10,22 @@ export function NSAmount({
   amount,
   isMedium,
   roundedCoinFormat,
+  noFormat,
 }: {
   amount: number;
   isMedium?: boolean;
   roundedCoinFormat?: boolean;
+  noFormat?: boolean;
 }) {
   const { data: coinMetadata } = useCoinMetadata({
-    coinType: SUINS_PACKAGES[NETWORK].coinType,
+    coinType: SUINS_PACKAGES[NETWORK].votingTokenType,
   });
 
   const amountFormatted = formatBalance({
     balance: amount,
-    decimals: coinMetadata?.decimals ?? NS_COINTYPE_DECIMAL_PLACES,
+    decimals: noFormat
+      ? 0
+      : (coinMetadata?.decimals ?? NS_COINTYPE_DECIMAL_PLACES),
     format: roundedCoinFormat ? CoinFormat.ROUNDED : CoinFormat.FULL,
   });
 

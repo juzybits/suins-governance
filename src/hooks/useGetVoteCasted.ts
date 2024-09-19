@@ -3,6 +3,7 @@ import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { type z } from "zod";
 import { client } from "@/app/SuinsClient";
 import { votesCastedSchema } from "@/schemas/votesCastedSchema";
+import { proposalDetailSchema } from "@/hooks/useGetProposalDetail";
 
 type ParsedVotes = z.infer<typeof votesCastedSchema>;
 
@@ -99,13 +100,25 @@ export function useGetVoteCasted({
   address: string;
   proposalId: string;
 }) {
-  const { data } = useGetProposalDetail({ proposalId });
-
   return useQuery({
     queryKey: ["get-vote-casted", address, proposalId],
     queryFn: async () => {
+      const response = await client.getObject({
+        id: proposalId,
+        options: {
+          showContent: true,
+          showDisplay: true,
+          showOwner: true,
+          showType: true,
+        },
+      });
+      const data = proposalDetailSchema.safeParse(response?.data?.content);
+      if (data.error) {
+        throw new Error("Invalid proposal detail");
+      }
+
       const dynamicFields = await client.getDynamicFieldObject({
-        parentId: data?.fields.voters.fields.id.id ?? "",
+        parentId: data.data?.fields.voters.fields.id.id ?? "",
         name: {
           type: "address",
           value: address,
@@ -121,8 +134,7 @@ export function useGetVoteCasted({
       return resp.data;
     },
     select: (data) => (data ? parseVotesData(data) : null),
-    enabled: !!address && !!proposalId && !!data,
-    retry: false,
+    enabled: !!address && !!proposalId,
   });
 }
 
@@ -141,13 +153,14 @@ export function useGetVoteCastedById(objectId: string) {
         },
       });
       const resp = votesCastedSchema.safeParse(obj.data);
+
       if (resp.error) {
         console.log("Failed to fetch votes casted by ID", resp.error);
         return null;
       }
-      return resp.data;
+      return parseVotesData(resp.data);
     },
-    select: (data) => (data ? parseVotesData(data) : null),
+
     enabled: !!objectId,
   });
 }

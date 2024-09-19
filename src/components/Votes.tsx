@@ -16,8 +16,6 @@ import {
 import { VoteIndicator } from "@/components/ui/VoteIndicator";
 import { NSAmount } from "./ui/NSAmount";
 import { GradientBorder } from "./gradient-border";
-import PaginationNext24 from "@/icons/PaginationNext24";
-import PaginationPrev24 from "@/icons/PaginationPrev24";
 import { Divide } from "@/components/ui/Divide";
 import { useState } from "react";
 import { truncatedText } from "@/utils/truncatedText";
@@ -152,13 +150,17 @@ function AllVoter({
         </button>
         <div className="flex gap-2024_S">
           <button
-            className="flex h-[30px] w-[30px] items-center justify-center rounded-2024_3XS border border-2024_fillContent-tertiary bg-transparent"
+            className="flex min-h-[30px] min-w-[50px] items-center justify-center rounded-2024_3XS border border-2024_fillContent-tertiary bg-transparent px-2"
             disabled={!hasPreviousPage}
             onClick={() => fetchPreviousPage}
           >
-            <PaginationPrev24
-              className={clsx("h-4 w-4", !hasPreviousPage && "opacity-50")}
-            />
+            <Text
+              variant="B7/semibold"
+              color="fillContent-secondary"
+              className="leading-none"
+            >
+              PREV
+            </Text>
           </button>
           {/* <button className="bg-transparent rounded-2024_3XS border w-[30px] h-[30px] flex items-center justify-center border-2024_fillContent-tertiary">
             <Text
@@ -197,13 +199,17 @@ function AllVoter({
             
             </button> */}
           <button
-            className="flex h-[30px] w-[30px] items-center justify-center rounded-2024_3XS border border-2024_fillContent-tertiary bg-transparent"
+            className="flex min-h-[30px] min-w-[50px] items-center justify-center rounded-2024_3XS border border-2024_fillContent-tertiary bg-transparent px-2"
             disabled={!hasNextPage}
             onClick={() => fetchNextPage}
           >
-            <PaginationNext24
-              className={clsx("h-4 w-4", !hasNextPage && "opacity-50")}
-            />
+            <Text
+              variant="B7/semibold"
+              color="fillContent-secondary"
+              className="leading-none"
+            >
+              NEXT
+            </Text>
           </button>
         </div>
       </div>

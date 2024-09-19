@@ -33,7 +33,7 @@ export function useGetAllVoters({
 }) {
   return useInfiniteQuery<ParsedVoter>({
     initialPageParam: null,
-    queryKey: ["get-vote-casted", parentId],
+    queryKey: ["get-all-voter", parentId],
     queryFn: async ({ pageParam = null }) => {
       if (!parentId) {
         throw new Error("Voter ID is missing");

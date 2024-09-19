@@ -4,7 +4,7 @@ import { client } from "@/app/SuinsClient";
 import { CoinFormat, formatBalance } from "@/utils/coins";
 import { NS_COINTYPE_DECIMAL_PLACES } from "@/constants/common";
 
-const proposalDetailSchema = z.object({
+export const proposalDetailSchema = z.object({
   dataType: z.literal("moveObject"),
   type: z.string(),
   hasPublicTransfer: z.boolean(),
@@ -110,28 +110,28 @@ export function parseProposalVotes(data: ProposalDataType) {
         balance: yesVote,
         decimals: NS_COINTYPE_DECIMAL_PLACES,
         format: CoinFormat.FULL,
-      }),
+      }).replace(/,/g, ""),
     ),
     noVote: Number(
       formatBalance({
         balance: noVote,
         decimals: NS_COINTYPE_DECIMAL_PLACES,
         format: CoinFormat.FULL,
-      }),
+      }).replace(/,/g, ""),
     ),
     abstainVote: Number(
       formatBalance({
         balance: abstainVote,
         decimals: NS_COINTYPE_DECIMAL_PLACES,
         format: CoinFormat.FULL,
-      }),
+      }).replace(/,/g, ""),
     ),
   };
 }
 
 export function useGetProposalDetail({ proposalId }: { proposalId: string }) {
   return useQuery({
-    queryKey: ["proposal-detail", proposalId],
+    queryKey: ["proposal-detail-2", proposalId],
     queryFn: async () => {
       const resp = await client.getObject({
         id: proposalId,

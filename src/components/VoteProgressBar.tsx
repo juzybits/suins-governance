@@ -14,6 +14,7 @@ export function VoteProgressBar({
   totalVotes,
 }: VoteProgressBarProps) {
   const totalVotesCasted = yesVotes + noVotes + abstainVotes;
+
   // Calculate percentage for each vote option
   const yesPercentage = (yesVotes / totalVotesCasted) * 100;
   const noPercentage = (noVotes / totalVotesCasted) * 100;

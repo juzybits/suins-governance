@@ -14,21 +14,23 @@ import { VotingState } from "./VotingStatus";
 export function YourVote({ proposalId }: { proposalId: string }) {
   const currentAccount = useCurrentAccount();
   const address = currentAccount?.address;
-  const { data } = useGetAccountInfo({ address });
-  //  "0xfe09cf0b3d77678b99250572624bf74fe3b12af915c5db95f0ed5d755612eb68",
+
   const { data: voteCasted } = useGetVoteCasted({
     proposalId: proposalId,
     address: address ?? "",
   });
+  const { data } = useGetAccountInfo({ address });
 
   if (!address || !voteCasted) {
     return null;
   }
   const formattedAddress = formatAddress(address);
   const formattedName = data?.name && formatName(data?.name);
-  const votes = [voteCasted.yesVote, voteCasted.noVote, voteCasted.abstainVote];
+
   const hasVotedMultipleCategories =
-    votes.filter((vote) => vote > 0).length > 1;
+    [voteCasted.yesVote, voteCasted.noVote, voteCasted.abstainVote].filter(
+      (vote) => vote > 0,
+    ).length > 1;
 
   return (
     <div className="flex flex-col items-center justify-between gap-2024_M">
@@ -57,7 +59,7 @@ export function YourVote({ proposalId }: { proposalId: string }) {
             <VotingState votedState="Yes" votes={voteCasted.yesVote} />
           ) : null}
           {voteCasted.noVote ? (
-            <VotingState votedState="Yes" votes={voteCasted.noVote} />
+            <VotingState votedState="No" votes={voteCasted.noVote} />
           ) : null}
           {voteCasted.abstainVote ? (
             <VotingState votedState="Abstain" votes={voteCasted.abstainVote} />
@@ -73,13 +75,20 @@ export function YourVote({ proposalId }: { proposalId: string }) {
                 color="fillContent-primary"
                 className="w-full text-start"
               >
-                {formattedName ?? formattedAddress}x
+                {formattedName ?? formattedAddress}
               </Text>
 
               <NSAmount amount={voteCasted.yesVote} />
             </div>
-
-            <VoteIndicator votedStatus="Yes" size="small" />
+            {voteCasted.yesVote ? (
+              <VoteIndicator votedStatus="Yes" size="small" />
+            ) : null}
+            {voteCasted.noVote ? (
+              <VoteIndicator votedStatus="No" size="small" />
+            ) : null}
+            {voteCasted.abstainVote ? (
+              <VoteIndicator votedStatus="Abstain" size="small" />
+            ) : null}
           </div>
         </div>
       )}

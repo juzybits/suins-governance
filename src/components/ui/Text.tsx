@@ -48,6 +48,7 @@ const textStyles = cva(["break-words"], {
       good: "text-2024_fillContent-good",
       warning: "text-2024_fillContent-warning",
       pink: "text-2024_pink",
+      darkPink: "text-2024_pink/30",
       cyan: "text-2024_fillContent-cyan",
     },
     truncate: {

@@ -37,6 +37,7 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
     <section className="relative flex w-full flex-col gap-2024_4XL sm:gap-2024_5XL">
       <div className="flex flex-col gap-2024_XL">
         <ProposalStatus status={isClosed ? "closed" : "active"} />
+
         <Heading variant="H3/extraBold" className="text-start capitalize">
           {data?.fields.title}
         </Heading>

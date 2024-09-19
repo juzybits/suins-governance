@@ -97,7 +97,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <>
         {loading && (
           <div className="absolute left-1/2 top-1/2 h-10 -translate-x-1/2 -translate-y-1/2">
-            <Loader className="w-6" />
+            <Loader className="h-6 w-6" />
           </div>
         )}
         <div
