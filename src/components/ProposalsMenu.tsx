@@ -12,7 +12,6 @@ import { isPast } from "date-fns";
 import SvgChevronDown from "@/icons/ChevronDown";
 import { api } from "@/trpc/react";
 import SvgChevronRight from "@/icons/ChevronRight";
-import SvgActiveIcon from "@/icons/ActiveIcon";
 import FileText from "@/icons/FileText";
 import { useRouter } from "next/navigation";
 
@@ -92,14 +91,18 @@ function ProposalPreview({
 export function ProposalsMenu() {
   const isSmallOrAbove = useBreakpoint("sm");
   const { data } = useGetProposalsIds();
-  const { data: isActiveProposal } = api.post.getIsProposalActive.useQuery();
+  const { data: activeProposal } = api.post.getIsProposalActive.useQuery();
   // TODO: sort proposals by most recent
   const proposals = useMemo(() => {
-    return data ? Object.values(data).flatMap((x) => x) : [];
-  }, [data]);
+    return data
+      ? Object.values(data)
+          .flatMap((x) => x)
+          .filter((x) => x !== activeProposal?.isProposalActive)
+      : [];
+  }, [data, activeProposal?.isProposalActive]);
   const router = useRouter();
 
-  if (proposals?.length < 2) return null;
+  if (proposals?.length + 1 < 1) return null;
 
   return (
     <Root>
@@ -143,27 +146,43 @@ export function ProposalsMenu() {
               >
                 Proposals
               </Heading>
-              {proposals.map((proposalId, index) => (
-                <div className="flex flex-col gap-2024_M" key={proposalId}>
+              {activeProposal?.isProposalActive && (
+                <div className="flex flex-col gap-2024_M">
                   <Text variant="B6/bold" color="fillContent-primary">
-                    {isActiveProposal?.isProposalActive === proposalId
-                      ? `NEW (${index + 1})`
-                      : `PREVIOUS (${index + 1})`}
+                    New (1)
                   </Text>
                   <DropdownMenuItem
-                    key={proposalId}
-                    onSelect={() => router.push(`/proposal/${proposalId}`)}
+                    onSelect={() =>
+                      router.push(
+                        `/proposal/${activeProposal.isProposalActive}`,
+                      )
+                    }
                   >
                     <ProposalPreview
-                      proposalId={proposalId}
-                      isActive={
-                        proposalId === isActiveProposal?.isProposalActive
-                      }
-                      key={proposalId}
+                      proposalId={activeProposal.isProposalActive}
+                      isActive
                     />
                   </DropdownMenuItem>
                 </div>
-              ))}
+              )}
+              {proposals.length > 0 && (
+                <div className="flex flex-col gap-2024_M">
+                  <Text variant="B6/bold" color="fillContent-primary">
+                    PREVIOUS ({proposals.length})
+                  </Text>
+                  {proposals.map((proposalId, index) => (
+                    <DropdownMenuItem
+                      key={proposalId}
+                      onSelect={() => router.push(`/proposal/${proposalId}`)}
+                    >
+                      <ProposalPreview
+                        proposalId={proposalId}
+                        key={proposalId}
+                      />
+                    </DropdownMenuItem>
+                  ))}
+                </div>
+              )}
             </div>
           </motion.div>
         </DropdownMenuContent>

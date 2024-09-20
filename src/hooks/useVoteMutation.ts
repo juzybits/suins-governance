@@ -55,6 +55,14 @@ export function useVoteMutation(
           (coin) => coin.coinType === SUINS_PACKAGES[NETWORK].votingTokenType,
         ) || [];
       const primaryCoinInput = txb.object(primaryCoin!.coinObjectId);
+      if (mergeCoins.length) {
+        // TODO: This could just merge a subset of coins that meet the balance requirements instead of all of them.
+        txb.mergeCoins(
+          primaryCoinInput,
+          mergeCoins.map((coin) => txb.object(coin.coinObjectId)),
+        );
+      }
+
       const coin = txb.splitCoins(primaryCoinInput, [bigIntAmount]);
 
       txb.setGasBudgetIfNotSet(GAS_BUDGET);

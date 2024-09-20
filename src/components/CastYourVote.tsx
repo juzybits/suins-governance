@@ -3,6 +3,7 @@ import { useCurrentAccount, useCurrentWallet } from "@mysten/dapp-kit";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { api } from "@/trpc/react";
 import { SectionLayout } from "@/components/SectionLayout";
 import { Button } from "@/components/ui/button/Button";
 import { GradientBorder } from "./gradient-border";
@@ -18,7 +19,6 @@ import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { motion } from "framer-motion";
 
 import { RadioGroupField } from "./form/RadioGroupField";
-import { useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 
 const VOTE_OPTIONS = ["Yes", "No", "Abstain"] as const;
@@ -27,6 +27,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
   const currentAccount = useCurrentAccount();
   const { isConnecting, isDisconnected } = useCurrentWallet();
   const address = currentAccount?.address;
+  const { data: activeProposal } = api.post.getIsProposalActive.useQuery();
   const { data: balance } = useGetBalance({
     owner: address,
     coinType: SUINS_PACKAGES[NETWORK].votingTokenType,
@@ -69,7 +70,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
       toast.success("Successfully voted");
     }
   }, [isSuccess, reset, resetField]);
-
+  const isInactiveProposal = activeProposal?.isProposalActive !== proposalId;
   const amount = watch("amount");
   return (
     <SectionLayout title="Cast Your Votes" isLarge>
@@ -89,7 +90,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
             className="flex w-full flex-col items-center justify-start gap-2024_R"
             options={VOTE_OPTIONS.map((value) => ({
               value,
-              disabled: value === "Abstain",
+              disabled: value === "Abstain" || isInactiveProposal,
             }))}
             disabled={isLoggedOut}
             renderOption={(option, selected) =>
@@ -146,6 +147,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                     className={clsx(
                       "flex h-full w-full items-center rounded-2024_20 bg-2024_fillContent-primary-darker px-2024_XL py-2024_M pl-[50px] text-2024_body3 font-bold leading-normal text-2024_fillContent-secondary caret-2024_pink transition-all placeholder:text-2024_body4 placeholder:!leading-normal placeholder:text-2024_fillContent-primary-inactive focus:outline-none focus:placeholder:text-transparent",
                     )}
+                    disabled={isInactiveProposal}
                     placeholder="Enter token amount"
                   />
                   <div className="absolute right-2024_XL top-1/2 -translate-y-1/2">
@@ -172,7 +174,9 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                   "h-2024_3.5XL w-full max-w-full items-center !rounded-2024_M md:max-w-[151px]",
                   isLoggedOut && "!max-w-full",
                 )}
-                disabled={isLoggedOut || !isValid || isPending}
+                disabled={
+                  isLoggedOut || !isValid || isPending || isInactiveProposal
+                }
                 type="submit"
               >
                 <Text

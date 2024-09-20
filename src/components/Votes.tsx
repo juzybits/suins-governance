@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 
 import { Heading } from "@/components/ui/Heading";
 import { Text } from "@/components/ui/Text";
@@ -7,6 +8,7 @@ import { useGetAllVoters } from "@/hooks/useGetAllVoters";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { Avatar } from "@/components/Avatar";
 import { useGetAccountInfo } from "@/hooks/useGetAccountInfo";
+import { useExplorerLink } from "@/hooks/useExplorerLink";
 import { formatName } from "@/utils/common";
 import {
   useGetVoteCastedById,
@@ -38,6 +40,10 @@ function VoterDetail({
   const formattedName = accountInfo?.name && formatName(accountInfo?.name);
   const votes = voter ? getVoteTypeWithMostVotes(voter)?.[0] : null;
   const isSmallOrAbove = useBreakpoint("sm");
+  const explorerLink = useExplorerLink({
+    id: voterAddress || "",
+    type: "address",
+  });
 
   if (isTopVoter) {
     if (!votes) return null;
@@ -50,16 +56,23 @@ function VoterDetail({
         </div>
         <div className="flex max-w-[118px] flex-col items-center justify-center gap-2024_R">
           <Avatar address={voterAddress} className="h-[44px] w-[44px]" />
-          <NSAmount amount={votes.votes} isMedium roundedCoinFormat />
+          <NSAmount
+            amount={votes.votes}
+            isMedium
+            roundedCoinFormat
+            centerAlign
+          />
           <VoteIndicator votedStatus={votes.key as VoteType} onlyStatus />
-          <Text
-            variant="B6/bold"
-            color="fillContent-primary"
-            className="w-full text-start"
-          >
-            {formattedName ??
-              truncatedText({ text: formattedAddress, maxLength: 6 })}
-          </Text>
+          <Link href={explorerLink} target="_blank">
+            <Text
+              variant="B6/bold"
+              color="fillContent-primary"
+              className="w-full text-center"
+            >
+              {formattedName ??
+                truncatedText({ text: formattedAddress, maxLength: 6 })}
+            </Text>
+          </Link>
         </div>
       </div>
     );
@@ -76,9 +89,11 @@ function VoterDetail({
           {position}
         </Text>
         <Avatar address={voterAddress} className="h-[32px] w-[32px]" />
-        <Text variant="B6/bold" color="fillContent-primary">
-          {formattedName ?? formattedAddress}
-        </Text>
+        <Link href={explorerLink} target="_blank">
+          <Text variant="B6/bold" color="fillContent-primary">
+            {formattedName ?? formattedAddress}
+          </Text>
+        </Link>
       </div>
       {votes && (
         <div className="flex w-full basis-1/3 flex-row items-center justify-between gap-2.5">

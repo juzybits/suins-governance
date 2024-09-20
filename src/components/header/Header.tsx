@@ -76,7 +76,7 @@ export function Header({
                     color="fillContent-primary"
                     className="leading-none"
                   >
-                    $NS
+                    NS
                   </Text>
                 </GradientBorder>
               </button>

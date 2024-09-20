@@ -5,17 +5,20 @@ import { CoinFormat, formatBalance } from "@/utils/coins";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { NETWORK } from "@/constants/env";
 import { NS_COINTYPE_DECIMAL_PLACES } from "@/constants/common";
+import clsx from "clsx";
 
 export function NSAmount({
   amount,
   isMedium,
   roundedCoinFormat,
   noFormat,
+  centerAlign,
 }: {
   amount: number;
   isMedium?: boolean;
   roundedCoinFormat?: boolean;
   noFormat?: boolean;
+  centerAlign?: boolean;
 }) {
   const { data: coinMetadata } = useCoinMetadata({
     coinType: SUINS_PACKAGES[NETWORK].votingTokenType,
@@ -30,7 +33,12 @@ export function NSAmount({
   });
 
   return (
-    <div className="flex w-full items-center justify-end gap-1">
+    <div
+      className={clsx(
+        "flex w-full items-center justify-end gap-1",
+        centerAlign && "justify-center",
+      )}
+    >
       <Text
         variant={isMedium ? "B4/bold" : "P3/medium"}
         color="fillContent-secondary"
