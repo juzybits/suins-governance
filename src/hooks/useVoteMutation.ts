@@ -78,43 +78,7 @@ export function useVoteMutation(
     },
 
     onSuccess: async () => {
-      await Promise.all([
-        queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey.includes("proposal-detail"),
-          queryKey: ["proposal-detail"],
-          refetchType: "all",
-        }),
-        queryClient.invalidateQueries({
-          queryKey: ["get-vote-casted"],
-          predicate: (query) => query.queryKey.includes("get-vote-casted"),
-          refetchType: "all",
-        }),
-        queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey.includes("get-all-voter"),
-          queryKey: ["get-all-voter"],
-          refetchType: "all",
-        }),
-        queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey.includes("proposal-detail"),
-          queryKey: ["proposal-detail"],
-          refetchType: "all",
-        }),
-        queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey.includes("vote-casted-by-id"),
-          queryKey: ["vote-casted-by-id"],
-          refetchType: "all",
-        }),
-        queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey.includes("coin-metadata"),
-          queryKey: ["coin-metadata"],
-          refetchType: "all",
-        }),
-        queryClient.invalidateQueries({
-          predicate: (query) => query.queryKey.includes("proposal-detail-2"),
-          queryKey: ["proposal-detail-2"],
-          refetchType: "all",
-        }),
-      ]);
+      await queryClient.invalidateQueries();
     },
     ...mutationOptions,
   });

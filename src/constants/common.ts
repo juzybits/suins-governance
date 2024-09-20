@@ -6,3 +6,4 @@ export const SUB_NAME_STRUCT_TYPE =
   "subdomain_registration::SubDomainRegistration";
 export const AUCTION_HOUSE_START_TIMESTAMP = 1683601200000; // May 8, 2023 19:00:00 PST
 export const NS_COINTYPE_DECIMAL_PLACES = 6;
+export const THREAD_HOLD = 5_000_000;

@@ -31,7 +31,7 @@ export const RadioGroupField = forwardRef<HTMLDivElement, RadioGroupFieldProps>(
             {...props}
             name={name}
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            value={value}
+            value={value ?? ""}
             onValueChange={onChange}
             disabled={disabled}
             ref={forwardedRef}

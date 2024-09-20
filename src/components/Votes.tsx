@@ -19,6 +19,7 @@ import { GradientBorder } from "./gradient-border";
 import { Divide } from "@/components/ui/Divide";
 import { useState } from "react";
 import { truncatedText } from "@/utils/truncatedText";
+import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 type VoteType = "Yes" | "No" | "Abstain";
 function VoterDetail({
@@ -37,19 +38,20 @@ function VoterDetail({
   const formattedAddress = formatAddress(voterAddress);
   const formattedName = accountInfo?.name && formatName(accountInfo?.name);
   const votes = voter ? getVoteTypeWithMostVotes(voter)?.[0] : null;
+  const isSmallOrAbove = useBreakpoint("sm");
 
   if (isTopVoter) {
     if (!votes) return null;
     return (
       <div className="relative flex max-w-[118px] flex-col items-start gap-2024_R">
-        <div className="absolute left-3 top-[-1px] mx-auto flex h-5 w-5 items-center justify-center rounded-16 bg-2024_fillBackground-secondary-Highlight">
+        <div className="absolute left-0 top-[-1px] mx-auto flex h-5 w-5 items-center justify-center rounded-16 bg-2024_fillBackground-secondary-Highlight">
           <Text variant="B7/semibold" color="fillContent-primary">
             {position}
           </Text>
         </div>
         <div className="flex max-w-[118px] flex-col items-center justify-center gap-2024_R">
           <Avatar address={voterAddress} className="h-[44px] w-[44px]" />
-          <NSAmount amount={votes.votes} isMedium />
+          <NSAmount amount={votes.votes} isMedium roundedCoinFormat />
           <VoteIndicator votedStatus={votes.key as VoteType} onlyStatus />
           <Text
             variant="B6/bold"
@@ -65,25 +67,31 @@ function VoterDetail({
   }
 
   return (
-    <div className="flex items-center gap-2.5">
-      <Text variant="B6/bold" color="fillContent-tertiary">
-        {position}
-      </Text>
-      <Avatar address={voterAddress} className="h-[36px] w-[36px]" />
-      <Text
-        variant="B6/bold"
-        color="fillContent-primary"
-        className="w-full text-start md:min-w-[224px]"
-      >
-        {formattedName ?? formattedAddress}
-      </Text>
+    <div className="flex items-center justify-between gap-2.5">
+      <div className="flex w-fit min-w-[150px] items-center justify-start gap-2.5 text-start md:min-w-[224px]">
+        <Text
+          variant="B6/bold"
+          color="fillContent-tertiary"
+          className="min-w-3"
+        >
+          {position}
+        </Text>
+        <Avatar address={voterAddress} className="h-[32px] w-[32px]" />
+        <Text variant="B6/bold" color="fillContent-primary">
+          {formattedName ?? formattedAddress}
+        </Text>
+      </div>
       {votes && (
-        <div className="flex flex-row items-center justify-center gap-2">
-          <div className="flex items-start">
+        <div className="flex w-full basis-1/3 flex-row items-center justify-between gap-2.5">
+          <div className="w-fit basis-1/3">
             <VoteIndicator votedStatus={votes.key as VoteType} onlyStatus />
           </div>
-          <div className="flex items-center justify-end gap-1 md:min-w-[100px]">
-            <NSAmount amount={votes.votes} isMedium />
+          <div className="flex min-w-[80px] items-center justify-end gap-1">
+            <NSAmount
+              amount={votes.votes}
+              isMedium
+              roundedCoinFormat={!isSmallOrAbove}
+            />
           </div>
         </div>
       )}
@@ -246,7 +254,7 @@ function TopVoters({
       <Heading variant="H6/super" className="font-[750]">
         Top Voters
       </Heading>
-      <div className="grid grid-cols-5 gap-2024_3XL">
+      <div className="grid grid-cols-3 gap-2024_3XL md:grid-cols-5">
         {voters?.map((voter, index) => (
           <VoterDetail
             key={voter.name.value}

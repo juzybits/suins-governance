@@ -30,10 +30,11 @@ export function NSAmount({
   });
 
   return (
-    <div className="flex basis-1/5 items-center justify-end gap-1">
+    <div className="flex w-full items-center justify-end gap-1">
       <Text
         variant={isMedium ? "B4/bold" : "P3/medium"}
         color="fillContent-secondary"
+        className="w-fit"
       >
         {amountFormatted}
       </Text>

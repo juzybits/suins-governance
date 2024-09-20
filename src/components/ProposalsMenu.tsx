@@ -106,6 +106,15 @@ export function ProposalsMenu() {
       <Trigger asChild>
         <button className='group relative flex w-full items-center justify-between gap-2 rounded-2024_M bg-2024_fillContent-tertiary p-2024_S shadow-previewMenu before:absolute before:inset-[2px] before:rounded-[99px] before:bg-[#2e2747] before:content-[""] hover:bg-2024_button-gradient focus:outline-none data-[state=open]:bg-[] data-[state="open"]:bg-2024_button-gradient before:data-[state=open]:bg-2024_gradient-active md:p-2024_M'>
           <FileText className="relative h-2024_XL w-2024_XL" />
+          {isSmallOrAbove && (
+            <Text
+              variant="B5/bold"
+              color="fillContent-primary"
+              className="relative leading-none"
+            >
+              View All
+            </Text>
+          )}
 
           <div className="h-2024_M w-2024_M">
             <SvgChevronDown className="relative h-2024_M w-2024_M text-2024_fillContent-tertiary group-hover:text-2024_fillContent-primary group-data-[state=open]:text-2024_fillContent-primary" />
@@ -115,8 +124,8 @@ export function ProposalsMenu() {
       <DropdownMenuPortal>
         <DropdownMenuContent
           sideOffset={12}
-          alignOffset={isSmallOrAbove ? 0 : -182}
-          align="end"
+          alignOffset={isSmallOrAbove ? 0 : -112}
+          align="start"
           asChild
           className="z-50 w-2024_menuWidth max-w-[416px] max-sm:w-[90vw]"
         >

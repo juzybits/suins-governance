@@ -1,5 +1,3 @@
-import { formatAddress } from "@mysten/sui/utils";
-import Link from "next/link";
 import { Text } from "@/components/ui/Text";
 import { CountDownTimer } from "./CountDownTimer";
 import { SectionLayout } from "./SectionLayout";
@@ -8,15 +6,10 @@ import {
   parseProposalVotes,
 } from "@/hooks/useGetProposalDetail";
 import { format, isPast } from "date-fns";
-import { useExplorerLink } from "@/hooks/useExplorerLink";
 
 export function ProposalDetail({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
   const resp = data ? parseProposalVotes(data) : null;
-  const explorerLink = useExplorerLink({
-    type: "object",
-    id: data?.fields?.id.id ?? "",
-  });
   if (!data) return null;
   const timestampMs = parseInt(data.fields.valid_until_timestamp_ms, 10);
   const formattedDate = format(new Date(timestampMs), "MMM d, yyyy");

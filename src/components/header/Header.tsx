@@ -11,6 +11,8 @@ import { Text } from "../ui/Text";
 import { NETWORK } from "@/constants/env";
 import { useGetTestTokenMutation } from "@/hooks/useGetTestTokenMutation";
 import { toast } from "sonner";
+import { VotesRemaining } from "@/components/VotesRemaining";
+import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 export interface HeaderProps {
   logoVariant?: "outline" | "fill";
@@ -26,6 +28,7 @@ export function Header({
 
   logoAction,
 }: HeaderProps) {
+  const isSmallOrAbove = useBreakpoint("sm");
   const getTokens = useGetTestTokenMutation({
     onSuccess: () => {
       toast.success("Testnet NS token sent to your address");
@@ -47,12 +50,15 @@ export function Header({
             "flex w-full items-center justify-between gap-[4px] md:gap-2024_2XL",
           )}
         >
-          <Link href="/" className="max-w-[200px]" onClick={logoAction}>
-            <SuiNSLogo
-              variant={logoVariant}
-              className="h-2024_2XL sm:h-2024_3XL"
-            />
-          </Link>
+          <div className="flex items-center justify-center gap-2024_S">
+            <Link href="/" className="max-w-[200px]" onClick={logoAction}>
+              <SuiNSLogo
+                variant={logoVariant}
+                className="h-2024_2XL sm:h-2024_3XL"
+              />
+            </Link>
+            <ProposalsMenu />
+          </div>
 
           <div className="flex items-center gap-2024_S">
             {NETWORK === "testnet" && (
@@ -63,7 +69,7 @@ export function Header({
                 <GradientBorder
                   variant="green_pink_blue"
                   animateOnHover
-                  className="flex w-full items-center justify-center rounded-2024_S border-2 bg-[#62519c66] px-1 py-2024_S md:px-2024_S md:py-2024_M"
+                  className="flex w-full items-center justify-center rounded-2024_M border-2 bg-[#62519c66] px-2024_R py-2024_R md:p-2024_M"
                 >
                   <Text
                     variant="B6/bold"
@@ -75,8 +81,8 @@ export function Header({
                 </GradientBorder>
               </button>
             )}
+            {isSmallOrAbove && <VotesRemaining />}
 
-            <ProposalsMenu />
             <div className="flex max-w-[200px] justify-end">
               <ConnectWallet />
             </div>

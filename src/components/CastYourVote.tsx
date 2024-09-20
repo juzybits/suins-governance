@@ -18,6 +18,8 @@ import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { motion } from "framer-motion";
 
 import { RadioGroupField } from "./form/RadioGroupField";
+import { useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
 
 const VOTE_OPTIONS = ["Yes", "No", "Abstain"] as const;
 
@@ -46,27 +48,41 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
     reset,
     isSuccess,
   } = useVoteMutation({
-    onSuccess: () => {
-      reset();
-      resetForm();
-      toast.success("Successfully voted");
-    },
     onError: (error) => {
       toast.error(error.message);
     },
   });
+
   const {
     watch,
     setValue,
-    formState: { isValid, errors, isSubmitting },
+    formState: { isValid, errors },
     register,
-    reset: resetForm,
+    resetField,
   } = form;
+
+  useEffect(() => {
+    if (isSuccess) {
+      reset();
+      resetField("amount");
+      resetField("vote");
+      toast.success("Successfully voted");
+    }
+  }, [isSuccess, reset, resetField]);
 
   const amount = watch("amount");
   return (
     <SectionLayout title="Cast Your Votes" isLarge>
-      <Form form={form} onSubmit={() => console.log("submitted")}>
+      <Form
+        form={form}
+        onSubmit={() =>
+          vote({
+            proposalId,
+            amount: watch("amount"),
+            vote: watch("vote"),
+          })
+        }
+      >
         <div className="flex w-full flex-col items-center justify-start gap-2024_R py-2024_S">
           <RadioGroupField
             name="vote"
@@ -157,13 +173,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                   isLoggedOut && "!max-w-full",
                 )}
                 disabled={isLoggedOut || !isValid || isPending}
-                onClick={() => {
-                  vote({
-                    proposalId,
-                    amount: watch("amount"),
-                    vote: watch("vote"),
-                  });
-                }}
+                type="submit"
               >
                 <Text
                   variant="B4/bold"
@@ -184,7 +194,6 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                         color="fillContent-issue"
                         className="w-full text-start"
                       >
-                        {" "}
                         {errors.vote.message}
                       </Text>
                     )}
@@ -194,7 +203,6 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                         color="fillContent-issue"
                         className="w-full text-start"
                       >
-                        {" "}
                         {errors.amount.message}
                       </Text>
                     )}

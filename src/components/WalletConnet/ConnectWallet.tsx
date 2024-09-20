@@ -33,6 +33,7 @@ export function ConnectWallet() {
   const currentAccount = useCurrentAccount();
   const { currentWallet, isConnecting, isDisconnected } = useCurrentWallet();
   const { mutate: switchAccount } = useSwitchAccount();
+  const isSmallOrAbove = useBreakpoint("sm");
 
   // we are using currentAccount and !isConnecting to determine if the wallet is connected,
   if ((!currentAccount && !isConnecting) || isDisconnected)
@@ -45,6 +46,7 @@ export function ConnectWallet() {
           <AccountInfo
             address={currentAccount?.address ?? ""}
             nickName={currentAccount?.label}
+            hideAccountPreview={!isSmallOrAbove}
           />
           <div className="h-2024_M w-2024_M">
             <SvgChevronDown className="relative h-2024_M w-2024_M text-2024_fillContent-tertiary group-hover:text-2024_fillContent-primary group-data-[state=open]:text-2024_fillContent-primary" />
@@ -127,10 +129,12 @@ function AccountInfo({
   address,
   showAddress,
   nickName,
+  hideAccountPreview,
 }: {
   address: string;
   nickName?: string;
   showAddress?: boolean;
+  hideAccountPreview?: boolean;
 }) {
   const { data: resolveSuiNSName } = useSuiClientQuery(
     "resolveNameServiceNames",
@@ -147,53 +151,55 @@ function AccountInfo({
         <NameAvatar name={name} />
       </div>
 
-      {showAddress ? (
-        <div className="flex flex-col gap-2024_S whitespace-nowrap text-start">
-          {name || nickName ? (
-            <Text
-              truncate
-              variant={showAddress ? "B5/bold" : "B6/medium"}
-              color="fillContent-primary"
-              mono={!showAddress}
-              className="max-w-[200px]"
-            >
-              {name
-                ? formatName(name, {
-                    noTruncate: true,
-                  })
-                : nickName}
-            </Text>
-          ) : null}
-          <Text variant="B6/semibold" mono color="fillContent-secondary">
-            {formatAddress(address)}
-          </Text>
-        </div>
-      ) : (
-        <div className="flex w-[100px] flex-col gap-2024_S whitespace-nowrap text-start">
-          {(nickName || name) && !showAddress ? (
-            <Text
-              truncate
-              variant="B5/bold"
-              color="fillContent-primary"
-              className="max-w-[200px]"
-            >
-              {name
-                ? formatName(name, {
-                    noTruncate: true,
-                  })
-                : nickName}
-            </Text>
-          ) : (
-            <Text
-              variant={"B6/medium"}
-              color="fillContent-secondary"
-              mono={!!showAddress}
-            >
+      {!hideAccountPreview ? (
+        showAddress ? (
+          <div className="flex flex-col gap-2024_S whitespace-nowrap text-start">
+            {name || nickName ? (
+              <Text
+                truncate
+                variant={showAddress ? "B5/bold" : "B6/medium"}
+                color="fillContent-primary"
+                mono={!showAddress}
+                className="max-w-[200px]"
+              >
+                {name
+                  ? formatName(name, {
+                      noTruncate: true,
+                    })
+                  : nickName}
+              </Text>
+            ) : null}
+            <Text variant="B6/medium" color="fillContent-secondary">
               {formatAddress(address)}
             </Text>
-          )}
-        </div>
-      )}
+          </div>
+        ) : (
+          <div className="flex w-[100px] flex-col gap-2024_S whitespace-nowrap text-start">
+            {(nickName || name) && !showAddress ? (
+              <Text
+                truncate
+                variant="B5/bold"
+                color="fillContent-primary"
+                className="max-w-[200px]"
+              >
+                {name
+                  ? formatName(name, {
+                      noTruncate: true,
+                    })
+                  : nickName}
+              </Text>
+            ) : (
+              <Text
+                variant={"B6/medium"}
+                color="fillContent-secondary"
+                mono={showAddress}
+              >
+                {formatAddress(address)}
+              </Text>
+            )}
+          </div>
+        )
+      ) : null}
     </div>
   );
 }

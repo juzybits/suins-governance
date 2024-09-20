@@ -131,7 +131,7 @@ export function parseProposalVotes(data: ProposalDataType) {
 
 export function useGetProposalDetail({ proposalId }: { proposalId: string }) {
   return useQuery({
-    queryKey: ["proposal-detail-2", proposalId],
+    queryKey: ["proposal-detail-by-id", proposalId],
     queryFn: async () => {
       const resp = await client.getObject({
         id: proposalId,

@@ -16,8 +16,7 @@ import { roundFloat } from "@/utils/roundFloat";
 import NSToken from "@/icons/NSToken";
 import { formatAmountParts } from "@/utils/coins";
 import { useMemo } from "react";
-
-const THREAD_HOLD = 5_000_000;
+import { THREAD_HOLD } from "@/constants/common";
 
 function MinimumThreshHold({
   thresholdPercentage,
