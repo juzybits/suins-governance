@@ -51,7 +51,7 @@ export function YourVote({ proposalId }: { proposalId: string }) {
               color="fillContent-primary"
               className="w-full text-start"
             >
-              {formattedName ?? formattedAddress}x
+              {formattedName ?? formattedAddress}
             </Text>
           </div>
           <Divide className="bg-[#62519C]" />
