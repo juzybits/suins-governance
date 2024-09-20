@@ -36,8 +36,13 @@ function VoterDetail({
 }) {
   const { data: accountInfo } = useGetAccountInfo({ address: voterAddress });
   const { data: voter } = useGetVoteCastedById(objID);
-  const formattedAddress = formatAddress(voterAddress);
-  const formattedName = accountInfo?.name && formatName(accountInfo?.name);
+  const formattedAddress = truncatedText({
+    text: formatAddress(voterAddress),
+    maxLength: 6,
+  });
+  const formattedName =
+    accountInfo?.name &&
+    truncatedText({ text: formatName(accountInfo?.name), maxLength: 12 });
   const votes = voter ? getVoteTypeWithMostVotes(voter)?.[0] : null;
   const isSmallOrAbove = useBreakpoint("sm");
   const explorerLink = useExplorerLink({
@@ -69,8 +74,7 @@ function VoterDetail({
               color="fillContent-primary"
               className="w-full text-center"
             >
-              {formattedName ??
-                truncatedText({ text: formattedAddress, maxLength: 6 })}
+              {formattedName ?? formattedAddress}
             </Text>
           </Link>
         </div>
