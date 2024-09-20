@@ -1,9 +1,8 @@
-import clsx from "clsx";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { Heading } from "@/components/ui/Heading";
 import { Text } from "@/components/ui/Text";
 import { formatAddress } from "@mysten/sui/utils";
-import Loader from "@/components/ui/Loader";
 import { useGetAllVoters } from "@/hooks/useGetAllVoters";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { Avatar } from "@/components/Avatar";
@@ -124,53 +123,77 @@ function AllVoter({
   const voters = list?.pages.flatMap((page) => page.data);
 
   return (
-    <div className="flex flex-col gap-2024_XL">
-      <Heading variant="H6/super" className="font-[750]">
-        All Voters ({resp?.fields.voters.fields.size})
-      </Heading>
-      {voters?.map((voter, index) => (
-        <VoterDetail
-          key={voter.name.value}
-          objID={voter.objectId}
-          voterAddress={voter.name.value}
-          position={index + 1}
-        />
-      ))}
-      <Divide />
-      <div className="flex flex-col-reverse items-center justify-between gap-2024_L md:flex-row">
-        <button
-          className="w-full rounded-2024_S bg-transparent md:w-fit"
-          onClick={topVotersSwitch}
-        >
-          <GradientBorder
-            variant="green_pink_blue"
-            animateOnHover
-            className="flex w-full items-center justify-center rounded-2024_S border-2 bg-[#62519c66] px-2024_L py-2024_R"
+    <AnimatePresence>
+      <motion.div
+        initial="hidden"
+        variants={container}
+        transition={{ ease: [0.17, 0.67, 0.83, 0.67] }}
+        animate="show"
+        className="flex flex-col gap-2024_XL"
+      >
+        <Heading variant="H6/super" className="font-[750]">
+          All Voters ({resp?.fields.voters.fields.size})
+        </Heading>
+        {voters?.map((voter, index) => (
+          <motion.div
+            variants={{
+              hidden: { opacity: 0 },
+              show: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.2,
+                },
+              },
+            }}
+            key={voter.name.value}
           >
-            <Text
-              variant="B4/bold"
-              color="fillContent-primary"
-              className="leading-none"
-            >
-              View Top Voters
-            </Text>
-          </GradientBorder>
-        </button>
-        <div className="flex gap-2024_S">
+            <VoterDetail
+              key={voter.name.value}
+              objID={voter.objectId}
+              voterAddress={voter.name.value}
+              position={index + 1}
+            />
+          </motion.div>
+        ))}
+        <Divide />
+        <div className="flex flex-col-reverse items-center justify-between gap-2024_L md:flex-row">
           <button
-            className="flex min-h-[30px] min-w-[50px] items-center justify-center rounded-2024_3XS border border-2024_fillContent-tertiary bg-transparent px-2"
-            disabled={!hasPreviousPage}
-            onClick={() => fetchPreviousPage}
+            className="w-full rounded-2024_S bg-transparent md:w-fit"
+            onClick={topVotersSwitch}
           >
-            <Text
-              variant="B7/semibold"
-              color="fillContent-secondary"
-              className="leading-none"
+            <GradientBorder
+              variant="green_pink_blue"
+              animateOnHover
+              className="flex w-full items-center justify-center rounded-2024_S border-2 bg-[#62519c66] px-2024_L py-2024_R"
             >
-              PREV
-            </Text>
+              <Text
+                variant="B4/bold"
+                color="fillContent-primary"
+                className="leading-none"
+              >
+                View Top Voters
+              </Text>
+            </GradientBorder>
           </button>
-          {/* <button className="bg-transparent rounded-2024_3XS border w-[30px] h-[30px] flex items-center justify-center border-2024_fillContent-tertiary">
+          <div className="flex gap-2024_S">
+            <button
+              className="flex min-h-[30px] min-w-[50px] items-center justify-center rounded-2024_3XS border border-2024_fillContent-tertiary bg-transparent px-2"
+              disabled={!hasPreviousPage}
+              onClick={() => fetchPreviousPage}
+            >
+              <Text
+                variant="B7/semibold"
+                color={
+                  hasPreviousPage
+                    ? "fillContent-secondary"
+                    : "fillContent-tertiary"
+                }
+                className="leading-none"
+              >
+                PREV
+              </Text>
+            </button>
+            {/* <button className="bg-transparent rounded-2024_3XS border w-[30px] h-[30px] flex items-center justify-center border-2024_fillContent-tertiary">
             <Text
                   variant="B7/semibold"
                   color="fillContent-secondary"
@@ -206,24 +229,38 @@ function AllVoter({
             </Text>
             
             </button> */}
-          <button
-            className="flex min-h-[30px] min-w-[50px] items-center justify-center rounded-2024_3XS border border-2024_fillContent-tertiary bg-transparent px-2"
-            disabled={!hasNextPage}
-            onClick={() => fetchNextPage}
-          >
-            <Text
-              variant="B7/semibold"
-              color="fillContent-secondary"
-              className="leading-none"
+            <button
+              className="flex min-h-[30px] min-w-[50px] items-center justify-center rounded-2024_3XS border border-2024_fillContent-tertiary bg-transparent px-2"
+              disabled={!hasNextPage}
+              onClick={() => fetchNextPage}
             >
-              NEXT
-            </Text>
-          </button>
+              <Text
+                variant="B7/semibold"
+                color={
+                  hasNextPage ? "fillContent-secondary" : "fillContent-tertiary"
+                }
+                className="leading-none"
+              >
+                NEXT
+              </Text>
+            </button>
+          </div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
+
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
 
 function TopVoters({
   proposalId,
@@ -250,43 +287,65 @@ function TopVoters({
   const voters = list?.pages.flatMap((page) => page.data);
 
   return (
-    <div className="flex flex-col gap-2024_XL">
-      <Heading variant="H6/super" className="font-[750]">
-        Top Voters
-      </Heading>
-      <div className="grid grid-cols-3 gap-2024_3XL md:grid-cols-5">
-        {voters?.map((voter, index) => (
-          <VoterDetail
-            key={voter.name.value}
-            objID={voter.objectId}
-            voterAddress={voter.name.value}
-            position={index + 1}
-            isTopVoter
-          />
-        ))}
-      </div>
-      <Divide />
-      <div className="flex flex-col-reverse items-center justify-between gap-2024_L md:flex-row">
-        <button
-          className="w-full rounded-2024_S bg-transparent md:w-fit"
-          onClick={allVotersSwitch}
-        >
-          <GradientBorder
-            variant="green_pink_blue"
-            animateOnHover
-            className="flex w-full items-center justify-center rounded-2024_S border-2 bg-[#62519c66] px-2024_L py-2024_R"
-          >
-            <Text
-              variant="B4/bold"
-              color="fillContent-primary"
-              className="leading-none"
+    <AnimatePresence>
+      <motion.div
+        initial="hidden"
+        variants={container}
+        transition={{ ease: [0.17, 0.67, 0.83, 0.67] }}
+        animate="show"
+        className="flex flex-col gap-2024_XL"
+      >
+        <Heading variant="H6/super" className="font-[750]">
+          Top Voters
+        </Heading>
+
+        <div className="grid grid-cols-3 gap-2024_3XL md:grid-cols-5">
+          {voters?.map((voter, index) => (
+            <motion.div
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.2,
+                  },
+                },
+              }}
+              key={voter.name.value}
             >
-              View All Voters
-            </Text>
-          </GradientBorder>
-        </button>
-      </div>
-    </div>
+              <VoterDetail
+                key={voter.name.value}
+                objID={voter.objectId}
+                voterAddress={voter.name.value}
+                position={index + 1}
+                isTopVoter
+              />
+            </motion.div>
+          ))}
+        </div>
+        <Divide />
+        <div className="flex flex-col-reverse items-center justify-between gap-2024_L md:flex-row">
+          <button
+            className="w-full rounded-2024_S bg-transparent md:w-fit"
+            onClick={allVotersSwitch}
+          >
+            <GradientBorder
+              variant="green_pink_blue"
+              animateOnHover
+              className="flex w-full items-center justify-center rounded-2024_S border-2 bg-[#62519c66] px-2024_L py-2024_R"
+            >
+              <Text
+                variant="B4/bold"
+                color="fillContent-primary"
+                className="leading-none"
+              >
+                View All Voters
+              </Text>
+            </GradientBorder>
+          </button>
+        </div>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
