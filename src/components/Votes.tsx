@@ -10,6 +10,7 @@ import { Avatar } from "@/components/Avatar";
 import { useGetAccountInfo } from "@/hooks/useGetAccountInfo";
 import { useExplorerLink } from "@/hooks/useExplorerLink";
 import { formatName } from "@/utils/common";
+import Loader from "./ui/Loader";
 import {
   useGetVoteCastedById,
   getVoteTypeWithMostVotes,
@@ -21,6 +22,7 @@ import { Divide } from "@/components/ui/Divide";
 import { useState } from "react";
 import { truncatedText } from "@/utils/truncatedText";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
+import { useCursorPagination } from "@/hooks/useCursorPagination";
 
 type VoteType = "Yes" | "No" | "Abstain";
 function VoterDetail({
@@ -125,21 +127,21 @@ function AllVoter({
   topVotersSwitch: () => void;
 }) {
   const { data: resp } = useGetProposalDetail({ proposalId });
-  const {
-    data: list,
-    hasNextPage,
-    hasPreviousPage,
-
-    fetchNextPage,
-    fetchPreviousPage,
-    isFetching,
-    isPending: isPendingOwnedObjects,
-  } = useGetAllVoters({
+  const allVotersQuery = useGetAllVoters({
     parentId: resp?.fields.voters.fields.id.id,
   });
 
-  if (!list) return null;
-  const voters = list?.pages.flatMap((page) => page.data);
+  const {
+    data: lists,
+    isFetching,
+    pagination,
+    isLoading,
+    isError,
+  } = useCursorPagination(allVotersQuery);
+
+  if (!lists?.data) return null;
+
+  // const voters = list?.pages.flatMap((page) => page.data);
 
   return (
     <AnimatePresence>
@@ -153,7 +155,8 @@ function AllVoter({
         <Heading variant="H6/super" className="font-[750]">
           All Voters ({resp?.fields.voters.fields.size})
         </Heading>
-        {voters?.map((voter, index) => (
+        {isFetching && <Loader />}
+        {lists?.data?.map((voter, index) => (
           <motion.div
             variants={{
               hidden: { opacity: 0 },
@@ -197,13 +200,13 @@ function AllVoter({
           <div className="flex gap-2024_S">
             <button
               className="flex min-h-[30px] min-w-[50px] items-center justify-center rounded-2024_3XS border border-2024_fillContent-tertiary bg-transparent px-2"
-              disabled={!hasPreviousPage}
-              onClick={() => fetchPreviousPage}
+              disabled={!pagination.hasPrev}
+              onClick={() => pagination.onPrev()}
             >
               <Text
                 variant="B7/semibold"
                 color={
-                  hasPreviousPage
+                  pagination.hasPrev
                     ? "fillContent-secondary"
                     : "fillContent-tertiary"
                 }
@@ -212,51 +215,18 @@ function AllVoter({
                 PREV
               </Text>
             </button>
-            {/* <button className="bg-transparent rounded-2024_3XS border w-[30px] h-[30px] flex items-center justify-center border-2024_fillContent-tertiary">
-            <Text
-                  variant="B7/semibold"
-                  color="fillContent-secondary"
-                  className="leading-none">
-                    1
-            </Text>
-            
-            </button>
-            <button className="bg-transparent rounded-2024_3XS border w-[30px] h-[30px] flex items-center justify-center border-2024_fillContent-tertiary">
-            <Text
-                  variant="B7/semibold"
-                  color="fillContent-secondary"
-                  className="leading-none">
-                   2
-            </Text>
-            
-            </button>
-            <button className="bg-transparent rounded-2024_3XS border w-[30px] h-[30px] flex items-center justify-center border-2024_fillContent-tertiary">
-            <Text
-                  variant="B7/semibold"
-                  color="fillContent-secondary"
-                  className="leading-none">
-                   ...
-            </Text>
-            
-            </button>
-            <button className="bg-transparent rounded-2024_3XS border w-[30px] h-[30px] flex items-center justify-center border-2024_fillContent-tertiary" >
-            <Text
-                  variant="B7/semibold"
-                  color="fillContent-secondary"
-                  className="leading-none">
-                   200
-            </Text>
-            
-            </button> */}
+
             <button
               className="flex min-h-[30px] min-w-[50px] items-center justify-center rounded-2024_3XS border border-2024_fillContent-tertiary bg-transparent px-2"
-              disabled={!hasNextPage}
-              onClick={() => fetchNextPage}
+              disabled={!pagination.hasNext}
+              onClick={() => pagination.onNext()}
             >
               <Text
                 variant="B7/semibold"
                 color={
-                  hasNextPage ? "fillContent-secondary" : "fillContent-tertiary"
+                  pagination.hasNext
+                    ? "fillContent-secondary"
+                    : "fillContent-tertiary"
                 }
                 className="leading-none"
               >
@@ -289,16 +259,7 @@ function TopVoters({
   allVotersSwitch: () => void;
 }) {
   const { data: resp } = useGetProposalDetail({ proposalId });
-  const {
-    data: list,
-    hasNextPage,
-    hasPreviousPage,
-
-    fetchNextPage,
-    fetchPreviousPage,
-    isFetching,
-    isPending: isPendingOwnedObjects,
-  } = useGetAllVoters({
+  const { data: list, isFetching } = useGetAllVoters({
     parentId: resp?.fields.voters.fields.id.id,
   });
 

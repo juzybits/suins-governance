@@ -26,7 +26,7 @@ type ParsedVoter = z.infer<typeof votesCastedSchema>;
 
 export function useGetAllVoters({
   parentId,
-  size = 20,
+  size = 10,
 }: {
   size?: number;
   parentId?: string;
@@ -53,6 +53,7 @@ export function useGetAllVoters({
     enabled: !!parentId,
     getNextPageParam: ({ nextCursor, hasNextPage }) =>
       hasNextPage ? nextCursor : null,
+
     retry: false,
   });
 }
