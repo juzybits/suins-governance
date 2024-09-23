@@ -115,10 +115,7 @@ export function VotingState({
 
 export function VotingStatus({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
-  console.log(data);
-
   const resp = data ? parseProposalVotes(data) : null;
-  console.log(resp);
 
   const totalVotes =
     (resp?.yesVote ?? 0) + (resp?.noVote ?? 0) + (resp?.abstainVote ?? 0);
