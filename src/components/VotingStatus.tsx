@@ -15,7 +15,6 @@ import {
 import { roundFloat } from "@/utils/roundFloat";
 import NSToken from "@/icons/NSToken";
 import { formatAmountParts } from "@/utils/coins";
-import { useMemo } from "react";
 import { THREAD_HOLD } from "@/constants/common";
 
 function MinimumThreshHold({
@@ -116,8 +115,10 @@ export function VotingState({
 
 export function VotingStatus({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
+  console.log(data);
 
-  const resp = useMemo(() => (data ? parseProposalVotes(data) : null), [data]);
+  const resp = data? parseProposalVotes(data) : null;
+  console.log(resp)
 
   const totalVotes =
     (resp?.yesVote ?? 0) + (resp?.noVote ?? 0) + (resp?.abstainVote ?? 0);
