@@ -160,7 +160,7 @@ function AllVoter({
         <Heading variant="H6/super" className="font-[750]">
           All Voters ({resp?.fields.voters.fields.size})
         </Heading>
-        {isFetching && <Loader />}
+        {isFetching && <Loader className="w-3 h-3" />}
         {lists?.data?.map((voter, index) => (
           <motion.div
             variants={{
