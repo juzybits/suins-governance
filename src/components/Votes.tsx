@@ -25,8 +25,7 @@ import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { useCursorPagination } from "@/hooks/useCursorPagination";
 
 type VoteType = "Yes" | "No" | "Abstain";
-const PAGE_SIZE = 10; 
-
+const PAGE_SIZE = 10;
 
 function VoterDetail({
   voterAddress,
@@ -122,7 +121,6 @@ function VoterDetail({
   );
 }
 
-
 function AllVoter({
   proposalId,
   topVotersSwitch,
@@ -160,7 +158,7 @@ function AllVoter({
         <Heading variant="H6/super" className="font-[750]">
           All Voters ({resp?.fields.voters.fields.size})
         </Heading>
-        {isFetching && <Loader className="w-3 h-3" />}
+        {isFetching && <Loader className="h-3 w-3" />}
         {lists?.data?.map((voter, index) => (
           <motion.div
             variants={{
@@ -178,7 +176,7 @@ function AllVoter({
               key={voter.name.value}
               objID={voter.objectId}
               voterAddress={voter.name.value}
-              position={index + 1 + (pagination.currentPage * PAGE_SIZE)}
+              position={index + 1 + pagination.currentPage * PAGE_SIZE}
             />
           </motion.div>
         ))}
