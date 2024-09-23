@@ -25,6 +25,9 @@ import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { useCursorPagination } from "@/hooks/useCursorPagination";
 
 type VoteType = "Yes" | "No" | "Abstain";
+const PAGE_SIZE = 10; 
+
+
 function VoterDetail({
   voterAddress,
   position: position,
@@ -119,6 +122,7 @@ function VoterDetail({
   );
 }
 
+
 function AllVoter({
   proposalId,
   topVotersSwitch,
@@ -129,6 +133,7 @@ function AllVoter({
   const { data: resp } = useGetProposalDetail({ proposalId });
   const allVotersQuery = useGetAllVoters({
     parentId: resp?.fields.voters.fields.id.id,
+    size: PAGE_SIZE,
   });
 
   const {
@@ -173,7 +178,7 @@ function AllVoter({
               key={voter.name.value}
               objID={voter.objectId}
               voterAddress={voter.name.value}
-              position={index + 1}
+              position={index + 1 + (pagination.currentPage * PAGE_SIZE)}
             />
           </motion.div>
         ))}
