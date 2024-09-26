@@ -1,4 +1,7 @@
-import { InfiniteData, UseInfiniteQueryResult } from "@tanstack/react-query";
+import {
+  type InfiniteData,
+  type UseInfiniteQueryResult,
+} from "@tanstack/react-query";
 import { useState } from "react";
 interface PaginationProps {
   hasPrev: boolean;

@@ -120,17 +120,19 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
   const totalVotes =
     (resp?.yesVote ?? 0) + (resp?.noVote ?? 0) + (resp?.abstainVote ?? 0);
 
-  const yesVotesPecentage = roundFloat(
+  const yesVotesPercentage = roundFloat(
     ((resp?.yesVote ?? 0) / totalVotes) * 100,
   );
-  const totalVotesFormatted = formatAmountParts(totalVotes);
 
   const noVotesPecentage = roundFloat(((resp?.noVote ?? 0) / totalVotes) * 100);
   const abstainVotesPecentage = roundFloat(
     ((resp?.abstainVote ?? 0) / totalVotes) * 100,
   );
 
-  const ThresholdPercentage = roundFloat((totalVotes / THREAD_HOLD) * 100);
+  const ThresholdPercentage = Math.min(
+    roundFloat((totalVotes / THREAD_HOLD) * 100),
+    100,
+  );
 
   if (isLoading) return null;
   return (
@@ -143,7 +145,7 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
       <div className="flex flex-col justify-between gap-2">
         <VotingState
           votedState="Yes"
-          percentage={yesVotesPecentage}
+          percentage={yesVotesPercentage}
           votes={resp?.yesVote ?? 0}
           onlyStatus
           noFormat
