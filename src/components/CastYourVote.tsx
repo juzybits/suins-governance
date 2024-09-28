@@ -90,7 +90,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
             className="flex w-full flex-col items-center justify-start gap-2024_R"
             options={VOTE_OPTIONS.map((value) => ({
               value,
-              disabled: value === "Abstain" || isInactiveProposal,
+              disabled: isInactiveProposal,
             }))}
             disabled={isLoggedOut}
             renderOption={(option, selected) =>
@@ -213,14 +213,14 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                   </div>
                 ) : null}
                 <Text
-                  variant="B7/medium"
+                  variant="B5/medium"
                   color="fillContent-secondary"
                   className="w-full text-start"
                 >
                   You have <b>{balance?.formatted}NS</b> tokens.
                 </Text>
                 <Text
-                  variant="B7/medium"
+                  variant="B5/medium"
                   color="fillContent-secondary"
                   className="w-full text-start"
                 >

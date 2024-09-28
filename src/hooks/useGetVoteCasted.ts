@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
+
 import { type z } from "zod";
 import { client } from "@/app/SuinsClient";
 import { votesCastedSchema } from "@/schemas/votesCastedSchema";
-import { proposalDetailSchema } from "@/hooks/useGetProposalDetail";
+import { proposalDetailSchema } from "@/schemas/proposalResponseSchema";
 
 type ParsedVotes = z.infer<typeof votesCastedSchema>;
 
@@ -60,7 +60,7 @@ export function parseVotesData(data: ParsedVotes) {
       continue;
     }
 
-    const valueStr = entry.fields.value.fields.balance;
+    const valueStr = entry.fields.value;
     const value = parseInt(valueStr, 10);
     if (isNaN(value)) {
       continue;
@@ -112,6 +112,7 @@ export function useGetVoteCasted({
           showType: true,
         },
       });
+
       const data = proposalDetailSchema.safeParse(response?.data?.content);
       if (data.error) {
         throw new Error("Invalid proposal detail");
@@ -127,8 +128,10 @@ export function useGetVoteCasted({
       if (dynamicFields.error) {
         return null;
       }
+
       const resp = votesCastedSchema.safeParse(dynamicFields.data);
       if (resp.error) {
+        console.log("Failed to fetch votes casted", resp.error);
         return null;
       }
       return resp.data;

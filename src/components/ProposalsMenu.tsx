@@ -37,9 +37,7 @@ function ProposalPreview({
 
   if (!data || isLoading) return null;
 
-  const isClosed = isPast(
-    new Date(Number(data.fields.valid_until_timestamp_ms ?? 0)),
-  );
+  const isClosed = isPast(new Date(Number(data.fields.end_time_ms ?? 0)));
   const fields = data.fields;
   const truncatedDescription = truncatedText({
     text: fields.description,
@@ -90,8 +88,9 @@ function ProposalPreview({
 
 export function ProposalsMenu() {
   const isSmallOrAbove = useBreakpoint("sm");
-  const { data } = useGetProposalsIds();
-  const { data: activeProposal } = api.post.getIsProposalActive.useQuery();
+  const { data, isLoading: isLoadingIds } = useGetProposalsIds();
+  const { data: activeProposal, isLoading } =
+    api.post.getIsProposalActive.useQuery();
   // TODO: sort proposals by most recent
   const proposals = useMemo(() => {
     return data
@@ -102,7 +101,7 @@ export function ProposalsMenu() {
   }, [data, activeProposal?.isProposalActive]);
   const router = useRouter();
 
-  if (proposals?.length + 1 < 1) return null;
+  if (proposals?.length < 1 || isLoadingIds || isLoading) return null;
 
   return (
     <Root>
@@ -115,7 +114,7 @@ export function ProposalsMenu() {
               color="fillContent-primary"
               className="relative leading-none"
             >
-              View All
+              View all proposals
             </Text>
           )}
 

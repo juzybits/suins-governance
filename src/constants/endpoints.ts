@@ -5,19 +5,19 @@ export const SUINS_PACKAGES = {
       "0xe3c2291f345d6dd96855e0f9415e58fd981cf95fd18331f0fb899d91a8969293::ns::NS",
     /// Package ID for voting
     governancePackageId:
-      "0x70dc0c1b62885a97ac80012194b243d0d6c1b87d17dafb624f12817ab4bdcdee::proposal::vote",
-    governanceObjectID:
-      "0x3edce8e45ad0e6b1b73bb1b7e8886014e3136269f2c6acac84a05871158b403f",
+      "0xbf38d3107fbf24f2be4b6ac3e01613cc541fa92d34ecb37f346fd951d636b2c8::proposal::vote",
+    governanceCap:
+      "0x2bfd51ac74ad5c7a9ff2faba3c91666f0c81c4b45fa0a441383913c44d4d298a",
     // todo: update token object id
     votingTokenType:
-      "0x70dc0c1b62885a97ac80012194b243d0d6c1b87d17dafb624f12817ab4bdcdee::token::TOKEN",
+      "0xbf38d3107fbf24f2be4b6ac3e01613cc541fa92d34ecb37f346fd951d636b2c8::token::TOKEN",
   },
   //TODO: update mainnet packageId
   mainnet: {
     coinType: "",
     /// Package ID for voting
     governancePackageId: "",
-    governanceObjectID: "",
+    governanceCap: "",
     votingTokenType: "",
   },
 };

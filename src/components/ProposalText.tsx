@@ -29,9 +29,7 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
     }
   }, [isLoading]);
 
-  const isClosed = isPast(
-    new Date(Number(data?.fields.valid_until_timestamp_ms ?? 0)),
-  );
+  const isClosed = isPast(new Date(Number(data?.fields.end_time_ms ?? 0)));
   if (!description || isLoading) return null;
   return (
     <section className="relative flex w-full flex-col gap-2024_4XL sm:gap-2024_5XL">

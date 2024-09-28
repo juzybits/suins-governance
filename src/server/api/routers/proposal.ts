@@ -13,7 +13,7 @@ import {
 async function getProposalsIds() {
   const network = NETWORK === "mainnet" ? "mainnet" : "testnet";
   const getProposalsContent = await clients[NETWORK].getDynamicFields({
-    parentId: SUINS_PACKAGES[network].governanceObjectID,
+    parentId: SUINS_PACKAGES[network].governanceCap,
     limit: 20,
   });
 
@@ -56,7 +56,7 @@ async function getProposalDetail({ proposalId }: { proposalId: string }) {
       },
     });
     const objDetail = proposalDetailSchema.safeParse(resp?.data?.content);
-
+    console.log(JSON.stringify(objDetail.error), "objDetail");
     if (objDetail.error) {
       return new TRPCError({
         code: "BAD_REQUEST",
@@ -101,7 +101,7 @@ export const proposalRouter = createTRPCRouter({
       (item) =>
         item &&
         "fields" in item &&
-        isFuture(new Date(Number(item.fields.valid_until_timestamp_ms ?? 0))),
+        isFuture(new Date(Number(item.fields.end_time_ms ?? 0))),
     );
 
     return {

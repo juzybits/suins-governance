@@ -19,6 +19,7 @@ export function YourVote({ proposalId }: { proposalId: string }) {
     proposalId: proposalId,
     address: address ?? "",
   });
+
   const { data } = useGetAccountInfo({ address });
 
   if (!address || !voteCasted) {
@@ -69,7 +70,7 @@ export function YourVote({ proposalId }: { proposalId: string }) {
         <div className="flex w-full items-center justify-start gap-2024_R rounded-12 bg-2024_fillBackground-secondary-Highlight/40 p-2024_R">
           <Avatar address={address} className="h-[36px] w-[36px]" />
           <div className="flex w-full items-center justify-between gap-2024_M">
-            <div className="flex basis-3/4 flex-col items-start justify-center gap-2024_S">
+            <div className="flex basis-3/4 flex-col items-start justify-start gap-1">
               <Text
                 variant="B6/bold"
                 color="fillContent-primary"
@@ -77,8 +78,16 @@ export function YourVote({ proposalId }: { proposalId: string }) {
               >
                 {formattedName ?? formattedAddress}
               </Text>
-
-              <NSAmount amount={voteCasted.yesVote} />
+              {/* Only a single vote will be displayed here  */}
+              <div className="flex items-start">
+                <NSAmount
+                  amount={
+                    voteCasted.yesVote ||
+                    voteCasted.noVote ||
+                    voteCasted.abstainVote
+                  }
+                />
+              </div>
             </div>
             {voteCasted.yesVote ? (
               <VoteIndicator votedStatus="Yes" size="small" />

@@ -17,6 +17,8 @@ import NSToken from "@/icons/NSToken";
 import { formatAmountParts } from "@/utils/coins";
 import { THREAD_HOLD } from "@/constants/common";
 
+const TOTAL_NS = 5_000_000_000_000;
+
 function MinimumThreshHold({
   thresholdPercentage,
   isReached,
@@ -26,6 +28,10 @@ function MinimumThreshHold({
   totalVotes: number;
   isReached: boolean;
 }) {
+  const percentage = Math.min(
+    roundFloat((totalVotes / TOTAL_NS) * 100, 3),
+    100,
+  );
   return (
     <div className="flex w-full flex-col items-center justify-between gap-2024_R rounded-12 bg-2024_fillBackground-secondary-Highlight/40 px-2024_R py-2024_R">
       <div className="flex w-full items-center justify-between gap-2024_R">
@@ -53,10 +59,10 @@ function MinimumThreshHold({
           color="fillContent-secondary"
           className="flex max-w-[43px] basis-1/5 justify-end"
         >
-          {thresholdPercentage}%
+          {percentage}%
         </Text>
       </div>
-      <GradientProgressBar percentage={thresholdPercentage} />
+      <GradientProgressBar percentage={percentage} />
       <div className="flex w-full items-center justify-between gap-1">
         <Text
           variant="B7/regular"
@@ -116,6 +122,9 @@ export function VotingState({
 export function VotingStatus({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
   const resp = data ? parseProposalVotes(data) : null;
+  if (isLoading || !resp) return null;
+
+  const threshold = THREAD_HOLD; //TODO: update once contract has the right number  Number(data?.fields.threshold ?? 0);
 
   const totalVotes =
     (resp?.yesVote ?? 0) + (resp?.noVote ?? 0) + (resp?.abstainVote ?? 0);
@@ -130,11 +139,10 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
   );
 
   const ThresholdPercentage = Math.min(
-    roundFloat((totalVotes / THREAD_HOLD) * 100),
+    roundFloat((totalVotes / threshold) * 100),
     100,
   );
 
-  if (isLoading) return null;
   return (
     <SectionLayout title="Voting Status">
       <VoteProgressBar
@@ -167,7 +175,7 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
       </div>
       <MinimumThreshHold
         thresholdPercentage={ThresholdPercentage}
-        isReached={totalVotes >= THREAD_HOLD}
+        isReached={totalVotes >= threshold}
         totalVotes={totalVotes}
       />
 

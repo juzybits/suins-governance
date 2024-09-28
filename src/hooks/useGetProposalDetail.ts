@@ -1,53 +1,49 @@
-import { z } from "zod";
+import { type z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@/app/SuinsClient";
 import { CoinFormat, formatBalance } from "@/utils/coins";
 import { NS_COINTYPE_DECIMAL_PLACES } from "@/constants/common";
-
-export const proposalDetailSchema = z.object({
-  dataType: z.literal("moveObject"),
-  type: z.string(),
-  hasPublicTransfer: z.boolean(),
-  fields: z.object({
-    description: z.string(),
-    id: z.object({
-      id: z.string(),
-    }),
-    title: z.string(),
-    valid_until_timestamp_ms: z.string(),
-    voters: z.object({
-      type: z.string(),
-      fields: z.object({
-        head: z.string().nullable(),
-        id: z.object({
-          id: z.string(),
-        }),
-        size: z.string(),
-        tail: z.string().nullable(),
-      }),
-    }),
-    votes: z.object({
-      type: z.string(),
-      fields: z.object({
-        contents: z.array(
-          z.object({
-            type: z.string(),
-            fields: z.object({
-              key: z.object({
-                type: z.string(),
-                fields: z.record(z.string()),
-              }),
-              value: z.string(),
-            }),
-          }),
-        ),
-      }),
-    }),
-    winning_option: z.null(),
-  }),
-});
+import { proposalDetailSchema } from "@/schemas/proposalResponseSchema";
 
 type ProposalDataType = z.infer<typeof proposalDetailSchema>;
+
+type TopVotes =
+  ProposalDataType["fields"]["vote_leaderboards"]["fields"]["contents"];
+export function getTopVoters(
+  data: TopVotes,
+  topN: number,
+): { address: string; votes: number }[] {
+  // voteType:  "Yes" | "No" | "Abstain"
+  // Map to keep track of each address's highest vote and corresponding vote type
+  const voteCounts = new Map<string, number>();
+
+  data.forEach((entry) => {
+    // const votingOption = entry.fields.key.fields.pos0;
+    const leaderboardEntries = entry.fields.value.fields.entries;
+
+    leaderboardEntries.forEach((leaderboardEntry) => {
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      const address = leaderboardEntry.fields.pos0 || "";
+      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+      const votes = parseInt(leaderboardEntry.fields.pos1 || "0", 10);
+
+      // Accumulate votes per address
+      if (voteCounts.has(address)) {
+        voteCounts.set(address, voteCounts.get(address)! + votes);
+      } else {
+        voteCounts.set(address, votes);
+      }
+    });
+  });
+
+  // Convert the Map to an array and sort by votes in descending order
+  const sortedVoters = Array.from(voteCounts.entries())
+    .map(([address, votes]) => ({ address, votes }))
+    .sort((a, b) => b.votes - a.votes);
+
+  // Return the top N voters
+  return sortedVoters.slice(0, topN);
+}
 
 export function parseProposalVotes(data: ProposalDataType) {
   // Initialize the proposal field name
@@ -142,6 +138,7 @@ export function useGetProposalDetail({ proposalId }: { proposalId: string }) {
           showType: true,
         },
       });
+
       const objDetail = proposalDetailSchema.safeParse(resp?.data?.content);
 
       if (objDetail.error) {

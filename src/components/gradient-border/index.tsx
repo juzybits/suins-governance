@@ -11,6 +11,7 @@ import moduleStyles from "./index.module.css";
 const colorsMap = {
   green_pink_blue: ["#4BFFA6", "#D34BFF", "#4CA2FF", "#4BFFA6"],
   green_blue_pink: ["#4bffa6", "#4ca2ff", "#d34bff", "#4bffa6"],
+  orange_pink_blue: ["#FF794B", "#D962FF", "#4CA2FF", "#D962FF"].reverse(),
 };
 
 type BaseGradientBorderProps = HTMLAttributes<HTMLDivElement> & {

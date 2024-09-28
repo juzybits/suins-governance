@@ -5,7 +5,10 @@ import { Heading } from "@/components/ui/Heading";
 import { Text } from "@/components/ui/Text";
 import { formatAddress } from "@mysten/sui/utils";
 import { useGetAllVoters } from "@/hooks/useGetAllVoters";
-import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
+import {
+  useGetProposalDetail,
+  getTopVoters,
+} from "@/hooks/useGetProposalDetail";
 import { Avatar } from "@/components/Avatar";
 import { useGetAccountInfo } from "@/hooks/useGetAccountInfo";
 import { useExplorerLink } from "@/hooks/useExplorerLink";
@@ -23,6 +26,8 @@ import { useState } from "react";
 import { truncatedText } from "@/utils/truncatedText";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { useCursorPagination } from "@/hooks/useCursorPagination";
+import SvgPaginationNext24 from "@/icons/PaginationNext24";
+import SvgPaginationPrev24 from "@/icons/PaginationPrev24";
 
 type VoteType = "Yes" | "No" | "Abstain";
 const PAGE_SIZE = 10;
@@ -31,12 +36,10 @@ function VoterDetail({
   voterAddress,
   position: position,
   objID,
-  isTopVoter,
 }: {
   voterAddress: string;
   objID: string;
   position: number;
-  isTopVoter?: boolean;
 }) {
   const { data: accountInfo } = useGetAccountInfo({ address: voterAddress });
   const { data: voter } = useGetVoteCastedById(objID);
@@ -44,47 +47,21 @@ function VoterDetail({
     text: formatAddress(voterAddress),
     maxLength: 6,
   });
+  const isSmallOrAbove = useBreakpoint("sm");
   const formattedName =
     accountInfo?.name &&
-    truncatedText({ text: formatName(accountInfo?.name), maxLength: 12 });
+    truncatedText({
+      text: formatName(accountInfo?.name, {
+        noTruncate: isSmallOrAbove,
+      }),
+      maxLength: isSmallOrAbove ? 24 : 12,
+    });
   const votes = voter ? getVoteTypeWithMostVotes(voter)?.[0] : null;
-  const isSmallOrAbove = useBreakpoint("sm");
+
   const explorerLink = useExplorerLink({
     id: voterAddress || "",
     type: "address",
   });
-
-  if (isTopVoter) {
-    if (!votes) return null;
-    return (
-      <div className="relative flex max-w-[118px] flex-col items-start gap-2024_R">
-        <div className="absolute left-0 top-[-1px] mx-auto flex h-5 w-5 items-center justify-center rounded-16 bg-2024_fillBackground-secondary-Highlight">
-          <Text variant="B7/semibold" color="fillContent-primary">
-            {position}
-          </Text>
-        </div>
-        <div className="flex max-w-[118px] flex-col items-center justify-center gap-2024_R">
-          <Avatar address={voterAddress} className="h-[44px] w-[44px]" />
-          <NSAmount
-            amount={votes.votes}
-            isMedium
-            roundedCoinFormat
-            centerAlign
-          />
-          <VoteIndicator votedStatus={votes.key as VoteType} onlyStatus />
-          <Link href={explorerLink} target="_blank">
-            <Text
-              variant="B6/bold"
-              color="fillContent-primary"
-              className="w-full text-center"
-            >
-              {formattedName ?? formattedAddress}
-            </Text>
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex items-center justify-between gap-2.5">
@@ -187,9 +164,9 @@ function AllVoter({
             onClick={topVotersSwitch}
           >
             <GradientBorder
-              variant="green_pink_blue"
+              variant="orange_pink_blue"
               animateOnHover
-              className="flex w-full items-center justify-center rounded-2024_S border-2 bg-[#62519c66] px-2024_L py-2024_R"
+              className="flex w-full items-center justify-center rounded-2024_S border-2 bg-[#62519c66] px-2024_L py-2.5"
             >
               <Text
                 variant="B4/bold"
@@ -202,7 +179,7 @@ function AllVoter({
           </button>
           <div className="flex gap-2024_S">
             <button
-              className="flex min-h-[30px] min-w-[50px] items-center justify-center rounded-2024_3XS border border-2024_fillContent-tertiary bg-transparent px-2"
+              className="flex min-h-2024_3XL min-w-2024_3XL items-center justify-center rounded-[16px] border-2 border-2024_fillContent-tertiary bg-transparent px-2"
               disabled={!pagination.hasPrev}
               onClick={() => pagination.onPrev()}
             >
@@ -215,14 +192,15 @@ function AllVoter({
                 }
                 className="leading-none"
               >
-                PREV
+                <SvgPaginationPrev24 />
               </Text>
             </button>
 
             <button
-              className="flex min-h-[30px] min-w-[50px] items-center justify-center rounded-2024_3XS border border-2024_fillContent-tertiary bg-transparent px-2"
+              className="flex min-h-2024_3XL min-w-2024_3XL items-center justify-center rounded-[16px] border-2 border-2024_fillContent-tertiary bg-transparent px-2"
               disabled={!pagination.hasNext}
               onClick={() => pagination.onNext()}
+              color="fillContent-secondary"
             >
               <Text
                 variant="B7/semibold"
@@ -233,7 +211,13 @@ function AllVoter({
                 }
                 className="leading-none"
               >
-                NEXT
+                <SvgPaginationNext24
+                  fill={
+                    pagination.hasNext
+                      ? "fillContent-secondary"
+                      : "fillContent-tertiary"
+                  }
+                />
               </Text>
             </button>
           </div>
@@ -254,6 +238,59 @@ const container = {
   },
 };
 
+function TopVoter({
+  position,
+  address,
+  votes,
+  voteType,
+}: {
+  position: number;
+  address: string;
+  votes: number;
+  voteType?: VoteType;
+}) {
+  const { data: accountInfo } = useGetAccountInfo({ address });
+
+  const formattedAddress = truncatedText({
+    text: formatAddress(address),
+    maxLength: 6,
+  });
+  const formattedName =
+    accountInfo?.name &&
+    truncatedText({ text: formatName(accountInfo?.name), maxLength: 12 });
+
+  const explorerLink = useExplorerLink({
+    id: address,
+    type: "address",
+  });
+  return (
+    <div className="flex max-w-[118px] flex-col items-center gap-2024_R">
+      <div className="flex max-w-[118px] flex-col items-center justify-center gap-2024_R">
+        <div className="relative h-[44px] w-[44px]">
+          <Avatar address={address} className="h-[44px] w-[44px]" />
+          <div className="absolute -left-[10px] -top-[1px] mx-auto flex h-5 w-5 items-center justify-center rounded-16 bg-2024_fillBackground-secondary-Highlight">
+            <Text variant="B7/semibold" color="fillContent-primary">
+              {position}
+            </Text>
+          </div>
+        </div>
+        <NSAmount amount={votes} isMedium roundedCoinFormat centerAlign />
+        {voteType && <VoteIndicator votedStatus={voteType} onlyStatus />}
+
+        <Link href={explorerLink} target="_blank">
+          <Text
+            variant="B6/bold"
+            color="fillContent-primary"
+            className="w-full text-center"
+          >
+            {formattedName ?? formattedAddress}
+          </Text>
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 function TopVoters({
   proposalId,
   allVotersSwitch,
@@ -262,12 +299,16 @@ function TopVoters({
   allVotersSwitch: () => void;
 }) {
   const { data: resp } = useGetProposalDetail({ proposalId });
-  const { data: list, isFetching } = useGetAllVoters({
-    parentId: resp?.fields.voters.fields.id.id,
-  });
 
-  if (!list) return null;
-  const voters = list?.pages.flatMap((page) => page.data);
+  if (!resp?.fields.vote_leaderboards.fields.contents) {
+    return null;
+  }
+  const topVoters = getTopVoters(
+    resp.fields.vote_leaderboards.fields.contents,
+    10,
+  );
+
+  if (!topVoters) return null;
 
   return (
     <AnimatePresence>
@@ -282,8 +323,8 @@ function TopVoters({
           Top Voters
         </Heading>
 
-        <div className="grid grid-cols-3 gap-2024_3XL md:grid-cols-5">
-          {voters?.map((voter, index) => (
+        <div className="grid grid-cols-3 gap-2024_XL md:grid-cols-5 md:gap-2024_3XL">
+          {topVoters?.map((voter, index) => (
             <motion.div
               variants={{
                 hidden: { opacity: 0 },
@@ -294,14 +335,12 @@ function TopVoters({
                   },
                 },
               }}
-              key={voter.name.value}
+              key={voter.address}
             >
-              <VoterDetail
-                key={voter.name.value}
-                objID={voter.objectId}
-                voterAddress={voter.name.value}
+              <TopVoter
+                votes={voter.votes}
+                address={voter.address}
                 position={index + 1}
-                isTopVoter
               />
             </motion.div>
           ))}
@@ -313,9 +352,9 @@ function TopVoters({
             onClick={allVotersSwitch}
           >
             <GradientBorder
-              variant="green_pink_blue"
+              variant="orange_pink_blue"
               animateOnHover
-              className="flex w-full items-center justify-center rounded-2024_S border-2 bg-[#62519c66] px-2024_L py-2024_R"
+              className="flex w-full items-center justify-center rounded-2024_S border-2 bg-[#62519c66] px-2024_L py-2.5"
             >
               <Text
                 variant="B4/bold"

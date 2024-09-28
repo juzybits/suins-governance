@@ -27,10 +27,10 @@ export function useGetTestTokenMutation(
       // txb.setSender(address);
       txb.moveCall({
         target:
-          "0x70dc0c1b62885a97ac80012194b243d0d6c1b87d17dafb624f12817ab4bdcdee::token::mint",
+          "0xbf38d3107fbf24f2be4b6ac3e01613cc541fa92d34ecb37f346fd951d636b2c8::token::mint",
         arguments: [
           txb.object(
-            "0x7ac3183f672cc6dbda24909f66dcc04a32128963f1643949a65aeca317a75f84",
+            "0x2b35f4365c63522a030d69aa3972e4759e514dcf89ea3b5a76d0be685635fc34",
           ), //
           txb.pure.u64("10000000000"),
         ],

@@ -10,7 +10,7 @@ export function useGetDiscountDynamicFieldsObjects() {
     queryKey: ["discount-dynamic-fields-objects"],
     queryFn: async () => {
       const getProposalsContent = await client.getDynamicFields({
-        parentId: SUINS_PACKAGES[network].governanceObjectID,
+        parentId: SUINS_PACKAGES[network].governanceCap,
         limit: 20,
       });
       return Promise.allSettled(
