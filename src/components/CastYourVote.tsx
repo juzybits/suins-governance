@@ -155,10 +155,11 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                       onClick={() => {
                         setValue("amount", tokenBalance);
                       }}
+                      type="button"
                     >
                       <Text
                         variant="B7/medium"
-                        color={tokenBalance <= amount ? "pink" : "darkPink"}
+                        color={tokenBalance <= amount ? "darkPink" : "pink"}
                         className="text-start"
                       >
                         MAX
