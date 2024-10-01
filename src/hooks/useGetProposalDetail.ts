@@ -1,4 +1,4 @@
-import { string, type z } from "zod";
+import { type z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@/app/SuinsClient";
 import { CoinFormat, formatBalance } from "@/utils/coins";

@@ -14,7 +14,7 @@ export function ProposalContent({ proposalId }: { proposalId: string }) {
         <CastYourVote proposalId={proposalId} />
         <Votes proposalId={proposalId} />
       </div>
-      <div className="order-first flex flex-col gap-2024_XL md:sticky md:h-[1400px] md:min-h-fit md:basis-1/3 lg:sticky lg:top-0 lg:order-last">
+      <div className="order-first flex flex-col gap-2024_XL md:sticky md:h-[987px] md:min-h-fit md:basis-1/3 md:pt-10 lg:sticky lg:top-0 lg:order-last">
         <ProposalDetail proposalId={proposalId} />
         <VotingStatus proposalId={proposalId} />
       </div>

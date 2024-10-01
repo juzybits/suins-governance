@@ -8,7 +8,7 @@ import { useGetAllVoters } from "@/hooks/useGetAllVoters";
 import {
   useGetProposalDetail,
   getTopVotersByVoteType,
-  VoteType,
+  type VoteType,
 } from "@/hooks/useGetProposalDetail";
 import { Avatar } from "@/components/Avatar";
 import { useGetAccountInfo } from "@/hooks/useGetAccountInfo";
@@ -29,6 +29,7 @@ import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { useCursorPagination } from "@/hooks/useCursorPagination";
 import SvgPaginationNext24 from "@/icons/PaginationNext24";
 import SvgPaginationPrev24 from "@/icons/PaginationPrev24";
+import clsx from "clsx";
 
 const PAGE_SIZE = 10;
 
@@ -270,9 +271,6 @@ function TopVoter({
             </Text>
           </div>
         </div>
-        <NSAmount amount={votes} isMedium roundedCoinFormat centerAlign />
-        {voteType && <VoteIndicator votedStatus={voteType} onlyStatus />}
-
         <Link href={explorerLink} target="_blank">
           <Text
             variant="B6/bold"
@@ -282,6 +280,8 @@ function TopVoter({
             {formattedName ?? formattedAddress}
           </Text>
         </Link>
+        {voteType && <VoteIndicator votedStatus={voteType} onlyStatus />}
+        <NSAmount amount={votes} isMedium roundedCoinFormat centerAlign />
       </div>
     </div>
   );
@@ -315,53 +315,6 @@ function TopVoters({
   // If no vote types have top voters, return null
   if (availableVoteTypes.length === 0) return null;
 
-  const gotoNextVoteType = () => {
-    let nextIndex = currentVoteTypeIndex + 1;
-    while (nextIndex < availableVoteTypes.length) {
-      const nextVoteType = availableVoteTypes[nextIndex]!;
-      const nextTopVoters = topVoters.get(nextVoteType);
-      if (nextTopVoters && nextTopVoters.length > 0) {
-        setCurrentVoteTypeIndex(nextIndex);
-        return;
-      }
-      nextIndex++;
-    }
-  };
-
-  const gotoPrevVoteType = () => {
-    let prevIndex = currentVoteTypeIndex - 1;
-    while (prevIndex >= 0) {
-      const prevVoteType = availableVoteTypes[prevIndex]!;
-      const prevTopVoters = topVoters.get(prevVoteType);
-      if (prevTopVoters && prevTopVoters.length > 0) {
-        setCurrentVoteTypeIndex(prevIndex);
-        return;
-      }
-      prevIndex--;
-    }
-  };
-
-  // Determine if navigation buttons should be enabled
-  const hasNextVoteType = (() => {
-    for (let i = currentVoteTypeIndex + 1; i < availableVoteTypes.length; i++) {
-      const voters = topVoters.get(availableVoteTypes[i]!);
-      if (voters && voters.length > 0) {
-        return true;
-      }
-    }
-    return false;
-  })();
-
-  const hasPrevVoteType = (() => {
-    for (let i = currentVoteTypeIndex - 1; i >= 0; i--) {
-      const voters = topVoters.get(availableVoteTypes[i]!);
-      if (voters && voters.length > 0) {
-        return true;
-      }
-    }
-    return false;
-  })();
-
   // Get the current vote type and corresponding voters
   const currentVoteType = availableVoteTypes[currentVoteTypeIndex];
   const currentTopVoters = topVoters.get(currentVoteType!);
@@ -377,9 +330,46 @@ function TopVoters({
         animate="show"
         className="flex flex-col gap-2024_XL"
       >
-        <Heading variant="H6/super" className="font-[750]">
-          Top Voters ({currentVoteType})
-        </Heading>
+        <div className="flex justify-between gap-1">
+          <Heading variant="H6/super" className="font-[750]">
+            Top Voters
+          </Heading>
+          <div className="flex gap-1">
+            {voteTypes.map((type) => {
+              const isAvailable = !!topVoters.get(type);
+              return (
+                <button
+                  className={clsx(
+                    "flex min-h-[30px] min-w-2024_3XL items-center justify-center rounded-[8px] border border-2024_fillContent-tertiary bg-transparent px-2024_R",
+                    currentVoteType === type && "!bg-2024_fillContent-tertiary",
+                    isAvailable && "hover:opacity-65",
+                  )}
+                  key={type}
+                  disabled={!isAvailable}
+                  onClick={() => {
+                    const index = availableVoteTypes.indexOf(type);
+                    if (index !== -1) {
+                      setCurrentVoteTypeIndex(index);
+                    }
+                  }}
+                  color="fillContent-secondary"
+                >
+                  <Text
+                    variant="B7/semibold"
+                    color={
+                      isAvailable
+                        ? "fillContent-secondary"
+                        : "fillContent-tertiary"
+                    }
+                    className="leading-none"
+                  >
+                    {type}
+                  </Text>
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
         <div className="grid grid-cols-3 gap-2024_XL md:grid-cols-5 md:gap-2024_3XL">
           {currentTopVoters.map((voter, index) => (
@@ -424,51 +414,6 @@ function TopVoters({
               </Text>
             </GradientBorder>
           </button>
-
-          <div className="flex gap-2024_S">
-            <button
-              className="flex min-h-2024_3XL min-w-2024_3XL items-center justify-center rounded-[16px] border-2 border-2024_fillContent-tertiary bg-transparent px-2 hover:opacity-65"
-              disabled={!hasPrevVoteType}
-              onClick={() => gotoPrevVoteType()}
-            >
-              <Text
-                variant="B7/semibold"
-                color={
-                  hasPrevVoteType
-                    ? "fillContent-secondary"
-                    : "fillContent-tertiary"
-                }
-                className="leading-none"
-              >
-                <SvgPaginationPrev24 />
-              </Text>
-            </button>
-
-            <button
-              className="flex min-h-2024_3XL min-w-2024_3XL items-center justify-center rounded-[16px] border-2 border-2024_fillContent-tertiary bg-transparent px-2 hover:opacity-65"
-              disabled={!hasNextVoteType}
-              onClick={() => gotoNextVoteType()}
-              color="fillContent-secondary"
-            >
-              <Text
-                variant="B7/semibold"
-                color={
-                  hasNextVoteType
-                    ? "fillContent-secondary"
-                    : "fillContent-tertiary"
-                }
-                className="leading-none"
-              >
-                <SvgPaginationNext24
-                  fill={
-                    hasNextVoteType
-                      ? "fillContent-secondary"
-                      : "fillContent-tertiary"
-                  }
-                />
-              </Text>
-            </button>
-          </div>
         </div>
       </motion.div>
     </AnimatePresence>

@@ -17,7 +17,7 @@ const headingStyles = cva(["font-sans"], {
       H3: "md:text-2024_h3-super-48 text-2024_h5-extrabold-32",
       H4: "text-2024_h4-super-36",
       H5: "text-2024_h5-super-32",
-      H6: "text-heading2",
+      H6: "md:text-heading2 text-heading3",
     },
     weight: {
       extraBold: "font-extrabold",

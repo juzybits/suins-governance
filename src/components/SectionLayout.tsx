@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { type ReactNode } from "react";
 import { Heading } from "@/components/ui/Heading";
 import Loader from "@/components/ui/Loader";
 

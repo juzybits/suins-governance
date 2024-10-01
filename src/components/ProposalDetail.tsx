@@ -1,15 +1,11 @@
 import { Text } from "@/components/ui/Text";
 import { CountDownTimer } from "./CountDownTimer";
 import { SectionLayout } from "./SectionLayout";
-import {
-  useGetProposalDetail,
-  parseProposalVotes,
-} from "@/hooks/useGetProposalDetail";
+import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { format, isPast } from "date-fns";
 
 export function ProposalDetail({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
-  const resp = data ? parseProposalVotes(data) : null;
   if (!data) return null;
 
   const timestampMs = parseInt(data.fields.end_time_ms, 10);

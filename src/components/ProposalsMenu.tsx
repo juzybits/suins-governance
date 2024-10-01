@@ -169,7 +169,7 @@ export function ProposalsMenu() {
                   <Text variant="B6/bold" color="fillContent-primary">
                     PREVIOUS ({proposals.length})
                   </Text>
-                  {proposals.map((proposalId, index) => (
+                  {proposals.map((proposalId) => (
                     <DropdownMenuItem
                       key={proposalId}
                       onSelect={() => router.push(`/proposal/${proposalId}`)}

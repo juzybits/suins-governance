@@ -15,16 +15,16 @@ import {
 import { roundFloat } from "@/utils/roundFloat";
 import NSToken from "@/icons/NSToken";
 import { formatAmountParts } from "@/utils/coins";
-import { THREAD_HOLD } from "@/constants/common";
-
-const TOTAL_NS = 5_000_000_000_000;
+import {
+  NS_VOTE_DIVISOR,
+  NS_VOTE_THRESHOLD,
+  TOTAL_NS,
+} from "@/constants/common";
 
 function MinimumThreshHold({
-  thresholdPercentage,
   isReached,
   totalVotes,
 }: {
-  thresholdPercentage: number;
   totalVotes: number;
   isReached: boolean;
 }) {
@@ -124,7 +124,8 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
   const resp = data ? parseProposalVotes(data) : null;
   if (isLoading || !resp) return null;
 
-  const threshold = THREAD_HOLD; //TODO: update once contract has the right number  Number(data?.fields.threshold ?? 0);
+  const threshold =
+    Number(data?.fields.threshold ?? NS_VOTE_THRESHOLD) / NS_VOTE_DIVISOR; //TODO: update once contract has the right number  Number(data?.fields.threshold ?? 0);
 
   const totalVotes =
     (resp?.yesVote ?? 0) + (resp?.noVote ?? 0) + (resp?.abstainVote ?? 0);
@@ -138,12 +139,6 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
     totalVotes > 0
       ? roundFloat(((resp?.abstainVote ?? 0) / totalVotes) * 100)
       : 0;
-
-  const ThresholdPercentage = Math.min(
-    roundFloat((totalVotes / threshold) * 100),
-    100,
-  );
-  console.log(resp.yesVote);
 
   return (
     <SectionLayout title="Voting Status">
@@ -176,7 +171,6 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
         />
       </div>
       <MinimumThreshHold
-        thresholdPercentage={ThresholdPercentage}
         isReached={totalVotes >= threshold}
         totalVotes={totalVotes}
       />
