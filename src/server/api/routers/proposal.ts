@@ -13,7 +13,7 @@ import {
 async function getProposalsIds() {
   const network = NETWORK === "mainnet" ? "mainnet" : "testnet";
   const getProposalsContent = await clients[NETWORK].getDynamicFields({
-    parentId: SUINS_PACKAGES[network].governanceCap,
+    parentId: SUINS_PACKAGES[network].governance,
     limit: 20,
   });
 

@@ -7,7 +7,6 @@ import { Providers } from "@/app/Providers";
 import clsx from "clsx";
 import { Header } from "@/components/header/Header";
 import { Footer } from "@/components/footer/Footer";
-import { Toaster } from "sonner";
 import { Toast } from "@/components/ui/Toast";
 
 export const metadata: Metadata = {
@@ -26,7 +25,7 @@ export default function RootLayout({
     >
       <body className="bg-2024_fillBackground-primary">
         <Providers>
-          <div className="top min-h-screen bg-2024_fillBackground-primary bg-suins-background bg-auto bg-repeat-x antialiased max-lg:bg-200">
+          <div className="top bg-2024_fillBackground-primary bg-suins-background bg-auto bg-repeat-x antialiased max-lg:bg-200">
             <section className="mx-auto flex min-h-screen w-full flex-col items-center justify-between gap-2024_3XL sm:gap-2024_5XL">
               <Header />
               {children}

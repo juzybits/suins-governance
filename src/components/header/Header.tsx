@@ -60,7 +60,7 @@ export function Header({
             <ProposalsMenu />
           </div>
 
-          <div className="flex items-center gap-2024_S">
+          <div className="flex items-center gap-2024_M">
             {NETWORK === "testnet" && (
               <button
                 className="w-full rounded-2024_S bg-transparent md:w-fit"
@@ -76,7 +76,7 @@ export function Header({
                     color="fillContent-primary"
                     className="leading-none"
                   >
-                    NS
+                    Request tokens
                   </Text>
                 </GradientBorder>
               </button>

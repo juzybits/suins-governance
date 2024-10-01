@@ -5,10 +5,13 @@ import {
   type UseMutationResult,
   type UseMutationOptions,
 } from "@tanstack/react-query";
+import { SUINS_PACKAGES } from "@/constants/endpoints";
+import { NETWORK } from "@/constants/env";
 
 export const MIST_PER_SUI = 1_000_000_000;
 // Estimated gas budget for claiming NS tokens
 export const GAS_BUDGET = 0.01 * MIST_PER_SUI;
+const MINT_TOKENS_AMOUNT = 10_000_000_000;
 
 type VotingRequest = object;
 
@@ -20,19 +23,19 @@ export function useGetTestTokenMutation(
 ): UseMutationResult<string, Error, VotingRequest> {
   const { mutateAsync: signAndExecuteTransactionBlock } =
     useSignAndExecuteTransaction();
+  const network = NETWORK === "mainnet" ? "mainnet" : "testnet";
 
   return useMutation({
     mutationFn: async () => {
       const txb = new Transaction();
-      // txb.setSender(address);
+      if (network === "mainnet") {
+        throw new Error("Cannot mint test tokens on mainnet");
+      }
       txb.moveCall({
-        target:
-          "0xbf38d3107fbf24f2be4b6ac3e01613cc541fa92d34ecb37f346fd951d636b2c8::token::mint",
+        target: SUINS_PACKAGES[NETWORK].packageId + "::token::mint",
         arguments: [
-          txb.object(
-            "0x2b35f4365c63522a030d69aa3972e4759e514dcf89ea3b5a76d0be685635fc34",
-          ), //
-          txb.pure.u64("10000000000"),
+          txb.object(SUINS_PACKAGES[NETWORK].faucet), //
+          txb.pure.u64(MINT_TOKENS_AMOUNT),
         ],
       });
       const resp = await signAndExecuteTransactionBlock({

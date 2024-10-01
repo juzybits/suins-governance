@@ -7,7 +7,8 @@ import { formatAddress } from "@mysten/sui/utils";
 import { useGetAllVoters } from "@/hooks/useGetAllVoters";
 import {
   useGetProposalDetail,
-  getTopVoters,
+  getTopVotersByVoteType,
+  VoteType,
 } from "@/hooks/useGetProposalDetail";
 import { Avatar } from "@/components/Avatar";
 import { useGetAccountInfo } from "@/hooks/useGetAccountInfo";
@@ -29,7 +30,6 @@ import { useCursorPagination } from "@/hooks/useCursorPagination";
 import SvgPaginationNext24 from "@/icons/PaginationNext24";
 import SvgPaginationPrev24 from "@/icons/PaginationPrev24";
 
-type VoteType = "Yes" | "No" | "Abstain";
 const PAGE_SIZE = 10;
 
 function VoterDetail({
@@ -115,13 +115,9 @@ function AllVoter({
     data: lists,
     isFetching,
     pagination,
-    isLoading,
-    isError,
   } = useCursorPagination(allVotersQuery);
 
   if (!lists?.data) return null;
-
-  // const voters = list?.pages.flatMap((page) => page.data);
 
   return (
     <AnimatePresence>
@@ -299,16 +295,78 @@ function TopVoters({
   allVotersSwitch: () => void;
 }) {
   const { data: resp } = useGetProposalDetail({ proposalId });
+  const voteTypes: VoteType[] = ["Yes", "No", "Abstain"];
+  const [currentVoteTypeIndex, setCurrentVoteTypeIndex] = useState(0);
 
   if (!resp?.fields.vote_leaderboards.fields.contents) {
     return null;
   }
-  const topVoters = getTopVoters(
-    resp.fields.vote_leaderboards.fields.contents,
-    10,
-  );
 
+  const topVoters = getTopVotersByVoteType(
+    resp.fields.vote_leaderboards.fields.contents,
+  );
   if (!topVoters) return null;
+
+  const availableVoteTypes = voteTypes.filter((type) => {
+    const voters = topVoters.get(type);
+    return voters && voters.length > 0;
+  });
+
+  // If no vote types have top voters, return null
+  if (availableVoteTypes.length === 0) return null;
+
+  const gotoNextVoteType = () => {
+    let nextIndex = currentVoteTypeIndex + 1;
+    while (nextIndex < availableVoteTypes.length) {
+      const nextVoteType = availableVoteTypes[nextIndex]!;
+      const nextTopVoters = topVoters.get(nextVoteType);
+      if (nextTopVoters && nextTopVoters.length > 0) {
+        setCurrentVoteTypeIndex(nextIndex);
+        return;
+      }
+      nextIndex++;
+    }
+  };
+
+  const gotoPrevVoteType = () => {
+    let prevIndex = currentVoteTypeIndex - 1;
+    while (prevIndex >= 0) {
+      const prevVoteType = availableVoteTypes[prevIndex]!;
+      const prevTopVoters = topVoters.get(prevVoteType);
+      if (prevTopVoters && prevTopVoters.length > 0) {
+        setCurrentVoteTypeIndex(prevIndex);
+        return;
+      }
+      prevIndex--;
+    }
+  };
+
+  // Determine if navigation buttons should be enabled
+  const hasNextVoteType = (() => {
+    for (let i = currentVoteTypeIndex + 1; i < availableVoteTypes.length; i++) {
+      const voters = topVoters.get(availableVoteTypes[i]!);
+      if (voters && voters.length > 0) {
+        return true;
+      }
+    }
+    return false;
+  })();
+
+  const hasPrevVoteType = (() => {
+    for (let i = currentVoteTypeIndex - 1; i >= 0; i--) {
+      const voters = topVoters.get(availableVoteTypes[i]!);
+      if (voters && voters.length > 0) {
+        return true;
+      }
+    }
+    return false;
+  })();
+
+  // Get the current vote type and corresponding voters
+  const currentVoteType = availableVoteTypes[currentVoteTypeIndex];
+  const currentTopVoters = topVoters.get(currentVoteType!);
+
+  if (!currentTopVoters || currentTopVoters.length === 0) return null;
 
   return (
     <AnimatePresence>
@@ -320,18 +378,18 @@ function TopVoters({
         className="flex flex-col gap-2024_XL"
       >
         <Heading variant="H6/super" className="font-[750]">
-          Top Voters
+          Top Voters ({currentVoteType})
         </Heading>
 
         <div className="grid grid-cols-3 gap-2024_XL md:grid-cols-5 md:gap-2024_3XL">
-          {topVoters?.map((voter, index) => (
+          {currentTopVoters.map((voter, index) => (
             <motion.div
               variants={{
                 hidden: { opacity: 0 },
                 show: {
                   opacity: 1,
                   transition: {
-                    staggerChildren: 0.2,
+                    staggerChildren: 2.5,
                   },
                 },
               }}
@@ -341,6 +399,7 @@ function TopVoters({
                 votes={voter.votes}
                 address={voter.address}
                 position={index + 1}
+                voteType={currentVoteType}
               />
             </motion.div>
           ))}
@@ -365,6 +424,51 @@ function TopVoters({
               </Text>
             </GradientBorder>
           </button>
+
+          <div className="flex gap-2024_S">
+            <button
+              className="flex min-h-2024_3XL min-w-2024_3XL items-center justify-center rounded-[16px] border-2 border-2024_fillContent-tertiary bg-transparent px-2 hover:opacity-65"
+              disabled={!hasPrevVoteType}
+              onClick={() => gotoPrevVoteType()}
+            >
+              <Text
+                variant="B7/semibold"
+                color={
+                  hasPrevVoteType
+                    ? "fillContent-secondary"
+                    : "fillContent-tertiary"
+                }
+                className="leading-none"
+              >
+                <SvgPaginationPrev24 />
+              </Text>
+            </button>
+
+            <button
+              className="flex min-h-2024_3XL min-w-2024_3XL items-center justify-center rounded-[16px] border-2 border-2024_fillContent-tertiary bg-transparent px-2 hover:opacity-65"
+              disabled={!hasNextVoteType}
+              onClick={() => gotoNextVoteType()}
+              color="fillContent-secondary"
+            >
+              <Text
+                variant="B7/semibold"
+                color={
+                  hasNextVoteType
+                    ? "fillContent-secondary"
+                    : "fillContent-tertiary"
+                }
+                className="leading-none"
+              >
+                <SvgPaginationNext24
+                  fill={
+                    hasNextVoteType
+                      ? "fillContent-secondary"
+                      : "fillContent-tertiary"
+                  }
+                />
+              </Text>
+            </button>
+          </div>
         </div>
       </motion.div>
     </AnimatePresence>

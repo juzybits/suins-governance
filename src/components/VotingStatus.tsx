@@ -129,19 +129,21 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
   const totalVotes =
     (resp?.yesVote ?? 0) + (resp?.noVote ?? 0) + (resp?.abstainVote ?? 0);
 
-  const yesVotesPercentage = roundFloat(
-    ((resp?.yesVote ?? 0) / totalVotes) * 100,
-  );
+  const yesVotesPercentage =
+    totalVotes > 0 ? roundFloat(((resp?.yesVote ?? 0) / totalVotes) * 100) : 0;
 
-  const noVotesPecentage = roundFloat(((resp?.noVote ?? 0) / totalVotes) * 100);
-  const abstainVotesPecentage = roundFloat(
-    ((resp?.abstainVote ?? 0) / totalVotes) * 100,
-  );
+  const noVotesPecentage =
+    totalVotes > 0 ? roundFloat(((resp?.noVote ?? 0) / totalVotes) * 100) : 0;
+  const abstainVotesPecentage =
+    totalVotes > 0
+      ? roundFloat(((resp?.abstainVote ?? 0) / totalVotes) * 100)
+      : 0;
 
   const ThresholdPercentage = Math.min(
     roundFloat((totalVotes / threshold) * 100),
     100,
   );
+  console.log(resp.yesVote);
 
   return (
     <SectionLayout title="Voting Status">

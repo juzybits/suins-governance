@@ -67,7 +67,7 @@ export function useVoteMutation(
 
       txb.setGasBudgetIfNotSet(GAS_BUDGET);
       txb.moveCall({
-        target: SUINS_PACKAGES[NETWORK].governancePackageId,
+        target: `${SUINS_PACKAGES[NETWORK].packageId}::proposal::vote`,
         arguments: [
           txb.object(proposalId),
           txb.pure.string(vote),
@@ -75,6 +75,15 @@ export function useVoteMutation(
           txb.object.clock(),
         ],
       });
+
+      // try {
+      //   const dryRun = await client.dryRunTransactionBlock({
+      //     transactionBlock: await txb.build({ client }),
+      //   });
+      //   console.log(dryRun, "dryRun");
+      // } catch (error) {
+      //   console.error(error);
+      // }
 
       // txb.transferObjects([coin], txb.pure.address(address));
 

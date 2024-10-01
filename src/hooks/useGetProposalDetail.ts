@@ -1,4 +1,4 @@
-import { type z } from "zod";
+import { string, type z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@/app/SuinsClient";
 import { CoinFormat, formatBalance } from "@/utils/coins";
@@ -9,6 +9,25 @@ type ProposalDataType = z.infer<typeof proposalDetailSchema>;
 
 type TopVotes =
   ProposalDataType["fields"]["vote_leaderboards"]["fields"]["contents"];
+
+export type VoteType = "Yes" | "No" | "Abstain";
+type VoteEntry = {
+  address: string;
+  votes: number;
+}[];
+
+export function getTopVotersByVoteType(data: TopVotes) {
+  return data.reduce((acc, entry) => {
+    const voteType = entry.fields.key.fields.pos0 as VoteType;
+    const entries = entry.fields.value.fields.entries.map((entry) => ({
+      address: entry.fields.pos0!,
+      votes: Number(entry.fields.pos1 ?? 0),
+    }));
+    acc.set(voteType, entries);
+    return acc;
+  }, new Map<VoteType, VoteEntry>());
+}
+
 export function getTopVoters(
   data: TopVotes,
   topN: number,
