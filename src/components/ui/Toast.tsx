@@ -15,6 +15,7 @@ export function Toast() {
       className="flex h-[44px] items-center justify-center rounded-2024_XS px-2024_XL py-2024_R"
       toastOptions={{
         unstyled: true,
+
         closeButton: false,
         actionButtonStyle: {
           display: "none",
@@ -26,6 +27,7 @@ export function Toast() {
           title: "text-2024_body4 font-bold",
           loading: "bg-fill-background-primary",
           success: "bg-2024_fillBackground-good text-[#221C36]",
+          icon: "hidden",
           error:
             "bg-2024_fillBackground-bad bg-2024_fillBackground-bad text-white",
         },

@@ -218,7 +218,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                   color="fillContent-secondary"
                   className="w-full text-start"
                 >
-                  You have <b>{balance?.formatted}NS</b> tokens.
+                  You have <b>{balance?.formatted} NS</b> tokens.
                 </Text>
                 <Text
                   variant="B5/medium"

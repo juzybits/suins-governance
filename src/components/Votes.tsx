@@ -46,7 +46,7 @@ function VoterDetail({
   const { data: voter } = useGetVoteCastedById(objID);
   const formattedAddress = truncatedText({
     text: formatAddress(voterAddress),
-    maxLength: 6,
+    maxLength: 20,
   });
   const isSmallOrAbove = useBreakpoint("sm");
   const formattedName =
@@ -265,7 +265,7 @@ function TopVoter({
       <div className="flex max-w-[118px] flex-col items-center justify-center gap-2024_R">
         <div className="relative h-[44px] w-[44px]">
           <Avatar address={address} className="h-[44px] w-[44px]" />
-          <div className="absolute -left-[10px] -top-[1px] mx-auto flex h-5 w-5 items-center justify-center rounded-16 bg-2024_fillBackground-secondary-Highlight">
+          <div className="absolute -left-[6px] -top-[1px] mx-auto flex h-5 w-5 items-center justify-center rounded-16 border-2 border-[#221C36] bg-2024_fillBackground-secondary-Highlight">
             <Text variant="B7/semibold" color="fillContent-primary">
               {position}
             </Text>

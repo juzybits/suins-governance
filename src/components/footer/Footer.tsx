@@ -3,8 +3,6 @@
 import { useProductAnalyticsConfig } from "@/hooks/useProductAnalyticsConfig";
 import { FooterLinks } from "@/components/footer/FooterLinks";
 import { Text } from "@/components/ui/Text";
-import { GradientBorder } from "../gradient-border";
-import { Button } from "@/components/ui/button/Button";
 
 export function Footer() {
   const { data: productAnalyticsConfig } = useProductAnalyticsConfig();
