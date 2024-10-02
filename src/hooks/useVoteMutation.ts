@@ -95,20 +95,22 @@ export function useVoteMutation(
     },
 
     onSuccess: async () => {
-      await queryClient.invalidateQueries();
-      queryClient.invalidateQueries({
-        queryKey: ["get-vote-casted"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["proposal-detail-by-id"],
-      });
+      await Promise.allSettled([
+        queryClient.invalidateQueries(),
+        queryClient.invalidateQueries({
+          queryKey: ["get-vote-casted"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["proposal-detail-by-id"],
+        }),
 
-      queryClient.invalidateQueries({
-        queryKey: ["get-all-voter"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["vote-casted-by-id"],
-      });
+        queryClient.invalidateQueries({
+          queryKey: ["get-all-voter"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["vote-casted-by-id"],
+        }),
+      ]);
     },
     ...mutationOptions,
   });

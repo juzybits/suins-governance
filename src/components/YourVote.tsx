@@ -3,10 +3,8 @@ import { formatAddress } from "@mysten/sui/utils";
 import { formatName } from "@/utils/common";
 import { useGetAccountInfo } from "@/hooks/useGetAccountInfo";
 import { Avatar } from "@/components/Avatar";
-import { VoteIndicator } from "@/components/ui/VoteIndicator";
 
 import { Text } from "@/components/ui/Text";
-import { NSAmount } from "@/components/ui/NSAmount";
 import { useGetVoteCasted } from "@/hooks/useGetVoteCasted";
 import { Divide } from "./ui/Divide";
 import { VotingState } from "./VotingStatus";
@@ -27,11 +25,6 @@ export function YourVote({ proposalId }: { proposalId: string }) {
   }
   const formattedAddress = formatAddress(address);
   const formattedName = data?.name && formatName(data?.name);
-
-  const hasVotedMultipleCategories =
-    [voteCasted.yesVote, voteCasted.noVote, voteCasted.abstainVote].filter(
-      (vote) => vote > 0,
-    ).length > 1;
 
   return (
     <div className="flex flex-col items-center justify-between gap-2024_M">
