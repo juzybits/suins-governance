@@ -12,7 +12,7 @@ export function Toast() {
         success: <SvgCheckFill16 className="h-1 w-1" />,
         error: <SvgXFill16 className="h-1 w-1" />,
       }}
-      className="flex h-[44px] items-center justify-center rounded-2024_XS max-w-[600px]"
+      className="flex h-[44px] max-w-[600px] items-center justify-center rounded-2024_XS"
       toastOptions={{
         unstyled: true,
         descriptionClassName: "w-full",
