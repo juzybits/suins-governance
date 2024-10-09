@@ -11,7 +11,7 @@ import { NETWORK } from "@/constants/env";
 export const MIST_PER_SUI = 1_000_000_000;
 // Estimated gas budget for claiming NS tokens
 export const GAS_BUDGET = 0.01 * MIST_PER_SUI;
-const MINT_TOKENS_AMOUNT = 10_000_000_000;
+const MINT_TOKENS_AMOUNT = 500_000_000_000;
 
 type VotingRequest = object;
 

@@ -12,10 +12,10 @@ export function Toast() {
         success: <SvgCheckFill16 className="h-1 w-1" />,
         error: <SvgXFill16 className="h-1 w-1" />,
       }}
-      className="flex h-[44px] items-center justify-center rounded-2024_XS px-2024_XL py-2024_R"
+      className="flex h-[44px] items-center justify-center rounded-2024_XS max-w-[600px]"
       toastOptions={{
         unstyled: true,
-
+        descriptionClassName: "w-full",
         closeButton: false,
         actionButtonStyle: {
           display: "none",
@@ -23,7 +23,7 @@ export function Toast() {
         duration: 10000,
         classNames: {
           toast:
-            "flex items-center rounded-2024_XS items-center px-2024_XL py-2024_R ",
+            "flex items-center rounded-2024_XS items-center px-2024_XL py-2024_R w-full",
           title: "text-2024_body4 font-bold",
           loading: "bg-fill-background-primary",
           success: "bg-2024_fillBackground-good text-[#221C36]",
