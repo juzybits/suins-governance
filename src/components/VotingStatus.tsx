@@ -14,7 +14,7 @@ import {
 } from "@/hooks/useGetProposalDetail";
 import { roundFloat } from "@/utils/roundFloat";
 import NSToken from "@/icons/NSToken";
-import { formatAmountParts } from "@/utils/coins";
+import { CoinFormat, formatAmountParts, formatBalance } from "@/utils/coins";
 import {
   NS_VOTE_DIVISOR,
   NS_VOTE_THRESHOLD,
@@ -24,12 +24,14 @@ import {
 function MinimumThreshHold({
   isReached,
   totalVotes,
+  threshold,
 }: {
   totalVotes: number;
   isReached: boolean;
+  threshold: number;
 }) {
   const percentage = Math.min(
-    roundFloat((totalVotes / TOTAL_NS) * 100, 3),
+    roundFloat((totalVotes / threshold) * 100, 3),
     100,
   );
   return (
@@ -49,7 +51,11 @@ function MinimumThreshHold({
               color="fillContent-secondary"
               className="flex justify-end"
             >
-              {formatAmountParts(totalVotes)}
+              {formatBalance({
+                balance: totalVotes,
+                decimals: 0,
+                format: CoinFormat.FULL,
+              })}
             </Text>
             <NSToken className="h-3 w-3" color="white" />
           </div>
@@ -173,6 +179,7 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
       <MinimumThreshHold
         isReached={totalVotes >= threshold}
         totalVotes={totalVotes}
+        threshold={threshold}
       />
 
       <YourVote proposalId={proposalId} />
