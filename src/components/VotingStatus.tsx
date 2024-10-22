@@ -14,12 +14,8 @@ import {
 } from "@/hooks/useGetProposalDetail";
 import { roundFloat } from "@/utils/roundFloat";
 import NSToken from "@/icons/NSToken";
-import { CoinFormat, formatAmountParts, formatBalance } from "@/utils/coins";
-import {
-  NS_VOTE_DIVISOR,
-  NS_VOTE_THRESHOLD,
-  TOTAL_NS,
-} from "@/constants/common";
+import { CoinFormat, formatBalance } from "@/utils/coins";
+import { NS_VOTE_DIVISOR, NS_VOTE_THRESHOLD } from "@/constants/common";
 
 function MinimumThreshHold({
   isReached,
@@ -31,7 +27,7 @@ function MinimumThreshHold({
   threshold: number;
 }) {
   const percentage = Math.min(
-    roundFloat((totalVotes / threshold) * 100, 3),
+    roundFloat((totalVotes / threshold) * 100, 2),
     100,
   );
   return (

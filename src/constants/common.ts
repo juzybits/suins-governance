@@ -6,5 +6,5 @@ export const SUB_NAME_STRUCT_TYPE =
 export const NS_COINTYPE_DECIMAL_PLACES = 6;
 export const THREAD_HOLD = 5_000_000;
 export const NS_VOTE_DIVISOR = 1_000_000;
-export const NS_VOTE_THRESHOLD = 5_000_000_000_000;
+export const NS_VOTE_THRESHOLD = 5_000_000;
 export const TOTAL_NS = 5_000_000_000_000;

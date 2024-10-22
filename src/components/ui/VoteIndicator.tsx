@@ -21,7 +21,7 @@ export function VoteIndicator({
       return (
         <div
           className={clsx(
-            "flex items-center justify-center",
+            "flex items-center justify-end",
             size === "small" ? "gap-2024_XS" : "gap-2024_S",
           )}
         >
@@ -40,7 +40,7 @@ export function VoteIndicator({
       return (
         <div
           className={clsx(
-            "flex items-center justify-center",
+            "flex items-center justify-end",
             size === "small" ? "gap-2024_XS" : "gap-2024_S",
           )}
         >
@@ -58,7 +58,7 @@ export function VoteIndicator({
       return (
         <div
           className={clsx(
-            "flex items-center justify-center",
+            "flex items-center justify-end",
             size === "small" ? "gap-2024_XS" : "gap-2024_S",
           )}
         >

@@ -44,19 +44,14 @@ function VoterDetail({
 }) {
   const { data: accountInfo } = useGetAccountInfo({ address: voterAddress });
   const { data: voter } = useGetVoteCastedById(objID);
+  const isSmallOrAbove = useBreakpoint("sm");
   const formattedAddress = truncatedText({
     text: formatAddress(voterAddress),
-    maxLength: 20,
+    maxLength: isSmallOrAbove ? 20 : 6,
   });
-  const isSmallOrAbove = useBreakpoint("sm");
   const formattedName =
     accountInfo?.name &&
-    truncatedText({
-      text: formatName(accountInfo?.name, {
-        noTruncate: isSmallOrAbove,
-      }),
-      maxLength: isSmallOrAbove ? 24 : 12,
-    });
+    truncatedText({ text: formatName(accountInfo?.name), maxLength: 12 });
   const votes = voter ? getVoteTypeWithMostVotes(voter)?.[0] : null;
 
   const explorerLink = useExplorerLink({
@@ -65,8 +60,8 @@ function VoterDetail({
   });
 
   return (
-    <div className="flex items-center justify-between gap-2.5">
-      <div className="flex w-fit min-w-[150px] items-center justify-start gap-2.5 text-start md:min-w-[224px]">
+    <div className="flex items-center justify-between gap-1 md:gap-2.5">
+      <div className="flex w-fit min-w-[80px] items-center justify-start gap-2.5 text-start md:min-w-[254px]">
         <Text
           variant="B6/bold"
           color="fillContent-tertiary"
@@ -86,7 +81,7 @@ function VoterDetail({
           <div className="w-fit basis-1/3">
             <VoteIndicator votedStatus={votes.key as VoteType} onlyStatus />
           </div>
-          <div className="flex min-w-[80px] items-center justify-end gap-1">
+          <div className="flex min-w-[100px] items-center justify-end gap-1">
             <NSAmount
               amount={votes.votes}
               isMedium
@@ -133,27 +128,29 @@ function AllVoter({
           All Voters ({resp?.fields.voters.fields.size})
         </Heading>
         {isFetching && <Loader className="h-3 w-3" />}
-        {lists?.data?.map((voter, index) => (
-          <motion.div
-            variants={{
-              hidden: { opacity: 0 },
-              show: {
-                opacity: 1,
-                transition: {
-                  staggerChildren: 0.2,
+        <div className="flex flex-col gap-2024_XL overflow-x-scroll">
+          {lists?.data?.map((voter, index) => (
+            <motion.div
+              variants={{
+                hidden: { opacity: 0 },
+                show: {
+                  opacity: 1,
+                  transition: {
+                    staggerChildren: 0.2,
+                  },
                 },
-              },
-            }}
-            key={voter.name.value}
-          >
-            <VoterDetail
+              }}
               key={voter.name.value}
-              objID={voter.objectId}
-              voterAddress={voter.name.value}
-              position={index + 1 + pagination.currentPage * PAGE_SIZE}
-            />
-          </motion.div>
-        ))}
+            >
+              <VoterDetail
+                key={voter.name.value}
+                objID={voter.objectId}
+                voterAddress={voter.name.value}
+                position={index + 1 + pagination.currentPage * PAGE_SIZE}
+              />
+            </motion.div>
+          ))}
+        </div>
         <Divide />
         <div className="flex flex-col-reverse items-center justify-between gap-2024_L md:flex-row">
           <button
@@ -440,7 +437,7 @@ export function Votes({ proposalId }: { proposalId: string }) {
           </div>
         )}
       </div>
-      <div className="flex flex-col rounded-2024_S bg-2024_fillBackground-searchBg p-2024_2XL">
+      <div className="flex flex-col rounded-2024_S bg-2024_fillBackground-searchBg p-2024_L md:p-2024_2XL">
         {topVoters ? (
           <TopVoters
             proposalId={proposalId}
