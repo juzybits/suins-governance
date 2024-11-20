@@ -71,7 +71,7 @@ export const proposalDetailSchema = z.object({
         ),
       }),
     }),
-    winning_option: z.null(),
+    winning_option: z.string().nullable(),
   }),
 });
 
