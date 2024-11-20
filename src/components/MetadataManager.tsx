@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 type MetadataOptions = {
   title?: string;
@@ -44,7 +44,6 @@ function updateMetaTag(name: string, content?: string) {
 }
 
 export function useMetadata(options: MetadataOptions) {
-  const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {

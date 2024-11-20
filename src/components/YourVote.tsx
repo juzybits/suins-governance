@@ -65,7 +65,8 @@ export function YourVote({ proposalId }: { proposalId: string }) {
         color="fillContent-secondary"
         className="w-full text-start"
       >
-        Tokens and reward can be withdrawn at the end of the voting period
+        Locked tokens will be returned to users automatically after voting
+        concludes.
       </Text>
     </div>
   );

@@ -33,7 +33,6 @@ export function useGetProposalsIds() {
       const governanceData = governanceSchema.safeParse(
         dynamicFieldsObject.data?.content,
       );
-      console.log(governanceData);
       return governanceData;
     },
     select: (governanceData) => {

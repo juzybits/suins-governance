@@ -71,7 +71,7 @@ function MinimumThreshHold({
           color="fillContent-secondary"
           className="!tracking-tighter"
         >
-          Minimum Voting Threshold: {1}%
+          Minimum Voting Threshold: {1}%{" "}
         </Text>
         <Text variant="B7/regular" color={isReached ? "cyan" : "warning"}>
           {isReached ? "Reached" : "Not Reached"}
