@@ -20,7 +20,7 @@ export function ProposalStatus({
       <Text
         variant="B5/bold"
         color={
-          status === "active" || status === 'passed'
+          status === "active" || status === "passed"
             ? "fillContent-primary-darker"
             : "fillContent-secondary"
         }

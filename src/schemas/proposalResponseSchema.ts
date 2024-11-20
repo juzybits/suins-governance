@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-
 export const proposalDetailSchema = z.object({
   dataType: z.literal("moveObject"),
   type: z.string(),
@@ -72,12 +71,14 @@ export const proposalDetailSchema = z.object({
         ),
       }),
     }),
-    winning_option: z.object({
-      type: z.string(),
-      fields: z.object({
-        pos0: z.string(),
-      }),
-    }).nullable(),
+    winning_option: z
+      .object({
+        type: z.string(),
+        fields: z.object({
+          pos0: z.string(),
+        }),
+      })
+      .nullable(),
   }),
 });
 

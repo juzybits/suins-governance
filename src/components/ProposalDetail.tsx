@@ -28,8 +28,12 @@ export function ProposalDetail({ proposalId }: { proposalId: string }) {
           <Text variant="LABEL/bold" color="fillContent-secondary">
             Proposal # {data?.fields.serial_no}
           </Text>
-          <Link href={explorerLink} target="_blank" className="flex items-center gap-2024_S">
-            <Text  variant="LABEL/bold" color="fillContent-primary">
+          <Link
+            href={explorerLink}
+            target="_blank"
+            className="flex items-center gap-2024_S"
+          >
+            <Text variant="LABEL/bold" color="fillContent-primary">
               View on Explorer
             </Text>
             <SvgArrowUpLeft16 className="h-2024_M w-2024_M text-2024_fillContent-primary" />
