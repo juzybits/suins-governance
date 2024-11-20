@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { object, z } from "zod";
 
 export const proposalDetailSchema = z.object({
   dataType: z.literal("moveObject"),
@@ -89,7 +89,17 @@ export const votingObjectContentSchema = z.object({
     }),
     value: z.object({
       type: z.string(),
-      fields: z.record(z.array(z.string())),
+      fields: z.record(
+        z.array(
+          z.object({
+            type: z.string(),
+            fields: z.object({
+              end_time: z.string(),
+              proposal_id: z.string(),
+            }),
+          }),
+        ),
+      ),
     }),
   }),
 });

@@ -18,16 +18,17 @@ async function getProposalsIds() {
   });
 
   const resp = await Promise.allSettled(
-    getProposalsContent.data.map((item) =>
-      clients[NETWORK].getObject({
+    getProposalsContent.data.map((item) => {
+      console.log(item);
+      return clients[NETWORK].getObject({
         id: item.objectId,
         options: {
           showContent: true,
           showOwner: true,
           showType: true,
         },
-      }),
-    ),
+      });
+    }),
   );
 
   // eslint-disable-next-line @typescript-eslint/prefer-find
@@ -94,7 +95,9 @@ export const proposalRouter = createTRPCRouter({
     const proposals = Object.values(proposalIds ?? {})[0];
     if (!proposals) return null;
     const proposalsDetail = await Promise.all(
-      proposals.map((item) => getProposalDetail({ proposalId: item })),
+      proposals.map((item) =>
+        getProposalDetail({ proposalId: item.fields.proposal_id }),
+      ),
     );
     const proposalsIDs = proposalIds ? Object.values(proposalIds) : [];
     const proposal = proposalsDetail.find(
