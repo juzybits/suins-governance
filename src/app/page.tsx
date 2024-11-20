@@ -5,7 +5,8 @@ import Loader from "@/components/ui/Loader";
 
 export default async function HomePage() {
   const data = await api.post.getIsProposalActive();
-  const latestProposal = data?.isProposalActive ?? data?.defaultProposalId;
+  const latestProposal =
+    data?.isProposalActive ?? data?.defaultProposalId?.fields.proposal_id;
 
   return (
     <Suspense fallback={<Loader className="h-5 w-5" />}>
