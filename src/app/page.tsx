@@ -7,7 +7,7 @@ import { useGetProposalsIds } from "@/hooks/useGetProposals";
 
 export default function HomePage() {
   const { data, isLoading, error } = useGetProposalsIds();
-
+  console.log(data);  
   if (isLoading) return <Loader className="h-5 w-5" />;
 
   if (error || !data?.[0]?.fields) return <div>Error: {error?.message}</div>;

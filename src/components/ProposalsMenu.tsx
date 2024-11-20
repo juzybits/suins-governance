@@ -142,7 +142,7 @@ export function ProposalsMenu() {
                   >
                     Proposals
                   </Heading>
-                  <div className="h-full max-h-[800px] overflow-y-auto">
+                  <div className="flex h-full max-h-[800px] flex-col gap-2024_M overflow-y-auto">
                     {data?.[0]?.isActive && (
                       <div className="flex flex-col gap-2024_M">
                         <Text variant="B6/bold" color="fillContent-primary">

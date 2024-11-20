@@ -33,14 +33,14 @@ export function useGetProposalsIds() {
       const governanceData = governanceSchema.safeParse(
         dynamicFieldsObject.data?.content,
       );
-
+      console.log(governanceData);
       return governanceData;
     },
     select: (governanceData) => {
       if (governanceData.error) return null;
       const sortedProposals = governanceData.data?.fields.value.fields.pos0
         .sort(
-          (a, b) => parseInt(a.fields.end_time) - parseInt(b.fields.end_time),
+          (b, a) => parseInt(a.fields.end_time) - parseInt(b.fields.end_time),
         )
         .map((proposal) => ({
           ...proposal,
