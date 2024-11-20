@@ -333,11 +333,11 @@ function TopVoters({
           </Heading>
           <div className="flex gap-1">
             {voteTypes.map((type) => {
-              const isAvailable = !!topVoters.get(type);
+              const isAvailable = !!topVoters.get(type)?.length;
               return (
                 <button
                   className={clsx(
-                    "flex min-h-[30px] min-w-2024_3XL items-center justify-center rounded-[8px] border border-2024_fillContent-tertiary bg-transparent px-2024_R",
+                    "disable:opacity-65 flex min-h-[30px] min-w-2024_3XL items-center justify-center rounded-[8px] border border-2024_fillContent-tertiary bg-transparent px-2024_R",
                     currentVoteType === type && "!bg-2024_fillContent-tertiary",
                     isAvailable && "hover:opacity-65",
                   )}
