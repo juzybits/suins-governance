@@ -159,7 +159,7 @@ export function useGetProposalDetail({ proposalId }: { proposalId: string }) {
       });
 
       const objDetail = proposalDetailSchema.safeParse(resp?.data?.content);
-
+      console.log(objDetail.error)
       if (objDetail.error) {
         throw new Error("Invalid proposal detail");
       }

@@ -1,4 +1,5 @@
-import { object, z } from "zod";
+import { z } from "zod";
+
 
 export const proposalDetailSchema = z.object({
   dataType: z.literal("moveObject"),
@@ -71,7 +72,12 @@ export const proposalDetailSchema = z.object({
         ),
       }),
     }),
-    winning_option: z.string().nullable(),
+    winning_option: z.object({
+      type: z.string(),
+      fields: z.object({
+        pos0: z.string(),
+      }),
+    }).nullable(),
   }),
 });
 

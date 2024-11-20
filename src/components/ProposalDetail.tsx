@@ -1,11 +1,15 @@
+import Link from "next/link";
 import { Text } from "@/components/ui/Text";
 import { CountDownTimer } from "./CountDownTimer";
 import { SectionLayout } from "./SectionLayout";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { format, isPast } from "date-fns";
+import { useExplorerLink } from "@/hooks/useExplorerLink";
+import SvgArrowUpLeft16 from "@/icons/ArrowUpLeft16";
 
 export function ProposalDetail({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
+  const explorerLink = useExplorerLink({ id: proposalId, type: "object" });
   if (!data) return null;
 
   const timestampMs = parseInt(data.fields.end_time_ms, 10);
@@ -22,11 +26,14 @@ export function ProposalDetail({ proposalId }: { proposalId: string }) {
       <div className="flex flex-col gap-4">
         <div className="flex justify-between">
           <Text variant="LABEL/bold" color="fillContent-secondary">
-            Proposal #
+            Proposal # {data?.fields.serial_no}
           </Text>
-          <Text variant="LABEL/bold" color="fillContent-primary">
-            {data?.fields.serial_no}
-          </Text>
+          <Link href={explorerLink} target="_blank" className="flex items-center gap-2024_S">
+            <Text  variant="LABEL/bold" color="fillContent-primary">
+              View on Explorer
+            </Text>
+            <SvgArrowUpLeft16 className="h-2024_M w-2024_M text-2024_fillContent-primary" />
+          </Link>
         </div>
 
         {isProposalClosed ? (

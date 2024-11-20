@@ -48,7 +48,7 @@ function ProposalPreview({
       <ProposalStatus
         status={
           isClosed
-            ? data.fields.winning_option === "Yes"
+            ? data.fields.winning_option?.fields.pos0 === "Yes"
               ? "passed"
               : "failed"
             : "active"
