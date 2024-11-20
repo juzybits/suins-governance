@@ -1,27 +1,9 @@
 import { client } from "@/app/SuinsClient";
 import { useQuery } from "@tanstack/react-query";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
-import { z } from "zod";
 import { NETWORK } from "@/constants/env";
-
-const votingObjectContentSchema = z.object({
-  dataType: z.literal("moveObject"),
-  type: z.string(),
-  hasPublicTransfer: z.boolean(),
-  fields: z.object({
-    id: z.object({ id: z.string() }),
-    name: z.object({
-      type: z.string(),
-      fields: z.object({
-        dummy_field: z.boolean(),
-      }),
-    }),
-    value: z.object({
-      type: z.string(),
-      fields: z.record(z.array(z.string())),
-    }),
-  }),
-});
+import { governanceSchema } from "@/schemas/proposalResponseSchema";
+import isFuture from "date-fns/isFuture";
 
 // TODO: We need to update this so that we can paginate the proposals, This works for the first 20 proposals
 export function useGetProposalsIds() {
@@ -29,36 +11,42 @@ export function useGetProposalsIds() {
   return useQuery({
     queryKey: ["governanceObject-dynamic-fields-objects"],
     queryFn: async () => {
-      const getProposalsContent = await client.getDynamicFields({
+      const proposalsContent = await client.getDynamicFields({
         parentId: SUINS_PACKAGES[network].governance,
         limit: 20,
       });
 
-      const resp = await Promise.allSettled(
-        getProposalsContent.data.map((item) =>
-          client.getObject({
-            id: item.objectId,
-            options: {
-              showContent: true,
-              showOwner: true,
-              showType: true,
-            },
-          }),
-        ),
+      if (
+        !proposalsContent.data[0]?.name.type ||
+        !proposalsContent.data[0]?.name.value
+      ) {
+        throw new Error("No type found");
+      }
+
+      const dynamicFieldsObject = await client.getDynamicFieldObject({
+        parentId: SUINS_PACKAGES[network].governance,
+        name: {
+          type: proposalsContent.data[0].name.type,
+          value: proposalsContent.data[0].name.value,
+        },
+      });
+      const governanceData = governanceSchema.safeParse(
+        dynamicFieldsObject.data?.content,
       );
 
-      // eslint-disable-next-line @typescript-eslint/prefer-find
-      return resp
-        .map((item) => {
-          if (item.status !== "fulfilled") return null;
-
-          const data = votingObjectContentSchema.safeParse(
-            item.value.data?.content,
-          );
-          if (data.error) return null;
-          return data.data.fields.value.fields;
-        })
-        .filter(Boolean)[0];
+      return governanceData;
+    },
+    select: (governanceData) => {
+      if (governanceData.error) return null;
+      const sortedProposals = governanceData.data?.fields.value.fields.pos0
+        .sort(
+          (a, b) => parseInt(a.fields.end_time) - parseInt(b.fields.end_time),
+        )
+        .map((proposal) => ({
+          ...proposal,
+          isActive: isFuture(new Date(Number(proposal.fields.end_time ?? 0))),
+        }));
+      return sortedProposals;
     },
   });
 }

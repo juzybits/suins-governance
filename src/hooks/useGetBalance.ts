@@ -1,4 +1,3 @@
-import { useFeatureValue } from "@growthbook/growthbook-react";
 import { useSuiClientQuery } from "@mysten/dapp-kit";
 
 import { CoinFormat, formatBalance } from "@/utils/coins";
@@ -13,10 +12,6 @@ export function useGetBalance({
   owner?: string;
 }) {
   const { data: coinMetadata } = useCoinMetadata({ coinType });
-  const refetchInterval = useFeatureValue(
-    "wallet-balance-refetch-interval",
-    20_000,
-  );
 
   return useSuiClientQuery(
     "getBalance",
@@ -36,7 +31,7 @@ export function useGetBalance({
           formatted,
         };
       },
-      refetchInterval,
+      refetchInterval: 5000,
       staleTime: 5_000,
       enabled: !!owner && !!coinType,
     },
