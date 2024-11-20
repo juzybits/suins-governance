@@ -90,7 +90,9 @@ export function useVoteMutation(
       const resp = await signAndExecuteTransactionBlock({
         transaction: txb,
       });
-
+      await client.waitForTransaction({
+        digest: resp.digest,
+      });
       return resp.digest;
     },
 
