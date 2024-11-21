@@ -44,7 +44,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
   const form = useZodForm({
     mode: "all",
     schema: z.object({
-      amount: z.coerce.number().int().positive().max(tokenBalance),
+      amount: z.coerce.number().positive().max(tokenBalance),
 
       vote: z.enum(VOTE_OPTIONS, { message: "A vote selection is required" }),
     }),

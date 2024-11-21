@@ -66,16 +66,18 @@ function ProposalPreview({
       >
         {fields.title}
       </Text>
-      {truncatedDescription?.map((desc, index) => (
-        <Text
-          variant="B4/regular"
-          color="fillContent-secondary"
-          className="leading-normal"
-          key={index + desc.substring(0, 20)}
-        >
-          <StringReplacer text={desc} />
-        </Text>
-      ))}
+      <div className="flex flex-col gap-0">
+        {truncatedDescription?.map((desc, index) => (
+          <Text
+            variant="B4/regular"
+            color="fillContent-secondary"
+            className="leading-normal"
+            key={index + desc.substring(0, 20)}
+          >
+            <StringReplacer text={desc} />
+          </Text>
+        ))}
+      </div>
 
       <Divide />
       <div className="flex justify-between gap-1">
