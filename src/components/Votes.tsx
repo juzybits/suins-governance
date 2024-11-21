@@ -29,7 +29,7 @@ import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { useCursorPagination } from "@/hooks/useCursorPagination";
 import SvgPaginationNext24 from "@/icons/PaginationNext24";
 import SvgPaginationPrev24 from "@/icons/PaginationPrev24";
-import clsx from "clsx";
+import { cn } from "@/utils/cn";
 
 const PAGE_SIZE = 10;
 
@@ -113,7 +113,7 @@ function AllVoter({
     pagination,
   } = useCursorPagination(allVotersQuery);
 
-  if (!lists?.data) return null;
+  // if (!lists?.data && ) return null;
 
   return (
     <AnimatePresence>
@@ -125,14 +125,20 @@ function AllVoter({
         className="flex flex-col gap-2024_XL"
       >
         <Heading variant="H6/super" className="font-[750]">
-          All Voters ({resp?.fields.voters.fields.size})
+          All Voters ({resp?.fields.voters.fields.size}){" "}
+          {isFetching && <Loader className="h-3 w-3" />}
         </Heading>
-        {isFetching && <Loader className="h-3 w-3" />}
-        <div className="flex flex-col gap-2024_XL overflow-x-scroll">
+        <div
+          className={cn(
+            "flex flex-col gap-2024_XL overflow-x-scroll",
+            // prevent jumping between pages
+            !pagination.hasNext && pagination.hasPrev && "min-h-[519px]",
+          )}
+        >
           {lists?.data?.map((voter, index) => (
             <motion.div
               variants={{
-                hidden: { opacity: 0 },
+                hidden: { opacity: pagination.currentPage + 1 > 1 ? 1 : 0 },
                 show: {
                   opacity: 1,
                   transition: {
@@ -336,7 +342,7 @@ function TopVoters({
               const isAvailable = !!topVoters.get(type)?.length;
               return (
                 <button
-                  className={clsx(
+                  className={cn(
                     "disable:opacity-65 flex min-h-[30px] min-w-2024_3XL items-center justify-center rounded-[8px] border border-2024_fillContent-tertiary bg-transparent px-2024_R",
                     currentVoteType === type && "!bg-2024_fillContent-tertiary",
                     isAvailable && "hover:opacity-65",

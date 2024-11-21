@@ -53,6 +53,7 @@ export function Header({
           <div className="flex items-center justify-center gap-2024_S">
             <Link
               href="https://suins.io/"
+              target="_blank"
               className="max-w-[200px]"
               onClick={logoAction}
             >
