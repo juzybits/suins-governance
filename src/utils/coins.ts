@@ -50,9 +50,15 @@ export function formatBalance({
   decimals: number;
   format?: CoinFormat;
 }) {
-  const bn = new BigNumber(balance.toString()).shiftedBy(-1 * decimals);
+  let bn = new BigNumber(balance.toString()).shiftedBy(-1 * decimals);
 
   if (format === CoinFormat.FULL) {
+    const scaledBnAbs = new BigNumber(bn.abs());
+    if (scaledBnAbs.gte(100)) {
+      bn = bn.decimalPlaces(0, BigNumber.ROUND_DOWN);
+    } else {
+      bn = bn.decimalPlaces(2, BigNumber.ROUND_DOWN);
+    }
     return bn.toFormat();
   }
 

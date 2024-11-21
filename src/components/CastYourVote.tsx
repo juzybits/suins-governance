@@ -165,7 +165,9 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                     <div className="absolute right-2024_XL top-1/2 -translate-y-1/2">
                       <button
                         onClick={() => {
-                          setValue("amount", tokenBalance);
+                          setValue("amount", tokenBalance, {
+                            shouldValidate: true,
+                          });
                         }}
                         type="button"
                       >

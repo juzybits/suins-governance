@@ -26,12 +26,12 @@ export function ProposalDetail({ proposalId }: { proposalId: string }) {
       <div className="flex flex-col gap-4">
         <div className="flex justify-between">
           <Text variant="LABEL/bold" color="fillContent-secondary">
-            Proposal # {data?.fields.serial_no}
+            Proposal #{data?.fields.serial_no}
           </Text>
           <Link
             href={explorerLink}
             target="_blank"
-            className="flex items-center gap-2024_S"
+            className="flex items-center gap-2024_XS"
           >
             <Text variant="LABEL/bold" color="fillContent-primary">
               View on Explorer
@@ -52,7 +52,7 @@ export function ProposalDetail({ proposalId }: { proposalId: string }) {
             </div>
             <div className="flex justify-between">
               <Text variant="LABEL/bold" color="fillContent-secondary">
-                Voting ended
+                Voting Ended
               </Text>
               <Text variant="LABEL/bold" color="fillContent-primary">
                 {votingEndedIn}
@@ -63,16 +63,21 @@ export function ProposalDetail({ proposalId }: { proposalId: string }) {
           <>
             <div className="flex justify-between">
               <Text variant="LABEL/bold" color="fillContent-secondary">
-                Proposal Date
+                Voting started
               </Text>
               <Text variant="LABEL/bold" color="fillContent-primary">
                 {proposalStartDate}
               </Text>
             </div>
             <div className="flex flex-col gap-4">
-              <Text variant="LABEL/bold" color="fillContent-secondary">
-                Ends in
-              </Text>
+              <div className="flex justify-between">
+                <Text variant="LABEL/bold" color="fillContent-secondary">
+                  Voting Ends
+                </Text>
+                <Text variant="LABEL/bold" color="fillContent-primary">
+                  {votingEndedIn}
+                </Text>
+              </div>
               <CountDownTimer timestamp={timestampMs} />
             </div>
           </>

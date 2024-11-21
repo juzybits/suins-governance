@@ -59,7 +59,7 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
               opacity: isExpanded ? 1 : 0.85,
             }}
             transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
-            className="relative flex flex-col gap-2024_S overflow-hidden"
+            className="relative flex flex-col gap-2024_M overflow-hidden"
           >
             {description?.map((desc, index) => (
               <Text
