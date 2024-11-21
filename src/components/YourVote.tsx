@@ -79,7 +79,7 @@ export function YourVote({ proposalId }: { proposalId: string }) {
           <div className="flex w-full items-center justify-start gap-2024_R">
             <Avatar address={address} className="h-[36px] w-[36px]" />
             <div className="flex w-full items-center justify-between gap-2024_M">
-              <div className="flex flex-col items-start justify-start gap-2024_S">
+              <div className="flex flex-col items-start justify-start gap-2024_XS">
                 <Text
                   variant="B6/bold"
                   color="fillContent-primary"
