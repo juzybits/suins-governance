@@ -87,7 +87,10 @@ export function YourVote({ proposalId }: { proposalId: string }) {
                 {formattedName ?? formattedAddress}
               </Text>
 
-              <NSAmount amount={voteCasted.yesVote} />
+              <NSAmount
+                amount={voteCasted.yesVote}
+                className="!justify-start"
+              />
             </div>
             {voteCasted.yesVote ? (
               <VoteIndicator votedStatus="Yes" size="small" />

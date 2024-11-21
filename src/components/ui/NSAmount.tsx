@@ -13,12 +13,14 @@ export function NSAmount({
   roundedCoinFormat,
   noFormat,
   centerAlign,
+  className,
 }: {
   amount: number;
   isMedium?: boolean;
   roundedCoinFormat?: boolean;
   noFormat?: boolean;
   centerAlign?: boolean;
+  className?: string;
 }) {
   const { data: coinMetadata } = useCoinMetadata({
     coinType: SUINS_PACKAGES[NETWORK].votingTokenType,
@@ -37,6 +39,7 @@ export function NSAmount({
       className={clsx(
         "flex w-full items-center justify-end gap-1",
         centerAlign && "justify-center",
+        className,
       )}
     >
       <Text
