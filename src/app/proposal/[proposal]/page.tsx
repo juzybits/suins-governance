@@ -23,7 +23,7 @@ export default function ProposalPage({
           Page Not Found
         </h1>
         <p className="text-slate-400">
-          {}The page you are looking for does not exist
+          The page you are looking for does not exist
         </p>
       </div>
     );
