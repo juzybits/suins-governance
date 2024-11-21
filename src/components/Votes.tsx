@@ -420,7 +420,6 @@ function TopVoters({
 export function Votes({ proposalId }: { proposalId: string }) {
   const { data: resp } = useGetProposalDetail({ proposalId });
   const [topVoters, setTopVoters] = useState(false);
-
   if (!resp || Number(resp?.fields.voters.fields.size || 0) < 1) return null;
   const counts = resp?.fields.voters.fields.size;
   return (

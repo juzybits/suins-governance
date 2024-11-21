@@ -75,33 +75,44 @@ export function YourVote({ proposalId }: { proposalId: string }) {
           </Text>
         </div>
       ) : (
-        <div className="flex w-full items-center justify-start gap-2024_R rounded-12 bg-2024_fillBackground-secondary-Highlight/40 p-2024_R">
-          <Avatar address={address} className="h-[36px] w-[36px]" />
-          <div className="flex w-full items-center justify-between gap-2024_M">
-            <div className="flex flex-col items-start justify-start gap-2024_S">
-              <Text
-                variant="B6/bold"
-                color="fillContent-primary"
-                className="w-full text-start"
-              >
-                {formattedName ?? formattedAddress}
-              </Text>
+        <div className="flex w-full flex-col items-center justify-start gap-2024_R rounded-12 bg-2024_fillBackground-secondary-Highlight/40 p-2024_R">
+          <div className="flex w-full items-center justify-start gap-2024_R">
+            <Avatar address={address} className="h-[36px] w-[36px]" />
+            <div className="flex w-full items-center justify-between gap-2024_M">
+              <div className="flex flex-col items-start justify-start gap-2024_S">
+                <Text
+                  variant="B6/bold"
+                  color="fillContent-primary"
+                  className="w-full text-start"
+                >
+                  {formattedName ?? formattedAddress}
+                </Text>
 
-              <NSAmount
-                amount={voteCasted.yesVote}
-                className="!justify-start"
-              />
+                <NSAmount
+                  amount={voteCasted.yesVote}
+                  className="!justify-start"
+                />
+              </div>
+              {voteCasted.yesVote ? (
+                <VoteIndicator votedStatus="Yes" size="small" />
+              ) : null}
+              {voteCasted.noVote ? (
+                <VoteIndicator votedStatus="No" size="small" />
+              ) : null}
+              {voteCasted.abstainVote ? (
+                <VoteIndicator votedStatus="Abstain" size="small" />
+              ) : null}
             </div>
-            {voteCasted.yesVote ? (
-              <VoteIndicator votedStatus="Yes" size="small" />
-            ) : null}
-            {voteCasted.noVote ? (
-              <VoteIndicator votedStatus="No" size="small" />
-            ) : null}
-            {voteCasted.abstainVote ? (
-              <VoteIndicator votedStatus="Abstain" size="small" />
-            ) : null}
           </div>
+          <Divide className="bg-[#62519C]" />
+          <Text
+            variant="B7/regular"
+            color="fillContent-secondary"
+            className="w-full text-start"
+          >
+            Locked tokens will be returned to users automatically after voting
+            concludes.
+          </Text>
         </div>
       )}
     </div>
