@@ -106,6 +106,7 @@ const textStyles = cva(["break-words"], {
     size: "B1",
     color: "fillContent-primary",
     weight: "medium",
+    mono: false,
   },
 });
 
@@ -132,4 +133,18 @@ export function Text({
       {children}
     </div>
   );
+}
+
+export function StringReplacer({ text = "" }) {
+  const parseContent = (str: string) => {
+    const parts = str.split(/(<strong>.*?<\/strong>)/g);
+    return parts.map((part, index) => {
+      if (part.startsWith("<strong>") && part.endsWith("</strong>")) {
+        const content = part.replace(/<\/?strong>/g, "");
+        return <strong key={index}>{content}</strong>;
+      }
+      return <span key={index}>{part}</span>;
+    });
+  };
+  return <div>{parseContent(text)}</div>;
 }

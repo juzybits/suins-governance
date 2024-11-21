@@ -18,12 +18,13 @@ import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { useGetProposalsIds } from "@/hooks/useGetProposals";
 import { ProposalStatus } from "./ui/ProposalStatus";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
-import { Text } from "@/components/ui/Text";
+import { Text, StringReplacer } from "@/components/ui/Text";
 import { GradientBorder } from "./gradient-border";
 import { Heading } from "./ui/Heading";
 import { Divide } from "@/components/ui/Divide";
 import { truncatedText } from "@/utils/truncatedText";
 import Loader from "./ui/Loader";
+import { formatContractText } from "@/utils/formatContractText";
 
 function ProposalPreview({
   proposalId,
@@ -38,10 +39,12 @@ function ProposalPreview({
 
   const isClosed = isPast(new Date(Number(data.fields.end_time_ms ?? 0)));
   const fields = data.fields;
-  const truncatedDescription = truncatedText({
-    text: fields.description,
-    maxLength: 100,
-  });
+  const truncatedDescription = formatContractText(
+    truncatedText({
+      text: fields.description,
+      maxLength: 100,
+    }) ?? "",
+  );
 
   const PreviewContent = (
     <div className="flex cursor-pointer flex-col gap-2024_R">
@@ -50,7 +53,9 @@ function ProposalPreview({
           isClosed
             ? data.fields.winning_option?.fields.pos0 === "Yes"
               ? "passed"
-              : "failed"
+              : data?.fields.winning_option === null && isClosed
+                ? "pending"
+                : "failed"
             : "active"
         }
       />
@@ -61,13 +66,17 @@ function ProposalPreview({
       >
         {fields.title}
       </Text>
-      <Text
-        variant="B4/regular"
-        color="fillContent-secondary"
-        className="leading-normal"
-      >
-        {truncatedDescription}
-      </Text>
+      {truncatedDescription?.map((desc, index) => (
+        <Text
+          variant="B4/regular"
+          color="fillContent-secondary"
+          className="leading-normal"
+          key={index + desc.substring(0, 20)}
+        >
+          <StringReplacer text={desc} />
+        </Text>
+      ))}
+
       <Divide />
       <div className="flex justify-between gap-1">
         <Text variant="B5/bold" color="fillContent-link">

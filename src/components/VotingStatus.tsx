@@ -70,7 +70,7 @@ function MinimumThreshHold({
         <Text
           variant="B7/regular"
           color="fillContent-secondary"
-          className="!tracking-tighter flex items-center gap-0.5"
+          className="!tracking-tighter flex items-center font-paragraph"
         >
           Minimum Voting Threshold:{" "}
           {formatBalance({
@@ -81,7 +81,11 @@ function MinimumThreshHold({
           $NS
         </Text>
 
-        <Text variant="B7/regular" color={isReached ? "cyan" : "warning"}>
+        <Text
+          variant="B7/regular"
+          className="font-paragraph"
+          color={isReached ? "cyan" : "warning"}
+        >
           {isReached ? "Reached" : "Not Reached"}
         </Text>
       </div>

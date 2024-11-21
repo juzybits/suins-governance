@@ -83,7 +83,7 @@ export default {
         // sans: ['Inter Variable', 'Inter'],
         sans: ["var(--font-sans)", ...fontFamily.sans],
         mono: ["var(--font-mono)", ...fontFamily.mono],
-        inter: ["var(--font-inter)"],
+        inter: ["var(--font-inter)", "Inter"],
         heading: ["Inter Variable", "Inter", "Roboto", "Arial", "sans-serif"],
         paragraph: [
           "Inter Variable",

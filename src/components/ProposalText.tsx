@@ -2,13 +2,13 @@ import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 
 import { Heading } from "@/components/ui/Heading";
-import { Text } from "@/components/ui/Text";
+import { Text, StringReplacer } from "@/components/ui/Text";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { ProposalStatus } from "./ui/ProposalStatus";
 import { Button } from "./ui/button/Button";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { isPast } from "date-fns";
-
+import { formatContractText } from "@/utils/formatContractText";
 // TODO: Add hook to fetch proposal data
 export function ProposalText({ proposalId }: { proposalId: string }) {
   const isSmallOrAbove = useBreakpoint("sm");
@@ -18,9 +18,7 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
 
   const toggleExpanded = () => setIsExpanded(!isExpanded);
-  const description = data?.fields.description.split(
-    "\n[PARAGRAPH_SEPARATOR]\n",
-  );
+  const description = formatContractText(data?.fields.description ?? "");
 
   useEffect(() => {
     // Check if the content height is more than 350px
@@ -39,7 +37,9 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
             isClosed
               ? data?.fields.winning_option?.fields.pos0 === "Yes"
                 ? "passed"
-                : "failed"
+                : data?.fields.winning_option === null && isClosed
+                  ? "pending"
+                  : "failed"
               : "active"
           }
         />
@@ -67,7 +67,7 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
                 color="fillContent-primary"
                 key={index + desc.substring(0, 20)}
               >
-                {desc}
+                <StringReplacer text={desc} />
               </Text>
             ))}
           </motion.div>

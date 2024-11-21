@@ -1,19 +1,19 @@
 export const SUINS_PACKAGES = {
   testnet: {
     packageId:
-      "0x79564cd76dd23e968136463eff836ae4a8950cf29e7a171b1f8b8946cc3a846a",
+      "0x2df7fb6fce94faeb1fb819d51f73fe4549e5d6f827828a641b2806a6dbf2d21b",
     // DEMO Coin Type
     coinType:
       "0xe3c2291f345d6dd96855e0f9415e58fd981cf95fd18331f0fb899d91a8969293::ns::NS",
 
     governance:
-      "0x607bf8fda1eab7bca26b03cb0ac089ff9633804ab86fd0a09bf08024553db21e",
+      "0x059ba00a90537a197066fc092508f6ddfc3e754e7874763edff3b1d6e702f542",
 
     // todo: update token object id
     votingTokenType:
-      "0x79564cd76dd23e968136463eff836ae4a8950cf29e7a171b1f8b8946cc3a846a::token::TOKEN",
+      "0x2df7fb6fce94faeb1fb819d51f73fe4549e5d6f827828a641b2806a6dbf2d21b::token::TOKEN",
     faucet:
-      "0x32b8b4304506636489efc262d680fa0d21ad45e1f375f23406dcdaa314ec7461",
+      "0xf6d7f2d00a2521f75fcbce03df5dd0d71887287a78296c3d786f36238122f8c9",
   },
   //TODO: update mainnet packageId
   mainnet: {
