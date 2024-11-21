@@ -19,3 +19,24 @@ input::-webkit-input-placeholder {
 .Toastify__toast-body {
   padding: 0px !important;
 }
+
+[data-dapp-kit] [role="dialog"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 1px; /* This creates the border width */
+  background: linear-gradient(
+    180deg,
+    #ffffff7e 0%,
+    #ffffff7e 45%,
+    #4ca2ff 60%,
+    #4ca2ff 100%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}

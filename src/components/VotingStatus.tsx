@@ -30,6 +30,7 @@ function MinimumThreshHold({
     roundFloat((totalVotes / threshold) * 100, 2),
     100,
   );
+
   return (
     <div className="flex w-full flex-col items-center justify-between gap-2024_R rounded-12 bg-2024_fillBackground-secondary-Highlight/40 px-2024_R py-2024_R">
       <div className="flex w-full items-center justify-between gap-2024_R">
@@ -69,11 +70,22 @@ function MinimumThreshHold({
         <Text
           variant="B7/regular"
           color="fillContent-secondary"
-          className="!tracking-tighter"
+          className="!tracking-tighter flex items-center font-paragraph"
         >
-          Minimum Voting Threshold: {1}%
+          Minimum Voting Threshold:{" "}
+          {formatBalance({
+            balance: threshold,
+            decimals: 0,
+            format: CoinFormat.ROUNDED,
+          })}{" "}
+          $NS
         </Text>
-        <Text variant="B7/regular" color={isReached ? "cyan" : "warning"}>
+
+        <Text
+          variant="B7/regular"
+          className="font-paragraph"
+          color={isReached ? "cyan" : "warning"}
+        >
           {isReached ? "Reached" : "Not Reached"}
         </Text>
       </div>

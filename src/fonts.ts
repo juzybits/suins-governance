@@ -25,7 +25,7 @@ export const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
   style: "normal",
-  weight: ["100", "400", "500", "600", "700", "900"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const redHatMono = Red_Hat_Mono({

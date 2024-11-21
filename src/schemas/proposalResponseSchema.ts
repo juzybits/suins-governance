@@ -71,7 +71,14 @@ export const proposalDetailSchema = z.object({
         ),
       }),
     }),
-    winning_option: z.null(),
+    winning_option: z
+      .object({
+        type: z.string(),
+        fields: z.object({
+          pos0: z.string(),
+        }),
+      })
+      .nullable(),
   }),
 });
 
@@ -89,7 +96,48 @@ export const votingObjectContentSchema = z.object({
     }),
     value: z.object({
       type: z.string(),
-      fields: z.record(z.array(z.string())),
+      fields: z.record(
+        z.array(
+          z.object({
+            type: z.string(),
+            fields: z.object({
+              end_time: z.string(),
+              proposal_id: z.string(),
+            }),
+          }),
+        ),
+      ),
+    }),
+  }),
+});
+
+export const governanceSchema = z.object({
+  dataType: z.literal("moveObject"),
+  type: z.string(),
+  hasPublicTransfer: z.boolean(),
+  fields: z.object({
+    id: z.object({
+      id: z.string(),
+    }),
+    name: z.object({
+      type: z.string(),
+      fields: z.object({
+        dummy_field: z.boolean(),
+      }),
+    }),
+    value: z.object({
+      type: z.string(),
+      fields: z.object({
+        pos0: z.array(
+          z.object({
+            type: z.string(),
+            fields: z.object({
+              end_time: z.string(),
+              proposal_id: z.string(),
+            }),
+          }),
+        ),
+      }),
     }),
   }),
 });

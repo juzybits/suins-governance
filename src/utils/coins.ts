@@ -38,7 +38,7 @@ export function formatAmountParts(
 export function formatAmount(...args: Parameters<typeof formatAmountParts>) {
   return formatAmountParts(...args)
     .filter(Boolean)
-    .join(" ");
+    .join("");
 }
 
 export function formatBalance({

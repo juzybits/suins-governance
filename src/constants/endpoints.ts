@@ -1,33 +1,31 @@
 export const SUINS_PACKAGES = {
   testnet: {
     packageId:
-      "0x14800667ae13cf6f045f1d4a5f9df280d36567a28f3ca0963530fd08f4285dc3",
+      "0x2df7fb6fce94faeb1fb819d51f73fe4549e5d6f827828a641b2806a6dbf2d21b",
     // DEMO Coin Type
     coinType:
       "0xe3c2291f345d6dd96855e0f9415e58fd981cf95fd18331f0fb899d91a8969293::ns::NS",
-    /// Package ID for voting
-    governancePackageId:
-      "0xfa7ff2c5a062486279511c6024d1caf219cde895d21065aa0b6b7ece5054f90f::proposal::vote",
+
     governance:
-      "0xfa7ff2c5a062486279511c6024d1caf219cde895d21065aa0b6b7ece5054f90f",
-    //NOT USED
-    governanceCap:
-      "0x0ac4a5333f8b1e0e2bda3b116593ca189cbc8ee7da38eda6306bf98f4b7cfa5a",
+      "0x059ba00a90537a197066fc092508f6ddfc3e754e7874763edff3b1d6e702f542",
+
     // todo: update token object id
     votingTokenType:
-      "0x14800667ae13cf6f045f1d4a5f9df280d36567a28f3ca0963530fd08f4285dc3::token::TOKEN",
+      "0x2df7fb6fce94faeb1fb819d51f73fe4549e5d6f827828a641b2806a6dbf2d21b::token::TOKEN",
     faucet:
-      "0x6f05d8aa8c729278df14f2b69938428a50921f16eef38d046195266b5522c136",
+      "0xf6d7f2d00a2521f75fcbce03df5dd0d71887287a78296c3d786f36238122f8c9",
   },
   //TODO: update mainnet packageId
   mainnet: {
-    packageId: "",
-    coinType: "",
+    packageId:
+      "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41",
+    coinType:
+      "0x5145494a5f5100e645e4b0aa950fa6b68f614e8c59e17bc5ded3495123a79178::ns::NS",
     /// Package ID for voting
-    governancePackageId: "",
-    governance: "",
-    governanceCap: "",
-    votingTokenType: "",
+    governance:
+      "0xbdaee786ef44ad0f0070829f11c884f1eff2941ebc4bc4e09f8d39544dcf2bdf",
+    votingTokenType:
+      "0x5145494a5f5100e645e4b0aa950fa6b68f614e8c59e17bc5ded3495123a79178::ns::NS",
     // No faucet for mainnet
     faucet: "",
   },
