@@ -70,17 +70,15 @@ function MinimumThreshHold({
         <Text
           variant="B7/regular"
           color="fillContent-secondary"
-          className="!tracking-tighter flex items-center gap-1"
+          className="!tracking-tighter flex items-center gap-0.5"
         >
           Minimum Voting Threshold:{" "}
-          <div className="flex items-center justify-center gap-0">
-            {formatBalance({
-              balance: threshold,
-              decimals: 0,
-              format: CoinFormat.ROUNDED,
-            })}{" "}
-            $NS
-          </div>
+          {formatBalance({
+            balance: threshold,
+            decimals: 0,
+            format: CoinFormat.ROUNDED,
+          })}{" "}
+          $NS
         </Text>
 
         <Text variant="B7/regular" color={isReached ? "cyan" : "warning"}>

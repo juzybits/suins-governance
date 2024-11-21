@@ -20,7 +20,7 @@ export function SectionLayout({
       </div>
     );
   return (
-    <div className="relative flex w-full flex-col gap-2024_XL rounded-2024_S bg-2024_fillBackground-searchBg p-2024_XL">
+    <div className="relative flex w-full flex-col gap-2024_XL rounded-2024_S bg-2024_fillBackground-searchBg p-2024_XL md:min-w-[364px]">
       <Heading
         variant={isLarge ? "H5/super" : "H6/super"}
         className="font-[750]"
