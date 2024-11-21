@@ -73,13 +73,13 @@ function MinimumThreshHold({
           className="!tracking-tighter flex items-center gap-1"
         >
           Minimum Voting Threshold:{" "}
-          <div className="flex items-center justify-center gap-1">
+          <div className="flex items-center justify-center gap-0">
             {formatBalance({
               balance: threshold,
               decimals: 0,
               format: CoinFormat.ROUNDED,
-            })}
-            <NSToken className="h-3 w-3" color="white" />
+            })}{" "}
+            $NS
           </div>
         </Text>
 

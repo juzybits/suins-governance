@@ -20,8 +20,8 @@ input::-webkit-input-placeholder {
   padding: 0px !important;
 }
 
-[data-dapp-kit] [role='dialog']::before {
-  content: '';
+[data-dapp-kit] [role="dialog"]::before {
+  content: "";
   position: absolute;
   inset: 0;
   border-radius: 16px;
