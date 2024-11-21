@@ -154,7 +154,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                     <NSToken className="absolute left-2024_XL top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-white" />
                     <input
                       type="number"
-                      step="0.001"
+                      step="0.000001"
                       {...register("amount")}
                       className={clsx(
                         "flex h-full w-full items-center rounded-2024_20 bg-2024_fillContent-primary-darker px-2024_XL py-2024_M pl-[50px] text-2024_body3 font-bold leading-normal text-2024_fillContent-secondary caret-2024_pink transition-all placeholder:text-2024_body4 placeholder:!leading-normal placeholder:text-2024_fillContent-primary-inactive focus:outline-none focus:placeholder:text-transparent",
