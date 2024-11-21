@@ -109,7 +109,7 @@ export function ProposalsMenu() {
   const { data, isLoading } = useGetProposalsIds();
   const inactiveProposals = data?.filter((proposal) => !proposal.isActive);
 
-  if (data && data?.length < 2) {
+  if (!data || data?.length < 2) {
     return null;
   }
 
