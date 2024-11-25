@@ -161,6 +161,7 @@ function VoterDetail({
                 <NSAmount
                   amount={voter?.totalVotes ?? 0}
                   isMedium
+                  size="P3/bold"
                   roundedCoinFormat={!isSmallOrAbove}
                   noTokenIcon
                 />
