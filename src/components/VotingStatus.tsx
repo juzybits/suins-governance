@@ -100,6 +100,7 @@ type VotedStateProps = {
   onlyStatus?: boolean;
   roundedCoinFormat?: boolean;
   noFormat?: boolean;
+  hidePercentage?: boolean;
 };
 
 export function VotingState({
@@ -109,26 +110,29 @@ export function VotingState({
   onlyStatus,
   roundedCoinFormat,
   noFormat,
+  hidePercentage,
 }: VotedStateProps) {
   return (
     <div className="flex w-full items-center justify-between gap-2">
-      <div className="flex basis-3/5 items-start">
+      <div className="flex items-start">
         <VoteIndicator votedStatus={votedState} onlyStatus={onlyStatus} />
       </div>
-      <NSAmount
-        amount={votes}
-        roundedCoinFormat={roundedCoinFormat}
-        noFormat={noFormat}
-      />
-      {percentage !== undefined && (
-        <Text
-          variant="P3/medium"
-          color="fillContent-secondary"
-          className="flex min-w-[60px] justify-end"
-        >
-          {percentage}%
-        </Text>
-      )}
+      <div className="flex min-w-[100px] basis-1/2 flex-row items-end justify-between gap-3">
+        {percentage !== undefined && !hidePercentage && (
+          <Text
+            variant="P3/medium"
+            color="fillContent-secondary"
+            className="flex min-w-[60px] justify-end"
+          >
+            {percentage}%
+          </Text>
+        )}
+        <NSAmount
+          amount={votes}
+          roundedCoinFormat={roundedCoinFormat}
+          noFormat={noFormat}
+        />
+      </div>
     </div>
   );
 }
@@ -144,11 +148,17 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
   const totalVotes =
     (resp?.yesVote ?? 0) + (resp?.noVote ?? 0) + (resp?.abstainVote ?? 0);
 
+  const totalVotesWithoutAbstain = totalVotes - (resp?.abstainVote ?? 0);
+
   const yesVotesPercentage =
-    totalVotes > 0 ? roundFloat(((resp?.yesVote ?? 0) / totalVotes) * 100) : 0;
+    totalVotes > 0
+      ? roundFloat(((resp?.yesVote ?? 0) / totalVotesWithoutAbstain) * 100)
+      : 0;
 
   const noVotesPecentage =
-    totalVotes > 0 ? roundFloat(((resp?.noVote ?? 0) / totalVotes) * 100) : 0;
+    totalVotes > 0
+      ? roundFloat(((resp?.noVote ?? 0) / totalVotesWithoutAbstain) * 100)
+      : 0;
   const abstainVotesPecentage =
     totalVotes > 0
       ? roundFloat(((resp?.abstainVote ?? 0) / totalVotes) * 100)
@@ -182,6 +192,7 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
           votes={resp?.abstainVote ?? 0}
           onlyStatus
           noFormat
+          hidePercentage
         />
       </div>
       <MinimumThreshHold

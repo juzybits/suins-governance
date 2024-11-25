@@ -268,11 +268,6 @@ function TopVoter({
       <div className="flex max-w-[118px] flex-col items-center justify-center gap-2024_R">
         <div className="relative h-[44px] w-[44px]">
           <Avatar address={address} className="h-[44px] w-[44px]" />
-          <div className="absolute -left-[6px] -top-[1px] mx-auto flex h-5 w-5 items-center justify-center rounded-16 border-2 border-[#221C36] bg-2024_fillBackground-secondary-Highlight">
-            <Text variant="B7/semibold" color="fillContent-primary">
-              {position}
-            </Text>
-          </div>
         </div>
         <Link href={explorerLink} target="_blank">
           <Text
@@ -435,8 +430,12 @@ export function Votes({ proposalId }: { proposalId: string }) {
           Votes
         </Heading>
         {counts !== undefined && (
-          <div className="flex rounded-2024_S bg-2024_fillBackground-secondary px-2024_M py-2024_S backdrop-blur-[20px]">
-            <Text variant="B5/bold" color="fillContent-secondary">
+          <div className="flex items-center rounded-2024_S bg-2024_fillBackground-secondary px-2024_M backdrop-blur-[20px]">
+            <Text
+              variant="B5/bold"
+              color="fillContent-secondary"
+              className="leading-none"
+            >
               {counts}
             </Text>
           </div>
