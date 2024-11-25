@@ -19,7 +19,6 @@ import Loader from "./ui/Loader";
 import {
   useGetVoteCastedById,
   getVoteTypeWithMostVotes,
-  parseVotesData,
 } from "@/hooks/useGetVoteCasted";
 import { VoteIndicator } from "@/components/ui/VoteIndicator";
 import { NSAmount } from "./ui/NSAmount";
@@ -110,24 +109,29 @@ function VoterDetail({
           </div>
           <Divide />
           <div className="mt-2.5 flex w-full flex-col items-end justify-end gap-2.5">
-            {voteCast?.map((item) => (
-              <div
-                className="flex w-full flex-row items-end justify-end gap-2.5"
-                key={item.key}
-              >
-                <VoteIndicator votedStatus={item.key as VoteType} onlyStatus />
-                <div className="flex min-w-[50px] items-center justify-end gap-1">
-                  <NSAmount
-                    amount={item?.votes ?? 0}
-                    isMedium
-                    size="P3/bold"
-                    roundedCoinFormat={!isSmallOrAbove}
-                    noTokenIcon
-                    className="min-w-[50px]"
+            {voteCast
+              .filter((item) => item.votes && item.votes > 0)
+              ?.map((item) => (
+                <div
+                  className="flex w-full flex-row items-end justify-end gap-2.5"
+                  key={item.key}
+                >
+                  <VoteIndicator
+                    votedStatus={item.key as VoteType}
+                    onlyStatus
                   />
+                  <div className="flex min-w-[50px] items-center justify-end gap-1">
+                    <NSAmount
+                      amount={item?.votes ?? 0}
+                      isMedium
+                      size="P3/bold"
+                      roundedCoinFormat={!isSmallOrAbove}
+                      noTokenIcon
+                      className="min-w-[50px]"
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       ) : (
