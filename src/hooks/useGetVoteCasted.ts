@@ -90,6 +90,7 @@ export function parseVotesData(data: ParsedVotes) {
     yesVote,
     noVote,
     abstainVote,
+    totalVotes: yesVote + noVote + abstainVote,
   };
 }
 

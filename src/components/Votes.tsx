@@ -5,6 +5,7 @@ import { Heading } from "@/components/ui/Heading";
 import { Text } from "@/components/ui/Text";
 import { formatAddress } from "@mysten/sui/utils";
 import { useGetAllVoters } from "@/hooks/useGetAllVoters";
+
 import {
   useGetProposalDetail,
   getTopVotersByVoteType,
@@ -18,6 +19,7 @@ import Loader from "./ui/Loader";
 import {
   useGetVoteCastedById,
   getVoteTypeWithMostVotes,
+  parseVotesData
 } from "@/hooks/useGetVoteCasted";
 import { VoteIndicator } from "@/components/ui/VoteIndicator";
 import { NSAmount } from "./ui/NSAmount";
@@ -47,12 +49,28 @@ function VoterDetail({
   const isSmallOrAbove = useBreakpoint("sm");
   const formattedAddress = truncatedText({
     text: formatAddress(voterAddress),
-    maxLength: isSmallOrAbove ? 20 : 6,
+    maxLength: isSmallOrAbove ? 40 : 6,
   });
   const formattedName =
     accountInfo?.name &&
     truncatedText({ text: formatName(accountInfo?.name), maxLength: 12 });
+  const voteCast = [{
+    key: "Abstain",
+    votes: voter?.abstainVote,
+  }, {
+    key: "No",
+    votes: voter?.noVote,
+  }, {
+    key: "Yes",
+    votes: voter?.yesVote,
+  }];
+ 
   const votes = voter ? getVoteTypeWithMostVotes(voter)?.[0] : null;
+
+  const hasVotedMultipleCategories =
+    [voter?.yesVote, voter?.noVote, voter?.abstainVote]?.filter(
+      (vote) => vote ?? 0 > 0,
+    ).length > 1;
 
   const explorerLink = useExplorerLink({
     id: voterAddress || "",
@@ -60,34 +78,87 @@ function VoterDetail({
   });
 
   return (
-    <div className="flex items-center justify-between gap-1 md:gap-2.5">
-      <div className="flex w-fit min-w-[80px] items-center justify-start gap-2.5 text-start md:min-w-[254px]">
-        <Text
-          variant="B6/bold"
-          color="fillContent-tertiary"
-          className="min-w-3"
-        >
-          {position}
-        </Text>
-        <Avatar address={voterAddress} className="h-[32px] w-[32px]" />
-        <Link href={explorerLink} target="_blank">
-          <Text variant="B6/bold" color="fillContent-primary">
-            {formattedName ?? formattedAddress}
-          </Text>
-        </Link>
-      </div>
-      {votes && (
-        <div className="flex w-full basis-1/3 flex-row items-center justify-between gap-2.5">
-          <div className="w-fit basis-1/3">
-            <VoteIndicator votedStatus={votes.key as VoteType} onlyStatus />
-          </div>
-          <div className="flex min-w-[100px] items-center justify-end gap-1">
+    <div className="rounded-lg bg-walletItemSelected p-2024_M">
+      {hasVotedMultipleCategories ? (
+        <div className="flex w-full flex-col items-center justify-between gap-2024_S">
+          <div className="flex w-full items-center justify-between gap-1 md:gap-2.5">
+            <div className="flex w-full min-w-[160px] items-center justify-start gap-2.5 text-start md:min-w-[254px]">
+              <Text
+                variant="B6/bold"
+                color="fillContent-tertiary"
+                className="min-w-3"
+              >
+                {position}
+              </Text>
+              <Avatar address={voterAddress} className="h-[32px] w-[32px]" />
+              <Link href={explorerLink} target="_blank">
+                <Text variant="B6/bold" color="fillContent-primary">
+                  {formattedName ?? formattedAddress}
+                </Text>
+              </Link>
+            </div>
             <NSAmount
-              amount={votes.votes}
-              isMedium
+              amount={voter?.totalVotes ?? 0}
+              size="P3/bold"
               roundedCoinFormat={!isSmallOrAbove}
+              noTokenIcon
             />
           </div>
+          <Divide />
+          <div className="flex w-full flex-col items-end justify-end gap-2.5 mt-2.5">
+            {voteCast?.map((item) => (
+              <div
+                className="flex w-full flex-row items-end justify-end gap-2.5"
+                key={item.key}
+              >
+                <VoteIndicator votedStatus={item.key as VoteType} onlyStatus />
+                <div className="flex min-w-[50px] items-center justify-end gap-1">
+                  <NSAmount
+                    amount={item?.votes ?? 0}
+                    isMedium
+                    size="P3/bold"
+                    roundedCoinFormat={!isSmallOrAbove}
+                    noTokenIcon
+                    className="min-w-[50px]"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="flex items-center justify-between gap-1 md:gap-2.5">
+          <div className="flex w-fit min-w-[80px] items-center justify-start gap-2.5 text-start md:min-w-[254px]">
+            <Text
+              variant="B6/bold"
+              color="fillContent-tertiary"
+              className="min-w-3"
+            >
+              {position}
+            </Text>
+            <Avatar address={voterAddress} className="h-[32px] w-[32px]" />
+            <Link href={explorerLink} target="_blank">
+              <Text variant="B6/bold" color="fillContent-primary">
+                {formattedName ?? formattedAddress}
+              </Text>
+            </Link>
+          </div>
+
+          {votes && (
+            <div className="flex w-full basis-1/3 flex-row items-center justify-between gap-2.5">
+              <div className="w-fit basis-1/3">
+                <VoteIndicator votedStatus={votes.key as VoteType} onlyStatus />
+              </div>
+              <div className="flex  items-center justify-end gap-1">
+                <NSAmount
+                  amount={voter?.totalVotes ?? 0}
+                  isMedium
+                  roundedCoinFormat={!isSmallOrAbove}
+                  noTokenIcon
+                />
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -130,7 +201,7 @@ function AllVoter({
         </Heading>
         <div
           className={cn(
-            "flex flex-col gap-2024_XL overflow-x-scroll",
+            "flex flex-col gap-2024_S overflow-x-scroll",
             // prevent jumping between pages
             !pagination.hasNext && pagination.hasPrev && "min-h-[519px]",
           )}

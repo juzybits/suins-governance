@@ -1,4 +1,4 @@
-import { Text } from "@/components/ui/Text";
+import { Text, type TextProps } from "@/components/ui/Text";
 import NSToken from "@/icons/NSToken";
 import { useCoinMetadata } from "@/hooks/useCoinMetadata";
 import { CoinFormat, formatBalance } from "@/utils/coins";
@@ -14,13 +14,17 @@ export function NSAmount({
   noFormat,
   centerAlign,
   className,
+  noTokenIcon,
+  size,
 }: {
   amount: number;
   isMedium?: boolean;
+  size?: Extract<TextProps["variant"], "B4/bold" | "P3/medium" | "P3/bold">;
   roundedCoinFormat?: boolean;
   noFormat?: boolean;
   centerAlign?: boolean;
   className?: string;
+  noTokenIcon?: boolean;
 }) {
   const { data: coinMetadata } = useCoinMetadata({
     coinType: SUINS_PACKAGES[NETWORK].votingTokenType,
@@ -43,13 +47,15 @@ export function NSAmount({
       )}
     >
       <Text
-        variant={isMedium ? "B4/bold" : "P3/medium"}
+        variant={size ?? (isMedium ? "B4/bold" : "P3/medium")}
         color="fillContent-secondary"
         className="w-fit"
       >
         {amountFormatted}
       </Text>
-      <NSToken className={isMedium ? "h-4 w-4" : "h-3 w-3"} color="white" />
+      {!noTokenIcon && (
+        <NSToken className={isMedium ? "h-4 w-4" : "h-3 w-3"} color="white" />
+      )}
     </div>
   );
 }
