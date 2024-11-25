@@ -39,9 +39,16 @@ function MinimumThreshHold({
           color="fillContent-primary"
           className="flex basis-3/5 items-start"
         >
-          Votes Casted
+          Votes Cast
         </Text>
         <div className="flex basis-1/5 items-center justify-end gap-2024_R">
+          <Text
+            variant="P3/medium"
+            color="fillContent-secondary"
+            className="flex max-w-[43px] basis-1/5 justify-end"
+          >
+            {percentage}%
+          </Text>
           <div className="flex basis-1/5 items-center justify-end gap-1">
             <Text
               variant="P3/medium"
@@ -57,13 +64,6 @@ function MinimumThreshHold({
             <NSToken className="h-3 w-3" color="white" />
           </div>
         </div>
-        <Text
-          variant="P3/medium"
-          color="fillContent-secondary"
-          className="flex max-w-[43px] basis-1/5 justify-end"
-        >
-          {percentage}%
-        </Text>
       </div>
       <GradientProgressBar percentage={percentage} />
       <div className="flex w-full items-center justify-between gap-1">
