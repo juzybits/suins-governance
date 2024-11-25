@@ -19,7 +19,7 @@ import Loader from "./ui/Loader";
 import {
   useGetVoteCastedById,
   getVoteTypeWithMostVotes,
-  parseVotesData
+  parseVotesData,
 } from "@/hooks/useGetVoteCasted";
 import { VoteIndicator } from "@/components/ui/VoteIndicator";
 import { NSAmount } from "./ui/NSAmount";
@@ -54,17 +54,21 @@ function VoterDetail({
   const formattedName =
     accountInfo?.name &&
     truncatedText({ text: formatName(accountInfo?.name), maxLength: 12 });
-  const voteCast = [{
-    key: "Abstain",
-    votes: voter?.abstainVote,
-  }, {
-    key: "No",
-    votes: voter?.noVote,
-  }, {
-    key: "Yes",
-    votes: voter?.yesVote,
-  }];
- 
+  const voteCast = [
+    {
+      key: "Abstain",
+      votes: voter?.abstainVote,
+    },
+    {
+      key: "No",
+      votes: voter?.noVote,
+    },
+    {
+      key: "Yes",
+      votes: voter?.yesVote,
+    },
+  ];
+
   const votes = voter ? getVoteTypeWithMostVotes(voter)?.[0] : null;
 
   const hasVotedMultipleCategories =
@@ -105,7 +109,7 @@ function VoterDetail({
             />
           </div>
           <Divide />
-          <div className="flex w-full flex-col items-end justify-end gap-2.5 mt-2.5">
+          <div className="mt-2.5 flex w-full flex-col items-end justify-end gap-2.5">
             {voteCast?.map((item) => (
               <div
                 className="flex w-full flex-row items-end justify-end gap-2.5"
@@ -149,7 +153,7 @@ function VoterDetail({
               <div className="w-fit basis-1/3">
                 <VoteIndicator votedStatus={votes.key as VoteType} onlyStatus />
               </div>
-              <div className="flex  items-center justify-end gap-1">
+              <div className="flex items-center justify-end gap-1">
                 <NSAmount
                   amount={voter?.totalVotes ?? 0}
                   isMedium
