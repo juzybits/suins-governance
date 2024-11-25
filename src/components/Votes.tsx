@@ -66,7 +66,7 @@ function VoterDetail({
       key: "Yes",
       votes: voter?.yesVote,
     },
-  ];
+  ].filter((item) => item.votes && item.votes > 0);
 
   const votes = voter ? getVoteTypeWithMostVotes(voter)?.[0] : null;
 
@@ -109,34 +109,29 @@ function VoterDetail({
           </div>
           <Divide />
           <div className="mt-2.5 flex w-full flex-col items-end justify-end gap-2.5">
-            {voteCast
-              .filter((item) => item.votes && item.votes > 0)
-              ?.map((item) => (
-                <div
-                  className="flex w-full flex-row items-end justify-end gap-2.5"
-                  key={item.key}
-                >
-                  <VoteIndicator
-                    votedStatus={item.key as VoteType}
-                    onlyStatus
+            {voteCast?.map((item) => (
+              <div
+                className="flex w-full flex-row items-center justify-end gap-2.5"
+                key={item.key}
+              >
+                <VoteIndicator votedStatus={item.key as VoteType} onlyStatus />
+                <div className="flex min-w-[60px] items-center justify-end gap-1">
+                  <NSAmount
+                    amount={item?.votes ?? 0}
+                    isMedium
+                    size="P3/bold"
+                    roundedCoinFormat={!isSmallOrAbove}
+                    noTokenIcon
+                    className="min-w-[50px]"
                   />
-                  <div className="flex min-w-[50px] items-center justify-end gap-1">
-                    <NSAmount
-                      amount={item?.votes ?? 0}
-                      isMedium
-                      size="P3/bold"
-                      roundedCoinFormat={!isSmallOrAbove}
-                      noTokenIcon
-                      className="min-w-[50px]"
-                    />
-                  </div>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
         </div>
       ) : (
         <div className="flex items-center justify-between gap-1 md:gap-2.5">
-          <div className="flex w-fit min-w-[80px] items-center justify-start gap-2.5 text-start md:min-w-[254px]">
+          <div className="flex w-full items-center justify-start gap-2.5 text-start md:min-w-[60px]">
             <Text
               variant="B6/bold"
               color="fillContent-tertiary"
@@ -153,11 +148,11 @@ function VoterDetail({
           </div>
 
           {votes && (
-            <div className="flex w-full basis-1/3 flex-row items-center justify-between gap-2.5">
+            <div className="flex w-full flex-row items-center justify-end gap-2.5">
               <div className="w-fit basis-1/3">
                 <VoteIndicator votedStatus={votes.key as VoteType} onlyStatus />
               </div>
-              <div className="flex items-center justify-end gap-1">
+              <div className="flex min-w-[80px] items-center justify-end gap-1">
                 <NSAmount
                   amount={voter?.totalVotes ?? 0}
                   isMedium
