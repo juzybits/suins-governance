@@ -44,7 +44,7 @@ export function ProposalDetail({ proposalId }: { proposalId: string }) {
           <>
             <div className="flex justify-between">
               <Text variant="LABEL/bold" color="fillContent-secondary">
-                Voting started
+                Voting Started
               </Text>
               <Text variant="LABEL/bold" color="fillContent-primary">
                 {proposalStartDate}
@@ -63,7 +63,7 @@ export function ProposalDetail({ proposalId }: { proposalId: string }) {
           <>
             <div className="flex justify-between">
               <Text variant="LABEL/bold" color="fillContent-secondary">
-                Voting started
+                Voting Started
               </Text>
               <Text variant="LABEL/bold" color="fillContent-primary">
                 {proposalStartDate}
