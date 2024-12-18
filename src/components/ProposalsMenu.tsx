@@ -7,6 +7,7 @@ import {
   Trigger,
 } from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
+import parse from "html-react-parser";
 
 import { isPast } from "date-fns";
 import SvgChevronDown from "@/icons/ChevronDown";
@@ -74,7 +75,7 @@ function ProposalPreview({
             className="leading-normal"
             key={index + desc.substring(0, 20)}
           >
-            <StringReplacer text={desc} />
+            {parse(desc)}
           </Text>
         ))}
       </div>
