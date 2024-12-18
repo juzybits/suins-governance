@@ -7,7 +7,6 @@ import {
   Trigger,
 } from "@radix-ui/react-dropdown-menu";
 import Link from "next/link";
-import parse from "html-react-parser";
 
 import { isPast } from "date-fns";
 import SvgChevronDown from "@/icons/ChevronDown";
@@ -19,13 +18,14 @@ import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { useGetProposalsIds } from "@/hooks/useGetProposals";
 import { ProposalStatus } from "./ui/ProposalStatus";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
-import { Text, StringReplacer } from "@/components/ui/Text";
+import { Text } from "@/components/ui/Text";
 import { GradientBorder } from "./gradient-border";
 import { Heading } from "./ui/Heading";
 import { Divide } from "@/components/ui/Divide";
 import { truncatedText } from "@/utils/truncatedText";
 import Loader from "./ui/Loader";
 import { formatContractText } from "@/utils/formatContractText";
+import { ContentBlockParser } from "./ui/ContentBlockParser";
 
 function ProposalPreview({
   proposalId,
@@ -75,7 +75,7 @@ function ProposalPreview({
             className="leading-normal"
             key={index + desc.substring(0, 20)}
           >
-            {parse(desc)}
+            <ContentBlockParser text={desc} />
           </Text>
         ))}
       </div>
@@ -168,7 +168,7 @@ export function ProposalsMenu() {
                           href={`/proposal/${data?.[0]?.fields.proposal_id}`}
                           className="block"
                         >
-                          <DropdownMenuItem>
+                          <DropdownMenuItem className="focus:outline-none focus-visible:outline-none">
                             <ProposalPreview
                               proposalId={data?.[0]?.fields.proposal_id}
                               isActive
@@ -178,7 +178,7 @@ export function ProposalsMenu() {
                       </div>
                     )}
                     {inactiveProposals && inactiveProposals?.length > 0 && (
-                      <div className="flex flex-col gap-2024_M">
+                      <div className="flex flex-col gap-2024_M focus:outline-none focus-visible:outline-none">
                         <Text variant="B6/bold" color="fillContent-primary">
                           PREVIOUS ({inactiveProposals?.length})
                         </Text>
@@ -186,6 +186,7 @@ export function ProposalsMenu() {
                           <DropdownMenuItem
                             asChild
                             key={proposals.fields.proposal_id}
+                            className="focus:outline-none focus-visible:outline-none"
                           >
                             <Link
                               href={`/proposal/${proposals.fields.proposal_id}`}

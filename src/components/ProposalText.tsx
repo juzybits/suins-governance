@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
-import parse from "html-react-parser";
 
 import { Heading } from "@/components/ui/Heading";
 import { Text } from "@/components/ui/Text";
@@ -10,6 +9,7 @@ import { Button } from "./ui/button/Button";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { isPast } from "date-fns";
 import { formatContractText } from "@/utils/formatContractText";
+import { ContentBlockParser } from "./ui/ContentBlockParser";
 
 // TODO: Add hook to fetch proposal data
 export function ProposalText({ proposalId }: { proposalId: string }) {
@@ -69,7 +69,7 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
                 color="fillContent-primary"
                 key={index + desc.substring(0, 20)}
               >
-                {parse(desc)}
+                <ContentBlockParser text={desc} />
               </Text>
             ))}
           </motion.div>

@@ -50,7 +50,7 @@ export function Header({
             "flex w-full items-center justify-between gap-[4px] md:gap-2024_2XL",
           )}
         >
-          <div className="flex items-center justify-center gap-2024_S">
+          <div className="flex items-center justify-center gap-2024_S md:gap-2024_M">
             <Link
               href="https://suins.io/"
               target="_blank"
