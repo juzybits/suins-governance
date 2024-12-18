@@ -26,6 +26,7 @@ import { truncatedText } from "@/utils/truncatedText";
 import Loader from "./ui/Loader";
 import { formatContractText } from "@/utils/formatContractText";
 import { ContentBlockParser } from "./ui/ContentBlockParser";
+import { useParams } from "next/navigation";
 
 function ProposalPreview({
   proposalId,
@@ -109,6 +110,7 @@ export function ProposalsMenu() {
   const isSmallOrAbove = useBreakpoint("sm");
   const { data, isLoading } = useGetProposalsIds();
   const inactiveProposals = data?.filter((proposal) => !proposal.isActive);
+  const params = useParams<{ proposal: string }>();
 
   if (!data || data?.length < 2) {
     return null;
@@ -171,7 +173,11 @@ export function ProposalsMenu() {
                           <DropdownMenuItem className="focus:outline-none focus-visible:outline-none">
                             <ProposalPreview
                               proposalId={data?.[0]?.fields.proposal_id}
-                              isActive
+                              isActive={
+                                params.proposal ===
+                                  data?.[0]?.fields.proposal_id ||
+                                !params.proposal
+                              }
                             />
                           </DropdownMenuItem>
                         </Link>
@@ -195,6 +201,10 @@ export function ProposalsMenu() {
                               <ProposalPreview
                                 proposalId={proposals.fields.proposal_id}
                                 key={proposals.fields.proposal_id}
+                                isActive={
+                                  params.proposal ===
+                                  proposals.fields.proposal_id
+                                }
                               />
                             </Link>
                           </DropdownMenuItem>
