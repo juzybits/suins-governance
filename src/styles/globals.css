@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  ul, ol {
+    list-style: revert;
+  }
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   /* display: none; <- Crashes Chrome on hover */
@@ -39,4 +45,21 @@ input::-webkit-input-placeholder {
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
+}
+
+.proposal-text {
+  font-size: 16px;
+  line-height: 24px;
+  color: #fff;
+}
+.proposal-text li {
+  list-style-type: disc;
+}
+
+.proposal-text ul {
+  list-style-type: disc;
+}
+
+.proposal-text ol {
+  list-style-type: decimal;
 }

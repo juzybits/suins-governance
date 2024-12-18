@@ -2,13 +2,15 @@ import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 
 import { Heading } from "@/components/ui/Heading";
-import { Text, StringReplacer } from "@/components/ui/Text";
+import { Text } from "@/components/ui/Text";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { ProposalStatus } from "./ui/ProposalStatus";
 import { Button } from "./ui/button/Button";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { isPast } from "date-fns";
 import { formatContractText } from "@/utils/formatContractText";
+import { ContentBlockParser } from "./ui/ContentBlockParser";
+
 // TODO: Add hook to fetch proposal data
 export function ProposalText({ proposalId }: { proposalId: string }) {
   const isSmallOrAbove = useBreakpoint("sm");
@@ -59,7 +61,7 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
               opacity: isExpanded ? 1 : 0.85,
             }}
             transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
-            className="relative flex flex-col gap-2024_M overflow-hidden"
+            className="text-proposal-text relative flex flex-col gap-2024_M overflow-hidden"
           >
             {description?.map((desc, index) => (
               <Text
@@ -67,7 +69,7 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
                 color="fillContent-primary"
                 key={index + desc.substring(0, 20)}
               >
-                <StringReplacer text={desc} />
+                <ContentBlockParser text={desc} />
               </Text>
             ))}
           </motion.div>
