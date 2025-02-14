@@ -17,7 +17,7 @@ export const env = createEnv({
    */
   client: {
     // set this to mainnet for production
-    NEXT_PUBLIC_VITE_NETWORK: z.enum(["testnet", "mainnet"]).default("mainnet"),
+    NEXT_PUBLIC_VITE_NETWORK: z.enum(["testnet", "mainnet"]).default("testnet"),
   },
 
   /**
