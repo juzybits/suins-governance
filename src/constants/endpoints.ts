@@ -1,4 +1,15 @@
 export const SUINS_PACKAGES = {
+  localnet: {
+    votingPkgId:
+      "0x9259e7e80430ef2d18d4f289da0c1ecc4c28554d4c06d562941909f8f4fdef03",
+    governanceObjId:
+      "0xda3267cdd09a517c1c76d217a1e7da11f0b1c544cecf9edeaf7a439485fea13c",
+    coinType:
+      "0x03cf2546512e4a0776f51265a81eeb782f9f3738c313a54a80e22860f6e008b7::ns::NS",
+    votingTokenType:
+      "0x03cf2546512e4a0776f51265a81eeb782f9f3738c313a54a80e22860f6e008b7::ns::NS",
+    faucet: "",
+  },
   testnet: {
     votingPkgId:
       "0x2df7fb6fce94faeb1fb819d51f73fe4549e5d6f827828a641b2806a6dbf2d21b",
@@ -29,6 +40,9 @@ export const SUINS_PACKAGES = {
 };
 
 export const SUINS_ENDPOINTS = {
+  localnet: {
+    fullNodes: "http://127.0.0.1:9000",
+  },
   testnet: {
     fullNodes: "https://suins-rpc.testnet.sui.io:443",
     backend: "https://api-testnet.suins.io",
