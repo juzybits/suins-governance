@@ -36,6 +36,7 @@ const config = {
         },
       },
     ],
+    "@typescript-eslint/prefer-nullish-coalescing": "warn",
   },
 };
 module.exports = config;

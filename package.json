@@ -6,11 +6,12 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
-    "lint": "next lint",
     "start": "next start",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix && bun run prettier:fix",
     "prettier:check": "prettier -c --ignore-unknown .",
     "prettier:fix": "prettier -w --ignore-unknown .",
-    "lint:fix": "eslint:lint --fix && prettier:fix"
+    "typecheck": "tsc -b"
   },
   "dependencies": {
     "@amplitude/analytics-browser": "^1.10.3",
