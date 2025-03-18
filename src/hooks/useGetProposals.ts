@@ -12,7 +12,7 @@ export function useGetProposalsIds() {
     queryKey: ["governanceObject-dynamic-fields-objects"],
     queryFn: async () => {
       const proposalsContent = await client.getDynamicFields({
-        parentId: SUINS_PACKAGES[network].governance,
+        parentId: SUINS_PACKAGES[network].governanceObjId,
         limit: 20,
       });
 
@@ -24,7 +24,7 @@ export function useGetProposalsIds() {
       }
 
       const dynamicFieldsObject = await client.getDynamicFieldObject({
-        parentId: SUINS_PACKAGES[network].governance,
+        parentId: SUINS_PACKAGES[network].governanceObjId,
         name: {
           type: proposalsContent.data[0].name.type,
           value: proposalsContent.data[0].name.value,

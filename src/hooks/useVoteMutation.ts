@@ -67,7 +67,7 @@ export function useVoteMutation(
 
       txb.setGasBudgetIfNotSet(GAS_BUDGET);
       txb.moveCall({
-        target: `${SUINS_PACKAGES[NETWORK].packageId}::proposal::vote`,
+        target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::proposal::vote`,
         arguments: [
           txb.object(proposalId),
           txb.pure.string(vote),

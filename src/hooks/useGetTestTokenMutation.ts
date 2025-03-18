@@ -32,7 +32,7 @@ export function useGetTestTokenMutation(
         throw new Error("Cannot mint test tokens on mainnet");
       }
       txb.moveCall({
-        target: SUINS_PACKAGES[NETWORK].packageId + "::token::mint",
+        target: SUINS_PACKAGES[NETWORK].votingPkgId + "::token::mint",
         arguments: [
           txb.object(SUINS_PACKAGES[NETWORK].faucet), //
           txb.pure.u64(MINT_TOKENS_AMOUNT),
