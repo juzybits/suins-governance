@@ -5,6 +5,7 @@ import React, { ReactNode, useState, useMemo, useEffect } from "react";
 import { StakingBatchWithVotingPower } from "@/hooks/staking/useGetStakingBatches";
 import { useStakeMutation } from "@/hooks/staking/useStakeMutation";
 import { useLockMutation } from "@/hooks/staking/useLockMutation";
+import { useUnstakeMutation } from "@/hooks/staking/useUnstakeMutation";
 
 export function StakeContent({
   stakeBatches,
@@ -117,6 +118,7 @@ function PanelStake({
 
 function BatchCard({ batch }: { batch: StakingBatchWithVotingPower }) {
   const [showLockModal, setShowLockModal] = useState(false);
+  const [showUnstakeModal, setShowUnstakeModal] = useState(false);
 
   const status = batch.isLocked
     ? "Locked"
@@ -168,15 +170,27 @@ function BatchCard({ batch }: { batch: StakingBatchWithVotingPower }) {
           )}
         </div>
 
-        {status === "Staked" && (
-          <Btn onClick={() => setShowLockModal(true)}>Lock</Btn>
-        )}
+        <div>
+          {status === "Staked" && (
+            <>
+              <Btn onClick={() => setShowLockModal(true)}>Lock</Btn>
+              <Btn onClick={() => setShowUnstakeModal(true)}>Unstake</Btn>
+            </>
+          )}
+        </div>
       </div>
 
       {showLockModal && (
         <LockBatchModal
           batch={batch}
           onClose={() => setShowLockModal(false)}
+        />
+      )}
+
+      {showUnstakeModal && (
+        <UnstakeBatchModal
+          batch={batch}
+          onClose={() => setShowUnstakeModal(false)}
         />
       )}
     </div>
@@ -251,6 +265,49 @@ function LockBatchModal({
       <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-between" }}>
         <Btn onClick={onClose}>Cancel</Btn>
         <Btn onClick={onLockBatch}>Lock Tokens</Btn>
+      </div>
+    </PopUp>
+  );
+}
+
+function UnstakeBatchModal({
+  batch,
+  onClose,
+}: {
+  batch: StakingBatchWithVotingPower;
+  onClose: () => void;
+}) {
+  const { mutateAsync: requestUnstake } = useUnstakeMutation();
+
+  const onUnstake = async () => {
+    try {
+      await requestUnstake({
+        batchId: batch.objectId
+      });
+      onClose();
+    } catch (error) {
+      console.error("Failed to unstake batch:", error);
+    }
+  };
+
+  return (
+    <PopUp>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <H2>Unstake Tokens</H2>
+        <button onClick={onClose}>×</button>
+      </div>
+
+      <p>Unstaking initiates a 3-day cooldown period.</p>
+
+      <div style={{ padding: "10px", border: "1px solid #ddd", margin: "10px 0" }}>
+        <div>{batch.amountNS.toLocaleString()} NS</div>
+        <div>Votes: {Math.floor(batch.votingPower).toLocaleString()}</div>
+        <div>Started: {batch.startDate.toLocaleDateString()}</div>
+      </div>
+
+      <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-between" }}>
+        <Btn onClick={onClose}>Cancel</Btn>
+        <Btn onClick={onUnstake}>Confirm Unstake</Btn>
       </div>
     </PopUp>
   );
