@@ -2,33 +2,38 @@
 
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
-import { SuiObjectResponse } from "@mysten/sui/client";
 import { coinWithBalance, Transaction } from "@mysten/sui/transactions";
-import React, { ReactNode, useState } from "react";
-
-type TokenData = {
-  locked: number;
-  staked: number;
-  available: number;
-  power: number;
-};
+import React, { ReactNode, useState, useMemo } from "react";
+import { StakingBatchWithVotingPower } from "@/hooks/useGetStakingBatches";
 
 export function StakeContent({
   stakeBatches,
 }: {
-  stakeBatches: SuiObjectResponse[];
+  stakeBatches: StakingBatchWithVotingPower[];
 }) {
-  const [tokenData] = useState<TokenData>({
-    locked: 1000,
-    staked: 2000,
-    available: 4063,
-    power: 3500,
-  });
+  const tokenData = useMemo(() => {
+    let locked = 0;
+    let staked = 0;
+    let power = 0;
+
+    stakeBatches.forEach(batch => {
+      if (batch.isLocked) {
+        locked += batch.amountNS;
+      } else if (batch.isStaked) {
+        staked += batch.amountNS;
+      }
+      power += batch.votingPower;
+    });
+
+    const available = 1000; // TODO: get from wallet
+
+    return { locked, staked, available, power };
+  }, [stakeBatches]);
 
   return (
     <div style={{ fontFamily: "sans-serif", maxWidth: "800px", margin: "0 auto" }}>
       <PanelOverview tokenData={tokenData} />
-      <PanelStake tokenData={tokenData} />
+      <PanelStake stakeBatches={stakeBatches} tokenData={tokenData} />
       <PanelParticipation />
     </div>
   );
@@ -37,35 +42,39 @@ export function StakeContent({
 function PanelOverview({
   tokenData,
 }: {
-  tokenData: TokenData;
+  tokenData: { locked: number; staked: number; available: number; power: number; };
 }) {
   const { locked, staked, available, power } = tokenData;
+  const lockedVotesText = locked > 0 ? `(${Math.round(power * (locked / (locked + staked)))} Votes)` : "(0 Votes)";
+  const stakedVotesText = staked > 0 ? `(${Math.round(power * (staked / (locked + staked)))} Votes)` : "(0 Votes)";
+
   return (
     <Panel>
       <div>
-        <p>Total Locked: {locked} NS (X Votes)</p>
+        <p>Total Locked: {locked.toLocaleString()} NS {lockedVotesText}</p>
       </div>
       <div>
-        <p>Total Staked: {staked} NS (X Votes)</p>
+        <p>Total Staked: {staked.toLocaleString()} NS {stakedVotesText}</p>
       </div>
       <div>
-        <p>Available Tokens: {available} NS</p>
+        <p>Available Tokens: {available.toLocaleString()} NS</p>
       </div>
       <div>
-        <p>Your Total Votes: {power}</p>
+        <p>Your Total Votes: {power.toLocaleString()}</p>
       </div>
     </Panel>
   );
 }
 
 function PanelStake({
+  stakeBatches,
   tokenData,
 }: {
-  tokenData: TokenData;
+  stakeBatches: StakingBatchWithVotingPower[];
+  tokenData: { locked: number; staked: number; available: number; power: number; };
 }) {
   const [showStakeModal, setShowStakeModal] = useState(false);
   const [stakeMode, setStakeMode] = useState<"stake" | "lock">("stake");
-  const batches: { id: string }[] = [];
 
   const onOpenStakeModal = (mode: "stake" | "lock") => {
     setStakeMode(mode);
@@ -74,19 +83,23 @@ function PanelStake({
 
   return (
     <Panel>
-      <H2>Staked & Locked (count: {batches.length})</H2>
-      {batches.length === 0 ? (
+      <H2>Staked & Locked (count: {stakeBatches.length})</H2>
+      {stakeBatches.length === 0 ? (
         <div>
           <H3>No Stakes or Locks</H3>
-          <p>Start Staking your SUI to Participate in governance, earn rewards, and shape the future of SuiNS</p>
+          <p>Start Staking your NS to participate in governance, earn rewards, and shape the future of SuiNS</p>
           <Btn onClick={() => onOpenStakeModal("stake")}>Stake</Btn>
           <Btn onClick={() => onOpenStakeModal("lock")}>Lock</Btn>
         </div>
       ) : (
         <div>
-          {batches.map((batch) => (
-            <div key={batch.id}>{batch.id}</div>
+          {stakeBatches.map((batch) => (
+            <BatchCard key={batch.objectId} batch={batch} />
           ))}
+          <div style={{ marginTop: "10px" }}>
+            <Btn onClick={() => onOpenStakeModal("stake")}>Stake More</Btn>
+            <Btn onClick={() => onOpenStakeModal("lock")}>Lock More</Btn>
+          </div>
         </div>
       )}
 
@@ -99,6 +112,52 @@ function PanelStake({
         />
       )}
     </Panel>
+  );
+}
+
+function BatchCard({ batch }: { batch: StakingBatchWithVotingPower }) {
+  const status = batch.isLocked
+    ? "Locked"
+    : batch.isInCooldown
+    ? "Cooling Down"
+    : batch.isVoting
+    ? "Voting"
+    : "Staked";
+
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric"
+    });
+  };
+
+  return (
+    <div style={{
+      border: "1px solid #ddd",
+      padding: "10px",
+      marginBottom: "10px",
+    }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div>
+          <strong>{batch.amountNS.toLocaleString()} NS</strong>
+          <span style={{ marginLeft: "8px", color: "#666" }}>({status})</span>
+        </div>
+        <div>
+          <strong>{Math.floor(batch.votingPower).toLocaleString()} Votes</strong>
+        </div>
+      </div>
+
+      <div style={{ fontSize: "14px", marginTop: "5px", color: "#666" }}>
+        {status === "Locked" ? (
+          <>Unlocks: {formatDate(batch.unlockDate)}</>
+        ) : status === "Cooling Down" ? (
+          <>Cooldown ends: {formatDate(batch.cooldownEndDate!)}</>
+        ) : (
+          <>Started: {formatDate(batch.startDate)}</>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -120,7 +179,7 @@ function StakeModal({
   const [amount, setAmount] = useState("100");
   const [months, setMonths] = useState(1);
 
-  const calculateVotes = () => 0;
+  const calculateVotes = () => 123456; // TODO
   const votes = calculateVotes();
 
   const onStakeOrLock = async () => {
@@ -213,11 +272,11 @@ function StakeModal({
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />
-          <span>/{availableAmount} NS</span>
+          <span>/{availableAmount.toLocaleString()} NS</span>
         </div>
 
         <div>
-          <span>Votes: {votes}</span>
+          <span>Votes: {votes.toLocaleString()}</span>
         </div>
       </div>
 
@@ -271,8 +330,6 @@ function Panel({ children }: { children: ReactNode }) {
     <div style={{
       padding: "20px",
       margin: "10px 0",
-      border: "1px solid #ccc",
-      borderRadius: "5px",
       backgroundColor: "#fff",
       color: "#333"
     }}>
@@ -307,9 +364,9 @@ function Btn({ children, onClick }: { children: ReactNode, onClick?: () => void 
       style={{
         padding: "8px 16px",
         border: "1px solid #ddd",
-        borderRadius: "4px",
         backgroundColor: "#f5f5f5",
-        cursor: "pointer"
+        cursor: "pointer",
+        marginRight: "8px"
       }}
       onClick={onClick}
     >
@@ -358,7 +415,6 @@ function PopUp({
       <div style={{
         backgroundColor: "#fff",
         padding: "20px",
-        borderRadius: "5px",
         width: "90%",
         maxWidth: "450px",
         color: "#333",
