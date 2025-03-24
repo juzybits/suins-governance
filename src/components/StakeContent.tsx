@@ -1,10 +1,9 @@
 "use client";
 
 import { SUINS_PACKAGES } from "@/constants/endpoints";
-import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
-import { coinWithBalance, Transaction } from "@mysten/sui/transactions";
 import React, { ReactNode, useState, useMemo } from "react";
 import { StakingBatchWithVotingPower } from "@/hooks/useGetStakingBatches";
+import { useStakeMutation } from "@/hooks/useStakeMutation";
 
 export function StakeContent({
   stakeBatches,
@@ -172,9 +171,7 @@ function StakeModal({
   onModeChange: (mode: "stake" | "lock") => void;
   availableAmount: number;
 }) {
-  const client = useSuiClient();
-  const { mutateAsync: signAndExecuteTransaction } = useSignAndExecuteTransaction();
-  const currAcct = useCurrentAccount();
+  const { mutateAsync: stakeOrLock } = useStakeMutation();
 
   const [amount, setAmount] = useState("100");
   const [months, setMonths] = useState(1);
@@ -183,58 +180,12 @@ function StakeModal({
   const votes = calculateVotes();
 
   const onStakeOrLock = async () => {
-    if (!currAcct) {
-      throw new Error("No account selected");
+    try {
+      await stakeOrLock({ amount, months });
+      onClose();
+    } catch (error) {
+      console.error("Failed to stake tokens:", error);
     }
-
-    const tx = new Transaction();
-    tx.setSender(currAcct.address);
-
-    const coin = coinWithBalance({
-      balance: BigInt(BigInt(amount) * 1_000_000n),
-      type: SUINS_PACKAGES.localnet.votingTokenType,
-    })(tx);
-
-    const batch = tx.moveCall({
-      target: `${SUINS_PACKAGES.localnet.votingPkgId}::staking_batch::new`,
-      arguments: [
-        tx.object(SUINS_PACKAGES.localnet.stakingConfigId),
-        coin,
-        tx.pure.u64(months),
-        tx.object.clock(),
-      ],
-    });
-
-    tx.moveCall({
-      target: `${SUINS_PACKAGES.localnet.votingPkgId}::staking_batch::keep`,
-      arguments: [
-        batch,
-      ]
-    });
-
-    for (const dryRun of [true, false]) {
-      if (dryRun) {
-        console.debug("[onStakeOrLock] dry run");
-        const resp = await client.devInspectTransactionBlock({
-          sender: currAcct.address,
-          transactionBlock: tx,
-        });
-        if (resp.effects?.status.status !== "success") {
-          throw new Error("Transaction failed: " + JSON.stringify(resp, null, 2));
-        }
-        console.log(resp);
-      }
-      const resp = await signAndExecuteTransaction({
-        transaction: tx,
-      });
-
-      await client.waitForTransaction({
-        digest: resp.digest,
-        pollInterval: 200,
-      });
-    }
-
-    onClose();
   };
 
   return (
@@ -365,8 +316,7 @@ function Btn({ children, onClick }: { children: ReactNode, onClick?: () => void 
         padding: "8px 16px",
         border: "1px solid #ddd",
         backgroundColor: "#f5f5f5",
-        cursor: "pointer",
-        marginRight: "8px"
+        marginRight: "8px",
       }}
       onClick={onClick}
     >

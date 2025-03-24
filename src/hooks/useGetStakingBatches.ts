@@ -102,6 +102,5 @@ export function useGetStakingBatches(
       return parsedBatches.sort((a, b) => b.votingPower - a.votingPower);
     },
     enabled: !!owner,
-    refetchInterval: 15000, // Refresh every 15 seconds
   });
 }
