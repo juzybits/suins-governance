@@ -3,7 +3,7 @@
 import { StakeContent } from "@/components/StakeContent";
 import { Suspense } from "react";
 import Loader from "@/components/ui/Loader";
-import { useGetStakingBatches } from "@/hooks/useGetStakingBatches";
+import { useGetStakingBatches } from "@/hooks/staking/useGetStakingBatches";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 
 export default function StakePage() {

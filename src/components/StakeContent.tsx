@@ -2,8 +2,9 @@
 
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import React, { ReactNode, useState, useMemo, useEffect } from "react";
-import { StakingBatchWithVotingPower } from "@/hooks/useGetStakingBatches";
-import { useStakeMutation } from "@/hooks/useStakeMutation";
+import { StakingBatchWithVotingPower } from "@/hooks/staking/useGetStakingBatches";
+import { useStakeMutation } from "@/hooks/staking/useStakeMutation";
+import { useLockMutation } from "@/hooks/staking/useLockMutation";
 
 export function StakeContent({
   stakeBatches,
@@ -115,6 +116,8 @@ function PanelStake({
 }
 
 function BatchCard({ batch }: { batch: StakingBatchWithVotingPower }) {
+  const [showLockModal, setShowLockModal] = useState(false);
+
   const status = batch.isLocked
     ? "Locked"
     : batch.isInCooldown
@@ -147,16 +150,109 @@ function BatchCard({ batch }: { batch: StakingBatchWithVotingPower }) {
         </div>
       </div>
 
-      <div style={{ fontSize: "14px", marginTop: "5px", color: "#666" }}>
-        {status === "Locked" ? (
-          <>Unlocks: {formatDate(batch.unlockDate)}</>
-        ) : status === "Cooling Down" ? (
-          <>Cooldown ends: {formatDate(batch.cooldownEndDate!)}</>
-        ) : (
-          <>Started: {formatDate(batch.startDate)}</>
+      <div style={{
+        fontSize: "14px",
+        marginTop: "5px",
+        color: "#666",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center"
+      }}>
+        <div>
+          {status === "Locked" ? (
+            <>Unlocks: {formatDate(batch.unlockDate)}</>
+          ) : status === "Cooling Down" ? (
+            <>Cooldown ends: {formatDate(batch.cooldownEndDate!)}</>
+          ) : (
+            <>Started: {formatDate(batch.startDate)}</>
+          )}
+        </div>
+
+        {status === "Staked" && (
+          <Btn onClick={() => setShowLockModal(true)}>Lock</Btn>
         )}
       </div>
+
+      {showLockModal && (
+        <LockBatchModal
+          batch={batch}
+          onClose={() => setShowLockModal(false)}
+        />
+      )}
     </div>
+  );
+}
+
+function LockBatchModal({
+  batch,
+  onClose,
+}: {
+  batch: StakingBatchWithVotingPower;
+  onClose: () => void;
+}) {
+  const { mutateAsync: lockBatch } = useLockMutation();
+  const [months, setMonths] = useState(1);
+
+  const calculateVotes = () => 123456; // TODO
+
+  const votes = calculateVotes();
+
+  const onLockBatch = async () => {
+    try {
+      await lockBatch({
+        batchId: batch.objectId,
+        months
+      });
+      onClose();
+    } catch (error) {
+      console.error("Failed to lock batch:", error);
+    }
+  };
+
+  return (
+    <PopUp>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <H2>Lock Tokens</H2>
+        <button onClick={onClose}>×</button>
+      </div>
+
+      <p>Lock your already Staked NS tokens to receive an immediate Votes multiplier.</p>
+
+      <div style={{ padding: "10px", border: "1px solid #ddd", margin: "10px 0" }}>
+        <div>Staked for {Math.floor((Date.now() - batch.startDate.getTime()) / (1000 * 60 * 60 * 24))} Days</div>
+        <div>{batch.amountNS.toLocaleString()} NS</div>
+        <div>Votes {Math.floor(batch.votingPower).toLocaleString()}</div>
+      </div>
+
+      <div>
+        <div>Select Lock Period</div>
+        <div style={{
+          padding: "10px",
+          border: "1px solid #ddd",
+          margin: "10px 0",
+          display: "flex",
+          justifyContent: "space-between"
+        }}>
+          <select
+            value={months}
+            onChange={(e) => setMonths(parseInt(e.target.value))}
+          >
+            {Array.from({ length: 12 }, (_, i) => (
+              <option key={i + 1} value={i + 1}>{i + 1} month{i + 1 === 1 ? "" : "s"}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <div>Votes {votes.toLocaleString()}</div>
+      </div>
+
+      <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-between" }}>
+        <Btn onClick={onClose}>Cancel</Btn>
+        <Btn onClick={onLockBatch}>Lock Tokens</Btn>
+      </div>
+    </PopUp>
   );
 }
 
@@ -201,55 +297,62 @@ function StakeModal({
 
       <p>Stake your NS tokens to receive Votes, which increases over time, with an immediate boost based on a lockup period of 1-12 months.</p>
 
-      <div style={{ padding: "5px 0" }}>
-        <label>
+      <div style={{ margin: "15px 0" }}>
+        <label style={{ marginRight: "15px" }}>
           <input
             type="radio"
             checked={mode === "stake"}
             onChange={() => onModeChange("stake")}
+            style={{ marginRight: "5px" }}
           />
           Stake
         </label>
 
-        <label style={{ marginLeft: "5px" }}>
+        <label>
           <input
             type="radio"
             checked={mode === "lock"}
             onChange={() => onModeChange("lock")}
+            style={{ marginRight: "5px" }}
           />
           Lock
         </label>
       </div>
 
-      <div style={{ padding: "5px 0" }}>
+      <div style={{
+        border: "1px solid #ddd",
+        padding: "10px",
+        display: "flex",
+        justifyContent: "space-between",
+        margin: "10px 0"
+      }}>
         <div>
           <InputText
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />
-          <span>/{availableAmount.toLocaleString()} NS</span>
+          /{availableAmount.toLocaleString()} NS
         </div>
 
-        <div>
-          <span>Votes: {votes.toLocaleString()}</span>
-        </div>
+        {mode === "lock" && (
+          <div>
+            <select
+              value={months}
+              onChange={(e) => setMonths(parseInt(e.target.value))}
+            >
+              {Array.from({ length: 12 }, (_, i) => (
+                <option key={i + 1} value={i + 1}>{i + 1} month{i + 1 === 1 ? "" : "s"}</option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
-      {mode === "lock" && (
-        <div style={{ padding: "5px 0" }}>
-          <label>Lock Period</label>
-          <select
-            value={months}
-            onChange={(e) => setMonths(parseInt(e.target.value))}
-          >
-            {Array.from({ length: 12 }, (_, i) => (
-              <option key={i + 1} value={i + 1}>{i + 1} month{i + 1 === 1 ? "" : "s"}</option>
-            ))}
-          </select>
-        </div>
-      )}
+      <div>
+        <div>Votes {votes.toLocaleString()}</div>
+      </div>
 
-      <div style={{ marginTop: "20px" }}>
+      <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-between" }}>
         <Btn onClick={onClose}>Cancel</Btn>
         <Btn onClick={onStakeOrLock}>{mode === "lock" ? "Lock Tokens" : "Stake Tokens"}</Btn>
       </div>
