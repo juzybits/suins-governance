@@ -1,6 +1,7 @@
 "use client";
 
 import { SuiObjectResponse } from "@mysten/sui/client";
+import { useCurrentAccount } from "@mysten/dapp-kit";
 import React, { ReactNode } from "react";
 
 export function StakeContent({
@@ -8,45 +9,101 @@ export function StakeContent({
 }: {
   stakeBatches: SuiObjectResponse[];
 }) {
+  const currAcct = useCurrentAccount();
+  const currAddr = currAcct?.address ?? null;
   return (
     <div style={{ fontFamily: "sans-serif", maxWidth: "800px", margin: "0 auto" }}>
-      <PaneOverview />
-      <PaneStake />
-      <PaneParticipation />
+      <PanelOverview currAddr={currAddr} />
+      <PanelStake currAddr={currAddr} />
+      <PanelParticipation currAddr={currAddr} />
     </div>
   );
 }
 
-function PaneOverview() {
+function PanelOverview(
+  {
+    currAddr,
+  }: {
+    currAddr: string | null;
+  }
+) {
+  const locked = 0;
+  const staked = 0;
+  const available = 0;
+  const power = 0;
   return (
-    <Pane>
-      <H2>Overview</H2>
-      <Btn>OK</Btn>
-    </Pane>
+    <Panel>
+      <div>
+        <p>Total Locked: {locked} NS (X Votes)</p>
+      </div>
+      <div>
+        <p>Total Staked: {staked} NS (X Votes)</p>
+      </div>
+      <div>
+        <p>Available Tokens: {available} NS</p>
+      </div>
+      <div>
+        <p>Your Total Votes: {power}</p>
+      </div>
+    </Panel>
   );
 }
 
-function PaneStake() {
+function PanelStake({
+  currAddr,
+}: {
+  currAddr: string | null;
+}) {
+  const batches: { id: string }[] = [];
   return (
-    <Pane>
-      <H2>Stake</H2>
-      <p>You can stake your tokens here.</p>
-    </Pane>
+    <Panel>
+      <H2>Staked & Locked (count: {batches.length})</H2>
+      {batches.length === 0 ? (
+        <div>
+          <H3>No Stakes or Locks</H3>
+          <p>Start Staking your SUI to Participate in governance, earn rewards, and shape the future of SuiNS</p>
+          <Btn>Stake</Btn>
+          <Btn>Lock</Btn>
+        </div>
+      ) : (
+        <div>
+          {batches.map((batch) => (
+            <div key={batch.id}>{batch.id}</div>
+          ))}
+        </div>
+      )}
+    </Panel>
   );
 }
 
-function PaneParticipation() {
+function PanelParticipation({
+  currAddr,
+}: {
+  currAddr: string | null;
+}) {
+  const votes: { id: string }[] = [];
   return (
-    <Pane>
-      <H2>Participation</H2>
-      <p>View your governance participation details.</p>
-    </Pane>
+    <Panel>
+      <H2>Your Governance Participation</H2>
+      {votes.length === 0 ? (
+        <div>
+          <H3>No Votes</H3>
+          <p>Once you start voting, your participation will be showcased here</p>
+        </div>
+      ) : (
+        <div>
+          {votes.map((vote) => (
+            <div key={vote.id}>{vote.id}</div>
+          ))}
+        </div>
+      )}
+    </Panel>
   );
 }
 
-// basic styled components
+// basic styled components, to be replaced with a pretty UI
 
-function Pane({ children }: { children: ReactNode }) {
+function Panel({ children }: { children: ReactNode }) {
   return (
     <div style={{
       padding: "20px",
@@ -70,6 +127,14 @@ function H2({ children }: { children: ReactNode }) {
     }}>
       {children}
     </h2>
+  );
+}
+
+function H3({ children }: { children: ReactNode }) {
+  return (
+    <h3 style={{ fontSize: "16px", fontWeight: "bold", marginBottom: "10px" }}>
+      {children}
+    </h3>
   );
 }
 
