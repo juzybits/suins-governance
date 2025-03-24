@@ -136,6 +136,29 @@ function BatchCard({ batch }: { batch: StakingBatchWithVotingPower }) {
     });
   };
 
+  const getStatusText = () => {
+    if (batch.isLocked) {
+      return `Locked for ${batch.lockDurationDays} Days`;
+    } else if (batch.isInCooldown) {
+      return `Cooling Down`;
+    } else if (batch.isVoting) {
+      return `Used for Voting`;
+    } else {
+      const daysSinceStake = Math.floor((Date.now() - batch.startDate.getTime()) / (1000 * 60 * 60 * 24));
+      return `Staked for ${daysSinceStake} Days`;
+    }
+  };
+
+  const getInfoText = () => {
+    if (batch.isLocked) {
+      return `Unlocks: ${formatDate(batch.unlockDate)}`;
+    } else if (batch.isInCooldown) {
+      return `Cooldown ends: ${formatDate(batch.cooldownEndDate!)}`;
+    } else {
+      return `Started: ${formatDate(batch.startDate)}`;
+    }
+  };
+
   return (
     <div style={{
       border: "1px solid #ddd",
@@ -145,7 +168,6 @@ function BatchCard({ batch }: { batch: StakingBatchWithVotingPower }) {
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <div>
           <strong>{batch.amountNS.toLocaleString()} NS</strong>
-          <span style={{ marginLeft: "8px", color: "#666" }}>({status})</span>
         </div>
         <div>
           <strong>{Math.floor(batch.votingPower).toLocaleString()} Votes</strong>
@@ -154,31 +176,23 @@ function BatchCard({ batch }: { batch: StakingBatchWithVotingPower }) {
 
       <div style={{
         fontSize: "14px",
-        marginTop: "5px",
+        marginTop: "10px",
         color: "#666",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center"
       }}>
-        <div>
-          {status === "Locked" ? (
-            <>Unlocks: {formatDate(batch.unlockDate)}</>
-          ) : status === "Cooling Down" ? (
-            <>Cooldown ends: {formatDate(batch.cooldownEndDate!)}</>
-          ) : (
-            <>Started: {formatDate(batch.startDate)}</>
-          )}
-        </div>
-
-        <div>
-          {status === "Staked" && (
-            <>
-              <Btn onClick={() => setShowLockModal(true)}>Lock</Btn>
-              <Btn onClick={() => setShowUnstakeModal(true)}>Unstake</Btn>
-            </>
-          )}
-        </div>
+        <div>Status: {getStatusText()}</div>
+        <div>{getInfoText()}</div>
       </div>
+
+      {status === "Staked" && (
+        <div style={{
+          marginTop: "10px",
+          display: "flex",
+          justifyContent: "flex-end"
+        }}>
+          <Btn onClick={() => setShowLockModal(true)}>Lock</Btn>
+          <Btn onClick={() => setShowUnstakeModal(true)}>Unstake</Btn>
+        </div>
+      )}
 
       {showLockModal && (
         <LockBatchModal
