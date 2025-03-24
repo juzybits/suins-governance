@@ -1,67 +1,77 @@
 "use client";
 
-import { SUINS_PACKAGES } from "@/constants/endpoints";
 import React, { ReactNode, useState, useMemo, useEffect } from "react";
 import { StakingBatchWithVotingPower } from "@/hooks/staking/useGetStakingBatches";
 import { useStakeMutation } from "@/hooks/staking/useStakeMutation";
 import { useLockMutation } from "@/hooks/staking/useLockMutation";
 import { useUnstakeMutation } from "@/hooks/staking/useUnstakeMutation";
 
+type StakingData = {
+  lockedNS: number;
+  lockedPower: number;
+  stakedNS: number;
+  stakedPower: number;
+  totalPower: number;
+  availableNS: number;
+};
+
 export function StakeContent({
   stakeBatches,
 }: {
   stakeBatches: StakingBatchWithVotingPower[];
 }) {
-  const tokenData = useMemo(() => {
-    let locked = 0;
-    let staked = 0;
-    let power = 0;
+  const stakingData = useMemo((): StakingData => {
+    let lockedNS = 0;
+    let lockedPower = 0;
+    let stakedNS = 0;
+    let stakedPower = 0;
+    let totalPower = 0;
 
     stakeBatches.forEach(batch => {
       if (batch.isLocked) {
-        locked += batch.amountNS;
+        lockedNS += batch.amountNS;
+        lockedPower += batch.votingPower;
       } else if (batch.isStaked) {
-        staked += batch.amountNS;
+        stakedNS += batch.amountNS;
+        stakedPower += batch.votingPower;
       }
-      power += batch.votingPower;
+      totalPower += batch.votingPower;
     });
 
-    const available = 1000; // TODO: get from wallet
+    const availableNS = 1000; // TODO: get from wallet
 
-    return { locked, staked, available, power };
+    return { lockedNS, lockedPower, stakedNS, stakedPower, totalPower, availableNS };
   }, [stakeBatches]);
 
   return (
     <div style={{ fontFamily: "sans-serif", maxWidth: "800px", margin: "0 auto" }}>
-      <PanelOverview tokenData={tokenData} />
-      <PanelStake stakeBatches={stakeBatches} tokenData={tokenData} />
+      <PanelOverview stakingData={stakingData} />
+      <PanelStake stakeBatches={stakeBatches} stakingData={stakingData} />
       <PanelParticipation />
     </div>
   );
 }
 
 function PanelOverview({
-  tokenData,
+  stakingData,
 }: {
-  tokenData: { locked: number; staked: number; available: number; power: number; };
+  stakingData: StakingData;
 }) {
-  const { locked, staked, available, power } = tokenData;
-  const lockedVotesText = locked > 0 ? `(${Math.round(power * (locked / (locked + staked)))} Votes)` : "(0 Votes)";
-  const stakedVotesText = staked > 0 ? `(${Math.round(power * (staked / (locked + staked)))} Votes)` : "(0 Votes)";
+  const { lockedNS, lockedPower, stakedNS, stakedPower, totalPower, availableNS } = stakingData;
 
   return (
     <Panel>
       <div>
-        <p>Total Locked: {locked.toLocaleString()} NS {lockedVotesText}</p>
+        <p>Total Locked: {lockedNS.toLocaleString()} NS ({lockedPower.toLocaleString()} Votes)</p>
       </div>
       <div>
-        <p>Total Staked: {staked.toLocaleString()} NS {stakedVotesText}</p>
+        <p>Total Staked: {stakedNS.toLocaleString()} NS ({stakedPower.toLocaleString()} Votes)</p>
       </div>
       <div>
-        <p>Available Tokens: {available.toLocaleString()} NS</p>
+        <p>Available Tokens: {availableNS.toLocaleString()} NS</p>
       </div>
       <div>
-        <p>Your Total Votes: {power.toLocaleString()}</p>
+        <p>Your Total Votes: {totalPower.toLocaleString()}</p>
       </div>
     </Panel>
   );
@@ -69,10 +79,10 @@ function PanelOverview({
 
 function PanelStake({
   stakeBatches,
-  tokenData,
+  stakingData,
 }: {
   stakeBatches: StakingBatchWithVotingPower[];
-  tokenData: { locked: number; staked: number; available: number; power: number; };
+  stakingData: StakingData;
 }) {
   const [showStakeModal, setShowStakeModal] = useState(false);
   const [stakeMode, setStakeMode] = useState<"stake" | "lock">("stake");
@@ -109,7 +119,7 @@ function PanelStake({
           mode={stakeMode}
           onClose={() => setShowStakeModal(false)}
           onModeChange={setStakeMode}
-          availableAmount={tokenData.available}
+          availableNS={stakingData.availableNS}
         />
       )}
     </Panel>
@@ -331,12 +341,12 @@ function StakeModal({
   mode,
   onClose,
   onModeChange,
-  availableAmount,
+  availableNS,
 }: {
   mode: "stake" | "lock";
   onClose: () => void;
   onModeChange: (mode: "stake" | "lock") => void;
-  availableAmount: number;
+  availableNS: number;
 }) {
   const { mutateAsync: stakeOrLock } = useStakeMutation();
 
@@ -402,7 +412,7 @@ function StakeModal({
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />
-          /{availableAmount.toLocaleString()} NS
+          /{availableNS.toLocaleString()} NS
         </div>
 
         {mode === "lock" && (
