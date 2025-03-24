@@ -93,6 +93,11 @@ function PanelStake({
     setShowStakeModal(true);
   };
 
+  const buttons = <>
+    <Btn onClick={() => onOpenStakeModal("stake")}>Stake</Btn>
+    <Btn onClick={() => onOpenStakeModal("lock")}>Lock</Btn>
+  </>;
+
   return (
     <Panel>
       <H2>Staked & Locked (count: {stakeBatches.length})</H2>
@@ -100,18 +105,16 @@ function PanelStake({
         <div>
           <H3>No Stakes or Locks</H3>
           <p>Start Staking your NS to participate in governance, earn rewards, and shape the future of SuiNS</p>
-          <Btn onClick={() => onOpenStakeModal("stake")}>Stake</Btn>
-          <Btn onClick={() => onOpenStakeModal("lock")}>Lock</Btn>
+          {buttons}
         </div>
       ) : (
         <div>
+          <div style={{ marginBottom: "10px" }}>
+            {buttons}
+          </div>
           {stakeBatches.map((batch) => (
             <BatchCard key={batch.objectId} batch={batch} />
           ))}
-          <div style={{ marginTop: "10px" }}>
-            <Btn onClick={() => onOpenStakeModal("stake")}>Stake More</Btn>
-            <Btn onClick={() => onOpenStakeModal("lock")}>Lock More</Btn>
-          </div>
         </div>
       )}
 
@@ -245,31 +248,17 @@ function LockBatchModal({
   }, [isSuccess, onClose]);
 
   const calculateVotes = () => 123456; // TODO
-
   const votes = calculateVotes();
-
-  const onLockBatch = async () => {
-    try {
-      await lockBatch({
-        batchId: batch.objectId,
-        months
-      });
-    } catch (error) {
-      console.error("Failed to lock batch:", error);
-    }
-  };
+  const daysSinceStake = Math.floor((Date.now() - batch.startDate.getTime()) / (1000 * 60 * 60 * 24));
 
   return (
-    <PopUp>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <H2>Lock Tokens</H2>
-        <button onClick={onClose}>×</button>
-      </div>
+    <Modal>
+      <ModalHeader title="Lock Tokens" onClose={onClose} />
 
       <p>Lock your already Staked NS tokens to receive an immediate Votes multiplier.</p>
 
       <div style={{ padding: "10px", border: "1px solid #ddd", margin: "10px 0" }}>
-        <div>Staked for {Math.floor((Date.now() - batch.startDate.getTime()) / (1000 * 60 * 60 * 24))} Days</div>
+        <div>Staked for {daysSinceStake} Days</div>
         <div>{batch.amountNS.toLocaleString()} NS</div>
         <div>Votes {Math.floor(batch.votingPower).toLocaleString()}</div>
       </div>
@@ -283,14 +272,7 @@ function LockBatchModal({
           display: "flex",
           justifyContent: "space-between"
         }}>
-          <select
-            value={months}
-            onChange={(e) => setMonths(parseInt(e.target.value))}
-          >
-            {Array.from({ length: 12 }, (_, i) => (
-              <option key={i + 1} value={i + 1}>{i + 1} month{i + 1 === 1 ? "" : "s"}</option>
-            ))}
-          </select>
+          <MonthSelector months={months} setMonths={setMonths} />
         </div>
       </div>
 
@@ -298,11 +280,12 @@ function LockBatchModal({
         <div>Votes {votes.toLocaleString()}</div>
       </div>
 
-      <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-between" }}>
-        <Btn onClick={onClose}>Cancel</Btn>
-        <Btn onClick={onLockBatch}>Lock Tokens</Btn>
-      </div>
-    </PopUp>
+      <ModalFooter
+        onClose={onClose}
+        actionText="Lock Tokens"
+        onAction={() => lockBatch({ batchId: batch.objectId, months })}
+      />
+    </Modal>
   );
 }
 
@@ -327,22 +310,9 @@ function UnstakeBatchModal({
     }
   }, [isSuccess, onClose]);
 
-  const onUnstake = async () => {
-    try {
-      await requestUnstake({
-        batchId: batch.objectId
-      });
-    } catch (error) {
-      console.error("Failed to unstake batch:", error);
-    }
-  };
-
   return (
-    <PopUp>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <H2>Unstake Tokens</H2>
-        <button onClick={onClose}>×</button>
-      </div>
+    <Modal>
+      <ModalHeader title="Unstake Tokens" onClose={onClose} />
 
       <p>Unstaking initiates a 3-day cooldown period.</p>
 
@@ -352,11 +322,12 @@ function UnstakeBatchModal({
         <div>Started: {batch.startDate.toLocaleDateString()}</div>
       </div>
 
-      <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-between" }}>
-        <Btn onClick={onClose}>Cancel</Btn>
-        <Btn onClick={onUnstake}>Confirm Unstake</Btn>
-      </div>
-    </PopUp>
+      <ModalFooter
+        onClose={onClose}
+        actionText="Confirm Unstake"
+        onAction={() => requestUnstake({ batchId: batch.objectId })}
+      />
+    </Modal>
   );
 }
 
@@ -394,21 +365,11 @@ function StakeModal({
 
   const calculateVotes = () => 123456; // TODO
   const votes = calculateVotes();
-
-  const onStakeOrLock = async () => {
-    try {
-      await stakeOrLock({ amount, months });
-    } catch (error) {
-      console.error("Failed to stake tokens:", error);
-    }
-  };
+  const actionText = mode === "lock" ? "Lock Tokens" : "Stake Tokens";
 
   return (
-    <PopUp>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <H2>Stake or Lock Tokens</H2>
-        <button onClick={onClose}>×</button>
-      </div>
+    <Modal>
+      <ModalHeader title={`${mode === "lock" ? "Lock" : "Stake"} Tokens`} onClose={onClose} />
 
       <p>Stake your NS tokens to receive Votes, which increases over time, with an immediate boost based on a lockup period of 1-12 months.</p>
 
@@ -451,14 +412,7 @@ function StakeModal({
 
         {mode === "lock" && (
           <div>
-            <select
-              value={months}
-              onChange={(e) => setMonths(parseInt(e.target.value))}
-            >
-              {Array.from({ length: 12 }, (_, i) => (
-                <option key={i + 1} value={i + 1}>{i + 1} month{i + 1 === 1 ? "" : "s"}</option>
-              ))}
-            </select>
+            <MonthSelector months={months} setMonths={setMonths} />
           </div>
         )}
       </div>
@@ -467,13 +421,12 @@ function StakeModal({
         <div>Votes {votes.toLocaleString()}</div>
       </div>
 
-      <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-between" }}>
-        <Btn onClick={onClose}>Cancel</Btn>
-        <Btn onClick={onStakeOrLock}>
-          {mode === "lock" ? "Lock Tokens" : "Stake Tokens"}
-        </Btn>
-      </div>
-    </PopUp>
+      <ModalFooter
+        onClose={onClose}
+        actionText={actionText}
+        onAction={() => stakeOrLock({ amount, months })}
+      />
+    </Modal>
   );
 }
 
@@ -577,7 +530,7 @@ function InputText({
   );
 }
 
-function PopUp({
+function Modal({
   children,
 }: {
   children: ReactNode,
@@ -604,5 +557,36 @@ function PopUp({
         {children}
       </div>
     </div>
+  );
+}
+
+function ModalHeader({ title, onClose }: { title: string; onClose: () => void }) {
+  return (
+    <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <H2>{title}</H2>
+      <button onClick={onClose}>×</button>
+    </div>
+  );
+}
+
+function ModalFooter({ onClose, actionText, onAction }: { onClose: () => void; actionText: string; onAction: () => void }) {
+  return (
+    <div style={{ marginTop: "20px", display: "flex", justifyContent: "flex-end" }}>
+      <Btn onClick={onClose}>Cancel</Btn>
+      <Btn onClick={onAction}>{actionText}</Btn>
+    </div>
+  );
+}
+
+function MonthSelector({ months, setMonths }: { months: number; setMonths: (months: number) => void }) {
+  return (
+    <select
+      value={months}
+      onChange={(e) => setMonths(parseInt(e.target.value))}
+    >
+      {Array.from({ length: 12 }, (_, i) => (
+        <option key={i + 1} value={i + 1}>{i + 1} month{i + 1 === 1 ? "" : "s"}</option>
+      ))}
+    </select>
   );
 }
