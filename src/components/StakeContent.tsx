@@ -1,7 +1,7 @@
 "use client";
 
 import { SUINS_PACKAGES } from "@/constants/endpoints";
-import React, { ReactNode, useState, useMemo } from "react";
+import React, { ReactNode, useState, useMemo, useEffect } from "react";
 import { StakingBatchWithVotingPower } from "@/hooks/useGetStakingBatches";
 import { useStakeMutation } from "@/hooks/useStakeMutation";
 
@@ -174,7 +174,11 @@ function StakeModal({
   const { mutateAsync: stakeOrLock } = useStakeMutation();
 
   const [amount, setAmount] = useState("100");
-  const [months, setMonths] = useState(1);
+  const [months, setMonths] = useState(mode === "lock" ? 1 : 0);
+
+  useEffect(() => {
+    setMonths(mode === "lock" ? 1 : 0);
+  }, [mode]);
 
   const calculateVotes = () => 123456; // TODO
   const votes = calculateVotes();
@@ -231,17 +235,19 @@ function StakeModal({
         </div>
       </div>
 
-      <div style={{ padding: "5px 0" }}>
-        <label>{mode === "lock" ? "Lock Period" : "Stake Period"}</label>
-        <select
-          value={months}
-          onChange={(e) => setMonths(parseInt(e.target.value))}
-        >
-          {Array.from({ length: 12 }, (_, i) => (
-            <option key={i + 1} value={i + 1}>{i + 1} month{i + 1 === 1 ? "" : "s"}</option>
-          ))}
-        </select>
-      </div>
+      {mode === "lock" && (
+        <div style={{ padding: "5px 0" }}>
+          <label>Lock Period</label>
+          <select
+            value={months}
+            onChange={(e) => setMonths(parseInt(e.target.value))}
+          >
+            {Array.from({ length: 12 }, (_, i) => (
+              <option key={i + 1} value={i + 1}>{i + 1} month{i + 1 === 1 ? "" : "s"}</option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div style={{ marginTop: "20px" }}>
         <Btn onClick={onClose}>Cancel</Btn>
