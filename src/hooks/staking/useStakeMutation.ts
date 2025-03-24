@@ -89,7 +89,6 @@ export function useStakeMutation(
 
     onSuccess: async () => {
       await Promise.allSettled([
-        queryClient.invalidateQueries(),
         queryClient.invalidateQueries({
           queryKey: ["owned-staking-batches"],
         }),

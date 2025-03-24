@@ -5,6 +5,7 @@ import { StakingBatchWithVotingPower } from "@/hooks/staking/useGetStakingBatche
 import { useStakeMutation } from "@/hooks/staking/useStakeMutation";
 import { useLockMutation } from "@/hooks/staking/useLockMutation";
 import { useUnstakeMutation } from "@/hooks/staking/useUnstakeMutation";
+import { toast } from "sonner";
 
 type StakingData = {
   lockedNS: number;
@@ -228,8 +229,20 @@ function LockBatchModal({
   batch: StakingBatchWithVotingPower;
   onClose: () => void;
 }) {
-  const { mutateAsync: lockBatch } = useLockMutation();
+  const { mutateAsync: lockBatch, isSuccess } = useLockMutation({
+    onError: (error) => {
+      toast.error(error.message || "Failed to lock batch");
+      onClose();
+    }
+  });
   const [months, setMonths] = useState(1);
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Successfully locked tokens");
+      onClose();
+    }
+  }, [isSuccess, onClose]);
 
   const calculateVotes = () => 123456; // TODO
 
@@ -241,7 +254,6 @@ function LockBatchModal({
         batchId: batch.objectId,
         months
       });
-      onClose();
     } catch (error) {
       console.error("Failed to lock batch:", error);
     }
@@ -301,14 +313,25 @@ function UnstakeBatchModal({
   batch: StakingBatchWithVotingPower;
   onClose: () => void;
 }) {
-  const { mutateAsync: requestUnstake } = useUnstakeMutation();
+  const { mutateAsync: requestUnstake, isSuccess } = useUnstakeMutation({
+    onError: (error) => {
+      toast.error(error.message || "Failed to unstake batch");
+      onClose();
+    }
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Successfully initiated unstaking");
+      onClose();
+    }
+  }, [isSuccess, onClose]);
 
   const onUnstake = async () => {
     try {
       await requestUnstake({
         batchId: batch.objectId
       });
-      onClose();
     } catch (error) {
       console.error("Failed to unstake batch:", error);
     }
@@ -348,7 +371,12 @@ function StakeModal({
   onModeChange: (mode: "stake" | "lock") => void;
   availableNS: number;
 }) {
-  const { mutateAsync: stakeOrLock } = useStakeMutation();
+  const { mutateAsync: stakeOrLock, isSuccess } = useStakeMutation({
+    onError: (error) => {
+      toast.error(error.message || "Failed to stake tokens");
+      onClose();
+    }
+  });
 
   const [amount, setAmount] = useState("100");
   const [months, setMonths] = useState(mode === "lock" ? 1 : 0);
@@ -357,13 +385,19 @@ function StakeModal({
     setMonths(mode === "lock" ? 1 : 0);
   }, [mode]);
 
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success(`Successfully ${mode === "lock" ? "locked" : "staked"} tokens`);
+      onClose();
+    }
+  }, [isSuccess, onClose, mode]);
+
   const calculateVotes = () => 123456; // TODO
   const votes = calculateVotes();
 
   const onStakeOrLock = async () => {
     try {
       await stakeOrLock({ amount, months });
-      onClose();
     } catch (error) {
       console.error("Failed to stake tokens:", error);
     }
@@ -435,7 +469,9 @@ function StakeModal({
 
       <div style={{ marginTop: "20px", display: "flex", justifyContent: "space-between" }}>
         <Btn onClick={onClose}>Cancel</Btn>
-        <Btn onClick={onStakeOrLock}>{mode === "lock" ? "Lock Tokens" : "Stake Tokens"}</Btn>
+        <Btn onClick={onStakeOrLock}>
+          {mode === "lock" ? "Lock Tokens" : "Stake Tokens"}
+        </Btn>
       </div>
     </PopUp>
   );
@@ -499,7 +535,13 @@ function H3({ children }: { children: ReactNode }) {
   );
 }
 
-function Btn({ children, onClick }: { children: ReactNode, onClick?: () => void }) {
+function Btn({
+  children,
+  onClick,
+}: {
+  children: ReactNode,
+  onClick?: () => void,
+}) {
   return (
     <button
       style={{

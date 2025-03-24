@@ -71,7 +71,6 @@ export function useUnstakeMutation(
 
     onSuccess: async () => {
       await Promise.allSettled([
-        queryClient.invalidateQueries(),
         queryClient.invalidateQueries({
           queryKey: ["owned-staking-batches"],
         }),

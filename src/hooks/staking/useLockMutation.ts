@@ -73,7 +73,6 @@ export function useLockMutation(
 
     onSuccess: async () => {
       await Promise.allSettled([
-        queryClient.invalidateQueries(),
         queryClient.invalidateQueries({
           queryKey: ["owned-staking-batches"],
         }),
