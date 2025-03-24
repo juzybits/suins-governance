@@ -1,7 +1,9 @@
 "use client";
 
+import { SUINS_PACKAGES } from "@/constants/endpoints";
+import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
 import { SuiObjectResponse } from "@mysten/sui/client";
-import { useCurrentAccount } from "@mysten/dapp-kit";
+import { coinWithBalance, Transaction } from "@mysten/sui/transactions";
 import React, { ReactNode, useState } from "react";
 
 type TokenData = {
@@ -16,9 +18,6 @@ export function StakeContent({
 }: {
   stakeBatches: SuiObjectResponse[];
 }) {
-  const currAcct = useCurrentAccount();
-  const currAddr = currAcct?.address ?? null;
-
   const [tokenData] = useState<TokenData>({
     locked: 1000,
     staked: 2000,
@@ -30,7 +29,7 @@ export function StakeContent({
     <div style={{ fontFamily: "sans-serif", maxWidth: "800px", margin: "0 auto" }}>
       <PanelOverview tokenData={tokenData} />
       <PanelStake tokenData={tokenData} />
-      <PanelParticipation currAddr={currAddr} />
+      <PanelParticipation />
     </div>
   );
 }
@@ -114,13 +113,68 @@ function StakeModal({
   onModeChange: (mode: "stake" | "lock") => void;
   availableAmount: number;
 }) {
-  const [amount, setAmount] = useState("");
+  const client = useSuiClient();
+  const { mutateAsync: signAndExecuteTransaction } = useSignAndExecuteTransaction();
+  const currAcct = useCurrentAccount();
+
+  const [amount, setAmount] = useState("100");
   const [months, setMonths] = useState(1);
 
   const calculateVotes = () => 0;
   const votes = calculateVotes();
 
-  const onStakeOrLock = () => {
+  const onStakeOrLock = async () => {
+    if (!currAcct) {
+      throw new Error("No account selected");
+    }
+
+    const tx = new Transaction();
+    tx.setSender(currAcct.address);
+
+    const coin = coinWithBalance({
+      balance: BigInt(BigInt(amount) * 1_000_000n),
+      type: SUINS_PACKAGES.localnet.votingTokenType,
+    })(tx);
+
+    const batch = tx.moveCall({
+      target: `${SUINS_PACKAGES.localnet.votingPkgId}::staking_batch::new`,
+      arguments: [
+        tx.object(SUINS_PACKAGES.localnet.stakingConfigId),
+        coin,
+        tx.pure.u64(months),
+        tx.object.clock(),
+      ],
+    });
+
+    tx.moveCall({
+      target: `${SUINS_PACKAGES.localnet.votingPkgId}::staking_batch::keep`,
+      arguments: [
+        batch,
+      ]
+    });
+
+    for (const dryRun of [true, false]) {
+      if (dryRun) {
+        console.debug("[onStakeOrLock] dry run");
+        const resp = await client.devInspectTransactionBlock({
+          sender: currAcct.address,
+          transactionBlock: tx,
+        });
+        if (resp.effects?.status.status !== "success") {
+          throw new Error("Transaction failed: " + JSON.stringify(resp, null, 2));
+        }
+        console.log(resp);
+      }
+      const resp = await signAndExecuteTransaction({
+        transaction: tx,
+      });
+
+      await client.waitForTransaction({
+        digest: resp.digest,
+        pollInterval: 200,
+      });
+    }
+
     onClose();
   };
 
@@ -173,18 +227,9 @@ function StakeModal({
           value={months}
           onChange={(e) => setMonths(parseInt(e.target.value))}
         >
-          <option value="1">1 month</option>
-          <option value="2">2 months</option>
-          <option value="3">3 months</option>
-          <option value="4">4 months</option>
-          <option value="5">5 months</option>
-          <option value="6">6 months</option>
-          <option value="7">7 months</option>
-          <option value="8">8 Months</option>
-          <option value="9">9 Months</option>
-          <option value="10">10 Months</option>
-          <option value="11">11 Months</option>
-          <option value="12">12 Months</option>
+          {Array.from({ length: 12 }, (_, i) => (
+            <option key={i + 1} value={i + 1}>{i + 1} month{i + 1 === 1 ? "" : "s"}</option>
+          ))}
         </select>
       </div>
 
@@ -197,9 +242,7 @@ function StakeModal({
 }
 
 function PanelParticipation({
-  currAddr,
 }: {
-  currAddr: string | null;
 }) {
   const votes: { id: string }[] = [];
   return (
