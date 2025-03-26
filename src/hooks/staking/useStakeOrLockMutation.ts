@@ -13,9 +13,8 @@ import {
 
 import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
-import { parseAmount, parseNSAmount } from "@/utils/parseAmount";
+import { parseNSAmount } from "@/utils/parseAmount";
 import { devInspectOnDev } from "@/utils/devInspectOnDev";
-import { NS_DECIMALS } from "@/utils/formatNumber";
 
 type StakeRequest = {
   amount: string;
