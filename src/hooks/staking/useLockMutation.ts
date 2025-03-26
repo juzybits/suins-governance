@@ -13,6 +13,7 @@ import {
 
 import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
+import { devInspectOnDev } from "@/utils/devInspectOnDev";
 
 type LockRequest = {
   batchId: string;
@@ -48,14 +49,7 @@ export function useLockMutation(
         ],
       });
 
-      // TODO remove / enable only on dev
-      const dryRunResult = await suiClient.devInspectTransactionBlock({
-        sender: currAcct.address,
-        transactionBlock: tx,
-      });
-      if (dryRunResult.effects?.status.status !== "success") {
-        throw new Error("Transaction failed: " + JSON.stringify(dryRunResult, null, 2));
-      }
+      await devInspectOnDev(suiClient, currAcct.address, tx);
 
       const resp = await signAndExecuteTransaction({
         transaction: tx,
