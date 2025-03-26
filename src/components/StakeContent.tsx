@@ -9,18 +9,20 @@ import { toast } from "sonner";
 import { formatNSBalance } from "@/utils/formatNumber";
 
 type StakingData = {
+  availableNS: bigint;
   lockedNS: bigint;
   lockedPower: bigint;
   stakedNS: bigint;
   stakedPower: bigint;
   totalPower: bigint;
-  availableNS: bigint;
 };
 
 export function StakeContent({
   stakeBatches,
+  availableNS,
 }: {
   stakeBatches: StakingBatchWithVotingPower[];
+  availableNS: bigint;
 }) {
   const stakingData = useMemo((): StakingData => {
     let lockedNS = 0n;
@@ -39,8 +41,6 @@ export function StakeContent({
       }
       totalPower += batch.votingPower;
     });
-
-    const availableNS = 1000n*1000000n; // TODO: get from wallet
 
     return { lockedNS, lockedPower, stakedNS, stakedPower, totalPower, availableNS };
   }, [stakeBatches]);
