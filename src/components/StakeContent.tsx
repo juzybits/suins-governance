@@ -7,6 +7,8 @@ import { useLockMutation } from "@/hooks/staking/useLockMutation";
 import { useRequestUnstakeMutation } from "@/hooks/staking/useRequestUnstakeMutation";
 import { toast } from "sonner";
 import { formatNSBalance } from "@/utils/formatNumber";
+import { stakingBatchHelpers } from "@/utils/stakingBatchHelpers";
+import { parseNSAmount } from "@/utils/parseAmount";
 
 type StakingData = {
   availableNS: bigint;
@@ -243,8 +245,7 @@ function StakeModal({
       onClose();
     }
   });
-
-  const [amount, setAmount] = useState("100");
+  const [amount, setAmount] = useState("");
   const [months, setMonths] = useState(mode === "lock" ? 1 : 0);
 
   useEffect(() => {
@@ -258,8 +259,10 @@ function StakeModal({
     }
   }, [isSuccess, onClose, mode]);
 
-  const calculateVotes = () => 123456; // TODO
-  const votes = calculateVotes();
+  const votes = stakingBatchHelpers.calculateLockedVotingPower({
+    balance: parseNSAmount(amount),
+    lockMonths: months,
+  });
   const actionText = mode === "lock" ? "Lock Tokens" : "Stake Tokens";
 
   return (
@@ -347,8 +350,10 @@ function LockBatchModal({
     }
   }, [isSuccess, onClose]);
 
-  const calculateVotes = () => 123456; // TODO
-  const votes = calculateVotes();
+  const votes = stakingBatchHelpers.calculateLockedVotingPower({
+    balance: batch.balanceNS,
+    lockMonths: months,
+  });
   const daysSinceStake = Math.floor((Date.now() - batch.startDate.getTime()) / (1000 * 60 * 60 * 24));
 
   return (

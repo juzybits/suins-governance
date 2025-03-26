@@ -61,12 +61,33 @@ export const stakingBatchHelpers = {
       totalMonths = maxEffectiveMonths;
     }
 
-    // Apply multiplier: 1.1^total_months
+    // Apply multiplier: monthly_boost^total_months
     let power = balance;
     for (let i = 0; i < totalMonths; i++) {
       power = (power * MONTHLY_BOOST_BPS) / 10000n;
     }
 
     return power;
-  }
+  },
+
+  calculateLockedVotingPower: ({
+    balance,
+    lockMonths,
+  }: {
+    balance: bigint;
+    lockMonths: number;
+  }): bigint => {
+
+    // Special case: locking for max months (12) gets the max boost (3x)
+    if (lockMonths >= MAX_LOCK_MONTHS) {
+      return (balance * MAX_BOOST_BPS) / 10000n;
+    }
+    // Apply multiplier: monthly_boost^total_months
+    let power = balance;
+    for (let i = 0; i < lockMonths; i++) {
+      power = (power * MONTHLY_BOOST_BPS) / 10000n;
+    }
+
+    return power;
+  },
 };

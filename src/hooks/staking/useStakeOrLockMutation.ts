@@ -13,7 +13,7 @@ import {
 
 import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
-import { parseAmount } from "@/utils/parseAmount";
+import { parseAmount, parseNSAmount } from "@/utils/parseAmount";
 import { devInspectOnDev } from "@/utils/devInspectOnDev";
 import { NS_DECIMALS } from "@/utils/formatNumber";
 
@@ -45,10 +45,8 @@ export function useStakeOrLockMutation(
       const tx = new Transaction();
       tx.setSender(currAcct.address);
 
-      const amountBigInt = parseAmount(amount, NS_DECIMALS);
-
       const coin = coinWithBalance({
-        balance: amountBigInt,
+        balance: parseNSAmount(amount),
         type: SUINS_PACKAGES[NETWORK].votingTokenType,
       })(tx);
 

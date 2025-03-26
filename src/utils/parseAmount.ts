@@ -1,5 +1,7 @@
 import BigNumber from "bignumber.js";
 
+export const NS_DECIMALS = 6;
+
 export function parseAmount(amount: string | number, decimals: number) {
   try {
     amount = typeof amount === "string" ? amount.replaceAll(",", "") : amount;
@@ -9,4 +11,8 @@ export function parseAmount(amount: string | number, decimals: number) {
   } catch {
     return 0n;
   }
+}
+
+export function parseNSAmount(amount: string | number) {
+  return parseAmount(amount, NS_DECIMALS);
 }
