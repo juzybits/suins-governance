@@ -8,19 +8,25 @@ const MAX_BOOST_BPS = 30000n;     // 3.0x for 12-month lock (in basis points)
 const MONTH_MS = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 
 export const stakingBatchHelpers = {
-  isInCooldown: (batch: StakingBatchRaw): boolean => {
+
+  isLocked: (batch: StakingBatchRaw): boolean => {
+    const unlockMs = Number(batch.content.fields.unlock_ms);
+    return unlockMs > Date.now();
+  },
+
+  isCooldownRequested: (batch: StakingBatchRaw): boolean => {
     const cooldownEndMs = Number(batch.content.fields.cooldown_end_ms);
-    return cooldownEndMs > 0 && cooldownEndMs > Date.now();
+    return cooldownEndMs > 0;
+  },
+
+  isCooldownOver: (batch: StakingBatchRaw): boolean => {
+    const cooldownEndMs = Number(batch.content.fields.cooldown_end_ms);
+    return stakingBatchHelpers.isCooldownRequested(batch) && Date.now() >= cooldownEndMs;
   },
 
   isVoting: (batch: StakingBatchRaw): boolean => {
     const votingUntilMs = Number(batch.content.fields.voting_until_ms);
     return votingUntilMs > 0 && votingUntilMs > Date.now();
-  },
-
-  isLocked: (batch: StakingBatchRaw): boolean => {
-    const unlockMs = Number(batch.content.fields.unlock_ms);
-    return unlockMs > Date.now();
   },
 
   getLockDurationDays: (batch: StakingBatchRaw): number => {

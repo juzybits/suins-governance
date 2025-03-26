@@ -12,7 +12,8 @@ export type StakingBatch = StakingBatchRaw & {
   lockDurationDays: number;
   isLocked: boolean;
   isStaked: boolean;
-  isInCooldown: boolean;
+  isCooldownRequested: boolean;
+  isCooldownOver: boolean;
   isVoting: boolean;
   // Human-readable dates
   startDate: Date;
@@ -72,7 +73,8 @@ export function useGetStakingBatches(
           const lockDurationDays = stakingBatchHelpers.getLockDurationDays(batch);
           const isLocked = stakingBatchHelpers.isLocked(batch);
           const isStaked = !isLocked;
-          const isInCooldown = stakingBatchHelpers.isInCooldown(batch);
+          const isCooldownRequested = stakingBatchHelpers.isCooldownRequested(batch);
+          const isCooldownOver = stakingBatchHelpers.isCooldownOver(batch);
           const isVoting = stakingBatchHelpers.isVoting(batch);
 
           // Convert timestamps to Date objects
@@ -88,7 +90,8 @@ export function useGetStakingBatches(
             lockDurationDays,
             isLocked,
             isStaked,
-            isInCooldown,
+            isCooldownRequested,
+            isCooldownOver,
             isVoting,
             startDate,
             unlockDate,

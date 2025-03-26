@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { formatNSBalance } from "@/utils/formatNumber";
 import { stakingBatchHelpers } from "@/utils/stakingBatchHelpers";
 import { parseNSAmount } from "@/utils/parseAmount";
+import { useUnstakeMutation } from "@/hooks/staking/useUnstakeMutation";
 
 type StakingData = {
   availableNS: bigint;
@@ -135,44 +136,21 @@ function PanelStake({
 
 function BatchCard({ batch }: { batch: StakingBatch }) {
   const [showLockModal, setShowLockModal] = useState(false);
+  const [showRequestUnstakeModal, setShowRequestUnstakeModal] = useState(false);
   const [showUnstakeModal, setShowUnstakeModal] = useState(false);
-
-  const status = batch.isLocked
-    ? "Locked"
-    : batch.isInCooldown
-    ? "Cooling Down"
-    : batch.isVoting
-    ? "Voting"
-    : "Staked";
-
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric"
-    });
-  };
 
   const getStatusText = () => {
     if (batch.isLocked) {
       return `Locked for ${batch.lockDurationDays} Days`;
-    } else if (batch.isInCooldown) {
-      return `Cooling Down`;
+    } else if (batch.isCooldownOver) {
+      return `Cooldown Over`;
+    } else if (batch.isCooldownRequested) {
+      return `Cooldown Requested`;
     } else if (batch.isVoting) {
       return `Used for Voting`;
     } else {
       const daysSinceStake = Math.floor((Date.now() - batch.startDate.getTime()) / (1000 * 60 * 60 * 24));
       return `Staked for ${daysSinceStake} Days`;
-    }
-  };
-
-  const getInfoText = () => {
-    if (batch.isLocked) {
-      return `Unlocks: ${formatDate(batch.unlockDate)}`;
-    } else if (batch.isInCooldown) {
-      return `Cooldown ends: ${formatDate(batch.cooldownEndDate!)}`;
-    } else {
-      return `Started: ${formatDate(batch.startDate)}`;
     }
   };
 
@@ -196,18 +174,22 @@ function BatchCard({ batch }: { batch: StakingBatch }) {
         marginTop: "10px",
         color: "#666",
       }}>
-        <div>Status: {getStatusText()}</div>
-        <div>{getInfoText()}</div>
+        <div>{getStatusText()}</div>
       </div>
 
-      {status === "Staked" && (
+      {batch.isStaked && (
         <div style={{
           marginTop: "10px",
           display: "flex",
           justifyContent: "flex-end"
         }}>
-          <Btn onClick={() => setShowLockModal(true)}>Lock</Btn>
-          <Btn onClick={() => setShowUnstakeModal(true)}>Unstake</Btn>
+          {!batch.isCooldownRequested && <>
+            <Btn onClick={() => setShowRequestUnstakeModal(true)}>Request Unstake</Btn>
+            <Btn onClick={() => setShowLockModal(true)}>Lock</Btn>
+          </>}
+          {batch.isCooldownOver &&
+            <Btn onClick={() => setShowUnstakeModal(true)}>Unstake Now</Btn>
+          }
         </div>
       )}
 
@@ -215,6 +197,13 @@ function BatchCard({ batch }: { batch: StakingBatch }) {
         <LockBatchModal
           batch={batch}
           onClose={() => setShowLockModal(false)}
+        />
+      )}
+
+      {showRequestUnstakeModal && (
+        <RequestUnstakeBatchModal
+          batch={batch}
+          onClose={() => setShowRequestUnstakeModal(false)}
         />
       )}
 
@@ -394,7 +383,7 @@ function LockBatchModal({
   );
 }
 
-function UnstakeBatchModal({
+function RequestUnstakeBatchModal({
   batch,
   onClose,
 }: {
@@ -403,21 +392,21 @@ function UnstakeBatchModal({
 }) {
   const { mutateAsync: requestUnstake, isSuccess } = useRequestUnstakeMutation({
     onError: (error) => {
-      toast.error(error.message || "Failed to unstake batch");
+      toast.error(error.message || "Failed to request cooldown");
       onClose();
     }
   });
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success("Successfully initiated unstaking");
+      toast.success("Successfully initiated cooldown");
       onClose();
     }
   }, [isSuccess, onClose]);
 
   return (
     <Modal>
-      <ModalHeader title="Unstake Tokens" onClose={onClose} />
+      <ModalHeader title="Request Unstake" onClose={onClose} />
 
       <p>Unstaking initiates a 3-day cooldown period.</p>
 
@@ -429,8 +418,50 @@ function UnstakeBatchModal({
 
       <ModalFooter
         onClose={onClose}
-        actionText="Confirm Unstake"
+        actionText="Start Cooldown"
         onAction={() => requestUnstake({ batchId: batch.objectId })}
+      />
+    </Modal>
+  );
+}
+
+function UnstakeBatchModal({
+  batch,
+  onClose,
+}: {
+  batch: StakingBatch;
+  onClose: () => void;
+}) {
+  const { mutateAsync: unstake, isSuccess } = useUnstakeMutation({
+    onError: (error) => {
+      toast.error(error.message || "Failed to unstake batch");
+      onClose();
+    }
+  });
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Successfully unstaked");
+      onClose();
+    }
+  }, [isSuccess, onClose]);
+
+  return (
+    <Modal>
+      <ModalHeader title="Unstake Batch" onClose={onClose} />
+
+      <p>Destroy the batch and get your NS back.</p>
+
+      <div style={{ padding: "10px", border: "1px solid #ddd", margin: "10px 0" }}>
+        <div>{formatNSBalance(batch.balanceNS)} NS</div>
+        <div>Votes: {formatNSBalance(batch.votingPower)}</div>
+        <div>Started: {batch.startDate.toLocaleDateString()}</div>
+      </div>
+
+      <ModalFooter
+        onClose={onClose}
+        actionText="Unstake"
+        onAction={() => unstake({ batchId: batch.objectId })}
       />
     </Modal>
   );
