@@ -19,8 +19,6 @@ type LockRequest = {
   months: number;
 };
 
-const NS_DECIMALS = 6;
-
 export function useLockMutation(
   mutationOptions?: Omit<
     UseMutationOptions<string, Error, LockRequest>,
