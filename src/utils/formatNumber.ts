@@ -21,6 +21,13 @@ export function formatBalance(
   return formatAmount(bn);
 }
 
+export function formatNSBalance(
+  balance: bigint | number | string,
+  format: CoinFormat = CoinFormat.ROUNDED,
+) {
+  return formatBalance(balance, NS_DECIMALS, format);
+}
+
 export function formatNumber(number: number, suffix?: string) {
   const bigNumber = new BigNumber(number);
   let formattedNumber;

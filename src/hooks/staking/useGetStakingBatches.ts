@@ -6,8 +6,8 @@ import { stakingBatchSchema, stakingBatchHelpers, type StakingBatch } from "@/sc
 
 export type StakingBatchWithVotingPower = StakingBatch & {
   // Derived data
-  votingPower: number;
-  amountNS: number;
+  balanceNS: bigint;
+  votingPower: bigint;
   lockDurationDays: number;
   isLocked: boolean;
   isStaked: boolean;
@@ -66,7 +66,7 @@ export function useGetStakingBatches(
           const batch = result.data;
 
           // Calculate derived data
-          const amountNS = stakingBatchHelpers.getAmountInNS(batch);
+          const balanceNS = BigInt(batch.content.fields.balance);
           const votingPower = stakingBatchHelpers.calculateVotingPower(batch);
           const lockDurationDays = stakingBatchHelpers.getLockDurationDays(batch);
           const isLocked = stakingBatchHelpers.isLocked(batch);
@@ -82,8 +82,8 @@ export function useGetStakingBatches(
 
           parsedBatches.push({
             ...batch,
+            balanceNS,
             votingPower,
-            amountNS,
             lockDurationDays,
             isLocked,
             isStaked,
@@ -99,7 +99,11 @@ export function useGetStakingBatches(
       }
 
       // Sort batches by voting power (highest first)
-      return parsedBatches.sort((a, b) => b.votingPower - a.votingPower);
+      return parsedBatches.sort((a, b) => {
+        if (b.votingPower > a.votingPower) { return 1; }
+        if (b.votingPower < a.votingPower) { return -1; }
+        return 0;
+      });
     },
     enabled: !!owner,
   });

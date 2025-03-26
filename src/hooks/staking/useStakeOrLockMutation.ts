@@ -15,13 +15,12 @@ import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { parseAmount } from "@/utils/parseAmount";
 import { devInspectOnDev } from "@/utils/devInspectOnDev";
+import { NS_DECIMALS } from "@/utils/formatNumber";
 
 type StakeRequest = {
   amount: string;
   months: number;
 };
-
-const NS_DECIMALS = 6;
 
 /**
  * Stake NS into a new batch, optionally locking it for a number of months

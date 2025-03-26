@@ -6,14 +6,15 @@ import { useStakeOrLockMutation } from "@/hooks/staking/useStakeOrLockMutation";
 import { useLockMutation } from "@/hooks/staking/useLockMutation";
 import { useRequestUnstakeMutation } from "@/hooks/staking/useRequestUnstakeMutation";
 import { toast } from "sonner";
+import { formatNSBalance } from "@/utils/formatNumber";
 
 type StakingData = {
-  lockedNS: number;
-  lockedPower: number;
-  stakedNS: number;
-  stakedPower: number;
-  totalPower: number;
-  availableNS: number;
+  lockedNS: bigint;
+  lockedPower: bigint;
+  stakedNS: bigint;
+  stakedPower: bigint;
+  totalPower: bigint;
+  availableNS: bigint;
 };
 
 export function StakeContent({
@@ -22,24 +23,24 @@ export function StakeContent({
   stakeBatches: StakingBatchWithVotingPower[];
 }) {
   const stakingData = useMemo((): StakingData => {
-    let lockedNS = 0;
-    let lockedPower = 0;
-    let stakedNS = 0;
-    let stakedPower = 0;
-    let totalPower = 0;
+    let lockedNS = 0n;
+    let lockedPower = 0n;
+    let stakedNS = 0n;
+    let stakedPower = 0n;
+    let totalPower = 0n;
 
     stakeBatches.forEach(batch => {
       if (batch.isLocked) {
-        lockedNS += batch.amountNS;
+        lockedNS += batch.balanceNS;
         lockedPower += batch.votingPower;
       } else if (batch.isStaked) {
-        stakedNS += batch.amountNS;
+        stakedNS += batch.balanceNS;
         stakedPower += batch.votingPower;
       }
       totalPower += batch.votingPower;
     });
 
-    const availableNS = 1000; // TODO: get from wallet
+    const availableNS = 1000n*1000000n; // TODO: get from wallet
 
     return { lockedNS, lockedPower, stakedNS, stakedPower, totalPower, availableNS };
   }, [stakeBatches]);
@@ -63,16 +64,16 @@ function PanelOverview({
   return (
     <Panel>
       <div>
-        <p>Total Locked: {lockedNS.toLocaleString()} NS ({lockedPower.toLocaleString()} Votes)</p>
+        <p>Total Locked: {formatNSBalance(lockedNS)} NS ({formatNSBalance(lockedPower)} Votes)</p>
       </div>
       <div>
-        <p>Total Staked: {stakedNS.toLocaleString()} NS ({stakedPower.toLocaleString()} Votes)</p>
+        <p>Total Staked: {formatNSBalance(stakedNS)} NS ({formatNSBalance(stakedPower)} Votes)</p>
       </div>
       <div>
-        <p>Available Tokens: {availableNS.toLocaleString()} NS</p>
+        <p>Available Tokens: {formatNSBalance(availableNS)} NS</p>
       </div>
       <div>
-        <p>Your Total Votes: {totalPower.toLocaleString()}</p>
+        <p>Your Total Votes: {formatNSBalance(totalPower)}</p>
       </div>
     </Panel>
   );
@@ -181,10 +182,10 @@ function BatchCard({ batch }: { batch: StakingBatchWithVotingPower }) {
     }}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <div>
-          <strong>{batch.amountNS.toLocaleString()} NS</strong>
+          <strong>{formatNSBalance(batch.balanceNS)} NS</strong>
         </div>
         <div>
-          <strong>{Math.floor(batch.votingPower).toLocaleString()} Votes</strong>
+          <strong>{formatNSBalance(batch.votingPower)} Votes</strong>
         </div>
       </div>
 
@@ -259,8 +260,8 @@ function LockBatchModal({
 
       <div style={{ padding: "10px", border: "1px solid #ddd", margin: "10px 0" }}>
         <div>Staked for {daysSinceStake} Days</div>
-        <div>{batch.amountNS.toLocaleString()} NS</div>
-        <div>Votes {Math.floor(batch.votingPower).toLocaleString()}</div>
+        <div>{formatNSBalance(batch.balanceNS)} NS</div>
+        <div>Votes {formatNSBalance(batch.votingPower)}</div>
       </div>
 
       <div>
@@ -277,7 +278,7 @@ function LockBatchModal({
       </div>
 
       <div>
-        <div>Votes {votes.toLocaleString()}</div>
+        <div>Votes {formatNSBalance(votes)}</div>
       </div>
 
       <ModalFooter
@@ -317,8 +318,8 @@ function UnstakeBatchModal({
       <p>Unstaking initiates a 3-day cooldown period.</p>
 
       <div style={{ padding: "10px", border: "1px solid #ddd", margin: "10px 0" }}>
-        <div>{batch.amountNS.toLocaleString()} NS</div>
-        <div>Votes: {Math.floor(batch.votingPower).toLocaleString()}</div>
+        <div>{formatNSBalance(batch.balanceNS)} NS</div>
+        <div>Votes: {formatNSBalance(batch.votingPower)}</div>
         <div>Started: {batch.startDate.toLocaleDateString()}</div>
       </div>
 
@@ -340,7 +341,7 @@ function StakeModal({
   mode: "stake" | "lock";
   onClose: () => void;
   onModeChange: (mode: "stake" | "lock") => void;
-  availableNS: number;
+  availableNS: bigint;
 }) {
   const { mutateAsync: stakeOrLock, isSuccess } = useStakeOrLockMutation({
     onError: (error) => {
@@ -407,7 +408,7 @@ function StakeModal({
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />
-          /{availableNS.toLocaleString()} NS
+          /{formatNSBalance(availableNS)} NS
         </div>
 
         {mode === "lock" && (
@@ -418,7 +419,7 @@ function StakeModal({
       </div>
 
       <div>
-        <div>Votes {votes.toLocaleString()}</div>
+        <div>Votes {formatNSBalance(votes)}</div>
       </div>
 
       <ModalFooter

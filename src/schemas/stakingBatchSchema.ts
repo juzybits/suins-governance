@@ -1,3 +1,4 @@
+import { NS_VOTE_DIVISOR } from "@/constants/common";
 import { z } from "zod";
 
 export const stakingBatchSchema = z.object({
@@ -28,8 +29,8 @@ export type StakingBatch = z.infer<typeof stakingBatchSchema>;
 // Constants matching the Move contract
 const MONTH_MS = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 const MAX_LOCK_MONTHS = 12;
-const MONTHLY_BOOST_BPS = 11000; // 1.1x or 10% boost (in basis points)
-const MAX_BOOST_BPS = 30000;     // 3.0x for 12-month lock (in basis points)
+const MONTHLY_BOOST_BPS = 11000n; // 1.1x or 10% boost (in basis points)
+const MAX_BOOST_BPS = 30000n;     // 3.0x for 12-month lock (in basis points)
 
 // Helper functions to work with the schema data
 export const stakingBatchHelpers = {
@@ -48,10 +49,6 @@ export const stakingBatchHelpers = {
     return unlockMs > Date.now();
   },
 
-  getAmountInNS: (batch: StakingBatch): number => {
-    return Number(batch.content.fields.balance) / 1_000_000;
-  },
-
   getLockDurationDays: (batch: StakingBatch): number => {
     const startMs = Number(batch.content.fields.start_ms);
     const unlockMs = Number(batch.content.fields.unlock_ms);
@@ -59,8 +56,8 @@ export const stakingBatchHelpers = {
   },
 
   // Mirrors batch::power() in Move contract
-  calculateVotingPower: (batch: StakingBatch): number => {
-    const balance = Number(batch.content.fields.balance);
+  calculateVotingPower: (batch: StakingBatch): bigint => {
+    const balance = BigInt(batch.content.fields.balance);
     const startMs = Number(batch.content.fields.start_ms);
     const unlockMs = Number(batch.content.fields.unlock_ms);
 
@@ -70,10 +67,10 @@ export const stakingBatchHelpers = {
 
     // Special case: locking for max months (12) gets the max boost (3x)
     if (lockMonths >= MAX_LOCK_MONTHS) {
-      return (balance * MAX_BOOST_BPS) / 10000 / 1_000_000;
+      return (balance * MAX_BOOST_BPS) / 10000n;
     }
 
-    // Calculate total effective months (locked + staked)
+    // Calculate locked + staked months
     let totalMonths = lockMonths;
 
     // Add months from staking (if any)
@@ -84,7 +81,7 @@ export const stakingBatchHelpers = {
       totalMonths += stakingMonths;
     }
 
-    // Cap at max effective months (MAX_LOCK_MONTHS - 1 = 11 months)
+    // e.g. if max_lock_months is 12, cap at 11 months (which gives 2.85x multiplier)
     const maxEffectiveMonths = MAX_LOCK_MONTHS - 1;
     if (totalMonths > maxEffectiveMonths) {
       totalMonths = maxEffectiveMonths;
@@ -93,9 +90,9 @@ export const stakingBatchHelpers = {
     // Apply multiplier: 1.1^total_months
     let power = balance;
     for (let i = 0; i < totalMonths; i++) {
-      power = (power * MONTHLY_BOOST_BPS) / 10000;
+      power = (power * MONTHLY_BOOST_BPS) / 10000n;
     }
 
-    return Math.floor(power / 1_000_000); // Convert to NS units
+    return power;
   }
 };
