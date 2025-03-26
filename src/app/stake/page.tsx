@@ -25,11 +25,12 @@ export default function StakePage() {
     return <div>Error: {batches.error?.message || balance.error?.message}</div>;
   }
 
-  const availableNS = balance.data ? BigInt(balance.data.totalBalance) : 0n;
-
   return (
     <Suspense fallback={<Loader className="h-5 w-5" />}>
-      <StakeContent stakeBatches={batches.data ?? []} availableNS={availableNS} />
+      <StakeContent
+        batches={batches.data ?? []}
+        availableNS={balance.data ? BigInt(balance.data.totalBalance) : 0n}
+      />
     </Suspense>
   );
 }

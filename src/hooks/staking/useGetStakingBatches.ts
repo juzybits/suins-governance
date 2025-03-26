@@ -2,9 +2,10 @@ import { client } from "@/app/SuinsClient";
 import { useQuery } from "@tanstack/react-query";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { NETWORK } from "@/constants/env";
-import { stakingBatchSchema, stakingBatchHelpers, type StakingBatch } from "@/schemas/stakingBatchSchema";
+import { stakingBatchSchema, type StakingBatchRaw } from "@/schemas/stakingBatchSchema";
+import { stakingBatchHelpers } from "@/utils/stakingBatchHelpers";
 
-export type StakingBatchWithVotingPower = StakingBatch & {
+export type StakingBatch = StakingBatchRaw & {
   // Derived data
   balanceNS: bigint;
   votingPower: bigint;
@@ -39,7 +40,7 @@ export function useGetStakingBatches(
       return paginatedObjects.data;
     },
     select: (suiObjResponses) => {
-      const parsedBatches: StakingBatchWithVotingPower[] = [];
+      const parsedBatches: StakingBatch[] = [];
 
       for (const response of suiObjResponses) {
         try {
