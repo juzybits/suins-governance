@@ -20,6 +20,9 @@ type LockRequest = {
   months: number;
 };
 
+/**
+ * Lock a staked batch, or extend the lock duration of a locked batch.
+ */
 export function useLockMutation(
   mutationOptions?: Omit<
     UseMutationOptions<string, Error, LockRequest>,
@@ -34,13 +37,13 @@ export function useLockMutation(
   return useMutation({
     mutationFn: async ({ batchId, months }: LockRequest) => {
       if (!currAcct) {
-        throw new Error("No account selected");
+        throw new Error("Wallet not connected");
       }
 
       const tx = new Transaction();
       tx.setSender(currAcct.address);
 
-      const batch = tx.moveCall({
+      tx.moveCall({
         target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::staking_batch::lock`,
         arguments: [
           tx.object(batchId),

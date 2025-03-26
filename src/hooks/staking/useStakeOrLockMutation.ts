@@ -16,28 +16,31 @@ import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { parseAmount } from "@/utils/parseAmount";
 import { devInspectOnDev } from "@/utils/devInspectOnDev";
 
-type StakingRequest = {
+type StakeRequest = {
   amount: string;
   months: number;
 };
 
 const NS_DECIMALS = 6;
 
-export function useStakeMutation(
+/**
+ * Stake NS into a new batch, optionally locking it for a number of months
+ */
+export function useStakeOrLockMutation(
   mutationOptions?: Omit<
-    UseMutationOptions<string, Error, StakingRequest>,
+    UseMutationOptions<string, Error, StakeRequest>,
     "mutationFn"
   >
-): UseMutationResult<string, Error, StakingRequest> {
+): UseMutationResult<string, Error, StakeRequest> {
   const { mutateAsync: signAndExecuteTransaction } = useSignAndExecuteTransaction();
   const currAcct = useCurrentAccount();
   const suiClient = useSuiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ amount, months }: StakingRequest) => {
+    mutationFn: async ({ amount, months }: StakeRequest) => {
       if (!currAcct) {
-        throw new Error("No account selected");
+        throw new Error("Wallet not connected");
       }
 
       const tx = new Transaction();
@@ -84,10 +87,10 @@ export function useStakeMutation(
     onSuccess: async () => {
       await Promise.allSettled([
         queryClient.invalidateQueries({
-          queryKey: [NETWORK, "getBalance"],
+          queryKey: ["owned-staking-batches"],
         }),
         queryClient.invalidateQueries({
-          queryKey: ["owned-staking-batches"],
+          queryKey: [NETWORK, "getBalance"],
         }),
       ]);
     },

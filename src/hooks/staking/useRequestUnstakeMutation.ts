@@ -15,31 +15,33 @@ import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { devInspectOnDev } from "@/utils/devInspectOnDev";
 
-type UnstakeRequest = {
+type RequestUnstakeRequest = {
   batchId: string;
 };
 
-export function useUnstakeMutation(
+/**
+ * Request to unstake a batch, initiating cooldown period.
+ */
+export function useRequestUnstakeMutation(
   mutationOptions?: Omit<
-    UseMutationOptions<string, Error, UnstakeRequest>,
+    UseMutationOptions<string, Error, RequestUnstakeRequest>,
     "mutationFn"
   >
-): UseMutationResult<string, Error, UnstakeRequest> {
+): UseMutationResult<string, Error, RequestUnstakeRequest> {
   const { mutateAsync: signAndExecuteTransaction } = useSignAndExecuteTransaction();
   const currAcct = useCurrentAccount();
   const suiClient = useSuiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ batchId }: UnstakeRequest) => {
+    mutationFn: async ({ batchId }: RequestUnstakeRequest) => {
       if (!currAcct) {
-        throw new Error("No account selected");
+        throw new Error("Wallet not connected");
       }
 
       const tx = new Transaction();
       tx.setSender(currAcct.address);
 
-      // Call the request_unstake function from the batch module
       tx.moveCall({
         target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::staking_batch::request_unstake`,
         arguments: [

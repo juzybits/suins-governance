@@ -2,9 +2,9 @@
 
 import React, { ReactNode, useState, useMemo, useEffect } from "react";
 import { StakingBatchWithVotingPower } from "@/hooks/staking/useGetStakingBatches";
-import { useStakeMutation } from "@/hooks/staking/useStakeMutation";
+import { useStakeOrLockMutation } from "@/hooks/staking/useStakeOrLockMutation";
 import { useLockMutation } from "@/hooks/staking/useLockMutation";
-import { useUnstakeMutation } from "@/hooks/staking/useUnstakeMutation";
+import { useRequestUnstakeMutation } from "@/hooks/staking/useRequestUnstakeMutation";
 import { toast } from "sonner";
 
 type StakingData = {
@@ -296,7 +296,7 @@ function UnstakeBatchModal({
   batch: StakingBatchWithVotingPower;
   onClose: () => void;
 }) {
-  const { mutateAsync: requestUnstake, isSuccess } = useUnstakeMutation({
+  const { mutateAsync: requestUnstake, isSuccess } = useRequestUnstakeMutation({
     onError: (error) => {
       toast.error(error.message || "Failed to unstake batch");
       onClose();
@@ -342,7 +342,7 @@ function StakeModal({
   onModeChange: (mode: "stake" | "lock") => void;
   availableNS: number;
 }) {
-  const { mutateAsync: stakeOrLock, isSuccess } = useStakeMutation({
+  const { mutateAsync: stakeOrLock, isSuccess } = useStakeOrLockMutation({
     onError: (error) => {
       toast.error(error.message || "Failed to stake tokens");
       onClose();
