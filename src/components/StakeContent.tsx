@@ -49,13 +49,11 @@ export function StakeContent({
     return { lockedNS, lockedPower, stakedNS, stakedPower, totalPower, availableNS };
   }, [batches]);
 
-  return (
-    <div style={{ fontFamily: "sans-serif", maxWidth: "800px", margin: "0 auto" }}>
-      <PanelOverview stakingData={stakingData} />
-      <PanelStake batches={batches} stakingData={stakingData} />
-      <PanelParticipation />
-    </div>
-  );
+  return <>
+    <PanelOverview stakingData={stakingData} />
+    <PanelStake batches={batches} stakingData={stakingData} />
+    <PanelParticipation />
+  </>;
 }
 
 function PanelOverview({
@@ -69,14 +67,8 @@ function PanelOverview({
     <div className="panel">
       <div>
         <p>Total Locked: {formatNSBalance(lockedNS)} NS ({formatNSBalance(lockedPower)} Votes)</p>
-      </div>
-      <div>
         <p>Total Staked: {formatNSBalance(stakedNS)} NS ({formatNSBalance(stakedPower)} Votes)</p>
-      </div>
-      <div>
         <p>Available Tokens: {formatNSBalance(availableNS)} NS</p>
-      </div>
-      <div>
         <p>Your Total Votes: {formatNSBalance(totalPower)}</p>
       </div>
     </div>
@@ -98,29 +90,29 @@ function PanelStake({
     setShowStakeModal(true);
   };
 
-  const buttons = <>
+  const buttons = <div className="button-group">
     <button onClick={() => onOpenStakeModal("stake")}>Stake</button>
     <button onClick={() => onOpenStakeModal("lock")}>Lock</button>
-  </>;
+  </div>;
 
   return (
     <div className="panel">
       <h2>Staked & Locked (count: {batches.length})</h2>
       {batches.length === 0 ? (
-        <div>
+        <>
           <h3>No Stakes or Locks</h3>
           <p>Start Staking your NS to participate in governance, earn rewards, and shape the future of SuiNS</p>
           {buttons}
-        </div>
+        </>
       ) : (
-        <div>
-          <div style={{ marginBottom: "10px" }}>
+        <>
+          <div>
             {buttons}
           </div>
           {batches.map((batch) => (
             <BatchCard key={batch.objectId} batch={batch} />
           ))}
-        </div>
+        </>
       )}
 
       {showStakeModal && (
@@ -156,12 +148,8 @@ function BatchCard({ batch }: { batch: StakingBatch }) {
   };
 
   return (
-    <div style={{
-      border: "1px solid #ddd",
-      padding: "10px",
-      marginBottom: "10px",
-    }}>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+    <div className="batch">
+      <div className="batch-header">
         <div>
           <strong>{formatNSBalance(batch.balanceNS)} NS</strong>
         </div>
@@ -170,24 +158,17 @@ function BatchCard({ batch }: { batch: StakingBatch }) {
         </div>
       </div>
 
-      <div style={{
-        fontSize: "14px",
-        marginTop: "10px",
-        color: "#666",
-      }}>
+      <div className="batch-status">
         <div>{getStatusText()}</div>
       </div>
 
       {batch.isStaked && (
-        <div style={{
-          marginTop: "10px",
-          display: "flex",
-          justifyContent: "flex-end"
-        }}>
-          {!batch.isCooldownRequested && <>
-            <button onClick={() => setShowRequestUnstakeModal(true)}>Request Unstake</button>
-            <button onClick={() => setShowLockModal(true)}>Lock</button>
-          </>}
+        <div className="batch-actions">
+          {!batch.isCooldownRequested &&
+            <div className="button-group">
+              <button onClick={() => setShowRequestUnstakeModal(true)}>Request Unstake</button>
+              <button onClick={() => setShowLockModal(true)}>Lock</button>
+            </div>}
           {batch.isCooldownOver &&
             <button onClick={() => setShowUnstakeModal(true)}>Unstake Now</button>
           }
@@ -262,13 +243,12 @@ function StakeModal({
 
       <p>Stake your NS tokens to receive Votes, which increases over time, with an immediate boost based on a lockup period of 1-12 months.</p>
 
-      <div style={{ margin: "15px 0" }}>
-        <label style={{ marginRight: "15px" }}>
+      <div className="radio-group">
+        <label>
           <input
             type="radio"
             checked={mode === "stake"}
             onChange={() => onModeChange("stake")}
-            style={{ marginRight: "5px" }}
           />
           Stake
         </label>
@@ -278,34 +258,25 @@ function StakeModal({
             type="radio"
             checked={mode === "lock"}
             onChange={() => onModeChange("lock")}
-            style={{ marginRight: "5px" }}
           />
           Lock
         </label>
       </div>
 
-      <div style={{
-        border: "1px solid #ddd",
-        padding: "10px",
-        display: "flex",
-        justifyContent: "space-between",
-        margin: "10px 0"
-      }}>
-        <div>
-          <input
-            type="text"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-          />
-          /{formatNSBalance(availableNS)} NS
-        </div>
-
-        {mode === "lock" && (
-          <div>
-            <MonthSelector months={months} setMonths={setMonths} />
-          </div>
-        )}
+      <div className="box">
+        <input
+          type="text"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+        /{formatNSBalance(availableNS)} NS
       </div>
+
+      {mode === "lock" && (
+        <div className="box">
+          <MonthSelector months={months} setMonths={setMonths} />
+        </div>
+      )}
 
       <div>
         <div>Votes {formatNSBalance(votes)}</div>
@@ -354,7 +325,7 @@ function LockBatchModal({
 
       <p>Lock your already Staked NS tokens to receive an immediate Votes multiplier.</p>
 
-      <div style={{ padding: "10px", border: "1px solid #ddd", margin: "10px 0" }}>
+      <div className="box">
         <div>Staked for {daysSinceStake} Days</div>
         <div>{formatNSBalance(batch.balanceNS)} NS</div>
         <div>Votes {formatNSBalance(batch.votingPower)}</div>
@@ -362,13 +333,7 @@ function LockBatchModal({
 
       <div>
         <div>Select Lock Period</div>
-        <div style={{
-          padding: "10px",
-          border: "1px solid #ddd",
-          margin: "10px 0",
-          display: "flex",
-          justifyContent: "space-between"
-        }}>
+        <div className="box">
           <MonthSelector months={months} setMonths={setMonths} />
         </div>
       </div>
@@ -413,7 +378,7 @@ function RequestUnstakeBatchModal({
 
       <p>Unstaking initiates a 3-day cooldown period.</p>
 
-      <div style={{ padding: "10px", border: "1px solid #ddd", margin: "10px 0" }}>
+      <div className="box">
         <div>{formatNSBalance(batch.balanceNS)} NS</div>
         <div>Votes: {formatNSBalance(batch.votingPower)}</div>
         <div>Started: {batch.startDate.toLocaleDateString()}</div>
@@ -455,7 +420,7 @@ function UnstakeBatchModal({
 
       <p>Destroy the batch and get your NS back.</p>
 
-      <div style={{ padding: "10px", border: "1px solid #ddd", margin: "10px 0" }}>
+      <div className="box">
         <div>{formatNSBalance(batch.balanceNS)} NS</div>
         <div>Votes: {formatNSBalance(batch.votingPower)}</div>
         <div>Started: {batch.startDate.toLocaleDateString()}</div>
@@ -478,16 +443,16 @@ function PanelParticipation({
     <div className="panel">
       <h2>Your Governance Participation</h2>
       {votes.length === 0 ? (
-        <div>
+        <>
           <h3>No Votes</h3>
           <p>Once you start voting, your participation will be showcased here</p>
-        </div>
+        </>
       ) : (
-        <div>
+        <>
           {votes.map((vote) => (
             <div key={vote.id}>{vote.id}</div>
           ))}
-        </div>
+        </>
       )}
     </div>
   );

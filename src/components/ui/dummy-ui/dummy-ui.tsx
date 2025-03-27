@@ -20,14 +20,14 @@ export function ModalHeader({ title, onClose }: { title: string; onClose: () => 
   return (
     <div className="modal-header">
       <h2>{title}</h2>
-      <button onClick={onClose}>×</button>
+      <button onClick={onClose} className="modal-close-button">×</button>
     </div>
   );
 }
 
 export function ModalFooter({ onClose, actionText, onAction }: { onClose: () => void; actionText: string; onAction: () => void }) {
   return (
-    <div className="modal-footer">
+    <div className="modal-footer button-group">
       <button onClick={onClose}>Cancel</button>
       <button onClick={onAction}>{actionText}</button>
     </div>

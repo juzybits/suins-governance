@@ -1,33 +1,90 @@
-.dummy-ui .panel {
-  padding: 20px;
-  margin: 10px 0;
-  background-color: #fff;
-  color: #333;
+.dummy-ui {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  font-family: sans-serif;
 }
+
+/* containers */
+
+.dummy-ui .panel,
+.dummy-ui .modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  background-color: #fff;
+}
+
+.dummy-ui .box {
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+.dummy-ui .button-group {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.dummy-ui .radio-group {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+}
+
+.dummy-ui .radio-group label {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+/* basic elements */
 
 .dummy-ui h2 {
   font-size: 18px;
   font-weight: bold;
-  margin-bottom: 10px;
 }
 
 .dummy-ui h3 {
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 10px;
 }
 
 .dummy-ui button {
   padding: 8px 16px;
   border: 1px solid #ddd;
   background-color: #f5f5f5;
-  margin-right: 8px;
 }
 
 .dummy-ui input[type="text"] {
   padding: 2px 8px;
   border: 1px solid #ccc;
 }
+
+/* staking batch */
+
+.dummy-ui .batch {
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+.dummy-ui .batch-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.dummy-ui .batch-status {
+  font-size: 14px;
+  color: #666;
+}
+
+.dummy-ui .batch-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* modal */
 
 .dummy-ui .modal-overlay {
   position: fixed;
@@ -42,11 +99,8 @@
 }
 
 .dummy-ui .modal-content {
-  background-color: #fff;
-  padding: 20px;
   width: 90%;
   max-width: 450px;
-  color: #333;
 }
 
 .dummy-ui .modal-header {
@@ -54,8 +108,11 @@
   justify-content: space-between;
 }
 
+.dummy-ui .modal-close-button {
+  padding: 2px 8px;
+}
+
 .dummy-ui .modal-footer {
-  margin-top: 20px;
   display: flex;
   justify-content: flex-end;
 }
