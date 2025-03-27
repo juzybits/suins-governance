@@ -7,12 +7,11 @@ import isFuture from "date-fns/isFuture";
 
 // TODO: We need to update this so that we can paginate the proposals, This works for the first 20 proposals
 export function useGetProposalsIds() {
-  const network = NETWORK === "mainnet" ? "mainnet" : "testnet";
   return useQuery({
     queryKey: ["governanceObject-dynamic-fields-objects"],
     queryFn: async () => {
       const proposalsContent = await client.getDynamicFields({
-        parentId: SUINS_PACKAGES[network].governanceObjId,
+        parentId: SUINS_PACKAGES[NETWORK].governanceObjId,
         limit: 20,
       });
 
@@ -24,7 +23,7 @@ export function useGetProposalsIds() {
       }
 
       const dynamicFieldsObject = await client.getDynamicFieldObject({
-        parentId: SUINS_PACKAGES[network].governanceObjId,
+        parentId: SUINS_PACKAGES[NETWORK].governanceObjId,
         name: {
           type: proposalsContent.data[0].name.type,
           value: proposalsContent.data[0].name.value,
