@@ -49,7 +49,7 @@ function ProposalPreview({
   );
 
   const PreviewContent = (
-    <div className="flex cursor-pointer flex-col gap-2024_R">
+    <div className="flex w-full cursor-pointer flex-col gap-2024_R">
       <ProposalStatus
         status={
           isClosed
@@ -95,12 +95,12 @@ function ProposalPreview({
   return isActive ? (
     <GradientBorder
       variant="green_pink_blue"
-      className="flex w-full items-center justify-center rounded-2024_XS border-2 bg-[#62519c66] p-2024_M"
+      className="flex w-full items-center rounded-2024_XS border-2 bg-[#62519c66] p-2024_M"
     >
       {PreviewContent}
     </GradientBorder>
   ) : (
-    <div className="flex w-full items-center justify-center rounded-2024_XS border-0 bg-[#62519c66] p-2024_M">
+    <div className="flex w-full items-center rounded-2024_XS border-0 bg-[#62519c66] p-2024_M">
       {PreviewContent}
     </div>
   );
@@ -160,7 +160,7 @@ export function ProposalsMenu() {
                   >
                     Proposals
                   </Heading>
-                  <div className="flex h-full max-h-[800px] flex-col gap-2024_M overflow-y-auto">
+                  <div className="flex h-full max-h-[800px] w-full flex-col gap-2024_M overflow-y-auto">
                     {data?.[0]?.isActive && (
                       <div className="flex flex-col gap-2024_M">
                         <Text variant="B6/bold" color="fillContent-primary">
