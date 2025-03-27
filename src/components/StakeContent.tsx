@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode, useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { StakingBatch } from "@/hooks/staking/useGetStakingBatches";
 import { useStakeOrLockMutation } from "@/hooks/staking/useStakeOrLockMutation";
 import { useLockMutation } from "@/hooks/staking/useLockMutation";
@@ -10,7 +10,7 @@ import { formatNSBalance } from "@/utils/formatNumber";
 import { stakingBatchHelpers } from "@/utils/stakingBatchHelpers";
 import { parseNSAmount } from "@/utils/parseAmount";
 import { useUnstakeMutation } from "@/hooks/staking/useUnstakeMutation";
-import { Panel, H2, H3, Btn, InputText, Modal, ModalHeader, ModalFooter, MonthSelector } from "@/components/ui/DummyUI";
+import { Modal, ModalHeader, ModalFooter, MonthSelector } from "@/components/ui/dummy-ui/dummy-ui";
 
 type StakingData = {
   availableNS: bigint;
@@ -66,7 +66,7 @@ function PanelOverview({
   const { lockedNS, lockedPower, stakedNS, stakedPower, totalPower, availableNS } = stakingData;
 
   return (
-    <Panel>
+    <div className="panel">
       <div>
         <p>Total Locked: {formatNSBalance(lockedNS)} NS ({formatNSBalance(lockedPower)} Votes)</p>
       </div>
@@ -79,7 +79,7 @@ function PanelOverview({
       <div>
         <p>Your Total Votes: {formatNSBalance(totalPower)}</p>
       </div>
-    </Panel>
+    </div>
   );
 }
 
@@ -99,16 +99,16 @@ function PanelStake({
   };
 
   const buttons = <>
-    <Btn onClick={() => onOpenStakeModal("stake")}>Stake</Btn>
-    <Btn onClick={() => onOpenStakeModal("lock")}>Lock</Btn>
+    <button onClick={() => onOpenStakeModal("stake")}>Stake</button>
+    <button onClick={() => onOpenStakeModal("lock")}>Lock</button>
   </>;
 
   return (
-    <Panel>
-      <H2>Staked & Locked (count: {batches.length})</H2>
+    <div className="panel">
+      <h2>Staked & Locked (count: {batches.length})</h2>
       {batches.length === 0 ? (
         <div>
-          <H3>No Stakes or Locks</H3>
+          <h3>No Stakes or Locks</h3>
           <p>Start Staking your NS to participate in governance, earn rewards, and shape the future of SuiNS</p>
           {buttons}
         </div>
@@ -131,7 +131,7 @@ function PanelStake({
           availableNS={stakingData.availableNS}
         />
       )}
-    </Panel>
+    </div>
   );
 }
 
@@ -185,11 +185,11 @@ function BatchCard({ batch }: { batch: StakingBatch }) {
           justifyContent: "flex-end"
         }}>
           {!batch.isCooldownRequested && <>
-            <Btn onClick={() => setShowRequestUnstakeModal(true)}>Request Unstake</Btn>
-            <Btn onClick={() => setShowLockModal(true)}>Lock</Btn>
+            <button onClick={() => setShowRequestUnstakeModal(true)}>Request Unstake</button>
+            <button onClick={() => setShowLockModal(true)}>Lock</button>
           </>}
           {batch.isCooldownOver &&
-            <Btn onClick={() => setShowUnstakeModal(true)}>Unstake Now</Btn>
+            <button onClick={() => setShowUnstakeModal(true)}>Unstake Now</button>
           }
           {/* TODO: add extend lock duration for locked batches if < max months */}
         </div>
@@ -292,7 +292,8 @@ function StakeModal({
         margin: "10px 0"
       }}>
         <div>
-          <InputText
+          <input
+            type="text"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />
@@ -474,11 +475,11 @@ function PanelParticipation({
 }) {
   const votes: { id: string }[] = [];
   return (
-    <Panel>
-      <H2>Your Governance Participation</H2>
+    <div className="panel">
+      <h2>Your Governance Participation</h2>
       {votes.length === 0 ? (
         <div>
-          <H3>No Votes</H3>
+          <h3>No Votes</h3>
           <p>Once you start voting, your participation will be showcased here</p>
         </div>
       ) : (
@@ -488,6 +489,6 @@ function PanelParticipation({
           ))}
         </div>
       )}
-    </Panel>
+    </div>
   );
 }

@@ -10,7 +10,6 @@ import { coinWithBalance, Transaction } from "@mysten/sui/transactions";
 import { useMutation, type UseMutationOptions, UseMutationResult, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Suspense } from "react";
 import NotFound from "../not-found";
-import { Btn, Panel } from "@/components/ui/DummyUI";
 import { NS_VOTE_DIVISOR } from "@/constants/common";
 
 /**
@@ -34,9 +33,9 @@ export default function DevPage() {
 
   return (
     <Suspense fallback={<Loader className="h-5 w-5" />}>
-      <Panel>
+      <div className="dummy-ui">
         <DevContent govCapId={govCap.data} currAddr={currAcct?.address} />
-      </Panel>
+      </div>
     </Suspense>
   );
 }
@@ -58,15 +57,17 @@ function DevContent({
   }
 
   return <>
-    <Btn onClick={() => {
-      createProposal({
-        govCapId,
-        title: "Test Proposal",
-        description: "This is a test proposal",
-        end_time_ms: Date.now() + 1000 * 60, // 1 minute
-        reward: BigInt(50 * NS_VOTE_DIVISOR), // 50 NS
-      });
-    }}>Create Proposal</Btn>
+  <div className="panel">
+      <button onClick={() => {
+        createProposal({
+          govCapId,
+          title: "Test Proposal",
+          description: "This is a test proposal",
+          end_time_ms: Date.now() + 1000 * 60, // 1 minute
+          reward: BigInt(50 * NS_VOTE_DIVISOR), // 50 NS
+        });
+      }}>Create Proposal</button>
+    </div>
   </>;
 }
 
