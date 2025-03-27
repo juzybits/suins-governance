@@ -11,7 +11,7 @@ export const client = new SuiClient({
 // Now you can use it to create a SuiNS client.
 export const suinsClient = new SuinsClient({
   client,
-  network: (NETWORK === "mainnet" || NETWORK === "testnet") ? NETWORK : "custom",
+  network: NETWORK === "mainnet" || NETWORK === "testnet" ? NETWORK : "custom",
 });
 
 type SuinsClientProps = {

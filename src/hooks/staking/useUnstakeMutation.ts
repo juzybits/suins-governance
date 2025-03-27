@@ -26,9 +26,10 @@ export function useUnstakeMutation(
   mutationOptions?: Omit<
     UseMutationOptions<string, Error, UnstakeRequest>,
     "mutationFn"
-  >
+  >,
 ): UseMutationResult<string, Error, UnstakeRequest> {
-  const { mutateAsync: signAndExecuteTransaction } = useSignAndExecuteTransaction();
+  const { mutateAsync: signAndExecuteTransaction } =
+    useSignAndExecuteTransaction();
   const currAcct = useCurrentAccount();
   const suiClient = useSuiClient();
   const queryClient = useQueryClient();
@@ -44,27 +45,21 @@ export function useUnstakeMutation(
 
       const balance = tx.moveCall({
         target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::staking_batch::unstake`,
-        arguments: [
-          tx.object(batchId),
-          tx.object.clock(),
-        ],
+        arguments: [tx.object(batchId), tx.object.clock()],
       });
 
       const coin = tx.moveCall({
         target: "0x2::coin::from_balance",
-        typeArguments: [ SUINS_PACKAGES[NETWORK].votingTokenType ],
-        arguments: [
-          balance,
-        ],
+        typeArguments: [SUINS_PACKAGES[NETWORK].votingTokenType],
+        arguments: [balance],
       });
 
       tx.moveCall({
         target: "0x2::transfer::public_transfer",
-        typeArguments: [ `0x2::coin::Coin<${SUINS_PACKAGES[NETWORK].votingTokenType}>` ],
-        arguments: [
-          coin,
-          tx.pure.address(currAcct.address),
+        typeArguments: [
+          `0x2::coin::Coin<${SUINS_PACKAGES[NETWORK].votingTokenType}>`,
         ],
+        arguments: [coin, tx.pure.address(currAcct.address)],
       });
 
       await devInspectOnDev(suiClient, currAcct.address, tx);

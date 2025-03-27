@@ -2,7 +2,10 @@ import { client } from "@/app/SuinsClient";
 import { useQuery } from "@tanstack/react-query";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { NETWORK } from "@/constants/env";
-import { stakingBatchSchema, type StakingBatchRaw } from "@/schemas/stakingBatchSchema";
+import {
+  stakingBatchSchema,
+  type StakingBatchRaw,
+} from "@/schemas/stakingBatchSchema";
 import { stakingBatchHelpers } from "@/utils/stakingBatchHelpers";
 
 export type StakingBatch = StakingBatchRaw & {
@@ -19,11 +22,9 @@ export type StakingBatch = StakingBatchRaw & {
   startDate: Date;
   unlockDate: Date;
   cooldownEndDate: Date | null;
-}
+};
 
-export function useGetStakingBatches(
-  owner: string | undefined,
-) {
+export function useGetStakingBatches(owner: string | undefined) {
   return useQuery({
     queryKey: ["owned-staking-batches", owner],
     queryFn: async () => {
@@ -31,12 +32,12 @@ export function useGetStakingBatches(
       const paginatedObjects = await client.getOwnedObjects({
         owner,
         filter: {
-          StructType: `${SUINS_PACKAGES[NETWORK].votingPkgId}::staking_batch::StakingBatch`
+          StructType: `${SUINS_PACKAGES[NETWORK].votingPkgId}::staking_batch::StakingBatch`,
         },
         options: {
           showContent: true,
           showType: true,
-        }
+        },
       });
       return paginatedObjects.data;
     },
@@ -45,7 +46,7 @@ export function useGetStakingBatches(
 
       for (const response of suiObjResponses) {
         try {
-          if (!response.data || !response.data.content) {
+          if (!response.data?.content) {
             console.warn("Invalid staking batch data:", response);
             continue;
           }
@@ -55,7 +56,7 @@ export function useGetStakingBatches(
             version: response.data.version,
             digest: response.data.digest,
             type: response.data.type,
-            content: response.data.content
+            content: response.data.content,
           };
 
           const result = stakingBatchSchema.safeParse(batchData);
@@ -70,10 +71,12 @@ export function useGetStakingBatches(
           // Calculate derived data
           const balanceNS = BigInt(batch.content.fields.balance);
           const votingPower = stakingBatchHelpers.calculateVotingPower(batch);
-          const lockDurationDays = stakingBatchHelpers.getLockDurationDays(batch);
+          const lockDurationDays =
+            stakingBatchHelpers.getLockDurationDays(batch);
           const isLocked = stakingBatchHelpers.isLocked(batch);
           const isStaked = !isLocked;
-          const isCooldownRequested = stakingBatchHelpers.isCooldownRequested(batch);
+          const isCooldownRequested =
+            stakingBatchHelpers.isCooldownRequested(batch);
           const isCooldownOver = stakingBatchHelpers.isCooldownOver(batch);
           const isVoting = stakingBatchHelpers.isVoting(batch);
 
@@ -81,7 +84,8 @@ export function useGetStakingBatches(
           const startDate = new Date(Number(batch.content.fields.start_ms));
           const unlockDate = new Date(Number(batch.content.fields.unlock_ms));
           const cooldownEndMs = Number(batch.content.fields.cooldown_end_ms);
-          const cooldownEndDate = cooldownEndMs > 0 ? new Date(cooldownEndMs) : null;
+          const cooldownEndDate =
+            cooldownEndMs > 0 ? new Date(cooldownEndMs) : null;
 
           parsedBatches.push({
             ...batch,
@@ -104,8 +108,12 @@ export function useGetStakingBatches(
 
       // Sort batches by voting power (highest first)
       return parsedBatches.sort((a, b) => {
-        if (b.votingPower > a.votingPower) { return 1; }
-        if (b.votingPower < a.votingPower) { return -1; }
+        if (b.votingPower > a.votingPower) {
+          return 1;
+        }
+        if (b.votingPower < a.votingPower) {
+          return -1;
+        }
         return 0;
       });
     },

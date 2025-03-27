@@ -1,5 +1,5 @@
-import { SuiClient } from "@mysten/sui/client";
-import { Transaction } from "@mysten/sui/transactions";
+import { type SuiClient } from "@mysten/sui/client";
+import { type Transaction } from "@mysten/sui/transactions";
 
 export async function devInspectOnDev(
   suiClient: SuiClient,
@@ -13,6 +13,8 @@ export async function devInspectOnDev(
     transactionBlock: tx,
   });
   if (dryRunResult.effects?.status.status !== "success") {
-    throw new Error("[devInspectOnDev] failed: " + JSON.stringify(dryRunResult, null, 2));
+    throw new Error(
+      "[devInspectOnDev] failed: " + JSON.stringify(dryRunResult, null, 2),
+    );
   }
 }

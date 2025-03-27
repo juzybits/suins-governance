@@ -28,9 +28,10 @@ export function useStakeOrLockMutation(
   mutationOptions?: Omit<
     UseMutationOptions<string, Error, StakeRequest>,
     "mutationFn"
-  >
+  >,
 ): UseMutationResult<string, Error, StakeRequest> {
-  const { mutateAsync: signAndExecuteTransaction } = useSignAndExecuteTransaction();
+  const { mutateAsync: signAndExecuteTransaction } =
+    useSignAndExecuteTransaction();
   const currAcct = useCurrentAccount();
   const suiClient = useSuiClient();
   const queryClient = useQueryClient();
@@ -61,9 +62,7 @@ export function useStakeOrLockMutation(
 
       tx.moveCall({
         target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::staking_batch::keep`,
-        arguments: [
-          batch,
-        ]
+        arguments: [batch],
       });
 
       await devInspectOnDev(suiClient, currAcct.address, tx);

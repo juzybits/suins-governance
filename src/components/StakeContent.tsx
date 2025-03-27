@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { StakingBatch } from "@/hooks/staking/useGetStakingBatches";
+import { type StakingBatch } from "@/hooks/staking/useGetStakingBatches";
 import { useStakeOrLockMutation } from "@/hooks/staking/useStakeOrLockMutation";
 import { useLockMutation } from "@/hooks/staking/useLockMutation";
 import { useRequestUnstakeMutation } from "@/hooks/staking/useRequestUnstakeMutation";
@@ -10,7 +10,12 @@ import { formatNSBalance } from "@/utils/formatNumber";
 import { stakingBatchHelpers } from "@/utils/stakingBatchHelpers";
 import { parseNSAmount } from "@/utils/parseAmount";
 import { useUnstakeMutation } from "@/hooks/staking/useUnstakeMutation";
-import { Modal, ModalHeader, ModalFooter, MonthSelector } from "@/components/ui/dummy-ui/dummy-ui";
+import {
+  Modal,
+  ModalHeader,
+  ModalFooter,
+  MonthSelector,
+} from "@/components/ui/dummy-ui/dummy-ui";
 
 type StakingData = {
   availableNS: bigint;
@@ -35,7 +40,7 @@ export function StakeContent({
     let stakedPower = 0n;
     let totalPower = 0n;
 
-    batches.forEach(batch => {
+    batches.forEach((batch) => {
       if (batch.isLocked) {
         lockedNS += batch.balanceNS;
         lockedPower += batch.votingPower;
@@ -46,28 +51,46 @@ export function StakeContent({
       totalPower += batch.votingPower;
     });
 
-    return { lockedNS, lockedPower, stakedNS, stakedPower, totalPower, availableNS };
+    return {
+      lockedNS,
+      lockedPower,
+      stakedNS,
+      stakedPower,
+      totalPower,
+      availableNS,
+    };
   }, [batches]);
 
-  return <>
-    <PanelOverview stakingData={stakingData} />
-    <PanelStake batches={batches} stakingData={stakingData} />
-    <PanelParticipation />
-  </>;
+  return (
+    <>
+      <PanelOverview stakingData={stakingData} />
+      <PanelStake batches={batches} stakingData={stakingData} />
+      <PanelParticipation />
+    </>
+  );
 }
 
-function PanelOverview({
-  stakingData,
-}: {
-  stakingData: StakingData;
-}) {
-  const { lockedNS, lockedPower, stakedNS, stakedPower, totalPower, availableNS } = stakingData;
+function PanelOverview({ stakingData }: { stakingData: StakingData }) {
+  const {
+    lockedNS,
+    lockedPower,
+    stakedNS,
+    stakedPower,
+    totalPower,
+    availableNS,
+  } = stakingData;
 
   return (
     <div className="panel">
       <div>
-        <p>Total Locked: {formatNSBalance(lockedNS)} NS ({formatNSBalance(lockedPower)} Votes)</p>
-        <p>Total Staked: {formatNSBalance(stakedNS)} NS ({formatNSBalance(stakedPower)} Votes)</p>
+        <p>
+          Total Locked: {formatNSBalance(lockedNS)} NS (
+          {formatNSBalance(lockedPower)} Votes)
+        </p>
+        <p>
+          Total Staked: {formatNSBalance(stakedNS)} NS (
+          {formatNSBalance(stakedPower)} Votes)
+        </p>
         <p>Available Tokens: {formatNSBalance(availableNS)} NS</p>
         <p>Your Total Votes: {formatNSBalance(totalPower)}</p>
       </div>
@@ -90,10 +113,12 @@ function PanelStake({
     setShowStakeModal(true);
   };
 
-  const buttons = <div className="button-group">
-    <button onClick={() => onOpenStakeModal("stake")}>Stake</button>
-    <button onClick={() => onOpenStakeModal("lock")}>Lock</button>
-  </div>;
+  const buttons = (
+    <div className="button-group">
+      <button onClick={() => onOpenStakeModal("stake")}>Stake</button>
+      <button onClick={() => onOpenStakeModal("lock")}>Lock</button>
+    </div>
+  );
 
   return (
     <div className="panel">
@@ -101,14 +126,15 @@ function PanelStake({
       {batches.length === 0 ? (
         <>
           <h3>No Stakes or Locks</h3>
-          <p>Start Staking your NS to participate in governance, earn rewards, and shape the future of SuiNS</p>
+          <p>
+            Start Staking your NS to participate in governance, earn rewards,
+            and shape the future of SuiNS
+          </p>
           {buttons}
         </>
       ) : (
         <>
-          <div>
-            {buttons}
-          </div>
+          <div>{buttons}</div>
           {batches.map((batch) => (
             <BatchCard key={batch.objectId} batch={batch} />
           ))}
@@ -142,7 +168,9 @@ function BatchCard({ batch }: { batch: StakingBatch }) {
     } else if (batch.isVoting) {
       return `Used for Voting`;
     } else {
-      const daysSinceStake = Math.floor((Date.now() - batch.startDate.getTime()) / (1000 * 60 * 60 * 24));
+      const daysSinceStake = Math.floor(
+        (Date.now() - batch.startDate.getTime()) / (1000 * 60 * 60 * 24),
+      );
       return `Staked for ${daysSinceStake} Days`;
     }
   };
@@ -164,23 +192,25 @@ function BatchCard({ batch }: { batch: StakingBatch }) {
 
       {batch.isStaked && (
         <div className="batch-actions">
-          {!batch.isCooldownRequested &&
+          {!batch.isCooldownRequested && (
             <div className="button-group">
-              <button onClick={() => setShowRequestUnstakeModal(true)}>Request Unstake</button>
+              <button onClick={() => setShowRequestUnstakeModal(true)}>
+                Request Unstake
+              </button>
               <button onClick={() => setShowLockModal(true)}>Lock</button>
-            </div>}
-          {batch.isCooldownOver &&
-            <button onClick={() => setShowUnstakeModal(true)}>Unstake Now</button>
-          }
+            </div>
+          )}
+          {batch.isCooldownOver && (
+            <button onClick={() => setShowUnstakeModal(true)}>
+              Unstake Now
+            </button>
+          )}
           {/* TODO: add extend lock duration for locked batches if < max months */}
         </div>
       )}
 
       {showLockModal && (
-        <LockBatchModal
-          batch={batch}
-          onClose={() => setShowLockModal(false)}
-        />
+        <LockBatchModal batch={batch} onClose={() => setShowLockModal(false)} />
       )}
 
       {showRequestUnstakeModal && (
@@ -215,7 +245,7 @@ function StakeModal({
     onError: (error) => {
       toast.error(error.message || "Failed to stake tokens");
       onClose();
-    }
+    },
   });
   const [amount, setAmount] = useState("");
   const [months, setMonths] = useState(mode === "lock" ? 1 : 0);
@@ -226,7 +256,9 @@ function StakeModal({
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success(`Successfully ${mode === "lock" ? "locked" : "staked"} tokens`);
+      toast.success(
+        `Successfully ${mode === "lock" ? "locked" : "staked"} tokens`,
+      );
       onClose();
     }
   }, [isSuccess, onClose, mode]);
@@ -239,9 +271,15 @@ function StakeModal({
 
   return (
     <Modal>
-      <ModalHeader title={`${mode === "lock" ? "Lock" : "Stake"} Tokens`} onClose={onClose} />
+      <ModalHeader
+        title={`${mode === "lock" ? "Lock" : "Stake"} Tokens`}
+        onClose={onClose}
+      />
 
-      <p>Stake your NS tokens to receive Votes, which increases over time, with an immediate boost based on a lockup period of 1-12 months.</p>
+      <p>
+        Stake your NS tokens to receive Votes, which increases over time, with
+        an immediate boost based on a lockup period of 1-12 months.
+      </p>
 
       <div className="radio-group">
         <label>
@@ -302,7 +340,7 @@ function LockBatchModal({
     onError: (error) => {
       toast.error(error.message || "Failed to lock batch");
       onClose();
-    }
+    },
   });
   const [months, setMonths] = useState(1);
 
@@ -317,13 +355,18 @@ function LockBatchModal({
     balance: batch.balanceNS,
     lockMonths: months,
   });
-  const daysSinceStake = Math.floor((Date.now() - batch.startDate.getTime()) / (1000 * 60 * 60 * 24));
+  const daysSinceStake = Math.floor(
+    (Date.now() - batch.startDate.getTime()) / (1000 * 60 * 60 * 24),
+  );
 
   return (
     <Modal>
       <ModalHeader title="Lock Tokens" onClose={onClose} />
 
-      <p>Lock your already Staked NS tokens to receive an immediate Votes multiplier.</p>
+      <p>
+        Lock your already Staked NS tokens to receive an immediate Votes
+        multiplier.
+      </p>
 
       <div className="box">
         <div>Staked for {daysSinceStake} Days</div>
@@ -362,7 +405,7 @@ function RequestUnstakeBatchModal({
     onError: (error) => {
       toast.error(error.message || "Failed to request cooldown");
       onClose();
-    }
+    },
   });
 
   useEffect(() => {
@@ -404,7 +447,7 @@ function UnstakeBatchModal({
     onError: (error) => {
       toast.error(error.message || "Failed to unstake batch");
       onClose();
-    }
+    },
   });
 
   useEffect(() => {
@@ -435,9 +478,7 @@ function UnstakeBatchModal({
   );
 }
 
-function PanelParticipation({
-}: {
-}) {
+function PanelParticipation({}: {}) {
   const votes: { id: string }[] = [];
   return (
     <div className="panel">
@@ -445,7 +486,9 @@ function PanelParticipation({
       {votes.length === 0 ? (
         <>
           <h3>No Votes</h3>
-          <p>Once you start voting, your participation will be showcased here</p>
+          <p>
+            Once you start voting, your participation will be showcased here
+          </p>
         </>
       ) : (
         <>

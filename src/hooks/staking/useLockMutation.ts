@@ -27,9 +27,10 @@ export function useLockMutation(
   mutationOptions?: Omit<
     UseMutationOptions<string, Error, LockRequest>,
     "mutationFn"
-  >
+  >,
 ): UseMutationResult<string, Error, LockRequest> {
-  const { mutateAsync: signAndExecuteTransaction } = useSignAndExecuteTransaction();
+  const { mutateAsync: signAndExecuteTransaction } =
+    useSignAndExecuteTransaction();
   const currAcct = useCurrentAccount();
   const suiClient = useSuiClient();
   const queryClient = useQueryClient();

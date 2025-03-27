@@ -5,9 +5,19 @@ import Loader from "@/components/ui/Loader";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { NETWORK } from "@/constants/env";
 import { devInspectOnDev } from "@/utils/devInspectOnDev";
-import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from "@mysten/dapp-kit";
+import {
+  useCurrentAccount,
+  useSignAndExecuteTransaction,
+  useSuiClient,
+} from "@mysten/dapp-kit";
 import { coinWithBalance, Transaction } from "@mysten/sui/transactions";
-import { useMutation, type UseMutationOptions, UseMutationResult, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  type UseMutationOptions,
+  type UseMutationResult,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { Suspense } from "react";
 import NotFound from "../not-found";
 import { NS_VOTE_DIVISOR } from "@/constants/common";
@@ -16,12 +26,12 @@ import { NS_VOTE_DIVISOR } from "@/constants/common";
  * A dev-only page to create mock proposals.
  */
 export default function DevPage() {
+  const currAcct = useCurrentAccount();
+  const govCap = useGetGovernanceAdminCap(currAcct?.address);
+
   if (process.env.NODE_ENV !== "development") {
     return <NotFound />;
   }
-
-  const currAcct = useCurrentAccount();
-  const govCap = useGetGovernanceAdminCap(currAcct?.address);
 
   if (govCap.isLoading) {
     return <Loader className="h-5 w-5" />;
@@ -50,30 +60,36 @@ function DevContent({
   const { mutateAsync: createProposal } = useCreateProposalMutation();
 
   if (!currAddr) {
-    return <div>Connect your wallet to continue.</div>;
+    return <div className="panel">Connect your wallet to continue.</div>;
   }
   if (!govCapId) {
-    return <div>NSGovernanceCap not found in your wallet.</div>;
+    return (
+      <div className="panel">NSGovernanceCap not found in your wallet.</div>
+    );
   }
 
-  return <>
-  <div className="panel">
-      <button onClick={() => {
-        createProposal({
-          govCapId,
-          title: "Test Proposal",
-          description: "This is a test proposal",
-          end_time_ms: Date.now() + 1000 * 60, // 1 minute
-          reward: BigInt(50 * NS_VOTE_DIVISOR), // 50 NS
-        });
-      }}>Create Proposal</button>
-    </div>
-  </>;
+  return (
+    <>
+      <div className="panel">
+        <button
+          onClick={() => {
+            createProposal({
+              govCapId,
+              title: "Test Proposal",
+              description: "This is a test proposal",
+              end_time_ms: Date.now() + 1000 * 60, // 1 minute
+              reward: BigInt(50 * NS_VOTE_DIVISOR), // 50 NS
+            });
+          }}
+        >
+          Create Proposal
+        </button>
+      </div>
+    </>
+  );
 }
 
-function useGetGovernanceAdminCap(
-  owner: string | undefined,
-) {
+function useGetGovernanceAdminCap(owner: string | undefined) {
   return useQuery({
     queryKey: ["owned-governance-admin-cap", owner],
     queryFn: async () => {
@@ -81,7 +97,7 @@ function useGetGovernanceAdminCap(
       const paginatedObjects = await client.getOwnedObjects({
         owner,
         filter: {
-          StructType: `${SUINS_PACKAGES[NETWORK].votingPkgId}::governance::NSGovernanceCap`
+          StructType: `${SUINS_PACKAGES[NETWORK].votingPkgId}::governance::NSGovernanceCap`,
         },
         limit: 1,
       });
@@ -95,7 +111,7 @@ function useGetGovernanceAdminCap(
     },
     enabled: !!owner,
   });
-};
+}
 
 type CreateProposalRequest = {
   govCapId: string;
@@ -108,15 +124,22 @@ export function useCreateProposalMutation(
   mutationOptions?: Omit<
     UseMutationOptions<string, Error, CreateProposalRequest>,
     "mutationFn"
-  >
+  >,
 ): UseMutationResult<string, Error, CreateProposalRequest> {
-  const { mutateAsync: signAndExecuteTransaction } = useSignAndExecuteTransaction();
+  const { mutateAsync: signAndExecuteTransaction } =
+    useSignAndExecuteTransaction();
   const currAcct = useCurrentAccount();
   const suiClient = useSuiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ govCapId, title, description, end_time_ms, reward }: CreateProposalRequest) => {
+    mutationFn: async ({
+      govCapId,
+      title,
+      description,
+      end_time_ms,
+      reward,
+    }: CreateProposalRequest) => {
       if (!currAcct) {
         throw new Error("Wallet not connected");
       }

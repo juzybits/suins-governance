@@ -26,9 +26,10 @@ export function useRequestUnstakeMutation(
   mutationOptions?: Omit<
     UseMutationOptions<string, Error, RequestUnstakeRequest>,
     "mutationFn"
-  >
+  >,
 ): UseMutationResult<string, Error, RequestUnstakeRequest> {
-  const { mutateAsync: signAndExecuteTransaction } = useSignAndExecuteTransaction();
+  const { mutateAsync: signAndExecuteTransaction } =
+    useSignAndExecuteTransaction();
   const currAcct = useCurrentAccount();
   const suiClient = useSuiClient();
   const queryClient = useQueryClient();

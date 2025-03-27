@@ -13,9 +13,9 @@ export default function StakePage() {
   const currAcct = useCurrentAccount();
   const batches = useGetStakingBatches(currAcct?.address);
   const balance = useGetBalance({
-      owner: currAcct?.address,
-      coinType: SUINS_PACKAGES[NETWORK].votingTokenType,
-    });
+    owner: currAcct?.address,
+    coinType: SUINS_PACKAGES[NETWORK].votingTokenType,
+  });
 
   if (batches.isLoading || balance.isLoading) {
     return <Loader className="h-5 w-5" />;

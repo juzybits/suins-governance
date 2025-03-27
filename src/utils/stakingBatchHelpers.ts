@@ -1,14 +1,13 @@
-import { StakingBatchRaw } from "@/schemas/stakingBatchSchema";
+import { type StakingBatchRaw } from "@/schemas/stakingBatchSchema";
 
 // WARNING: these constants must be kept in sync with the StakingConfig Sui object.
 
 const MAX_LOCK_MONTHS = 12;
 const MONTHLY_BOOST_BPS = 11000n; // 1.1x or 10% boost (in basis points)
-const MAX_BOOST_BPS = 30000n;     // 3.0x for 12-month lock (in basis points)
+const MAX_BOOST_BPS = 30000n; // 3.0x for 12-month lock (in basis points)
 const MONTH_MS = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 
 export const stakingBatchHelpers = {
-
   isLocked: (batch: StakingBatchRaw): boolean => {
     const unlockMs = Number(batch.content.fields.unlock_ms);
     return unlockMs > Date.now();
@@ -21,7 +20,10 @@ export const stakingBatchHelpers = {
 
   isCooldownOver: (batch: StakingBatchRaw): boolean => {
     const cooldownEndMs = Number(batch.content.fields.cooldown_end_ms);
-    return stakingBatchHelpers.isCooldownRequested(batch) && Date.now() >= cooldownEndMs;
+    return (
+      stakingBatchHelpers.isCooldownRequested(batch) &&
+      Date.now() >= cooldownEndMs
+    );
   },
 
   isVoting: (batch: StakingBatchRaw): boolean => {
@@ -83,7 +85,6 @@ export const stakingBatchHelpers = {
     balance: bigint;
     lockMonths: number;
   }): bigint => {
-
     // Special case: locking for max months (12) gets the max boost (3x)
     if (lockMonths >= MAX_LOCK_MONTHS) {
       return (balance * MAX_BOOST_BPS) / 10000n;
