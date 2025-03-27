@@ -13,7 +13,7 @@ import {
 
 import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
-import { devInspectOnDev } from "@/utils/devInspectOnDev";
+import { executeAndWaitTx } from "@/utils/executeAndWaitTx";
 
 type UnstakeRequest = {
   batchId: string;
@@ -28,8 +28,7 @@ export function useUnstakeMutation(
     "mutationFn"
   >,
 ): UseMutationResult<string, Error, UnstakeRequest> {
-  const { mutateAsync: signAndExecuteTransaction } =
-    useSignAndExecuteTransaction();
+  const { mutateAsync: signAndExecuteTx } = useSignAndExecuteTransaction();
   const currAcct = useCurrentAccount();
   const suiClient = useSuiClient();
   const queryClient = useQueryClient();
@@ -62,15 +61,11 @@ export function useUnstakeMutation(
         arguments: [coin, tx.pure.address(currAcct.address)],
       });
 
-      await devInspectOnDev(suiClient, currAcct.address, tx);
-
-      const resp = await signAndExecuteTransaction({
-        transaction: tx,
-      });
-
-      await suiClient.waitForTransaction({
-        digest: resp.digest,
-        pollInterval: 200,
+      const resp = await executeAndWaitTx({
+        suiClient,
+        tx,
+        sender: currAcct.address,
+        signAndExecuteTx,
       });
 
       return resp.digest;

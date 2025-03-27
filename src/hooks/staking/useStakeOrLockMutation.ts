@@ -14,7 +14,7 @@ import {
 import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { parseNSAmount } from "@/utils/parseAmount";
-import { devInspectOnDev } from "@/utils/devInspectOnDev";
+import { executeAndWaitTx } from "@/utils/executeAndWaitTx";
 
 type StakeRequest = {
   amount: string;
@@ -30,20 +30,14 @@ export function useStakeOrLockMutation(
     "mutationFn"
   >,
 ): UseMutationResult<string, Error, StakeRequest> {
-  const { mutateAsync: signAndExecuteTransaction } =
-    useSignAndExecuteTransaction();
+  const { mutateAsync: signAndExecuteTx } = useSignAndExecuteTransaction();
   const currAcct = useCurrentAccount();
   const suiClient = useSuiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ amount, months }: StakeRequest) => {
-      if (!currAcct) {
-        throw new Error("Wallet not connected");
-      }
-
       const tx = new Transaction();
-      tx.setSender(currAcct.address);
 
       const coin = coinWithBalance({
         balance: parseNSAmount(amount),
@@ -65,15 +59,11 @@ export function useStakeOrLockMutation(
         arguments: [batch],
       });
 
-      await devInspectOnDev(suiClient, currAcct.address, tx);
-
-      const resp = await signAndExecuteTransaction({
-        transaction: tx,
-      });
-
-      await suiClient.waitForTransaction({
-        digest: resp.digest,
-        pollInterval: 200,
+      const resp = await executeAndWaitTx({
+        suiClient,
+        tx,
+        sender: currAcct?.address,
+        signAndExecuteTx,
       });
 
       return resp.digest;

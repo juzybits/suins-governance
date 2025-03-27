@@ -4,7 +4,6 @@ import { client } from "@/app/SuinsClient";
 import Loader from "@/components/ui/Loader";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { NETWORK } from "@/constants/env";
-import { devInspectOnDev } from "@/utils/devInspectOnDev";
 import {
   useCurrentAccount,
   useSignAndExecuteTransaction,
@@ -22,6 +21,7 @@ import { Suspense } from "react";
 import NotFound from "../not-found";
 import { NS_VOTE_DIVISOR } from "@/constants/common";
 import React from "react";
+import { executeAndWaitTx } from "@/utils/executeAndWaitTx";
 
 /**
  * A dev-only page to create mock proposals.
@@ -186,8 +186,7 @@ export function useCreateProposalMutation(
     "mutationFn"
   >,
 ): UseMutationResult<string, Error, CreateProposalRequest> {
-  const { mutateAsync: signAndExecuteTransaction } =
-    useSignAndExecuteTransaction();
+  const { mutateAsync: signAndExecuteTx } = useSignAndExecuteTransaction();
   const currAcct = useCurrentAccount();
   const suiClient = useSuiClient();
   const queryClient = useQueryClient();
@@ -200,12 +199,7 @@ export function useCreateProposalMutation(
       end_time_ms,
       reward,
     }: CreateProposalRequest) => {
-      if (!currAcct) {
-        throw new Error("Wallet not connected");
-      }
-
       const tx = new Transaction();
-      tx.setSender(currAcct.address);
 
       const coin = coinWithBalance({
         balance: reward,
@@ -237,14 +231,11 @@ export function useCreateProposalMutation(
         ],
       });
 
-      await devInspectOnDev(suiClient, currAcct.address, tx);
-      const resp = await signAndExecuteTransaction({
-        transaction: tx,
-      });
-
-      await suiClient.waitForTransaction({
-        digest: resp.digest,
-        pollInterval: 200,
+      const resp = await executeAndWaitTx({
+        suiClient,
+        tx,
+        sender: currAcct?.address,
+        signAndExecuteTx,
       });
 
       return resp.digest;

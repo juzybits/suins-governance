@@ -13,7 +13,7 @@ import {
 
 import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
-import { devInspectOnDev } from "@/utils/devInspectOnDev";
+import { executeAndWaitTx } from "@/utils/executeAndWaitTx";
 
 type LockRequest = {
   batchId: string;
@@ -29,20 +29,14 @@ export function useLockMutation(
     "mutationFn"
   >,
 ): UseMutationResult<string, Error, LockRequest> {
-  const { mutateAsync: signAndExecuteTransaction } =
-    useSignAndExecuteTransaction();
+  const { mutateAsync: signAndExecuteTx } = useSignAndExecuteTransaction();
   const currAcct = useCurrentAccount();
   const suiClient = useSuiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ batchId, months }: LockRequest) => {
-      if (!currAcct) {
-        throw new Error("Wallet not connected");
-      }
-
       const tx = new Transaction();
-      tx.setSender(currAcct.address);
 
       tx.moveCall({
         target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::staking_batch::lock`,
@@ -53,15 +47,11 @@ export function useLockMutation(
         ],
       });
 
-      await devInspectOnDev(suiClient, currAcct.address, tx);
-
-      const resp = await signAndExecuteTransaction({
-        transaction: tx,
-      });
-
-      await suiClient.waitForTransaction({
-        digest: resp.digest,
-        pollInterval: 200,
+      const resp = await executeAndWaitTx({
+        suiClient,
+        tx,
+        sender: currAcct?.address,
+        signAndExecuteTx,
       });
 
       return resp.digest;
