@@ -21,6 +21,7 @@ import {
 import { Suspense } from "react";
 import NotFound from "../not-found";
 import { NS_VOTE_DIVISOR } from "@/constants/common";
+import React from "react";
 
 /**
  * A dev-only page to create mock proposals.
@@ -58,6 +59,12 @@ function DevContent({
   currAddr: string | undefined;
 }) {
   const { mutateAsync: createProposal } = useCreateProposalMutation();
+  const [formData, setFormData] = React.useState({
+    title: "Test Proposal",
+    description: "This is a test proposal",
+    duration_seconds: 60,
+    reward_ns: 50,
+  });
 
   if (!currAddr) {
     return <div className="panel">Connect your wallet to continue.</div>;
@@ -72,10 +79,10 @@ function DevContent({
     try {
       const digest = await createProposal({
         govCapId,
-        title: "Test Proposal",
-        description: "This is a test proposal",
-        end_time_ms: Date.now() + 1000 * 60, // 1 minute
-        reward: BigInt(50 * NS_VOTE_DIVISOR), // 50 NS
+        title: formData.title,
+        description: formData.description,
+        end_time_ms: Date.now() + formData.duration_seconds * 1000,
+        reward: BigInt(formData.reward_ns * NS_VOTE_DIVISOR),
       });
       console.debug("[onCreateProposal] success:", digest);
     } catch (error) {
@@ -86,6 +93,56 @@ function DevContent({
   return (
     <>
       <div className="panel">
+        <div className="flex flex-col gap-2">
+          <label>Title:</label>
+          <input
+            type="text"
+            value={formData.title}
+            onChange={(e) => {
+              setFormData((prev) => ({ ...prev, title: e.target.value }));
+            }}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label>Description:</label>
+          <input
+            type="text"
+            value={formData.description}
+            onChange={(e) => {
+              setFormData((prev) => ({ ...prev, description: e.target.value }));
+            }}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label>Duration (seconds):</label>
+          <input
+            type="number"
+            value={formData.duration_seconds}
+            onChange={(e) => {
+              setFormData((prev) => ({
+                ...prev,
+                duration_seconds: Number(e.target.value),
+              }));
+            }}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label>Reward (NS):</label>
+          <input
+            type="number"
+            value={formData.reward_ns}
+            onChange={(e) => {
+              setFormData((prev) => ({
+                ...prev,
+                reward_ns: Number(e.target.value),
+              }));
+            }}
+          />
+        </div>
+
         <button onClick={onCreateProposal}>Create Proposal</button>
       </div>
     </>
