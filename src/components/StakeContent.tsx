@@ -59,7 +59,7 @@ export function StakeContent({
       totalPower,
       availableNS,
     };
-  }, [batches]);
+  }, [batches, availableNS]);
 
   return (
     <>
@@ -478,7 +478,7 @@ function UnstakeBatchModal({
   );
 }
 
-function PanelParticipation({}: {}) {
+function PanelParticipation() {
   const votes: { id: string }[] = [];
   return (
     <div className="panel">

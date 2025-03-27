@@ -22,7 +22,7 @@ export default function StakePage() {
   }
 
   if (batches.error || balance.error) {
-    return <div>Error: {batches.error?.message || balance.error?.message}</div>;
+    return <div>Error: {batches.error?.message ?? balance.error?.message}</div>;
   }
 
   return (

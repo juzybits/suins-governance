@@ -68,22 +68,25 @@ function DevContent({
     );
   }
 
+  const onCreateProposal = async () => {
+    try {
+      const digest = await createProposal({
+        govCapId,
+        title: "Test Proposal",
+        description: "This is a test proposal",
+        end_time_ms: Date.now() + 1000 * 60, // 1 minute
+        reward: BigInt(50 * NS_VOTE_DIVISOR), // 50 NS
+      });
+      console.debug("[onCreateProposal] success:", digest);
+    } catch (error) {
+      console.warn("[onCreateProposal] failed:", error);
+    }
+  };
+
   return (
     <>
       <div className="panel">
-        <button
-          onClick={() => {
-            createProposal({
-              govCapId,
-              title: "Test Proposal",
-              description: "This is a test proposal",
-              end_time_ms: Date.now() + 1000 * 60, // 1 minute
-              reward: BigInt(50 * NS_VOTE_DIVISOR), // 50 NS
-            });
-          }}
-        >
-          Create Proposal
-        </button>
+        <button onClick={onCreateProposal}>Create Proposal</button>
       </div>
     </>
   );
