@@ -36,16 +36,18 @@ export function useVoteV2Mutation(
     mutationFn: async ({ proposalId, batchIds, vote }: VotingV2Request) => {
       const tx = new Transaction();
 
-      tx.moveCall({
-        target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::proposal_v2::vote`,
-        arguments: [
-          tx.object(proposalId),
-          tx.pure.string(vote),
-          tx.makeMoveVec({ elements: batchIds }),
-          tx.object(SUINS_PACKAGES[NETWORK].stakingConfigId),
-          tx.object.clock(),
-        ],
-      });
+      for (const batchId of batchIds) {
+        tx.moveCall({
+          target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::proposal_v2::vote`,
+          arguments: [
+            tx.object(proposalId),
+            tx.pure.string(vote),
+            tx.object(batchId),
+            tx.object(SUINS_PACKAGES[NETWORK].stakingConfigId),
+            tx.object.clock(),
+          ],
+        });
+      }
 
       const resp = await executeAndWaitTx({
         suiClient,
