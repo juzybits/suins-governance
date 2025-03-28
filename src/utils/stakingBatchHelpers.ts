@@ -26,6 +26,13 @@ export const stakingBatchHelpers = {
     );
   },
 
+  canVote: (batch: StakingBatchRaw): boolean => {
+    return (
+      !stakingBatchHelpers.isVoting(batch) &&
+      !stakingBatchHelpers.isCooldownRequested(batch)
+    );
+  },
+
   isVoting: (batch: StakingBatchRaw): boolean => {
     const votingUntilMs = Number(batch.content.fields.voting_until_ms);
     return votingUntilMs > 0 && votingUntilMs > Date.now();

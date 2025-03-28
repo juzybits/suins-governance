@@ -11,26 +11,23 @@ import { Text } from "@/components/ui/Text";
 import { useVoteV2Mutation } from "@/hooks/staking/useVoteV2Mutation";
 import { useZodForm } from "@/hooks/useZodForm";
 import { Form } from "@/components/form/Form";
-import { useGetBalance } from "@/hooks/useGetBalance";
-import { NETWORK } from "@/constants/env";
-import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { motion } from "framer-motion";
 import isPast from "date-fns/isPast";
 import { RadioGroupField } from "./form/RadioGroupField";
 import { useEffect } from "react";
+import { useGetStakingBatches } from "@/hooks/staking/useGetStakingBatches";
 
 const VOTE_OPTIONS = ["Yes", "No", "Abstain"] as const;
 
 export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
   const currentAccount = useCurrentAccount();
   const { isConnecting, isDisconnected } = useCurrentWallet();
-  const { data: proposalDetail, isLoading } = useGetProposalDetail({
-    proposalId,
-  });
+  const proposal = useGetProposalDetail({ proposalId });
   const isInactiveProposal = isPast(
-    new Date(Number(proposalDetail?.fields.end_time_ms ?? 0)),
+    new Date(Number(proposal.data?.fields.end_time_ms ?? 0)),
   );
+  const batches = useGetStakingBatches(currentAccount?.address);
 
   const isLoggedOut = (!currentAccount && !isConnecting) ?? isDisconnected;
   const form = useZodForm({
@@ -47,7 +44,8 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
     isSuccess,
   } = useVoteV2Mutation({
     onError: (error) => {
-      toast.error(error.message);
+      console.warn("[CastYourVoteV2] error:", error);
+      toast.error(error.message); // TODO parse error and show user-friendly message
     },
   });
 
@@ -65,9 +63,15 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
     }
   }, [isSuccess, reset, resetField]);
 
-  if (isLoading) {
+  if (proposal.isLoading || batches.isLoading) {
     return null;
   }
+
+  const votingBatchIds = !batches.data
+    ? []
+    : batches.data
+        .filter((batch) => batch.canVote)
+        .map((batch) => batch.content.fields.id.id);
 
   return (
     <SectionLayout title="Cast Your Votes" isLarge>
@@ -76,7 +80,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
         onSubmit={() =>
           vote({
             proposalId,
-            batchIds: [],
+            batchIds: votingBatchIds,
             vote: watch("vote"),
           })
         }

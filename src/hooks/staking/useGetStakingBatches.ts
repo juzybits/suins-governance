@@ -18,6 +18,7 @@ export type StakingBatch = StakingBatchRaw & {
   isCooldownRequested: boolean;
   isCooldownOver: boolean;
   isVoting: boolean;
+  canVote: boolean;
   // Human-readable dates
   startDate: Date;
   unlockDate: Date;
@@ -79,6 +80,7 @@ export function useGetStakingBatches(owner: string | undefined) {
             stakingBatchHelpers.isCooldownRequested(batch);
           const isCooldownOver = stakingBatchHelpers.isCooldownOver(batch);
           const isVoting = stakingBatchHelpers.isVoting(batch);
+          const canVote = stakingBatchHelpers.canVote(batch);
 
           // Convert timestamps to Date objects
           const startDate = new Date(Number(batch.content.fields.start_ms));
@@ -97,6 +99,7 @@ export function useGetStakingBatches(owner: string | undefined) {
             isCooldownRequested,
             isCooldownOver,
             isVoting,
+            canVote,
             startDate,
             unlockDate,
             cooldownEndDate,
