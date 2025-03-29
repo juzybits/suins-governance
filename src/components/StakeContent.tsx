@@ -386,7 +386,7 @@ function ModalViewBatch({
       <h1>{formatNSBalance(batch.balanceNS)} NS</h1>
       <div>
         <p>Votes: {formatNSBalance(batch.votingPower)}</p>
-        <p>Votes multiplier: {batch.votingMultiplier}x</p>
+        <p>Votes multiplier: {batch.votingMultiplier.toFixed(2)}x</p>
         {batch.isStaked && (
           <>
             <p>Days Staked: {batch.daysSinceStart}</p>

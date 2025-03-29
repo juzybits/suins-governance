@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useEffect } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 
 export function Modal({
   onClose,
@@ -50,7 +50,7 @@ export function ModalFooter({
   );
 }
 
-const monthOptions = [1, 2, 6, 12] as const;
+const allMonthOptions = [1, 2, 6, 12];
 
 export function MonthSelector({
   months,
@@ -61,18 +61,30 @@ export function MonthSelector({
   setMonths: (months: number) => void;
   currentMonths: number;
 }) {
+  const [validMonths, setValidMonths] = useState<number[]>([]);
+
+  useEffect(() => {
+    const newValidMonths = allMonthOptions.filter(
+      (month) => month > currentMonths,
+    );
+    setValidMonths(newValidMonths);
+
+    const firstValidMonth = newValidMonths[0];
+    if (firstValidMonth !== undefined) {
+      setMonths(firstValidMonth);
+    }
+  }, [currentMonths]);
+
   return (
     <select
       value={months}
       onChange={(e) => setMonths(parseInt(e.target.value))}
     >
-      {monthOptions
-        .filter((month) => month > currentMonths)
-        .map((month) => (
-          <option key={month} value={month}>
-            {month * 30} days
-          </option>
-        ))}
+      {validMonths.map((month) => (
+        <option key={month} value={month}>
+          {month * 30} days
+        </option>
+      ))}
     </select>
   );
 }
