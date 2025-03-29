@@ -136,13 +136,13 @@ function PanelStake({
         <>
           <div>{buttons}</div>
           {batches.map((batch) => (
-            <BatchCard key={batch.objectId} batch={batch} />
+            <CardBatch key={batch.objectId} batch={batch} />
           ))}
         </>
       )}
 
       {showStakeModal && (
-        <StakeModal
+        <ModalStake
           mode={stakeMode}
           onClose={() => setShowStakeModal(false)}
           onModeChange={setStakeMode}
@@ -153,7 +153,7 @@ function PanelStake({
   );
 }
 
-function BatchCard({ batch }: { batch: StakingBatch }) {
+function CardBatch({ batch }: { batch: StakingBatch }) {
   const [showLockModal, setShowLockModal] = useState(false);
   const [showRequestUnstakeModal, setShowRequestUnstakeModal] = useState(false);
   const [showUnstakeModal, setShowUnstakeModal] = useState(false);
@@ -210,18 +210,18 @@ function BatchCard({ batch }: { batch: StakingBatch }) {
       )}
 
       {showLockModal && (
-        <LockBatchModal batch={batch} onClose={() => setShowLockModal(false)} />
+        <ModalLock batch={batch} onClose={() => setShowLockModal(false)} />
       )}
 
       {showRequestUnstakeModal && (
-        <RequestUnstakeBatchModal
+        <ModalRequestUnstake
           batch={batch}
           onClose={() => setShowRequestUnstakeModal(false)}
         />
       )}
 
       {showUnstakeModal && (
-        <UnstakeBatchModal
+        <ModalUnstake
           batch={batch}
           onClose={() => setShowUnstakeModal(false)}
         />
@@ -230,7 +230,7 @@ function BatchCard({ batch }: { batch: StakingBatch }) {
   );
 }
 
-function StakeModal({
+function ModalStake({
   mode,
   onClose,
   onModeChange,
@@ -327,7 +327,7 @@ function StakeModal({
   );
 }
 
-function LockBatchModal({
+function ModalLock({
   batch,
   onClose,
 }: {
@@ -392,7 +392,7 @@ function LockBatchModal({
   );
 }
 
-function RequestUnstakeBatchModal({
+function ModalRequestUnstake({
   batch,
   onClose,
 }: {
@@ -433,7 +433,7 @@ function RequestUnstakeBatchModal({
   );
 }
 
-function UnstakeBatchModal({
+function ModalUnstake({
   batch,
   onClose,
 }: {
