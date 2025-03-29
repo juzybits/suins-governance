@@ -2,23 +2,40 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { type StakingBatch } from "@/hooks/staking/useGetStakingBatches";
-import { StakeRequest, useStakeOrLockMutation } from "@/hooks/staking/useStakeOrLockMutation";
-import { LockRequest, useLockMutation } from "@/hooks/staking/useLockMutation";
-import { RequestUnstakeRequest, useRequestUnstakeMutation } from "@/hooks/staking/useRequestUnstakeMutation";
+import {
+  type StakeRequest,
+  useStakeOrLockMutation,
+} from "@/hooks/staking/useStakeOrLockMutation";
+import {
+  type LockRequest,
+  useLockMutation,
+} from "@/hooks/staking/useLockMutation";
+import {
+  type RequestUnstakeRequest,
+  useRequestUnstakeMutation,
+} from "@/hooks/staking/useRequestUnstakeMutation";
 import { toast } from "sonner";
 import { formatNSBalance } from "@/utils/formatNumber";
 import { stakingBatchHelpers } from "@/utils/stakingBatchHelpers";
 import { parseNSAmount } from "@/utils/parseAmount";
-import { UnstakeRequest, useUnstakeMutation } from "@/hooks/staking/useUnstakeMutation";
+import {
+  type UnstakeRequest,
+  useUnstakeMutation,
+} from "@/hooks/staking/useUnstakeMutation";
 import {
   Modal,
   ModalHeader,
   ModalFooter,
   MonthSelector,
 } from "@/components/ui/dummy-ui/dummy-ui";
+import Loader from "@/components/ui/Loader";
+import { useGetStakingBatches } from "@/hooks/staking/useGetStakingBatches";
+import { useCurrentAccount } from "@mysten/dapp-kit";
+import { SUINS_PACKAGES } from "@/constants/endpoints";
+import { useGetBalance } from "@/hooks/useGetBalance";
+import { NETWORK } from "@/constants/env";
 
 type StakingData = {
-  availableNS: bigint;
   lockedNS: bigint;
   lockedPower: bigint;
   stakedNS: bigint;
@@ -26,13 +43,17 @@ type StakingData = {
   totalPower: bigint;
 };
 
-export function StakeContent({
-  batches,
-  availableNS,
-}: {
-  batches: StakingBatch[];
-  availableNS: bigint;
-}) {
+export function StakeContent() {
+  const currAcct = useCurrentAccount();
+
+  const balance = useGetBalance({
+    owner: currAcct?.address,
+    coinType: SUINS_PACKAGES[NETWORK].votingTokenType,
+  });
+  const availableNS = balance.data ? BigInt(balance.data.totalBalance) : 0n;
+
+  const batches = useGetStakingBatches(currAcct?.address);
+  const batchesData = batches.data ?? [];
   const stakingData = useMemo((): StakingData => {
     let lockedNS = 0n;
     let lockedPower = 0n;
@@ -40,7 +61,7 @@ export function StakeContent({
     let stakedPower = 0n;
     let totalPower = 0n;
 
-    batches.forEach((batch) => {
+    batchesData.forEach((batch) => {
       if (batch.isLocked) {
         lockedNS += batch.balanceNS;
         lockedPower += batch.votingPower;
@@ -57,28 +78,35 @@ export function StakeContent({
       stakedNS,
       stakedPower,
       totalPower,
-      availableNS,
     };
-  }, [batches, availableNS]);
+  }, [batchesData]);
+
+  if (balance.isLoading || batches.isLoading) {
+    return <Loader className="h-5 w-5" />;
+  }
+
+  if (balance.error || batches.error) {
+    return <div>Error: {balance.error?.message ?? batches.error?.message}</div>;
+  }
 
   return (
     <>
-      <PanelOverview stakingData={stakingData} />
-      <PanelStake batches={batches} stakingData={stakingData} />
+      <PanelOverview availableNS={availableNS} stakingData={stakingData} />
+      <PanelStake availableNS={availableNS} batches={batchesData} />
       <PanelParticipation />
     </>
   );
 }
 
-function PanelOverview({ stakingData }: { stakingData: StakingData }) {
-  const {
-    lockedNS,
-    lockedPower,
-    stakedNS,
-    stakedPower,
-    totalPower,
-    availableNS,
-  } = stakingData;
+function PanelOverview({
+  stakingData,
+  availableNS,
+}: {
+  stakingData: StakingData;
+  availableNS: bigint;
+}) {
+  const { lockedNS, lockedPower, stakedNS, stakedPower, totalPower } =
+    stakingData;
 
   return (
     <div className="panel">
@@ -99,11 +127,11 @@ function PanelOverview({ stakingData }: { stakingData: StakingData }) {
 }
 
 function PanelStake({
+  availableNS,
   batches,
-  stakingData,
 }: {
+  availableNS: bigint;
   batches: StakingBatch[];
-  stakingData: StakingData;
 }) {
   const [showStakeModal, setShowStakeModal] = useState(false);
   const [stakeMode, setStakeMode] = useState<"stake" | "lock">("stake");
@@ -146,7 +174,7 @@ function PanelStake({
           mode={stakeMode}
           onClose={() => setShowStakeModal(false)}
           onModeChange={setStakeMode}
-          availableNS={stakingData.availableNS}
+          availableNS={availableNS}
         />
       )}
     </div>
@@ -246,7 +274,9 @@ function ModalStake({
   const onStakeOrLock = async (data: StakeRequest) => {
     try {
       await stakeOrLockMutation.mutateAsync(data);
-      toast.success(`Successfully ${mode === "lock" ? "locked" : "staked"} tokens`);
+      toast.success(
+        `Successfully ${mode === "lock" ? "locked" : "staked"} tokens`,
+      );
     } catch (error) {
       toast.error((error as Error).message || "Failed to stake tokens");
     } finally {

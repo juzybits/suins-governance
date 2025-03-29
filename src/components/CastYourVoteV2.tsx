@@ -145,10 +145,16 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
                     "h-2024_3.5XL w-full max-w-full items-center !rounded-2024_M",
                     isLoggedOut && "!max-w-full",
                   )}
-                  disabled={isLoggedOut || !isValid || isPending || isInactiveProposal}
+                  disabled={
+                    isLoggedOut || !isValid || isPending || isInactiveProposal
+                  }
                   type="submit"
                 >
-                  <Text variant="B4/bold" color="fillContent-primary-darker" className="text-start">
+                  <Text
+                    variant="B4/bold"
+                    color="fillContent-primary-darker"
+                    className="text-start"
+                  >
                     Vote
                   </Text>
                 </Button>
@@ -158,14 +164,23 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
                   {!!errors ? (
                     <div className="mb-2 flex flex-col gap-2">
                       {errors.vote && (
-                        <Text variant="B7/medium" color="fillContent-issue" className="w-full text-start">
+                        <Text
+                          variant="B7/medium"
+                          color="fillContent-issue"
+                          className="w-full text-start"
+                        >
                           {errors.vote.message}
                         </Text>
                       )}
                     </div>
                   ) : null}
-                  <Text variant="B5/medium" color="fillContent-secondary" className="w-full text-start">
-                    Tokens can not be withdrawn until the end of the voting period
+                  <Text
+                    variant="B5/medium"
+                    color="fillContent-secondary"
+                    className="w-full text-start"
+                  >
+                    Tokens can not be withdrawn until the end of the voting
+                    period
                   </Text>
                 </div>
               )}
