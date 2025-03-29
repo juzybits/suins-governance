@@ -15,7 +15,7 @@ import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { executeAndWaitTx } from "@/utils/executeAndWaitTx";
 
-type UnstakeRequest = {
+export type UnstakeRequest = {
   batchId: string;
 };
 
@@ -25,7 +25,7 @@ type UnstakeRequest = {
 export function useUnstakeMutation(
   mutationOptions?: Omit<
     UseMutationOptions<string, Error, UnstakeRequest>,
-    "mutationFn"
+    "mutationFn" | "onSuccess"
   >,
 ): UseMutationResult<string, Error, UnstakeRequest> {
   const { mutateAsync: signAndExecuteTx } = useSignAndExecuteTransaction();

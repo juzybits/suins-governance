@@ -15,7 +15,7 @@ import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { executeAndWaitTx } from "@/utils/executeAndWaitTx";
 
-type LockRequest = {
+export type LockRequest = {
   batchId: string;
   months: number;
 };
@@ -26,7 +26,7 @@ type LockRequest = {
 export function useLockMutation(
   mutationOptions?: Omit<
     UseMutationOptions<string, Error, LockRequest>,
-    "mutationFn"
+    "mutationFn" | "onSuccess"
   >,
 ): UseMutationResult<string, Error, LockRequest> {
   const { mutateAsync: signAndExecuteTx } = useSignAndExecuteTransaction();

@@ -15,7 +15,7 @@ import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { executeAndWaitTx } from "@/utils/executeAndWaitTx";
 
-type VotingV2Request = {
+export type VoteV2Request = {
   proposalId: string;
   batchIds: string[];
   vote: "Yes" | "No" | "Abstain";
@@ -23,17 +23,17 @@ type VotingV2Request = {
 
 export function useVoteV2Mutation(
   mutationOptions?: Omit<
-    UseMutationOptions<string, Error, VotingV2Request>,
-    "mutationFn"
+    UseMutationOptions<string, Error, VoteV2Request>,
+    "mutationFn" | "onSuccess"
   >,
-): UseMutationResult<string, Error, VotingV2Request> {
+): UseMutationResult<string, Error, VoteV2Request> {
   const { mutateAsync: signAndExecuteTx } = useSignAndExecuteTransaction();
   const currAcct = useCurrentAccount();
   const suiClient = useSuiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ proposalId, batchIds, vote }: VotingV2Request) => {
+    mutationFn: async ({ proposalId, batchIds, vote }: VoteV2Request) => {
       const tx = new Transaction();
 
       for (const batchId of batchIds) {

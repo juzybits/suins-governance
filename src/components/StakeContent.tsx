@@ -2,14 +2,14 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { type StakingBatch } from "@/hooks/staking/useGetStakingBatches";
-import { useStakeOrLockMutation } from "@/hooks/staking/useStakeOrLockMutation";
-import { useLockMutation } from "@/hooks/staking/useLockMutation";
-import { useRequestUnstakeMutation } from "@/hooks/staking/useRequestUnstakeMutation";
+import { StakeRequest, useStakeOrLockMutation } from "@/hooks/staking/useStakeOrLockMutation";
+import { LockRequest, useLockMutation } from "@/hooks/staking/useLockMutation";
+import { RequestUnstakeRequest, useRequestUnstakeMutation } from "@/hooks/staking/useRequestUnstakeMutation";
 import { toast } from "sonner";
 import { formatNSBalance } from "@/utils/formatNumber";
 import { stakingBatchHelpers } from "@/utils/stakingBatchHelpers";
 import { parseNSAmount } from "@/utils/parseAmount";
-import { useUnstakeMutation } from "@/hooks/staking/useUnstakeMutation";
+import { UnstakeRequest, useUnstakeMutation } from "@/hooks/staking/useUnstakeMutation";
 import {
   Modal,
   ModalHeader,
@@ -91,8 +91,8 @@ function PanelOverview({ stakingData }: { stakingData: StakingData }) {
           Total Staked: {formatNSBalance(stakedNS)} NS (
           {formatNSBalance(stakedPower)} Votes)
         </p>
-        <p>Available Tokens: {formatNSBalance(availableNS)} NS</p>
         <p>Your Total Votes: {formatNSBalance(totalPower)}</p>
+        <p>Available Tokens: {formatNSBalance(availableNS)} NS</p>
       </div>
     </div>
   );
@@ -241,27 +241,25 @@ function StakeModal({
   onModeChange: (mode: "stake" | "lock") => void;
   availableNS: bigint;
 }) {
-  const { mutateAsync: stakeOrLock, isSuccess } = useStakeOrLockMutation({
-    onError: (error) => {
-      toast.error(error.message || "Failed to stake tokens");
+  const stakeOrLockMutation = useStakeOrLockMutation();
+
+  const onStakeOrLock = async (data: StakeRequest) => {
+    try {
+      await stakeOrLockMutation.mutateAsync(data);
+      toast.success(`Successfully ${mode === "lock" ? "locked" : "staked"} tokens`);
+    } catch (error) {
+      toast.error((error as Error).message || "Failed to stake tokens");
+    } finally {
       onClose();
-    },
-  });
+    }
+  };
+
   const [amount, setAmount] = useState("");
   const [months, setMonths] = useState(mode === "lock" ? 1 : 0);
 
   useEffect(() => {
     setMonths(mode === "lock" ? 1 : 0);
   }, [mode]);
-
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success(
-        `Successfully ${mode === "lock" ? "locked" : "staked"} tokens`,
-      );
-      onClose();
-    }
-  }, [isSuccess, onClose, mode]);
 
   const votes = stakingBatchHelpers.calculateLockedVotingPower({
     balance: parseNSAmount(amount),
@@ -323,7 +321,7 @@ function StakeModal({
       <ModalFooter
         onClose={onClose}
         actionText={actionText}
-        onAction={() => stakeOrLock({ amount, months })}
+        onAction={() => onStakeOrLock({ amount, months })}
       />
     </Modal>
   );
@@ -336,20 +334,20 @@ function LockBatchModal({
   batch: StakingBatch;
   onClose: () => void;
 }) {
-  const { mutateAsync: lockBatch, isSuccess } = useLockMutation({
-    onError: (error) => {
-      toast.error(error.message || "Failed to lock batch");
-      onClose();
-    },
-  });
-  const [months, setMonths] = useState(1);
+  const lockMutation = useLockMutation();
 
-  useEffect(() => {
-    if (isSuccess) {
+  const onLock = async (data: LockRequest) => {
+    try {
+      await lockMutation.mutateAsync(data);
       toast.success("Successfully locked tokens");
+    } catch (error) {
+      toast.error((error as Error).message || "Failed to lock batch");
+    } finally {
       onClose();
     }
-  }, [isSuccess, onClose]);
+  };
+
+  const [months, setMonths] = useState(1);
 
   const votes = stakingBatchHelpers.calculateLockedVotingPower({
     balance: batch.balanceNS,
@@ -388,7 +386,7 @@ function LockBatchModal({
       <ModalFooter
         onClose={onClose}
         actionText="Lock Tokens"
-        onAction={() => lockBatch({ batchId: batch.objectId, months })}
+        onAction={() => onLock({ batchId: batch.objectId, months })}
       />
     </Modal>
   );
@@ -401,19 +399,18 @@ function RequestUnstakeBatchModal({
   batch: StakingBatch;
   onClose: () => void;
 }) {
-  const { mutateAsync: requestUnstake, isSuccess } = useRequestUnstakeMutation({
-    onError: (error) => {
-      toast.error(error.message || "Failed to request cooldown");
-      onClose();
-    },
-  });
+  const requestUnstakeMutation = useRequestUnstakeMutation();
 
-  useEffect(() => {
-    if (isSuccess) {
+  const onRequestUnstake = async (data: RequestUnstakeRequest) => {
+    try {
+      await requestUnstakeMutation.mutateAsync(data);
       toast.success("Successfully initiated cooldown");
+    } catch (error) {
+      toast.error((error as Error).message || "Failed to request cooldown");
+    } finally {
       onClose();
     }
-  }, [isSuccess, onClose]);
+  };
 
   return (
     <Modal>
@@ -430,7 +427,7 @@ function RequestUnstakeBatchModal({
       <ModalFooter
         onClose={onClose}
         actionText="Start Cooldown"
-        onAction={() => requestUnstake({ batchId: batch.objectId })}
+        onAction={() => onRequestUnstake({ batchId: batch.objectId })}
       />
     </Modal>
   );
@@ -443,19 +440,18 @@ function UnstakeBatchModal({
   batch: StakingBatch;
   onClose: () => void;
 }) {
-  const { mutateAsync: unstake, isSuccess } = useUnstakeMutation({
-    onError: (error) => {
-      toast.error(error.message || "Failed to unstake batch");
-      onClose();
-    },
-  });
+  const unstakeMutation = useUnstakeMutation();
 
-  useEffect(() => {
-    if (isSuccess) {
+  const onUnstake = async (data: UnstakeRequest) => {
+    try {
+      await unstakeMutation.mutateAsync(data);
       toast.success("Successfully unstaked");
+    } catch (error) {
+      toast.error((error as Error).message || "Failed to unstake batch");
+    } finally {
       onClose();
     }
-  }, [isSuccess, onClose]);
+  };
 
   return (
     <Modal>
@@ -472,7 +468,7 @@ function UnstakeBatchModal({
       <ModalFooter
         onClose={onClose}
         actionText="Unstake"
-        onAction={() => unstake({ batchId: batch.objectId })}
+        onAction={() => onUnstake({ batchId: batch.objectId })}
       />
     </Modal>
   );

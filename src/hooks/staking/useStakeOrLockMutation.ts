@@ -16,7 +16,7 @@ import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { parseNSAmount } from "@/utils/parseAmount";
 import { executeAndWaitTx } from "@/utils/executeAndWaitTx";
 
-type StakeRequest = {
+export type StakeRequest = {
   amount: string;
   months: number;
 };
@@ -27,7 +27,7 @@ type StakeRequest = {
 export function useStakeOrLockMutation(
   mutationOptions?: Omit<
     UseMutationOptions<string, Error, StakeRequest>,
-    "mutationFn"
+    "mutationFn" | "onSuccess"
   >,
 ): UseMutationResult<string, Error, StakeRequest> {
   const { mutateAsync: signAndExecuteTx } = useSignAndExecuteTransaction();
