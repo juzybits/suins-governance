@@ -45,6 +45,11 @@
 
 /* basic elements */
 
+.dummy-ui h1 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
 .dummy-ui h2 {
   font-size: 18px;
   font-weight: bold;

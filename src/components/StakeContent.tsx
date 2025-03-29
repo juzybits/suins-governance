@@ -378,7 +378,24 @@ function ModalViewBatch({
 }) {
   return (
     <Modal onClose={onClose}>
-      <h2>View Batch</h2>
+      <h2>{batch.isStaked ? "Staked" : "Locked"}</h2>
+      <h1>{formatNSBalance(batch.balanceNS)} NS</h1>
+      <div>
+        <p>Votes: {formatNSBalance(batch.votingPower)}</p>
+        <p>Votes multiplier: TODO</p>
+        {batch.isStaked && (
+          <>
+            <p>Days Staked: {batch.daysSinceStart}</p>
+          </>
+        )}
+        {batch.isLocked && (
+          <>
+            <p>Locked for: {batch.lockDurationDays} days</p>
+            <p>Date Locked: {batch.startDate.toLocaleDateString()}</p>
+            <p>Unlocks On: {batch.unlockDate.toLocaleDateString()}</p>
+          </>
+        )}
+      </div>
     </Modal>
   );
 }
