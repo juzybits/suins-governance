@@ -71,8 +71,13 @@
 /* staking batch */
 
 .dummy-ui .batch {
-  border: 1px solid #ddd;
+  border: 1px solid #eee;
   padding: 10px;
+}
+
+.dummy-ui .batch:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
 }
 
 .dummy-ui .batch-header {

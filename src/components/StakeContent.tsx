@@ -45,6 +45,8 @@ type StakingData = {
   totalPower: bigint;
 };
 
+type BatchAction = "view" | "lock" | "requestUnstake" | "unstake";
+
 export function StakeContent() {
   const currAcct = useCurrentAccount();
 
@@ -177,9 +179,25 @@ function PanelBatches({
 }
 
 function CardBatch({ batch }: { batch: StakingBatch }) {
-  const [modalAction, setModalAction] = useState<
-    null | "lock" | "requestUnstake" | "unstake"
-  >(null);
+  const [modalAction, setModalAction] = useState<BatchAction | null>(null);
+
+  const onBtnClick = (
+    action: BatchAction,
+    event: React.MouseEvent
+  ) => {
+    event.stopPropagation();
+    setModalAction(action);
+  };
+
+  const onBatchClick = () => {
+    if (modalAction === null) {
+      setModalAction("view");
+    }
+  };
+
+  const onModalClose = () => {
+    setModalAction(null);
+  };
 
   const getStatusText = () => {
     if (batch.isLocked) {
@@ -199,32 +217,28 @@ function CardBatch({ batch }: { batch: StakingBatch }) {
     if (batch.isStaked && !batch.isCooldownRequested) {
       return (
         <>
-          <button onClick={() => setModalAction("requestUnstake")}>
+          <button onClick={(e) => onBtnClick("requestUnstake", e)}>
             Request Unstake
           </button>
-          <button onClick={() => setModalAction("lock")}>Lock</button>
+          <button onClick={(e) => onBtnClick("lock", e)}>Lock</button>
         </>
       );
     }
     if (batch.isStaked && batch.isCooldownOver) {
       return (
-        <>
-          <button onClick={() => setModalAction("unstake")}>Unstake Now</button>
-        </>
+        <button onClick={(e) => onBtnClick("unstake", e)}>Unstake Now</button>
       );
     }
     if (batch.isLocked && batch.lockDurationDays < MAX_LOCK_DURATION_DAYS) {
       return (
-        <>
-          <button onClick={() => setModalAction("lock")}>Extend Lock</button>
-        </>
+        <button onClick={(e) => onBtnClick("lock", e)}>Extend Lock</button>
       );
     }
     return null;
   })();
 
   return (
-    <div className="batch">
+    <div className="batch" onClick={onBatchClick}>
       <div className="batch-header">
         <b>{formatNSBalance(batch.balanceNS)} NS</b>
         <b>{formatNSBalance(batch.votingPower)} Votes</b>
@@ -240,19 +254,20 @@ function CardBatch({ batch }: { batch: StakingBatch }) {
         </div>
       )}
 
+      {modalAction === "view" && (
+        <ModalViewBatch batch={batch} onClose={onModalClose} />
+      )}
+
       {modalAction === "lock" && (
-        <ModalLockBatch batch={batch} onClose={() => setModalAction(null)} />
+        <ModalLockBatch batch={batch} onClose={onModalClose} />
       )}
 
       {modalAction === "requestUnstake" && (
-        <ModalRequestUnstakeBatch
-          batch={batch}
-          onClose={() => setModalAction(null)}
-        />
+        <ModalRequestUnstakeBatch batch={batch} onClose={onModalClose} />
       )}
 
       {modalAction === "unstake" && (
-        <ModalUnstakeBatch batch={batch} onClose={() => setModalAction(null)} />
+        <ModalUnstakeBatch batch={batch} onClose={onModalClose} />
       )}
     </div>
   );
@@ -350,6 +365,20 @@ function ModalStakeOrLockNewBatch({
         onClose={onClose}
         onAction={() => onStakeOrLock({ amount, months })}
       />
+    </Modal>
+  );
+}
+
+function ModalViewBatch({
+  batch,
+  onClose,
+}: {
+  batch: StakingBatch;
+  onClose: () => void;
+}) {
+  return (
+    <Modal onClose={onClose}>
+      <h2>View Batch</h2>
     </Modal>
   );
 }
