@@ -106,14 +106,13 @@
 
 .dummy-ui .modal-content {
   max-width: 450px;
-}
-
-.dummy-ui .modal-header {
-  display: flex;
-  justify-content: space-between;
+  position: relative;
 }
 
 .dummy-ui .modal-close-button {
+  position: absolute;
+  right: 13px;
+  top: 13px;
   padding: 2px 8px;
 }
 

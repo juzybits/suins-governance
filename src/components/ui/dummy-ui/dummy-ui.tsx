@@ -2,38 +2,32 @@
 
 import { type ReactNode } from "react";
 
-export function Modal({ children }: { children: ReactNode }) {
-  return (
-    <div className="modal-overlay">
-      <div className="modal-content">{children}</div>
-    </div>
-  );
-}
-
-export function ModalHeader({
-  title,
+export function Modal({
   onClose,
+  children,
 }: {
-  title: string;
   onClose: () => void;
+  children: ReactNode;
 }) {
   return (
-    <div className="modal-header">
-      <h2>{title}</h2>
-      <button onClick={onClose} className="modal-close-button">
-        ×
-      </button>
+    <div className="modal-overlay">
+      <div className="modal-content">
+        <button onClick={onClose} className="modal-close-button">
+          ×
+        </button>
+        {children}
+      </div>
     </div>
   );
 }
 
 export function ModalFooter({
-  onClose,
   actionText,
+  onClose,
   onAction,
 }: {
-  onClose: () => void;
   actionText: string;
+  onClose: () => void;
   onAction: () => void;
 }) {
   return (

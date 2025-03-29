@@ -27,7 +27,6 @@ import {
 } from "@/hooks/staking/useUnstakeMutation";
 import {
   Modal,
-  ModalHeader,
   ModalFooter,
   MonthSelector,
 } from "@/components/ui/dummy-ui/dummy-ui";
@@ -299,11 +298,8 @@ function ModalStakeOrLockNewBatch({
   const actionText = action === "lock" ? "Lock Tokens" : "Stake Tokens";
 
   return (
-    <Modal>
-      <ModalHeader
-        title={`${action === "lock" ? "Lock" : "Stake"} Tokens`}
-        onClose={onClose}
-      />
+    <Modal onClose={onClose}>
+      <h2>{`${action === "lock" ? "Lock" : "Stake"} Tokens`}</h2>
 
       <p>
         Stake your NS tokens to receive Votes, which increases over time, with
@@ -350,8 +346,8 @@ function ModalStakeOrLockNewBatch({
       </div>
 
       <ModalFooter
-        onClose={onClose}
         actionText={actionText}
+        onClose={onClose}
         onAction={() => onStakeOrLock({ amount, months })}
       />
     </Modal>
@@ -386,8 +382,8 @@ function ModalLockBatch({
   });
 
   return (
-    <Modal>
-      <ModalHeader title="Lock Tokens" onClose={onClose} />
+    <Modal onClose={onClose}>
+      <h2>Lock Tokens</h2>
 
       <p>
         Lock your already Staked NS tokens to receive an immediate Votes
@@ -416,8 +412,8 @@ function ModalLockBatch({
       </div>
 
       <ModalFooter
-        onClose={onClose}
         actionText="Lock Tokens"
+        onClose={onClose}
         onAction={() => onLock({ batchId: batch.objectId, months })}
       />
     </Modal>
@@ -445,8 +441,8 @@ function ModalRequestUnstakeBatch({
   };
 
   return (
-    <Modal>
-      <ModalHeader title="Request Unstake" onClose={onClose} />
+    <Modal onClose={onClose}>
+      <h2>Request Unstake</h2>
 
       <p>Unstaking initiates a 3-day cooldown period.</p>
 
@@ -457,8 +453,8 @@ function ModalRequestUnstakeBatch({
       </div>
 
       <ModalFooter
-        onClose={onClose}
         actionText="Start Cooldown"
+        onClose={onClose}
         onAction={() => onRequestUnstake({ batchId: batch.objectId })}
       />
     </Modal>
@@ -486,8 +482,8 @@ function ModalUnstakeBatch({
   };
 
   return (
-    <Modal>
-      <ModalHeader title="Unstake Batch" onClose={onClose} />
+    <Modal onClose={onClose}>
+      <h2>Unstake Batch</h2>
 
       <p>Destroy the batch and get your NS back.</p>
 
@@ -498,8 +494,8 @@ function ModalUnstakeBatch({
       </div>
 
       <ModalFooter
-        onClose={onClose}
         actionText="Unstake"
+        onClose={onClose}
         onAction={() => onUnstake({ batchId: batch.objectId })}
       />
     </Modal>
