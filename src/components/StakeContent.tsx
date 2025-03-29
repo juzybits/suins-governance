@@ -16,7 +16,7 @@ import {
 } from "@/hooks/staking/useRequestUnstakeMutation";
 import { toast } from "sonner";
 import { formatNSBalance } from "@/utils/formatNumber";
-import { stakingBatchHelpers } from "@/utils/stakingBatchHelpers";
+import { MAX_LOCK_DURATION_DAYS, stakingBatchHelpers } from "@/utils/stakingBatchHelpers";
 import { parseNSAmount } from "@/utils/parseAmount";
 import {
   type UnstakeRequest,
@@ -193,37 +193,50 @@ function CardBatch({ batch }: { batch: StakingBatch }) {
     }
   };
 
+  const batchActions = (() => {
+    if (batch.isStaked && !batch.isCooldownRequested) {
+      return <>
+          <button onClick={() => setShowRequestUnstakeModal(true)}>
+            Request Unstake
+          </button>
+          <button onClick={() => setShowLockModal(true)}>
+            Lock
+          </button>
+      </>;
+    }
+    if (batch.isStaked && batch.isCooldownOver) {
+      return <>
+        <button onClick={() => setShowUnstakeModal(true)}>
+          Unstake Now
+        </button>
+      </>;
+    }
+    if (batch.isLocked && batch.lockDurationDays < MAX_LOCK_DURATION_DAYS) {
+      return <>
+        <button onClick={() => setShowLockModal(true)}>
+          Extend Lock
+        </button>
+      </>;
+    }
+    return null;
+  })();
+
   return (
     <div className="batch">
       <div className="batch-header">
-        <div>
-          <strong>{formatNSBalance(batch.balanceNS)} NS</strong>
-        </div>
-        <div>
-          <strong>{formatNSBalance(batch.votingPower)} Votes</strong>
-        </div>
+        <b>{formatNSBalance(batch.balanceNS)} NS</b>
+        <b>{formatNSBalance(batch.votingPower)} Votes</b>
       </div>
 
       <div className="batch-status">
         <div>{getStatusText()}</div>
       </div>
 
-      {batch.isStaked && (
+      {batchActions && (
         <div className="batch-actions">
-          {!batch.isCooldownRequested && (
-            <div className="button-group">
-              <button onClick={() => setShowRequestUnstakeModal(true)}>
-                Request Unstake
-              </button>
-              <button onClick={() => setShowLockModal(true)}>Lock</button>
-            </div>
-          )}
-          {batch.isCooldownOver && (
-            <button onClick={() => setShowUnstakeModal(true)}>
-              Unstake Now
-            </button>
-          )}
-          {/* TODO: add extend lock duration for locked batches if < max months */}
+          <div className="button-group">
+            {batchActions}
+          </div>
         </div>
       )}
 
