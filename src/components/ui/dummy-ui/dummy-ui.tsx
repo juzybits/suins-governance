@@ -44,25 +44,29 @@ export function ModalFooter({
   );
 }
 
+const monthOptions = [1, 2, 6, 12] as const;
+
 export function MonthSelector({
   months,
   setMonths,
+  currentMonths = 1,
 }: {
   months: number;
   setMonths: (months: number) => void;
+  currentMonths?: number;
 }) {
-  const monthOptions = [1, 2, 6, 12];
-
   return (
     <select
       value={months}
       onChange={(e) => setMonths(parseInt(e.target.value))}
     >
-      {monthOptions.map((month) => (
-        <option key={month} value={month}>
-          {month} month{month === 1 ? "" : "s"}
-        </option>
-      ))}
+      {monthOptions
+        .filter((month) => month > currentMonths)
+        .map((month) => (
+          <option key={month} value={month}>
+            {month * 30} days
+          </option>
+        ))}
     </select>
   );
 }

@@ -16,7 +16,10 @@ import {
 } from "@/hooks/staking/useRequestUnstakeMutation";
 import { toast } from "sonner";
 import { formatNSBalance } from "@/utils/formatNumber";
-import { MAX_LOCK_DURATION_DAYS, stakingBatchHelpers } from "@/utils/stakingBatchHelpers";
+import {
+  MAX_LOCK_DURATION_DAYS,
+  stakingBatchHelpers,
+} from "@/utils/stakingBatchHelpers";
 import { parseNSAmount } from "@/utils/parseAmount";
 import {
   type UnstakeRequest,
@@ -175,7 +178,9 @@ function PanelBatches({
 }
 
 function CardBatch({ batch }: { batch: StakingBatch }) {
-  const [modalAction, setModalAction] = useState<null | "lock" | "requestUnstake" | "unstake">(null);
+  const [modalAction, setModalAction] = useState<
+    null | "lock" | "requestUnstake" | "unstake"
+  >(null);
 
   const getStatusText = () => {
     if (batch.isLocked) {
@@ -193,28 +198,28 @@ function CardBatch({ batch }: { batch: StakingBatch }) {
 
   const batchActions = (() => {
     if (batch.isStaked && !batch.isCooldownRequested) {
-      return <>
+      return (
+        <>
           <button onClick={() => setModalAction("requestUnstake")}>
             Request Unstake
           </button>
-          <button onClick={() => setModalAction("lock")}>
-            Lock
-          </button>
-      </>;
+          <button onClick={() => setModalAction("lock")}>Lock</button>
+        </>
+      );
     }
     if (batch.isStaked && batch.isCooldownOver) {
-      return <>
-        <button onClick={() => setModalAction("unstake")}>
-          Unstake Now
-        </button>
-      </>;
+      return (
+        <>
+          <button onClick={() => setModalAction("unstake")}>Unstake Now</button>
+        </>
+      );
     }
     if (batch.isLocked && batch.lockDurationDays < MAX_LOCK_DURATION_DAYS) {
-      return <>
-        <button onClick={() => setModalAction("lock")}>
-          Extend Lock
-        </button>
-      </>;
+      return (
+        <>
+          <button onClick={() => setModalAction("lock")}>Extend Lock</button>
+        </>
+      );
     }
     return null;
   })();
@@ -232,17 +237,12 @@ function CardBatch({ batch }: { batch: StakingBatch }) {
 
       {batchActions && (
         <div className="batch-actions">
-          <div className="button-group">
-            {batchActions}
-          </div>
+          <div className="button-group">{batchActions}</div>
         </div>
       )}
 
       {modalAction === "lock" && (
-        <ModalLockBatch
-          batch={batch}
-          onClose={() => setModalAction(null)}
-        />
+        <ModalLockBatch batch={batch} onClose={() => setModalAction(null)} />
       )}
 
       {modalAction === "requestUnstake" && (
@@ -253,10 +253,7 @@ function CardBatch({ batch }: { batch: StakingBatch }) {
       )}
 
       {modalAction === "unstake" && (
-        <ModalUnstakeBatch
-          batch={batch}
-          onClose={() => setModalAction(null)}
-        />
+        <ModalUnstakeBatch batch={batch} onClose={() => setModalAction(null)} />
       )}
     </div>
   );
@@ -406,7 +403,11 @@ function ModalLockBatch({
       <div>
         <div>Select Lock Period</div>
         <div className="box">
-          <MonthSelector months={months} setMonths={setMonths} />
+          <MonthSelector
+            months={months}
+            setMonths={setMonths}
+            currentMonths={batch.lockDurationDays / 30}
+          />
         </div>
       </div>
 

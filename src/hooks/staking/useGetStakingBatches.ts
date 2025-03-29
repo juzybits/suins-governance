@@ -49,7 +49,10 @@ export function useGetStakingBatches(owner: string | undefined) {
       for (const response of suiObjResponses) {
         try {
           if (!response.data?.content) {
-            console.warn("[useGetStakingBatches]Invalid staking batch data:", response);
+            console.warn(
+              "[useGetStakingBatches] Invalid staking batch data:",
+              response,
+            );
             continue;
           }
 
@@ -64,7 +67,10 @@ export function useGetStakingBatches(owner: string | undefined) {
           const result = stakingBatchSchema.safeParse(batchData);
 
           if (!result.success) {
-            console.warn("[useGetStakingBatches]Failed to parse staking batch:", result.error);
+            console.warn(
+              "[useGetStakingBatches] Failed to parse staking batch:",
+              result.error,
+            );
             continue;
           }
 
@@ -108,7 +114,10 @@ export function useGetStakingBatches(owner: string | undefined) {
             cooldownEndDate,
           });
         } catch (error) {
-          console.warn("[useGetStakingBatches]Error processing staking batch:", error);
+          console.warn(
+            "[useGetStakingBatches] Error processing staking batch:",
+            error,
+          );
         }
       }
 
