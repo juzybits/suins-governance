@@ -79,14 +79,15 @@ function DevContent({
 
   const onCreateProposal = async () => {
     try {
-      const digest = await createProposal({
+      const newProposalId = await createProposal({
         govCapId,
         title: formData.title,
         description: formData.description,
         end_time_ms: Date.now() + formData.duration_seconds * 1000,
         reward: BigInt(formData.reward_ns * NS_VOTE_DIVISOR),
       });
-      console.debug("[onCreateProposal] success:", digest);
+      console.debug("[onCreateProposal] success:", newProposalId);
+      setFormData((prev) => ({ ...prev, proposalId: newProposalId ?? "" }));
     } catch (error) {
       console.warn("[onCreateProposal] failed:", error);
     }
@@ -212,10 +213,10 @@ type CreateProposalRequest = {
 };
 export function useCreateProposalMutation(
   mutationOptions?: Omit<
-    UseMutationOptions<string, Error, CreateProposalRequest>,
+    UseMutationOptions<string | null, Error, CreateProposalRequest>,
     "mutationFn" | "onSuccess"
   >,
-): UseMutationResult<string, Error, CreateProposalRequest> {
+): UseMutationResult<string | null, Error, CreateProposalRequest> {
   const executeAndWaitTx = useExecuteAndWaitTx();
   const queryClient = useQueryClient();
 
@@ -261,9 +262,15 @@ export function useCreateProposalMutation(
 
       const resp = await executeAndWaitTx(tx);
 
-      // TODO extract and return the proposal ID from the response
+      let proposalV2Type = `${SUINS_PACKAGES[NETWORK].votingPkgId}::proposal_v2::ProposalV2`;
+      let proposalId: null | string = null;
+      for (const obj of resp.objectChanges ?? []) {
+        if (obj.type === "created" && obj.objectType === proposalV2Type) {
+          proposalId = obj.objectId;
+        }
+      }
 
-      return resp.digest;
+      return proposalId;
     },
 
     onSuccess: async () => {
