@@ -59,11 +59,13 @@ function DevContent({
   currAddr: string | undefined;
 }) {
   const { mutateAsync: createProposal } = useCreateProposalMutation();
+  const { mutateAsync: distributeRewards } = useDistributeRewardsMutation();
   const [formData, setFormData] = React.useState({
     title: "Test Proposal",
     description: "This is a test proposal",
     duration_seconds: 60,
     reward_ns: 50,
+    proposalId: "",
   });
 
   if (!currAddr) {
@@ -87,6 +89,18 @@ function DevContent({
       console.debug("[onCreateProposal] success:", digest);
     } catch (error) {
       console.warn("[onCreateProposal] failed:", error);
+    }
+  };
+
+  const onDistributeRewards = async () => {
+    const proposalId = "0xf8f352fcade94f09570f6a3d48c5d05abd25f970dc8cc68e139e7732c6dc14af";
+    try {
+      const digest = await distributeRewards({
+        proposalId,
+      });
+      console.debug("[onDistributeRewards] success:", digest);
+    } catch (error) {
+      console.warn("[onDistributeRewards] failed:", error);
     }
   };
 
@@ -144,6 +158,22 @@ function DevContent({
         </div>
 
         <button onClick={onCreateProposal}>Create Proposal</button>
+        <button onClick={onDistributeRewards}>Distribute Rewards</button>
+      </div>
+
+      <div className="panel">
+        <div className="flex flex-col gap-2">
+          <label>Proposal ID:</label>
+          <input
+            type="text"
+            value={formData.proposalId}
+            onChange={(e) => {
+              setFormData((prev) => ({ ...prev, proposalId: e.target.value }));
+            }}
+          />
+        </div>
+
+        <button onClick={onDistributeRewards}>Distribute Rewards</button>
       </div>
     </>
   );
@@ -183,7 +213,7 @@ type CreateProposalRequest = {
 export function useCreateProposalMutation(
   mutationOptions?: Omit<
     UseMutationOptions<string, Error, CreateProposalRequest>,
-    "mutationFn"
+    "mutationFn" | "onSuccess"
   >,
 ): UseMutationResult<string, Error, CreateProposalRequest> {
   const { mutateAsync: signAndExecuteTx } = useSignAndExecuteTransaction();
@@ -238,6 +268,8 @@ export function useCreateProposalMutation(
         signAndExecuteTx,
       });
 
+      // TODO extract and return the proposal ID from the response
+
       return resp.digest;
     },
 
@@ -248,6 +280,53 @@ export function useCreateProposalMutation(
         }),
       ]);
     },
+    ...mutationOptions,
+  });
+}
+
+type DistributeRewardsRequest = {
+  proposalId: string;
+};
+function useDistributeRewardsMutation(
+  mutationOptions?: Omit<
+    UseMutationOptions<string, Error, DistributeRewardsRequest>,
+    "mutationFn" | "onSuccess"
+  >,
+): UseMutationResult<string, Error, DistributeRewardsRequest> {
+  const { mutateAsync: signAndExecuteTx } = useSignAndExecuteTransaction();
+  const currAcct = useCurrentAccount();
+  const suiClient = useSuiClient();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ proposalId }: DistributeRewardsRequest) => {
+      const tx = new Transaction();
+
+      tx.moveCall({
+        target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::proposal_v2::distribute_rewards`,
+        arguments: [tx.object(proposalId), tx.object.clock()],
+      });
+
+      const resp = await executeAndWaitTx({
+        suiClient,
+        tx,
+        sender: currAcct?.address,
+        signAndExecuteTx,
+      });
+
+      return resp.digest;
+    },
+
+    onSuccess: async () => {
+      await Promise.allSettled([
+        queryClient.invalidateQueries({
+          queryKey: [NETWORK, "getBalance"],
+        }),
+        queryClient.invalidateQueries({
+          queryKey: ["owned-staking-batches"],
+        }),
+    ]);
+  },
     ...mutationOptions,
   });
 }
