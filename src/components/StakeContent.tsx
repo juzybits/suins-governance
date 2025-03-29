@@ -163,7 +163,7 @@ function PanelBatches({
       )}
 
       {modalAction && (
-        <ModalStakeOrLock
+        <ModalStakeOrLockNewBatch
           availableNS={availableNS}
           action={modalAction}
           onActionChange={setModalAction}
@@ -175,9 +175,7 @@ function PanelBatches({
 }
 
 function CardBatch({ batch }: { batch: StakingBatch }) {
-  const [showLockModal, setShowLockModal] = useState(false);
-  const [showRequestUnstakeModal, setShowRequestUnstakeModal] = useState(false);
-  const [showUnstakeModal, setShowUnstakeModal] = useState(false);
+  const [modalAction, setModalAction] = useState<null | "lock" | "requestUnstake" | "unstake">(null);
 
   const getStatusText = () => {
     if (batch.isLocked) {
@@ -196,24 +194,24 @@ function CardBatch({ batch }: { batch: StakingBatch }) {
   const batchActions = (() => {
     if (batch.isStaked && !batch.isCooldownRequested) {
       return <>
-          <button onClick={() => setShowRequestUnstakeModal(true)}>
+          <button onClick={() => setModalAction("requestUnstake")}>
             Request Unstake
           </button>
-          <button onClick={() => setShowLockModal(true)}>
+          <button onClick={() => setModalAction("lock")}>
             Lock
           </button>
       </>;
     }
     if (batch.isStaked && batch.isCooldownOver) {
       return <>
-        <button onClick={() => setShowUnstakeModal(true)}>
+        <button onClick={() => setModalAction("unstake")}>
           Unstake Now
         </button>
       </>;
     }
     if (batch.isLocked && batch.lockDurationDays < MAX_LOCK_DURATION_DAYS) {
       return <>
-        <button onClick={() => setShowLockModal(true)}>
+        <button onClick={() => setModalAction("lock")}>
           Extend Lock
         </button>
       </>;
@@ -240,28 +238,31 @@ function CardBatch({ batch }: { batch: StakingBatch }) {
         </div>
       )}
 
-      {showLockModal && (
-        <ModalLock batch={batch} onClose={() => setShowLockModal(false)} />
-      )}
-
-      {showRequestUnstakeModal && (
-        <ModalRequestUnstake
+      {modalAction === "lock" && (
+        <ModalLockBatch
           batch={batch}
-          onClose={() => setShowRequestUnstakeModal(false)}
+          onClose={() => setModalAction(null)}
         />
       )}
 
-      {showUnstakeModal && (
-        <ModalUnstake
+      {modalAction === "requestUnstake" && (
+        <ModalRequestUnstakeBatch
           batch={batch}
-          onClose={() => setShowUnstakeModal(false)}
+          onClose={() => setModalAction(null)}
+        />
+      )}
+
+      {modalAction === "unstake" && (
+        <ModalUnstakeBatch
+          batch={batch}
+          onClose={() => setModalAction(null)}
         />
       )}
     </div>
   );
 }
 
-function ModalStakeOrLock({
+function ModalStakeOrLockNewBatch({
   action,
   availableNS,
   onActionChange,
@@ -360,7 +361,7 @@ function ModalStakeOrLock({
   );
 }
 
-function ModalLock({
+function ModalLockBatch({
   batch,
   onClose,
 }: {
@@ -422,7 +423,7 @@ function ModalLock({
   );
 }
 
-function ModalRequestUnstake({
+function ModalRequestUnstakeBatch({
   batch,
   onClose,
 }: {
@@ -463,7 +464,7 @@ function ModalRequestUnstake({
   );
 }
 
-function ModalUnstake({
+function ModalUnstakeBatch({
   batch,
   onClose,
 }: {
