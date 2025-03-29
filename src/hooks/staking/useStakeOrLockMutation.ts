@@ -1,8 +1,3 @@
-import {
-  useSignAndExecuteTransaction,
-  useCurrentAccount,
-  useSuiClient,
-} from "@mysten/dapp-kit";
 import { coinWithBalance, Transaction } from "@mysten/sui/transactions";
 import {
   useMutation,
@@ -14,7 +9,7 @@ import {
 import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { parseNSAmount } from "@/utils/parseAmount";
-import { executeAndWaitTx } from "@/utils/executeAndWaitTx";
+import { useExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
 
 export type StakeRequest = {
   amount: string;
@@ -30,9 +25,7 @@ export function useStakeOrLockMutation(
     "mutationFn" | "onSuccess"
   >,
 ): UseMutationResult<string, Error, StakeRequest> {
-  const { mutateAsync: signAndExecuteTx } = useSignAndExecuteTransaction();
-  const currAcct = useCurrentAccount();
-  const suiClient = useSuiClient();
+  const executeAndWaitTx = useExecuteAndWaitTx();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -59,12 +52,7 @@ export function useStakeOrLockMutation(
         arguments: [batch],
       });
 
-      const resp = await executeAndWaitTx({
-        suiClient,
-        tx,
-        sender: currAcct?.address,
-        signAndExecuteTx,
-      });
+      const resp = await executeAndWaitTx(tx);
 
       return resp.digest;
     },

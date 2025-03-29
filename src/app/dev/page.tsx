@@ -21,7 +21,7 @@ import { Suspense } from "react";
 import NotFound from "../not-found";
 import { NS_VOTE_DIVISOR } from "@/constants/common";
 import React from "react";
-import { executeAndWaitTx } from "@/utils/executeAndWaitTx";
+import { useExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
 
 /**
  * A dev-only page to create mock proposals.
@@ -216,9 +216,7 @@ export function useCreateProposalMutation(
     "mutationFn" | "onSuccess"
   >,
 ): UseMutationResult<string, Error, CreateProposalRequest> {
-  const { mutateAsync: signAndExecuteTx } = useSignAndExecuteTransaction();
-  const currAcct = useCurrentAccount();
-  const suiClient = useSuiClient();
+  const executeAndWaitTx = useExecuteAndWaitTx();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -261,12 +259,7 @@ export function useCreateProposalMutation(
         ],
       });
 
-      const resp = await executeAndWaitTx({
-        suiClient,
-        tx,
-        sender: currAcct?.address,
-        signAndExecuteTx,
-      });
+      const resp = await executeAndWaitTx(tx);
 
       // TODO extract and return the proposal ID from the response
 
@@ -293,9 +286,7 @@ function useDistributeRewardsMutation(
     "mutationFn" | "onSuccess"
   >,
 ): UseMutationResult<string, Error, DistributeRewardsRequest> {
-  const { mutateAsync: signAndExecuteTx } = useSignAndExecuteTransaction();
-  const currAcct = useCurrentAccount();
-  const suiClient = useSuiClient();
+  const executeAndWaitTx = useExecuteAndWaitTx();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -307,12 +298,7 @@ function useDistributeRewardsMutation(
         arguments: [tx.object(proposalId), tx.object.clock()],
       });
 
-      const resp = await executeAndWaitTx({
-        suiClient,
-        tx,
-        sender: currAcct?.address,
-        signAndExecuteTx,
-      });
+      const resp = await executeAndWaitTx(tx);
 
       return resp.digest;
     },

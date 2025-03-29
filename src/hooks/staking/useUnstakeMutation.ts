@@ -1,8 +1,3 @@
-import {
-  useSignAndExecuteTransaction,
-  useCurrentAccount,
-  useSuiClient,
-} from "@mysten/dapp-kit";
 import { Transaction } from "@mysten/sui/transactions";
 import {
   useMutation,
@@ -13,7 +8,8 @@ import {
 
 import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
-import { executeAndWaitTx } from "@/utils/executeAndWaitTx";
+import { useExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
+import { useCurrentAccount } from "@mysten/dapp-kit";
 
 export type UnstakeRequest = {
   batchId: string;
@@ -28,9 +24,8 @@ export function useUnstakeMutation(
     "mutationFn" | "onSuccess"
   >,
 ): UseMutationResult<string, Error, UnstakeRequest> {
-  const { mutateAsync: signAndExecuteTx } = useSignAndExecuteTransaction();
+  const executeAndWaitTx = useExecuteAndWaitTx();
   const currAcct = useCurrentAccount();
-  const suiClient = useSuiClient();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -61,12 +56,7 @@ export function useUnstakeMutation(
         arguments: [coin, tx.pure.address(currAcct.address)],
       });
 
-      const resp = await executeAndWaitTx({
-        suiClient,
-        tx,
-        sender: currAcct.address,
-        signAndExecuteTx,
-      });
+      const resp = await executeAndWaitTx(tx);
 
       return resp.digest;
     },

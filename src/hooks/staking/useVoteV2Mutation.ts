@@ -1,8 +1,3 @@
-import {
-  useSignAndExecuteTransaction,
-  useCurrentAccount,
-  useSuiClient,
-} from "@mysten/dapp-kit";
 import { Transaction } from "@mysten/sui/transactions";
 import {
   useMutation,
@@ -13,7 +8,7 @@ import {
 
 import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
-import { executeAndWaitTx } from "@/utils/executeAndWaitTx";
+import { useExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
 
 export type VoteV2Request = {
   proposalId: string;
@@ -27,9 +22,7 @@ export function useVoteV2Mutation(
     "mutationFn" | "onSuccess"
   >,
 ): UseMutationResult<string, Error, VoteV2Request> {
-  const { mutateAsync: signAndExecuteTx } = useSignAndExecuteTransaction();
-  const currAcct = useCurrentAccount();
-  const suiClient = useSuiClient();
+  const executeAndWaitTx = useExecuteAndWaitTx();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -49,12 +42,8 @@ export function useVoteV2Mutation(
         });
       }
 
-      const resp = await executeAndWaitTx({
-        suiClient,
-        tx,
-        sender: currAcct?.address,
-        signAndExecuteTx,
-      });
+      const resp = await executeAndWaitTx(tx);
+
       return resp.digest;
     },
 
