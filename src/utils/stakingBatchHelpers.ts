@@ -5,7 +5,9 @@ import { type StakingBatchRaw } from "@/schemas/stakingBatchSchema";
 const MAX_LOCK_MONTHS = 12;
 const MONTHLY_BOOST_BPS = 11000n; // 1.1x or 10% boost (in basis points)
 const MAX_BOOST_BPS = 30000n; // 3.0x for 12-month lock (in basis points)
-const MONTH_MS = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
+
+const MONTH_MS = 2592000000; // 30 days in milliseconds
+const DAY_MS = 86400000; // 1 day in milliseconds
 
 export const stakingBatchHelpers = {
   isLocked: (batch: StakingBatchRaw): boolean => {
@@ -38,10 +40,15 @@ export const stakingBatchHelpers = {
     return votingUntilMs > 0 && votingUntilMs > Date.now();
   },
 
+  getDaysSinceStart: (batch: StakingBatchRaw): number => {
+    const startMs = Number(batch.content.fields.start_ms);
+    return Math.round((Date.now() - startMs) / DAY_MS);
+  },
+
   getLockDurationDays: (batch: StakingBatchRaw): number => {
     const startMs = Number(batch.content.fields.start_ms);
     const unlockMs = Number(batch.content.fields.unlock_ms);
-    return Math.round((unlockMs - startMs) / (1000 * 60 * 60 * 24));
+    return Math.round((unlockMs - startMs) / DAY_MS);
   },
 
   // Mirrors batch::power() in Move contract

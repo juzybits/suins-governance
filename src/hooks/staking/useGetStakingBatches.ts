@@ -12,6 +12,7 @@ export type StakingBatch = StakingBatchRaw & {
   // Derived data
   balanceNS: bigint;
   votingPower: bigint;
+  daysSinceStart: number;
   lockDurationDays: number;
   isLocked: boolean;
   isStaked: boolean;
@@ -72,6 +73,7 @@ export function useGetStakingBatches(owner: string | undefined) {
           // Calculate derived data
           const balanceNS = BigInt(batch.content.fields.balance);
           const votingPower = stakingBatchHelpers.calculateVotingPower(batch);
+          const daysSinceStart = stakingBatchHelpers.getDaysSinceStart(batch);
           const lockDurationDays =
             stakingBatchHelpers.getLockDurationDays(batch);
           const isLocked = stakingBatchHelpers.isLocked(batch);
@@ -93,6 +95,7 @@ export function useGetStakingBatches(owner: string | undefined) {
             ...batch,
             balanceNS,
             votingPower,
+            daysSinceStart,
             lockDurationDays,
             isLocked,
             isStaked,

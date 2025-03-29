@@ -189,10 +189,7 @@ function CardBatch({ batch }: { batch: StakingBatch }) {
     } else if (batch.isVoting) {
       return `Used for Voting`;
     } else {
-      const daysSinceStake = Math.floor(
-        (Date.now() - batch.startDate.getTime()) / (1000 * 60 * 60 * 24),
-      );
-      return `Staked for ${daysSinceStake} Days`;
+      return `Staked for ${batch.daysSinceStart} Days`;
     }
   };
 
@@ -376,9 +373,6 @@ function ModalLock({
     balance: batch.balanceNS,
     lockMonths: months,
   });
-  const daysSinceStake = Math.floor(
-    (Date.now() - batch.startDate.getTime()) / (1000 * 60 * 60 * 24),
-  );
 
   return (
     <Modal>
@@ -390,7 +384,7 @@ function ModalLock({
       </p>
 
       <div className="box">
-        <div>Staked for {daysSinceStake} Days</div>
+        <div>Staked for {batch.daysSinceStart} Days</div>
         <div>{formatNSBalance(batch.balanceNS)} NS</div>
         <div>Votes {formatNSBalance(batch.votingPower)}</div>
       </div>
