@@ -55,11 +55,11 @@ const monthOptions = [1, 2, 6, 12] as const;
 export function MonthSelector({
   months,
   setMonths,
-  currentMonths = 1,
+  currentMonths,
 }: {
   months: number;
   setMonths: (months: number) => void;
-  currentMonths?: number;
+  currentMonths: number;
 }) {
   return (
     <select

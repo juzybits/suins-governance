@@ -12,6 +12,7 @@ export type StakingBatch = StakingBatchRaw & {
   // Derived data
   balanceNS: bigint;
   votingPower: bigint;
+  votingMultiplier: number;
   daysSinceStart: number;
   lockDurationDays: number;
   isLocked: boolean;
@@ -101,6 +102,7 @@ export function useGetStakingBatches(owner: string | undefined) {
             ...batch,
             balanceNS,
             votingPower,
+            votingMultiplier: Number(votingPower) / Number(balanceNS),
             daysSinceStart,
             lockDurationDays,
             isLocked,

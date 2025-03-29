@@ -352,7 +352,11 @@ function ModalStakeOrLockNewBatch({
 
       {action === "lock" && (
         <div className="box">
-          <MonthSelector months={months} setMonths={setMonths} />
+          <MonthSelector
+            months={months}
+            setMonths={setMonths}
+            currentMonths={0}
+          />
         </div>
       )}
 
@@ -382,7 +386,7 @@ function ModalViewBatch({
       <h1>{formatNSBalance(batch.balanceNS)} NS</h1>
       <div>
         <p>Votes: {formatNSBalance(batch.votingPower)}</p>
-        <p>Votes multiplier: TODO</p>
+        <p>Votes multiplier: {batch.votingMultiplier}x</p>
         {batch.isStaked && (
           <>
             <p>Days Staked: {batch.daysSinceStart}</p>
