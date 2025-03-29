@@ -133,13 +133,7 @@ function PanelBatches({
   availableNS: bigint;
   batches: StakingBatch[];
 }) {
-  const [showStakeModal, setShowStakeModal] = useState(false);
-  const [stakeMode, setStakeMode] = useState<"stake" | "lock">("stake");
-
-  const onOpenStakeModal = (mode: "stake" | "lock") => {
-    setStakeMode(mode);
-    setShowStakeModal(true);
-  };
+  const [modalAction, setModalAction] = useState<null | "stake" | "lock">(null);
 
   return (
     <div className="panel">
@@ -156,8 +150,8 @@ function PanelBatches({
       )}
 
       <div className="button-group">
-        <button onClick={() => onOpenStakeModal("stake")}>Stake</button>
-        <button onClick={() => onOpenStakeModal("lock")}>Lock</button>
+        <button onClick={() => setModalAction("stake")}>Stake</button>
+        <button onClick={() => setModalAction("lock")}>Lock</button>
       </div>
 
       {batches.length > 0 && (
@@ -168,12 +162,12 @@ function PanelBatches({
         </>
       )}
 
-      {showStakeModal && (
-        <ModalStake
-          mode={stakeMode}
-          onClose={() => setShowStakeModal(false)}
-          onModeChange={setStakeMode}
+      {modalAction && (
+        <ModalStakeOrLock
           availableNS={availableNS}
+          action={modalAction}
+          onActionChange={setModalAction}
+          onClose={() => setModalAction(null)}
         />
       )}
     </div>
@@ -257,16 +251,16 @@ function CardBatch({ batch }: { batch: StakingBatch }) {
   );
 }
 
-function ModalStake({
-  mode,
-  onClose,
-  onModeChange,
+function ModalStakeOrLock({
+  action,
   availableNS,
+  onActionChange,
+  onClose,
 }: {
-  mode: "stake" | "lock";
-  onClose: () => void;
-  onModeChange: (mode: "stake" | "lock") => void;
   availableNS: bigint;
+  action: "stake" | "lock";
+  onActionChange: (action: "stake" | "lock") => void;
+  onClose: () => void;
 }) {
   const stakeOrLockMutation = useStakeOrLockMutation();
 
@@ -274,7 +268,7 @@ function ModalStake({
     try {
       await stakeOrLockMutation.mutateAsync(data);
       toast.success(
-        `Successfully ${mode === "lock" ? "locked" : "staked"} tokens`,
+        `Successfully ${action === "lock" ? "locked" : "staked"} tokens`,
       );
     } catch (error) {
       toast.error((error as Error).message || "Failed to stake tokens");
@@ -284,22 +278,22 @@ function ModalStake({
   };
 
   const [amount, setAmount] = useState("");
-  const [months, setMonths] = useState(mode === "lock" ? 1 : 0);
+  const [months, setMonths] = useState(action === "lock" ? 1 : 0);
 
   useEffect(() => {
-    setMonths(mode === "lock" ? 1 : 0);
-  }, [mode]);
+    setMonths(action === "lock" ? 1 : 0);
+  }, [action]);
 
   const votes = stakingBatchHelpers.calculateLockedVotingPower({
     balance: parseNSAmount(amount),
     lockMonths: months,
   });
-  const actionText = mode === "lock" ? "Lock Tokens" : "Stake Tokens";
+  const actionText = action === "lock" ? "Lock Tokens" : "Stake Tokens";
 
   return (
     <Modal>
       <ModalHeader
-        title={`${mode === "lock" ? "Lock" : "Stake"} Tokens`}
+        title={`${action === "lock" ? "Lock" : "Stake"} Tokens`}
         onClose={onClose}
       />
 
@@ -312,8 +306,8 @@ function ModalStake({
         <label>
           <input
             type="radio"
-            checked={mode === "stake"}
-            onChange={() => onModeChange("stake")}
+            checked={action === "stake"}
+            onChange={() => onActionChange("stake")}
           />
           Stake
         </label>
@@ -321,8 +315,8 @@ function ModalStake({
         <label>
           <input
             type="radio"
-            checked={mode === "lock"}
-            onChange={() => onModeChange("lock")}
+            checked={action === "lock"}
+            onChange={() => onActionChange("lock")}
           />
           Lock
         </label>
@@ -337,7 +331,7 @@ function ModalStake({
         /{formatNSBalance(availableNS)} NS
       </div>
 
-      {mode === "lock" && (
+      {action === "lock" && (
         <div className="box">
           <MonthSelector months={months} setMonths={setMonths} />
         </div>
