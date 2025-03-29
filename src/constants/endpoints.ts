@@ -1,15 +1,15 @@
 export const SUINS_PACKAGES = {
   localnet: {
     votingPkgId:
-      "0xde972eddd09caa5601dedf052b284726341db4827811562fed70c5fe8900650d",
+      "0x7fb45f9150bcc8b7d3ee6b9537f38a8e9eb393d6e871f3d281b23e2b35ab9740",
     governanceObjId:
-      "0x6e15a086063a500b6c094831c901fab2ea627fcae7deb177ec9fa348d98565a1",
+      "0x1a09ea0f99b1019d263198c1bca4d17b61c70dbfbdaaca3ce460293baa04459e",
     stakingConfigId:
-      "0x144ae922c574e8138fe981ce189eb201801dbafd2b9d283851439fabf4dd6b50",
+      "0x4531d42bab0fb78b74ebf21bb015240edad67372abefc0116e0ca97cd982a811",
     coinType:
-      "0xd6b5b01974cf20e86431d31fee66eebc14d09929303d1178efae288b3878e48b::ns::NS",
+      "0x2360c528f9b0010fd4ce2eca5cafd9d7ca273036f65d34f51ad12f3f4c34e26e::ns::NS",
     votingTokenType:
-      "0xd6b5b01974cf20e86431d31fee66eebc14d09929303d1178efae288b3878e48b::ns::NS",
+      "0x2360c528f9b0010fd4ce2eca5cafd9d7ca273036f65d34f51ad12f3f4c34e26e::ns::NS",
     faucet: "",
   },
   testnet: {

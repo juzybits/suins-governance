@@ -249,9 +249,9 @@ function AccountContent({ address, isOpen, nickName }: AccountContentProps) {
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(address);
-      console.log("Copied!");
+      console.debug("Copied!");
     } catch (err) {
-      console.log("Failed to copy!", err);
+      console.debug("Failed to copy!", err);
     }
   };
   return (

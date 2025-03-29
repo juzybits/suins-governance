@@ -132,7 +132,7 @@ export function useGetVoteCasted({
 
       const resp = votesCastedSchema.safeParse(dynamicFields.data);
       if (resp.error) {
-        console.log("Failed to fetch votes casted", resp.error);
+        console.warn("[useGetVoteCasted] Failed to fetch votes casted", resp.error);
         return null;
       }
       return resp.data;
@@ -159,7 +159,7 @@ export function useGetVoteCastedById(objectId: string) {
       const resp = votesCastedSchema.safeParse(obj.data);
 
       if (resp.error) {
-        console.log("Failed to fetch votes casted by ID", resp.error);
+        console.warn("[useGetVoteCastedById] Failed to fetch votes casted by ID", resp.error);
         return null;
       }
       return parseVotesData(resp.data);

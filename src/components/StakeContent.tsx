@@ -92,7 +92,7 @@ export function StakeContent() {
   return (
     <>
       <PanelOverview availableNS={availableNS} stakingData={stakingData} />
-      <PanelStake availableNS={availableNS} batches={batchesData} />
+      <PanelBatches availableNS={availableNS} batches={batchesData} />
       <PanelParticipation />
     </>
   );
@@ -126,7 +126,7 @@ function PanelOverview({
   );
 }
 
-function PanelStake({
+function PanelBatches({
   availableNS,
   batches,
 }: {
@@ -141,28 +141,27 @@ function PanelStake({
     setShowStakeModal(true);
   };
 
-  const buttons = (
-    <div className="button-group">
-      <button onClick={() => onOpenStakeModal("stake")}>Stake</button>
-      <button onClick={() => onOpenStakeModal("lock")}>Lock</button>
-    </div>
-  );
-
   return (
     <div className="panel">
       <h2>Staked & Locked (count: {batches.length})</h2>
-      {batches.length === 0 ? (
+
+      {batches.length === 0 && (
         <>
           <h3>No Stakes or Locks</h3>
           <p>
             Start Staking your NS to participate in governance, earn rewards,
             and shape the future of SuiNS
           </p>
-          {buttons}
         </>
-      ) : (
+      )}
+
+      <div className="button-group">
+        <button onClick={() => onOpenStakeModal("stake")}>Stake</button>
+        <button onClick={() => onOpenStakeModal("lock")}>Lock</button>
+      </div>
+
+      {batches.length > 0 && (
         <>
-          <div>{buttons}</div>
           {batches.map((batch) => (
             <CardBatch key={batch.objectId} batch={batch} />
           ))}

@@ -20,7 +20,7 @@ export function Toast() {
         actionButtonStyle: {
           display: "none",
         },
-        duration: 10000,
+        duration: 3000,
         classNames: {
           toast:
             "flex items-center rounded-2024_XS items-center px-2024_XL py-2024_R w-full",
