@@ -7,7 +7,7 @@ import {
   proposalDetailSchema,
   proposalV2DetailSchema,
 } from "@/schemas/proposalResponseSchema";
-import { getProposalVersion } from "@/utils/getProposalVersion";
+import { getProposalVersionFromType } from "@/utils/getProposalVersionFromType";
 
 type ProposalDataType = z.infer<typeof proposalDetailSchema>;
 
@@ -162,7 +162,7 @@ export function useGetProposalDetail({ proposalId }: { proposalId: string }) {
         },
       });
 
-      const version = getProposalVersion(resp?.data?.type ?? "");
+      const version = getProposalVersionFromType(resp?.data?.type ?? "");
       const objDetail =
         version === 1
           ? proposalDetailSchema.safeParse(resp?.data?.content)
