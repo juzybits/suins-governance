@@ -78,18 +78,19 @@ export function useGetStakingBatches(owner: string | undefined) {
           const batch = result.data;
 
           // Calculate derived data
+          const chainTime = Date.now(); // TODO
           const balanceNS = BigInt(batch.content.fields.balance);
-          const votingPower = stakingBatchHelpers.calculateVotingPower(batch);
-          const daysSinceStart = stakingBatchHelpers.getDaysSinceStart(batch);
+          const votingPower = stakingBatchHelpers.calculateVotingPower(batch, chainTime);
+          const daysSinceStart = stakingBatchHelpers.getDaysSinceStart(batch, chainTime);
           const lockDurationDays =
             stakingBatchHelpers.getLockDurationDays(batch);
-          const isLocked = stakingBatchHelpers.isLocked(batch);
+          const isLocked = stakingBatchHelpers.isLocked(batch, chainTime);
           const isStaked = !isLocked;
           const isCooldownRequested =
             stakingBatchHelpers.isCooldownRequested(batch);
-          const isCooldownOver = stakingBatchHelpers.isCooldownOver(batch);
-          const isVoting = stakingBatchHelpers.isVoting(batch);
-          const canVote = stakingBatchHelpers.canVote(batch);
+          const isCooldownOver = stakingBatchHelpers.isCooldownOver(batch, chainTime);
+          const isVoting = stakingBatchHelpers.isVoting(batch, chainTime);
+          const canVote = stakingBatchHelpers.canVote(batch, chainTime);
 
           // Convert timestamps to Date objects
           const startDate = new Date(Number(batch.content.fields.start_ms));

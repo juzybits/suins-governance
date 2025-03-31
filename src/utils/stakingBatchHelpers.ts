@@ -12,9 +12,9 @@ const DAY_MS = 86400000; // 1 day in milliseconds
 export const MAX_LOCK_DURATION_DAYS = MAX_LOCK_MONTHS * 30;
 
 export const stakingBatchHelpers = {
-  isLocked: (batch: StakingBatchRaw): boolean => {
+  isLocked: (batch: StakingBatchRaw, chainTime: number): boolean => {
     const unlockMs = Number(batch.content.fields.unlock_ms);
-    return unlockMs > Date.now();
+    return unlockMs > chainTime;
   },
 
   isCooldownRequested: (batch: StakingBatchRaw): boolean => {
@@ -22,29 +22,29 @@ export const stakingBatchHelpers = {
     return cooldownEndMs > 0;
   },
 
-  isCooldownOver: (batch: StakingBatchRaw): boolean => {
+  isCooldownOver: (batch: StakingBatchRaw, chainTime: number): boolean => {
     const cooldownEndMs = Number(batch.content.fields.cooldown_end_ms);
     return (
       stakingBatchHelpers.isCooldownRequested(batch) &&
-      Date.now() >= cooldownEndMs
+      chainTime >= cooldownEndMs
     );
   },
 
-  canVote: (batch: StakingBatchRaw): boolean => {
+  canVote: (batch: StakingBatchRaw, chainTime: number): boolean => {
     return (
-      !stakingBatchHelpers.isVoting(batch) &&
+      !stakingBatchHelpers.isVoting(batch, chainTime) &&
       !stakingBatchHelpers.isCooldownRequested(batch)
     );
   },
 
-  isVoting: (batch: StakingBatchRaw): boolean => {
+  isVoting: (batch: StakingBatchRaw, chainTime: number): boolean => {
     const votingUntilMs = Number(batch.content.fields.voting_until_ms);
-    return votingUntilMs > 0 && votingUntilMs > Date.now();
+    return votingUntilMs > 0 && votingUntilMs > chainTime;
   },
 
-  getDaysSinceStart: (batch: StakingBatchRaw): number => {
+  getDaysSinceStart: (batch: StakingBatchRaw, chainTime: number): number => {
     const startMs = Number(batch.content.fields.start_ms);
-    return Math.round((Date.now() - startMs) / DAY_MS);
+    return Math.round((chainTime - startMs) / DAY_MS);
   },
 
   getLockDurationDays: (batch: StakingBatchRaw): number => {
@@ -54,7 +54,7 @@ export const stakingBatchHelpers = {
   },
 
   // Mirrors batch::power() in Move contract
-  calculateVotingPower: (batch: StakingBatchRaw): bigint => {
+  calculateVotingPower: (batch: StakingBatchRaw, chainTime: number): bigint => {
     const balance = BigInt(batch.content.fields.balance);
     const startMs = Number(batch.content.fields.start_ms);
     const unlockMs = Number(batch.content.fields.unlock_ms);
@@ -72,7 +72,7 @@ export const stakingBatchHelpers = {
     let totalMonths = lockMonths;
 
     // Add months from staking (if any)
-    const now = Date.now();
+    const now = chainTime;
     if (now > unlockMs) {
       const stakingMs = now - unlockMs;
       const stakingMonths = Math.floor(stakingMs / MONTH_MS);
