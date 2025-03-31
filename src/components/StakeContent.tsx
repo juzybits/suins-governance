@@ -181,10 +181,7 @@ function PanelBatches({
 function CardBatch({ batch }: { batch: StakingBatch }) {
   const [modalAction, setModalAction] = useState<BatchAction | null>(null);
 
-  const onBtnClick = (
-    action: BatchAction,
-    event: React.MouseEvent
-  ) => {
+  const onBtnClick = (action: BatchAction, event: React.MouseEvent) => {
     event.stopPropagation();
     setModalAction(action);
   };
@@ -214,21 +211,28 @@ function CardBatch({ batch }: { batch: StakingBatch }) {
   };
 
   const batchActions = (() => {
-    if (batch.isStaked && !batch.isCooldownRequested) {
-      return (
-        <>
+    if (batch.isStaked) {
+      let extraBtn: React.ReactNode = null;
+      if (!batch.isCooldownRequested) {
+        extraBtn = (
           <button onClick={(e) => onBtnClick("requestUnstake", e)}>
             Request Unstake
           </button>
+        );
+      }
+      if (batch.isCooldownOver) {
+        extraBtn = (
+          <button onClick={(e) => onBtnClick("unstake", e)}>Unstake Now</button>
+        );
+      }
+      return (
+        <>
+          {extraBtn}
           <button onClick={(e) => onBtnClick("lock", e)}>Lock</button>
         </>
       );
     }
-    if (batch.isStaked && batch.isCooldownOver) {
-      return (
-        <button onClick={(e) => onBtnClick("unstake", e)}>Unstake Now</button>
-      );
-    }
+
     if (batch.isLocked && batch.lockDurationDays < MAX_LOCK_DURATION_DAYS) {
       return (
         <button onClick={(e) => onBtnClick("lock", e)}>Extend Lock</button>

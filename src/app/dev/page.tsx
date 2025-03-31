@@ -94,10 +94,9 @@ function DevContent({
   };
 
   const onDistributeRewards = async () => {
-    const proposalId = "0xf8f352fcade94f09570f6a3d48c5d05abd25f970dc8cc68e139e7732c6dc14af";
     try {
       const digest = await distributeRewards({
-        proposalId,
+        proposalId: formData.proposalId,
       });
       console.debug("[onDistributeRewards] success:", digest);
     } catch (error) {
@@ -262,7 +261,7 @@ export function useCreateProposalMutation(
 
       const resp = await executeAndWaitTx(tx);
 
-      let proposalV2Type = `${SUINS_PACKAGES[NETWORK].votingPkgId}::proposal_v2::ProposalV2`;
+      const proposalV2Type = `${SUINS_PACKAGES[NETWORK].votingPkgId}::proposal_v2::ProposalV2`;
       let proposalId: null | string = null;
       for (const obj of resp.objectChanges ?? []) {
         if (obj.type === "created" && obj.objectType === proposalV2Type) {
@@ -318,8 +317,8 @@ function useDistributeRewardsMutation(
         queryClient.invalidateQueries({
           queryKey: ["owned-staking-batches"],
         }),
-    ]);
-  },
+      ]);
+    },
     ...mutationOptions,
   });
 }
