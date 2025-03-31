@@ -6,15 +6,40 @@ export const proposalV1Schema = z
     type: z.string(),
     hasPublicTransfer: z.boolean(),
     fields: z.object({
-      description: z.string(),
-      end_time_ms: z.string(),
       id: z.object({
         id: z.string(),
       }),
+      description: z.string(),
+      end_time_ms: z.string(),
       serial_no: z.string(),
       start_time_ms: z.string(),
       threshold: z.string(),
       title: z.string(),
+      votes: z.object({
+        type: z.string(),
+        fields: z.object({
+          contents: z.array(
+            z.object({
+              type: z.string(),
+              fields: z.object({
+                key: z.object({
+                  type: z.string(),
+                  fields: z.record(z.string(), z.string()),
+                }),
+                value: z.string(),
+              }),
+            }),
+          ),
+        }),
+      }),
+      winning_option: z
+        .object({
+          type: z.string(),
+          fields: z.object({
+            pos0: z.string(),
+          }),
+        })
+        .nullable(),
       vote_leaderboards: z.object({
         type: z.string(),
         fields: z.object({
@@ -43,23 +68,6 @@ export const proposalV1Schema = z
           ),
         }),
       }),
-      votes: z.object({
-        type: z.string(),
-        fields: z.object({
-          contents: z.array(
-            z.object({
-              type: z.string(),
-              fields: z.object({
-                key: z.object({
-                  type: z.string(),
-                  fields: z.record(z.string(), z.string()),
-                }),
-                value: z.string(),
-              }),
-            }),
-          ),
-        }),
-      }),
       voters: z.object({
         type: z.string(),
         fields: z.object({
@@ -71,14 +79,6 @@ export const proposalV1Schema = z
           tail: z.string().nullable(),
         }),
       }),
-      winning_option: z
-        .object({
-          type: z.string(),
-          fields: z.object({
-            pos0: z.string(),
-          }),
-        })
-        .nullable(),
     }),
   })
   .transform((data) => ({

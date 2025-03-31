@@ -6,29 +6,15 @@ export const proposalV2Schema = z
     type: z.string(),
     hasPublicTransfer: z.boolean(),
     fields: z.object({
-      description: z.string(),
-      end_time_ms: z.string(),
       id: z.object({
         id: z.string(),
       }),
+      description: z.string(),
+      end_time_ms: z.string(),
       serial_no: z.string(),
       start_time_ms: z.string(),
       threshold: z.string(),
       title: z.string(),
-      reward: z.string(),
-      total_power: z.string(),
-      total_reward: z.string(),
-      batch_powers: z.object({
-        type: z.string(),
-        fields: z.object({
-          head: z.string().nullable(),
-          id: z.object({
-            id: z.string(),
-          }),
-          size: z.string(),
-          tail: z.string().nullable(),
-        }),
-      }),
       votes: z.object({
         type: z.string(),
         fields: z.object({
@@ -48,17 +34,14 @@ export const proposalV2Schema = z
           ),
         }),
       }),
-      voters: z.object({
-        type: z.string(),
-        fields: z.object({
-          head: z.string().nullable(),
-          id: z.object({
-            id: z.string(),
+      winning_option: z
+        .object({
+          type: z.string(),
+          fields: z.object({
+            pos0: z.string(),
           }),
-          size: z.string(),
-          tail: z.string().nullable(),
-        }),
-      }),
+        })
+        .nullable(),
       vote_leaderboards: z.object({
         type: z.string(),
         fields: z.object({
@@ -75,7 +58,7 @@ export const proposalV2Schema = z
                 value: z.object({
                   type: z.string(),
                   fields: z.object({
-                    entries: z.array(z.any()),
+                    entries: z.array(z.any()), // TODO
                     max_size: z.string(),
                   }),
                 }),
@@ -84,14 +67,31 @@ export const proposalV2Schema = z
           ),
         }),
       }),
-      winning_option: z
-        .object({
-          type: z.string(),
-          fields: z.object({
-            pos0: z.string(),
+      voters: z.object({
+        type: z.string(),
+        fields: z.object({
+          head: z.string().nullable(),
+          id: z.object({
+            id: z.string(),
           }),
-        })
-        .nullable(),
+          size: z.string(),
+          tail: z.string().nullable(),
+        }),
+      }),
+      reward: z.string(),
+      total_reward: z.string(),
+      total_power: z.string(),
+      batch_powers: z.object({
+        type: z.string(),
+        fields: z.object({
+          head: z.string().nullable(),
+          id: z.object({
+            id: z.string(),
+          }),
+          size: z.string(),
+          tail: z.string().nullable(),
+        }),
+      }),
     }),
   })
   .transform((data) => ({
