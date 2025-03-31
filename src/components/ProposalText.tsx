@@ -11,7 +11,6 @@ import { isPast } from "date-fns";
 import { formatContractText } from "@/utils/formatContractText";
 import { ContentBlockParser } from "./ui/ContentBlockParser";
 
-// TODO: Add hook to fetch proposal data
 export function ProposalText({ proposalId }: { proposalId: string }) {
   const isSmallOrAbove = useBreakpoint("sm");
   const [isExpanded, setIsExpanded] = useState(false);
