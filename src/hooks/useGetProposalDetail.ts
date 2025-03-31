@@ -3,13 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { client } from "@/app/SuinsClient";
 import { CoinFormat, formatBalance } from "@/utils/coins";
 import { NS_COINTYPE_DECIMAL_PLACES } from "@/constants/common";
-import {
-  proposalDetailSchema,
-  proposalV2DetailSchema,
-} from "@/schemas/proposalResponseSchema";
+import { proposalV1Schema } from "@/schemas/proposalV1Schema";
+import { proposalV2Schema } from "@/schemas/proposalV2Schema";
 import { getProposalVersionFromType } from "@/utils/getProposalVersionFromType";
 
-type ProposalDataType = z.infer<typeof proposalDetailSchema>;
+type ProposalDataType = z.infer<typeof proposalV1Schema>;
 
 type TopVotes =
   ProposalDataType["fields"]["vote_leaderboards"]["fields"]["contents"];
@@ -165,8 +163,8 @@ export function useGetProposalDetail({ proposalId }: { proposalId: string }) {
       const version = getProposalVersionFromType(resp?.data?.type ?? "");
       const objDetail =
         version === 1
-          ? proposalDetailSchema.safeParse(resp?.data?.content)
-          : proposalV2DetailSchema.safeParse(resp?.data?.content);
+          ? proposalV1Schema.safeParse(resp?.data?.content)
+          : proposalV2Schema.safeParse(resp?.data?.content);
 
       if (objDetail.error) {
         throw new Error("Invalid proposal detail");

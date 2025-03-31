@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { type z } from "zod";
 import { client } from "@/app/SuinsClient";
 import { votesCastedSchema } from "@/schemas/votesCastedSchema";
-import { proposalDetailSchema } from "@/schemas/proposalResponseSchema";
+import { proposalV1Schema } from "@/schemas/proposalV1Schema";
 
 type ParsedVotes = z.infer<typeof votesCastedSchema>;
 
@@ -114,7 +114,7 @@ export function useGetVoteCasted({
         },
       });
 
-      const data = proposalDetailSchema.safeParse(response?.data?.content);
+      const data = proposalV1Schema.safeParse(response?.data?.content);
       if (data.error) {
         throw new Error("Invalid proposal detail");
       }

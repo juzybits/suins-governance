@@ -2,7 +2,7 @@ import { client } from "@/app/SuinsClient";
 import { useQuery } from "@tanstack/react-query";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { NETWORK } from "@/constants/env";
-import { governanceSchema } from "@/schemas/proposalResponseSchema";
+import { governanceSchema } from "@/schemas/governanceSchema";
 import isFuture from "date-fns/isFuture";
 
 // TODO: We need to update this so that we can paginate the proposals, This works for the first 20 proposals
