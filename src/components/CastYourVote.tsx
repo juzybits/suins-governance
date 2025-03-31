@@ -23,6 +23,9 @@ import { useEffect } from "react";
 
 const VOTE_OPTIONS = ["Yes", "No", "Abstain"] as const;
 
+/**
+ * @deprecated Use `CastYourVoteV2` instead.
+ */
 export function CastYourVote({ proposalId }: { proposalId: string }) {
   const currentAccount = useCurrentAccount();
   const { isConnecting, isDisconnected } = useCurrentWallet();

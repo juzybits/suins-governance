@@ -40,7 +40,7 @@ export type Batch = BatchRaw & {
 
 export const enrichRawBatch = (raw: BatchRaw): Batch => {
   // Calculate derived data
-  const chainTime = Date.now(); // TODO
+  const chainTime = Date.now(); // TODO-J
   const balanceNS = BigInt(raw.content.fields.balance);
   const votingPower = batchHelpers.calculateVotingPower(raw, chainTime);
   const daysSinceStart = batchHelpers.getDaysSinceStart(raw, chainTime);

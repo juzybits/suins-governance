@@ -25,6 +25,9 @@ type VotingRequest = {
   vote: "Yes" | "No" | "Abstain";
 };
 
+/**
+ * @deprecated Use `useVoteV2Mutation` instead.
+ */
 export function useVoteMutation(
   mutationOptions?: Omit<
     UseMutationOptions<string, Error, VotingRequest>,
@@ -56,7 +59,6 @@ export function useVoteMutation(
         ) || [];
       const primaryCoinInput = txb.object(primaryCoin!.coinObjectId);
       if (mergeCoins.length) {
-        // TODO: This could just merge a subset of coins that meet the balance requirements instead of all of them.
         txb.mergeCoins(
           primaryCoinInput,
           mergeCoins.map((coin) => txb.object(coin.coinObjectId)),

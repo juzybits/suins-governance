@@ -12,7 +12,7 @@ const headingStyles = cva(["font-sans"], {
      */
     size: {
       H1: "md:text-2024_h1-super-88 text-2024_h3-super-48",
-      //TODO: verify mobile size for h2
+      // TODO: verify mobile size for h2
       H2: "md:text-2024_h2-super-76 text-2024_h3-super-48",
       H3: "md:text-2024_h3-super-48 text-2024_h5-extrabold-32",
       H4: "text-2024_h4-super-36",

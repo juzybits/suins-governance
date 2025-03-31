@@ -45,7 +45,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
   } = useVoteV2Mutation({
     onError: (error) => {
       console.warn("[CastYourVoteV2] error:", error);
-      toast.error(error.message); // TODO parse error and show user-friendly message
+      toast.error(error.message); // TODO-J parse error and show user-friendly message
     },
   });
 

@@ -21,13 +21,11 @@ export const SUINS_PACKAGES = {
     // DEMO Coin Type
     coinType:
       "0xe3c2291f345d6dd96855e0f9415e58fd981cf95fd18331f0fb899d91a8969293::ns::NS",
-    // todo: update token object id
     votingTokenType:
       "0x2df7fb6fce94faeb1fb819d51f73fe4549e5d6f827828a641b2806a6dbf2d21b::token::TOKEN",
     faucet:
       "0xf6d7f2d00a2521f75fcbce03df5dd0d71887287a78296c3d786f36238122f8c9",
   },
-  //TODO: update mainnet votingPkgId
   mainnet: {
     votingPkgId:
       "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41",
@@ -36,7 +34,7 @@ export const SUINS_PACKAGES = {
     stakingConfigId: "",
     coinType:
       "0x5145494a5f5100e645e4b0aa950fa6b68f614e8c59e17bc5ded3495123a79178::ns::NS",
-    // TODO: unify with coinType
+    // TODO-J: unify with coinType
     votingTokenType:
       "0x5145494a5f5100e645e4b0aa950fa6b68f614e8c59e17bc5ded3495123a79178::ns::NS",
     // No faucet for mainnet

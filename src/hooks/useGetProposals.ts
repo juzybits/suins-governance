@@ -5,7 +5,7 @@ import { NETWORK } from "@/constants/env";
 import { governanceSchema } from "@/schemas/governanceSchema";
 import isFuture from "date-fns/isFuture";
 
-// TODO: We need to update this so that we can paginate the proposals, This works for the first 20 proposals
+// TODO: support pagination
 export function useGetProposalsIds() {
   return useQuery({
     queryKey: ["governanceObject-dynamic-fields-objects"],
