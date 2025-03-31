@@ -38,19 +38,18 @@ export type Batch = BatchRaw & {
 
 // === functions ===
 
-export const enrichRawBatch = (raw: BatchRaw): Batch => {
+export const enrichRawBatch = (raw: BatchRaw, networkTime: number): Batch => {
   // Calculate derived data
-  const chainTime = Date.now(); // TODO-J
   const balanceNS = BigInt(raw.content.fields.balance);
-  const votingPower = batchHelpers.calculateVotingPower(raw, chainTime);
-  const daysSinceStart = batchHelpers.getDaysSinceStart(raw, chainTime);
+  const votingPower = batchHelpers.calculateVotingPower(raw, networkTime);
+  const daysSinceStart = batchHelpers.getDaysSinceStart(raw, networkTime);
   const lockDurationDays = batchHelpers.getLockDurationDays(raw);
-  const isLocked = batchHelpers.isLocked(raw, chainTime);
+  const isLocked = batchHelpers.isLocked(raw, networkTime);
   const isStaked = !isLocked;
   const isCooldownRequested = batchHelpers.isCooldownRequested(raw);
-  const isCooldownOver = batchHelpers.isCooldownOver(raw, chainTime);
-  const isVoting = batchHelpers.isVoting(raw, chainTime);
-  const canVote = batchHelpers.canVote(raw, chainTime);
+  const isCooldownOver = batchHelpers.isCooldownOver(raw, networkTime);
+  const isVoting = batchHelpers.isVoting(raw, networkTime);
+  const canVote = batchHelpers.canVote(raw, networkTime);
 
   // Convert timestamps to Date objects
   const startDate = new Date(Number(raw.content.fields.start_ms));
@@ -78,9 +77,9 @@ export const enrichRawBatch = (raw: BatchRaw): Batch => {
 };
 
 export const batchHelpers = {
-  isLocked: (batch: BatchRaw, chainTime: number): boolean => {
+  isLocked: (batch: BatchRaw, networkTime: number): boolean => {
     const unlockMs = Number(batch.content.fields.unlock_ms);
-    return unlockMs > chainTime;
+    return unlockMs > networkTime;
   },
 
   isCooldownRequested: (batch: BatchRaw): boolean => {
@@ -88,29 +87,29 @@ export const batchHelpers = {
     return cooldownEndMs > 0;
   },
 
-  isCooldownOver: (batch: BatchRaw, chainTime: number): boolean => {
+  isCooldownOver: (batch: BatchRaw, networkTime: number): boolean => {
     const cooldownEndMs = Number(batch.content.fields.cooldown_end_ms);
     return (
       batchHelpers.isCooldownRequested(batch) &&
-      chainTime >= cooldownEndMs
+      networkTime >= cooldownEndMs
     );
   },
 
-  canVote: (batch: BatchRaw, chainTime: number): boolean => {
+  canVote: (batch: BatchRaw, networkTime: number): boolean => {
     return (
-      !batchHelpers.isVoting(batch, chainTime) &&
+      !batchHelpers.isVoting(batch, networkTime) &&
       !batchHelpers.isCooldownRequested(batch)
     );
   },
 
-  isVoting: (batch: BatchRaw, chainTime: number): boolean => {
+  isVoting: (batch: BatchRaw, networkTime: number): boolean => {
     const votingUntilMs = Number(batch.content.fields.voting_until_ms);
-    return votingUntilMs > 0 && votingUntilMs > chainTime;
+    return votingUntilMs > 0 && votingUntilMs > networkTime;
   },
 
-  getDaysSinceStart: (batch: BatchRaw, chainTime: number): number => {
+  getDaysSinceStart: (batch: BatchRaw, networkTime: number): number => {
     const startMs = Number(batch.content.fields.start_ms);
-    return Math.round((chainTime - startMs) / DAY_MS);
+    return Math.round((networkTime - startMs) / DAY_MS);
   },
 
   getLockDurationDays: (batch: BatchRaw): number => {
@@ -120,7 +119,7 @@ export const batchHelpers = {
   },
 
   // Mirrors batch::power() in Move contract
-  calculateVotingPower: (batch: BatchRaw, chainTime: number): bigint => {
+  calculateVotingPower: (batch: BatchRaw, networkTime: number): bigint => {
     const balance = BigInt(batch.content.fields.balance);
     const startMs = Number(batch.content.fields.start_ms);
     const unlockMs = Number(batch.content.fields.unlock_ms);
@@ -138,7 +137,7 @@ export const batchHelpers = {
     let totalMonths = lockMonths;
 
     // Add months from staking (if any)
-    const now = chainTime;
+    const now = networkTime;
     if (now > unlockMs) {
       const stakingMs = now - unlockMs;
       const stakingMonths = Math.floor(stakingMs / MONTH_MS);
