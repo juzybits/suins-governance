@@ -1,5 +1,5 @@
 import { type z } from "zod";
-import { type stakingBatchSchema } from "./stakingBatchSchema";
+import { type batchSchema } from "../schemas/batchSchema";
 
 // === constants ===
 // WARNING: these must be kept in sync with the StakingConfig Sui object.
@@ -15,9 +15,9 @@ export const MAX_LOCK_DURATION_DAYS = MAX_LOCK_MONTHS * 30;
 
 // === types ===
 
-export type StakingBatchRaw = z.infer<typeof stakingBatchSchema>;
+export type BatchRaw = z.infer<typeof batchSchema>;
 
-export type StakingBatch = StakingBatchRaw & {
+export type Batch = BatchRaw & {
   // Derived data
   balanceNS: bigint;
   votingPower: bigint;
@@ -38,19 +38,19 @@ export type StakingBatch = StakingBatchRaw & {
 
 // === functions ===
 
-export const enrichRawBatch = (raw: StakingBatchRaw): StakingBatch => {
+export const enrichRawBatch = (raw: BatchRaw): Batch => {
   // Calculate derived data
   const chainTime = Date.now(); // TODO
   const balanceNS = BigInt(raw.content.fields.balance);
-  const votingPower = stakingBatchHelpers.calculateVotingPower(raw, chainTime);
-  const daysSinceStart = stakingBatchHelpers.getDaysSinceStart(raw, chainTime);
-  const lockDurationDays = stakingBatchHelpers.getLockDurationDays(raw);
-  const isLocked = stakingBatchHelpers.isLocked(raw, chainTime);
+  const votingPower = batchHelpers.calculateVotingPower(raw, chainTime);
+  const daysSinceStart = batchHelpers.getDaysSinceStart(raw, chainTime);
+  const lockDurationDays = batchHelpers.getLockDurationDays(raw);
+  const isLocked = batchHelpers.isLocked(raw, chainTime);
   const isStaked = !isLocked;
-  const isCooldownRequested = stakingBatchHelpers.isCooldownRequested(raw);
-  const isCooldownOver = stakingBatchHelpers.isCooldownOver(raw, chainTime);
-  const isVoting = stakingBatchHelpers.isVoting(raw, chainTime);
-  const canVote = stakingBatchHelpers.canVote(raw, chainTime);
+  const isCooldownRequested = batchHelpers.isCooldownRequested(raw);
+  const isCooldownOver = batchHelpers.isCooldownOver(raw, chainTime);
+  const isVoting = batchHelpers.isVoting(raw, chainTime);
+  const canVote = batchHelpers.canVote(raw, chainTime);
 
   // Convert timestamps to Date objects
   const startDate = new Date(Number(raw.content.fields.start_ms));
@@ -77,50 +77,50 @@ export const enrichRawBatch = (raw: StakingBatchRaw): StakingBatch => {
   };
 };
 
-export const stakingBatchHelpers = {
-  isLocked: (batch: StakingBatchRaw, chainTime: number): boolean => {
+export const batchHelpers = {
+  isLocked: (batch: BatchRaw, chainTime: number): boolean => {
     const unlockMs = Number(batch.content.fields.unlock_ms);
     return unlockMs > chainTime;
   },
 
-  isCooldownRequested: (batch: StakingBatchRaw): boolean => {
+  isCooldownRequested: (batch: BatchRaw): boolean => {
     const cooldownEndMs = Number(batch.content.fields.cooldown_end_ms);
     return cooldownEndMs > 0;
   },
 
-  isCooldownOver: (batch: StakingBatchRaw, chainTime: number): boolean => {
+  isCooldownOver: (batch: BatchRaw, chainTime: number): boolean => {
     const cooldownEndMs = Number(batch.content.fields.cooldown_end_ms);
     return (
-      stakingBatchHelpers.isCooldownRequested(batch) &&
+      batchHelpers.isCooldownRequested(batch) &&
       chainTime >= cooldownEndMs
     );
   },
 
-  canVote: (batch: StakingBatchRaw, chainTime: number): boolean => {
+  canVote: (batch: BatchRaw, chainTime: number): boolean => {
     return (
-      !stakingBatchHelpers.isVoting(batch, chainTime) &&
-      !stakingBatchHelpers.isCooldownRequested(batch)
+      !batchHelpers.isVoting(batch, chainTime) &&
+      !batchHelpers.isCooldownRequested(batch)
     );
   },
 
-  isVoting: (batch: StakingBatchRaw, chainTime: number): boolean => {
+  isVoting: (batch: BatchRaw, chainTime: number): boolean => {
     const votingUntilMs = Number(batch.content.fields.voting_until_ms);
     return votingUntilMs > 0 && votingUntilMs > chainTime;
   },
 
-  getDaysSinceStart: (batch: StakingBatchRaw, chainTime: number): number => {
+  getDaysSinceStart: (batch: BatchRaw, chainTime: number): number => {
     const startMs = Number(batch.content.fields.start_ms);
     return Math.round((chainTime - startMs) / DAY_MS);
   },
 
-  getLockDurationDays: (batch: StakingBatchRaw): number => {
+  getLockDurationDays: (batch: BatchRaw): number => {
     const startMs = Number(batch.content.fields.start_ms);
     const unlockMs = Number(batch.content.fields.unlock_ms);
     return Math.round((unlockMs - startMs) / DAY_MS);
   },
 
   // Mirrors batch::power() in Move contract
-  calculateVotingPower: (batch: StakingBatchRaw, chainTime: number): bigint => {
+  calculateVotingPower: (batch: BatchRaw, chainTime: number): bigint => {
     const balance = BigInt(batch.content.fields.balance);
     const startMs = Number(batch.content.fields.start_ms);
     const unlockMs = Number(batch.content.fields.unlock_ms);

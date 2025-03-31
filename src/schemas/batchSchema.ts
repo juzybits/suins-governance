@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const stakingBatchSchema = z.object({
+export const batchSchema = z.object({
   objectId: z.string(),
   version: z.string(),
   digest: z.string(),

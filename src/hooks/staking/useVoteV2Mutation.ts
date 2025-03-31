@@ -64,7 +64,7 @@ export function useVoteV2Mutation(
           queryKey: ["vote-casted-by-id"],
         }),
         queryClient.invalidateQueries({
-          queryKey: ["owned-staking-batches"],
+          queryKey: ["owned-batches"],
         }),
       ]);
     },

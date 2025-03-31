@@ -316,7 +316,7 @@ function useDistributeRewardsMutation(
           queryKey: [NETWORK, "getBalance"],
         }),
         queryClient.invalidateQueries({
-          queryKey: ["owned-staking-batches"],
+          queryKey: ["owned-batches"],
         }),
       ]);
     },

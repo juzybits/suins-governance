@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { type StakingBatch } from "@/schemas/StakingBatch";
+import { type Batch } from "@/types/Batch";
 import {
   type StakeRequest,
   useStakeOrLockMutation,
@@ -16,10 +16,7 @@ import {
 } from "@/hooks/staking/useRequestUnstakeMutation";
 import { toast } from "sonner";
 import { formatNSBalance } from "@/utils/formatNumber";
-import {
-  MAX_LOCK_DURATION_DAYS,
-  stakingBatchHelpers,
-} from "@/schemas/StakingBatch";
+import { MAX_LOCK_DURATION_DAYS, batchHelpers } from "@/types/Batch";
 import { parseNSAmount } from "@/utils/parseAmount";
 import {
   type UnstakeRequest,
@@ -31,7 +28,7 @@ import {
   MonthSelector,
 } from "@/components/ui/dummy-ui/dummy-ui";
 import Loader from "@/components/ui/Loader";
-import { useGetStakingBatches } from "@/hooks/staking/useGetStakingBatches";
+import { useGetBatches } from "@/hooks/staking/useGetBatches";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { useGetBalance } from "@/hooks/useGetBalance";
@@ -56,7 +53,7 @@ export function StakeContent() {
   });
   const availableNS = balance.data ? BigInt(balance.data.totalBalance) : 0n;
 
-  const batches = useGetStakingBatches(currAcct?.address);
+  const batches = useGetBatches(currAcct?.address);
   const batchesData = batches.data ?? [];
   const stakingData = useMemo((): StakingData => {
     let lockedNS = 0n;
@@ -135,7 +132,7 @@ function PanelBatches({
   batches,
 }: {
   availableNS: bigint;
-  batches: StakingBatch[];
+  batches: Batch[];
 }) {
   const [modalAction, setModalAction] = useState<null | "stake" | "lock">(null);
 
@@ -178,7 +175,7 @@ function PanelBatches({
   );
 }
 
-function CardBatch({ batch }: { batch: StakingBatch }) {
+function CardBatch({ batch }: { batch: Batch }) {
   const [modalAction, setModalAction] = useState<BatchAction | null>(null);
 
   const onBtnClick = (action: BatchAction, event: React.MouseEvent) => {
@@ -310,7 +307,7 @@ function ModalStakeOrLockNewBatch({
     setMonths(action === "lock" ? 1 : 0);
   }, [action]);
 
-  const votes = stakingBatchHelpers.calculateLockedVotingPower({
+  const votes = batchHelpers.calculateLockedVotingPower({
     balance: parseNSAmount(amount),
     lockMonths: months,
   });
@@ -381,7 +378,7 @@ function ModalViewBatch({
   batch,
   onClose,
 }: {
-  batch: StakingBatch;
+  batch: Batch;
   onClose: () => void;
 }) {
   return (
@@ -412,7 +409,7 @@ function ModalLockBatch({
   batch,
   onClose,
 }: {
-  batch: StakingBatch;
+  batch: Batch;
   onClose: () => void;
 }) {
   const lockMutation = useLockMutation();
@@ -430,7 +427,7 @@ function ModalLockBatch({
 
   const [months, setMonths] = useState(1);
 
-  const votes = stakingBatchHelpers.calculateLockedVotingPower({
+  const votes = batchHelpers.calculateLockedVotingPower({
     balance: batch.balanceNS,
     lockMonths: months,
   });
@@ -478,7 +475,7 @@ function ModalRequestUnstakeBatch({
   batch,
   onClose,
 }: {
-  batch: StakingBatch;
+  batch: Batch;
   onClose: () => void;
 }) {
   const requestUnstakeMutation = useRequestUnstakeMutation();
@@ -519,7 +516,7 @@ function ModalUnstakeBatch({
   batch,
   onClose,
 }: {
-  batch: StakingBatch;
+  batch: Batch;
   onClose: () => void;
 }) {
   const unstakeMutation = useUnstakeMutation();
