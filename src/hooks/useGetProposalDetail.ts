@@ -7,7 +7,9 @@ import { proposalV1Schema } from "@/schemas/proposalV1Schema";
 import { proposalV2Schema } from "@/schemas/proposalV2Schema";
 import { getProposalVersionFromType } from "@/utils/getProposalVersionFromType";
 
-type ProposalDataType = z.infer<typeof proposalV1Schema>;
+type ProposalDataType =
+  | z.infer<typeof proposalV1Schema>
+  | z.infer<typeof proposalV2Schema>;
 
 type TopVotes =
   ProposalDataType["fields"]["vote_leaderboards"]["fields"]["contents"];
@@ -22,7 +24,7 @@ export function getTopVotersByVoteType(data: TopVotes) {
   return data.reduce((acc, entry) => {
     const voteType = entry.fields.key.fields.pos0 as VoteType;
     const entries = entry.fields.value.fields.entries.map((entry) => ({
-      address: entry.fields.pos0!,
+      address: entry.fields.pos0,
       votes: Number(entry.fields.pos1 ?? 0),
     }));
     acc.set(voteType, entries);
@@ -92,7 +94,7 @@ export function parseProposalVotes(data: ProposalDataType) {
     if (typeof fieldName !== "string") {
       continue;
     }
-    const option = keyFields[fieldName];
+    const option = keyFields.pos0;
     const value = parseInt(entry.fields.value, 10);
 
     // Set the proposal field name if it hasn't been set yet
@@ -120,7 +122,7 @@ export function parseProposalVotes(data: ProposalDataType) {
     }
   }
 
-  return {
+  const votes = {
     proposal: proposalFieldName,
     yesVote: Number(
       formatBalance({
@@ -144,6 +146,8 @@ export function parseProposalVotes(data: ProposalDataType) {
       }).replace(/,/g, ""),
     ),
   };
+
+  return votes;
 }
 
 export function useGetProposalDetail({ proposalId }: { proposalId: string }) {

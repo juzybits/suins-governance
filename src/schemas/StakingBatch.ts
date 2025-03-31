@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { stakingBatchSchema } from "./stakingBatchSchema";
+import { type z } from "zod";
+import { type stakingBatchSchema } from "./stakingBatchSchema";
 
 // === constants ===
 // WARNING: these must be kept in sync with the StakingConfig Sui object.
@@ -19,21 +19,21 @@ export type StakingBatchRaw = z.infer<typeof stakingBatchSchema>;
 
 export type StakingBatch = StakingBatchRaw & {
   // Derived data
-balanceNS: bigint;
-votingPower: bigint;
-votingMultiplier: number;
-daysSinceStart: number;
-lockDurationDays: number;
-isLocked: boolean;
-isStaked: boolean;
-isCooldownRequested: boolean;
-isCooldownOver: boolean;
-isVoting: boolean;
-canVote: boolean;
-// Human-readable dates
-startDate: Date;
-unlockDate: Date;
-cooldownEndDate: Date | null;
+  balanceNS: bigint;
+  votingPower: bigint;
+  votingMultiplier: number;
+  daysSinceStart: number;
+  lockDurationDays: number;
+  isLocked: boolean;
+  isStaked: boolean;
+  isCooldownRequested: boolean;
+  isCooldownOver: boolean;
+  isVoting: boolean;
+  canVote: boolean;
+  // Human-readable dates
+  startDate: Date;
+  unlockDate: Date;
+  cooldownEndDate: Date | null;
 };
 
 // === functions ===
@@ -44,12 +44,10 @@ export const enrichRawBatch = (raw: StakingBatchRaw): StakingBatch => {
   const balanceNS = BigInt(raw.content.fields.balance);
   const votingPower = stakingBatchHelpers.calculateVotingPower(raw, chainTime);
   const daysSinceStart = stakingBatchHelpers.getDaysSinceStart(raw, chainTime);
-  const lockDurationDays =
-    stakingBatchHelpers.getLockDurationDays(raw);
+  const lockDurationDays = stakingBatchHelpers.getLockDurationDays(raw);
   const isLocked = stakingBatchHelpers.isLocked(raw, chainTime);
   const isStaked = !isLocked;
-  const isCooldownRequested =
-    stakingBatchHelpers.isCooldownRequested(raw);
+  const isCooldownRequested = stakingBatchHelpers.isCooldownRequested(raw);
   const isCooldownOver = stakingBatchHelpers.isCooldownOver(raw, chainTime);
   const isVoting = stakingBatchHelpers.isVoting(raw, chainTime);
   const canVote = stakingBatchHelpers.canVote(raw, chainTime);
@@ -58,8 +56,7 @@ export const enrichRawBatch = (raw: StakingBatchRaw): StakingBatch => {
   const startDate = new Date(Number(raw.content.fields.start_ms));
   const unlockDate = new Date(Number(raw.content.fields.unlock_ms));
   const cooldownEndMs = Number(raw.content.fields.cooldown_end_ms);
-  const cooldownEndDate =
-    cooldownEndMs > 0 ? new Date(cooldownEndMs) : null;
+  const cooldownEndDate = cooldownEndMs > 0 ? new Date(cooldownEndMs) : null;
 
   return {
     ...raw,
@@ -78,7 +75,7 @@ export const enrichRawBatch = (raw: StakingBatchRaw): StakingBatch => {
     unlockDate,
     cooldownEndDate,
   };
-}
+};
 
 export const stakingBatchHelpers = {
   isLocked: (batch: StakingBatchRaw, chainTime: number): boolean => {

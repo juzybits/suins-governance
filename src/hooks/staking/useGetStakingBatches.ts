@@ -4,7 +4,7 @@ import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { NETWORK } from "@/constants/env";
 import { stakingBatchSchema } from "@/schemas/stakingBatchSchema";
 import { enrichRawBatch, stakingBatchHelpers } from "@/schemas/StakingBatch";
-import { StakingBatch } from "@/schemas/StakingBatch";
+import { type StakingBatch } from "@/schemas/StakingBatch";
 
 export function useGetStakingBatches(owner: string | undefined) {
   return useQuery({
@@ -48,7 +48,6 @@ export function useGetStakingBatches(owner: string | undefined) {
 
           const enrichedBatch = enrichRawBatch(parsedBatch.data);
           batches.push(enrichedBatch);
-
         } catch (error) {
           console.warn(
             "[useGetStakingBatches] Error processing staking batch:",

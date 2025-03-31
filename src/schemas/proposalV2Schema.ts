@@ -51,14 +51,20 @@ export const proposalV2Schema = z
               fields: z.object({
                 key: z.object({
                   type: z.string(),
-                  fields: z.object({
-                    pos0: z.string(),
-                  }),
+                  fields: z.object({ pos0: z.string() }),
                 }),
                 value: z.object({
                   type: z.string(),
                   fields: z.object({
-                    entries: z.array(z.any()), // TODO
+                    entries: z.array(
+                      z.object({
+                        type: z.string(),
+                        fields: z.object({
+                          pos0: z.string(),
+                          pos1: z.string(),
+                        }),
+                      }),
+                    ),
                     max_size: z.string(),
                   }),
                 }),
