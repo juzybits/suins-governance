@@ -22,5 +22,3 @@ export const stakingBatchSchema = z.object({
     }),
   }),
 });
-
-export type StakingBatchRaw = z.infer<typeof stakingBatchSchema>;

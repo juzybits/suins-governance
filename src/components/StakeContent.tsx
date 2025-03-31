@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { type StakingBatch } from "@/hooks/staking/useGetStakingBatches";
+import { type StakingBatch } from "@/schemas/StakingBatch";
 import {
   type StakeRequest,
   useStakeOrLockMutation,
@@ -19,7 +19,7 @@ import { formatNSBalance } from "@/utils/formatNumber";
 import {
   MAX_LOCK_DURATION_DAYS,
   stakingBatchHelpers,
-} from "@/utils/stakingBatchHelpers";
+} from "@/schemas/StakingBatch";
 import { parseNSAmount } from "@/utils/parseAmount";
 import {
   type UnstakeRequest,

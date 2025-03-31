@@ -2,30 +2,9 @@ import { client } from "@/app/SuinsClient";
 import { useQuery } from "@tanstack/react-query";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { NETWORK } from "@/constants/env";
-import {
-  stakingBatchSchema,
-  type StakingBatchRaw,
-} from "@/schemas/stakingBatchSchema";
-import { stakingBatchHelpers } from "@/utils/stakingBatchHelpers";
-
-export type StakingBatch = StakingBatchRaw & {
-  // Derived data
-  balanceNS: bigint;
-  votingPower: bigint;
-  votingMultiplier: number;
-  daysSinceStart: number;
-  lockDurationDays: number;
-  isLocked: boolean;
-  isStaked: boolean;
-  isCooldownRequested: boolean;
-  isCooldownOver: boolean;
-  isVoting: boolean;
-  canVote: boolean;
-  // Human-readable dates
-  startDate: Date;
-  unlockDate: Date;
-  cooldownEndDate: Date | null;
-};
+import { stakingBatchSchema } from "@/schemas/stakingBatchSchema";
+import { enrichRawBatch, stakingBatchHelpers } from "@/schemas/StakingBatch";
+import { StakingBatch } from "@/schemas/StakingBatch";
 
 export function useGetStakingBatches(owner: string | undefined) {
   return useQuery({
@@ -45,7 +24,7 @@ export function useGetStakingBatches(owner: string | undefined) {
       return paginatedObjects.data;
     },
     select: (suiObjResponses) => {
-      const parsedBatches: StakingBatch[] = [];
+      const batches: StakingBatch[] = [];
 
       for (const response of suiObjResponses) {
         try {
@@ -57,65 +36,19 @@ export function useGetStakingBatches(owner: string | undefined) {
             continue;
           }
 
-          const batchData = {
-            objectId: response.data.objectId,
-            version: response.data.version,
-            digest: response.data.digest,
-            type: response.data.type,
-            content: response.data.content,
-          };
+          const parsedBatch = stakingBatchSchema.safeParse(response.data);
 
-          const result = stakingBatchSchema.safeParse(batchData);
-
-          if (!result.success) {
+          if (!parsedBatch.success) {
             console.warn(
               "[useGetStakingBatches] Failed to parse staking batch:",
-              result.error,
+              parsedBatch.error,
             );
             continue;
           }
 
-          const batch = result.data;
+          const enrichedBatch = enrichRawBatch(parsedBatch.data);
+          batches.push(enrichedBatch);
 
-          // Calculate derived data
-          const chainTime = Date.now(); // TODO
-          const balanceNS = BigInt(batch.content.fields.balance);
-          const votingPower = stakingBatchHelpers.calculateVotingPower(batch, chainTime);
-          const daysSinceStart = stakingBatchHelpers.getDaysSinceStart(batch, chainTime);
-          const lockDurationDays =
-            stakingBatchHelpers.getLockDurationDays(batch);
-          const isLocked = stakingBatchHelpers.isLocked(batch, chainTime);
-          const isStaked = !isLocked;
-          const isCooldownRequested =
-            stakingBatchHelpers.isCooldownRequested(batch);
-          const isCooldownOver = stakingBatchHelpers.isCooldownOver(batch, chainTime);
-          const isVoting = stakingBatchHelpers.isVoting(batch, chainTime);
-          const canVote = stakingBatchHelpers.canVote(batch, chainTime);
-
-          // Convert timestamps to Date objects
-          const startDate = new Date(Number(batch.content.fields.start_ms));
-          const unlockDate = new Date(Number(batch.content.fields.unlock_ms));
-          const cooldownEndMs = Number(batch.content.fields.cooldown_end_ms);
-          const cooldownEndDate =
-            cooldownEndMs > 0 ? new Date(cooldownEndMs) : null;
-
-          parsedBatches.push({
-            ...batch,
-            balanceNS,
-            votingPower,
-            votingMultiplier: Number(votingPower) / Number(balanceNS),
-            daysSinceStart,
-            lockDurationDays,
-            isLocked,
-            isStaked,
-            isCooldownRequested,
-            isCooldownOver,
-            isVoting,
-            canVote,
-            startDate,
-            unlockDate,
-            cooldownEndDate,
-          });
         } catch (error) {
           console.warn(
             "[useGetStakingBatches] Error processing staking batch:",
@@ -125,7 +58,7 @@ export function useGetStakingBatches(owner: string | undefined) {
       }
 
       // Sort batches by voting power (highest first)
-      return parsedBatches.sort((a, b) => {
+      return batches.sort((a, b) => {
         if (b.votingPower > a.votingPower) {
           return 1;
         }
