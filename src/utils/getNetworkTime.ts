@@ -1,4 +1,4 @@
-import { SuiClient } from "@mysten/sui/client";
+import { type SuiClient } from "@mysten/sui/client";
 import { Transaction } from "@mysten/sui/transactions";
 import { bcs } from "@mysten/sui/bcs";
 
@@ -8,17 +8,21 @@ import { bcs } from "@mysten/sui/bcs";
 export async function getNetworkTime(suiClient: SuiClient) {
   const tx = new Transaction();
   tx.moveCall({
-      target: "0x2::clock::timestamp_ms",
-      arguments: [ tx.object.clock() ],
+    target: "0x2::clock::timestamp_ms",
+    arguments: [tx.object.clock()],
   });
   try {
     const resp = await suiClient.devInspectTransactionBlock({
       transactionBlock: tx,
-      sender: "0x7777777777777777777777777777777777777777777777777777777777777777",
+      sender:
+        "0x7777777777777777777777777777777777777777777777777777777777777777",
     });
     const returnValue = resp.results?.[0]?.returnValues?.[0]?.[0];
     if (!returnValue) {
-      console.warn("[getNetworkTime] Failed to get network time. Response: ", resp);
+      console.warn(
+        "[getNetworkTime] Failed to get network time. Response: ",
+        resp,
+      );
       return Date.now();
     }
 

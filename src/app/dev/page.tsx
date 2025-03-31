@@ -195,8 +195,8 @@ function useGetGovernanceAdminCap(owner: string | undefined) {
       return paginatedObjects.data;
     },
     select: (suiObjResponses) => {
-      for (const response of suiObjResponses) {
-        return response.data?.objectId ?? null;
+      for (const resp of suiObjResponses) {
+        return resp.data?.objectId ?? null;
       }
       return null;
     },

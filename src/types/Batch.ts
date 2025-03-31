@@ -15,9 +15,9 @@ export const MAX_LOCK_DURATION_DAYS = MAX_LOCK_MONTHS * 30;
 
 // === types ===
 
-export type BatchRaw = z.infer<typeof batchSchema>;
+export type BatchObjResp = z.infer<typeof batchSchema>;
 
-export type Batch = BatchRaw & {
+export type Batch = BatchObjResp & {
   // Derived data
   balanceNS: bigint;
   votingPower: bigint;
@@ -38,27 +38,30 @@ export type Batch = BatchRaw & {
 
 // === functions ===
 
-export const enrichRawBatch = (raw: BatchRaw, networkTime: number): Batch => {
+export const enrichBatchObjResp = (
+  obj: BatchObjResp,
+  networkTime: number,
+): Batch => {
   // Calculate derived data
-  const balanceNS = BigInt(raw.content.fields.balance);
-  const votingPower = batchHelpers.calculateVotingPower(raw, networkTime);
-  const daysSinceStart = batchHelpers.getDaysSinceStart(raw, networkTime);
-  const lockDurationDays = batchHelpers.getLockDurationDays(raw);
-  const isLocked = batchHelpers.isLocked(raw, networkTime);
+  const balanceNS = BigInt(obj.content.fields.balance);
+  const votingPower = batchHelpers.calculateVotingPower(obj, networkTime);
+  const daysSinceStart = batchHelpers.getDaysSinceStart(obj, networkTime);
+  const lockDurationDays = batchHelpers.getLockDurationDays(obj);
+  const isLocked = batchHelpers.isLocked(obj, networkTime);
   const isStaked = !isLocked;
-  const isCooldownRequested = batchHelpers.isCooldownRequested(raw);
-  const isCooldownOver = batchHelpers.isCooldownOver(raw, networkTime);
-  const isVoting = batchHelpers.isVoting(raw, networkTime);
-  const canVote = batchHelpers.canVote(raw, networkTime);
+  const isCooldownRequested = batchHelpers.isCooldownRequested(obj);
+  const isCooldownOver = batchHelpers.isCooldownOver(obj, networkTime);
+  const isVoting = batchHelpers.isVoting(obj, networkTime);
+  const canVote = batchHelpers.canVote(obj, networkTime);
 
   // Convert timestamps to Date objects
-  const startDate = new Date(Number(raw.content.fields.start_ms));
-  const unlockDate = new Date(Number(raw.content.fields.unlock_ms));
-  const cooldownEndMs = Number(raw.content.fields.cooldown_end_ms);
+  const startDate = new Date(Number(obj.content.fields.start_ms));
+  const unlockDate = new Date(Number(obj.content.fields.unlock_ms));
+  const cooldownEndMs = Number(obj.content.fields.cooldown_end_ms);
   const cooldownEndDate = cooldownEndMs > 0 ? new Date(cooldownEndMs) : null;
 
   return {
-    ...raw,
+    ...obj,
     balanceNS,
     votingPower,
     votingMultiplier: Number(votingPower) / Number(balanceNS),
@@ -77,52 +80,51 @@ export const enrichRawBatch = (raw: BatchRaw, networkTime: number): Batch => {
 };
 
 export const batchHelpers = {
-  isLocked: (batch: BatchRaw, networkTime: number): boolean => {
-    const unlockMs = Number(batch.content.fields.unlock_ms);
+  isLocked: (obj: BatchObjResp, networkTime: number): boolean => {
+    const unlockMs = Number(obj.content.fields.unlock_ms);
     return unlockMs > networkTime;
   },
 
-  isCooldownRequested: (batch: BatchRaw): boolean => {
-    const cooldownEndMs = Number(batch.content.fields.cooldown_end_ms);
+  isCooldownRequested: (obj: BatchObjResp): boolean => {
+    const cooldownEndMs = Number(obj.content.fields.cooldown_end_ms);
     return cooldownEndMs > 0;
   },
 
-  isCooldownOver: (batch: BatchRaw, networkTime: number): boolean => {
-    const cooldownEndMs = Number(batch.content.fields.cooldown_end_ms);
+  isCooldownOver: (obj: BatchObjResp, networkTime: number): boolean => {
+    const cooldownEndMs = Number(obj.content.fields.cooldown_end_ms);
     return (
-      batchHelpers.isCooldownRequested(batch) &&
-      networkTime >= cooldownEndMs
+      batchHelpers.isCooldownRequested(obj) && networkTime >= cooldownEndMs
     );
   },
 
-  canVote: (batch: BatchRaw, networkTime: number): boolean => {
+  canVote: (obj: BatchObjResp, networkTime: number): boolean => {
     return (
-      !batchHelpers.isVoting(batch, networkTime) &&
-      !batchHelpers.isCooldownRequested(batch)
+      !batchHelpers.isVoting(obj, networkTime) &&
+      !batchHelpers.isCooldownRequested(obj)
     );
   },
 
-  isVoting: (batch: BatchRaw, networkTime: number): boolean => {
-    const votingUntilMs = Number(batch.content.fields.voting_until_ms);
+  isVoting: (obj: BatchObjResp, networkTime: number): boolean => {
+    const votingUntilMs = Number(obj.content.fields.voting_until_ms);
     return votingUntilMs > 0 && votingUntilMs > networkTime;
   },
 
-  getDaysSinceStart: (batch: BatchRaw, networkTime: number): number => {
-    const startMs = Number(batch.content.fields.start_ms);
+  getDaysSinceStart: (obj: BatchObjResp, networkTime: number): number => {
+    const startMs = Number(obj.content.fields.start_ms);
     return Math.round((networkTime - startMs) / DAY_MS);
   },
 
-  getLockDurationDays: (batch: BatchRaw): number => {
-    const startMs = Number(batch.content.fields.start_ms);
-    const unlockMs = Number(batch.content.fields.unlock_ms);
+  getLockDurationDays: (obj: BatchObjResp): number => {
+    const startMs = Number(obj.content.fields.start_ms);
+    const unlockMs = Number(obj.content.fields.unlock_ms);
     return Math.round((unlockMs - startMs) / DAY_MS);
   },
 
   // Mirrors batch::power() in Move contract
-  calculateVotingPower: (batch: BatchRaw, networkTime: number): bigint => {
-    const balance = BigInt(batch.content.fields.balance);
-    const startMs = Number(batch.content.fields.start_ms);
-    const unlockMs = Number(batch.content.fields.unlock_ms);
+  calculateVotingPower: (obj: BatchObjResp, networkTime: number): bigint => {
+    const balance = BigInt(obj.content.fields.balance);
+    const startMs = Number(obj.content.fields.start_ms);
+    const unlockMs = Number(obj.content.fields.unlock_ms);
 
     // Calculate lock duration in months
     const lockMs = unlockMs - startMs;
