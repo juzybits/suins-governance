@@ -50,6 +50,9 @@ export function useGetBatches(owner: string | undefined) {
       for (let i = 0; i < batchObjs.length; i++) {
         const batchObj = batchObjs[i]!;
         const rewards = rewardsPerBatch[i]!; // TODO pass this to enrichBatchObjResp
+        console.debug(
+          `[useGetBatches] Batch ${batchObj.objectId} has ${rewards.length} rewards`,
+        );
         try {
           const enrichedBatch = enrichBatchObjResp(batchObj, networkTime);
           batches.push(enrichedBatch);

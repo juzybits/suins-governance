@@ -15,7 +15,6 @@ export const batchSchema = z.object({
       id: z.object({
         id: z.string(),
       }),
-      rewards: z.string(),
       start_ms: z.string(),
       unlock_ms: z.string(),
       voting_until_ms: z.string(),

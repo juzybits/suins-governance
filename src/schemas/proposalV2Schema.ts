@@ -84,10 +84,7 @@ export const proposalV2Schema = z
           tail: z.string().nullable(),
         }),
       }),
-      reward: z.string(),
-      total_reward: z.string(),
-      total_power: z.string(),
-      batch_powers: z.object({
+      voter_powers: z.object({
         type: z.string(),
         fields: z.object({
           head: z.string().nullable(),
@@ -98,6 +95,9 @@ export const proposalV2Schema = z
           tail: z.string().nullable(),
         }),
       }),
+      total_power: z.string(),
+      reward: z.string(),
+      total_reward: z.string(),
     }),
   })
   .transform((data) => ({
