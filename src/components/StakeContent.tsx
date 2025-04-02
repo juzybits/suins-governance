@@ -59,8 +59,7 @@ export function StakeContent() {
     let lockedNS = 0n;
     let lockedPower = 0n;
     let stakedNS = 0n;
-    let stakedPower = 0n; // should this include cooldown batches, given they cannot vote?
-    let totalPower = 0n;
+    let stakedPower = 0n;
 
     batchesData.forEach((batch) => {
       if (batch.isLocked) {
@@ -68,9 +67,10 @@ export function StakeContent() {
         lockedPower += batch.votingPower;
       } else if (batch.isStaked) {
         stakedNS += batch.balanceNS;
-        stakedPower += batch.votingPower;
+        if (batch.canVote) {
+          stakedPower += batch.votingPower;
+        }
       }
-      totalPower += batch.votingPower;
     });
 
     return {
@@ -78,7 +78,7 @@ export function StakeContent() {
       lockedPower,
       stakedNS,
       stakedPower,
-      totalPower,
+      totalPower: lockedPower + stakedPower,
     };
   }, [batchesData]);
 

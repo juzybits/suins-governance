@@ -18,7 +18,6 @@ export const MAX_LOCK_DURATION_DAYS = MAX_LOCK_MONTHS * 30;
 export type BatchObjResp = z.infer<typeof batchSchema>;
 
 export type Batch = BatchObjResp & {
-  // Derived data
   balanceNS: bigint;
   votingPower: bigint;
   votingMultiplier: number;
@@ -30,7 +29,6 @@ export type Batch = BatchObjResp & {
   isCooldownOver: boolean;
   isVoting: boolean;
   canVote: boolean;
-  // Human-readable dates
   startDate: Date;
   unlockDate: Date;
   cooldownEndDate: Date | null;
@@ -42,40 +40,29 @@ export const enrichBatchObjResp = (
   obj: BatchObjResp,
   networkTime: number,
 ): Batch => {
-  // Calculate derived data
+
   const balanceNS = BigInt(obj.content.fields.balance);
   const votingPower = batchHelpers.calculateVotingPower(obj, networkTime);
-  const daysSinceStart = batchHelpers.getDaysSinceStart(obj, networkTime);
-  const lockDurationDays = batchHelpers.getLockDurationDays(obj);
   const isLocked = batchHelpers.isLocked(obj, networkTime);
   const isStaked = !isLocked;
-  const isCooldownRequested = batchHelpers.isCooldownRequested(obj);
-  const isCooldownOver = batchHelpers.isCooldownOver(obj, networkTime);
-  const isVoting = batchHelpers.isVoting(obj, networkTime);
-  const canVote = batchHelpers.canVote(obj, networkTime);
-
-  // Convert timestamps to Date objects
-  const startDate = new Date(Number(obj.content.fields.start_ms));
-  const unlockDate = new Date(Number(obj.content.fields.unlock_ms));
   const cooldownEndMs = Number(obj.content.fields.cooldown_end_ms);
-  const cooldownEndDate = cooldownEndMs > 0 ? new Date(cooldownEndMs) : null;
 
   return {
     ...obj,
     balanceNS,
     votingPower,
     votingMultiplier: Number(votingPower) / Number(balanceNS),
-    daysSinceStart,
-    lockDurationDays,
+    daysSinceStart: batchHelpers.getDaysSinceStart(obj, networkTime),
+    lockDurationDays: batchHelpers.getLockDurationDays(obj),
     isLocked,
     isStaked,
-    isCooldownRequested,
-    isCooldownOver,
-    isVoting,
-    canVote,
-    startDate,
-    unlockDate,
-    cooldownEndDate,
+    isCooldownRequested: batchHelpers.isCooldownRequested(obj),
+    isCooldownOver: batchHelpers.isCooldownOver(obj, networkTime),
+    isVoting: batchHelpers.isVoting(obj, networkTime),
+    canVote: batchHelpers.canVote(obj, networkTime),
+    startDate: new Date(Number(obj.content.fields.start_ms)),
+    unlockDate: new Date(Number(obj.content.fields.unlock_ms)),
+    cooldownEndDate: cooldownEndMs > 0 ? new Date(cooldownEndMs) : null,
   };
 };
 
