@@ -208,31 +208,33 @@ function CardBatch({ batch }: { batch: Batch }) {
   };
 
   const batchActions = (() => {
-    if (batch.isStaked) {
-      let extraBtn: React.ReactNode = null;
-      if (!batch.isCooldownRequested) {
-        extraBtn = (
-          <button onClick={(e) => onBtnClick("requestUnstake", e)}>
-            Request Unstake
-          </button>
-        );
-      }
-      if (batch.isCooldownOver) {
-        extraBtn = (
-          <button onClick={(e) => onBtnClick("unstake", e)}>Unstake Now</button>
-        );
-      }
-      return (
-        <>
-          {extraBtn}
-          <button onClick={(e) => onBtnClick("lock", e)}>Lock</button>
-        </>
-      );
+    if (batch.isVoting) {
+      // voting batches cannot take any actions until voting ends
+      return null;
     }
 
-    if (batch.isLocked && batch.lockDurationDays < MAX_LOCK_DURATION_DAYS) {
+    if (batch.isLocked) {
+      if (batch.lockDurationDays < MAX_LOCK_DURATION_DAYS) {
+        return (
+          <button onClick={(e) => onBtnClick("lock", e)}>Extend Lock</button>
+        );
+      }
+    }
+
+    if (batch.isStaked) {
       return (
-        <button onClick={(e) => onBtnClick("lock", e)}>Extend Lock</button>
+        <>
+          {!batch.isCooldownRequested ? (
+            <>
+            <button onClick={(e) => onBtnClick("requestUnstake", e)}>
+              Request Unstake
+              </button>
+              <button onClick={(e) => onBtnClick("lock", e)}>Lock</button>
+            </>
+          ) : batch.isCooldownOver ? (
+            <button onClick={(e) => onBtnClick("unstake", e)}>Unstake Now</button>
+          ) : null}
+        </>
       );
     }
     return null;
