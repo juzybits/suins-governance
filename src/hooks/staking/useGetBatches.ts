@@ -36,9 +36,7 @@ export function useGetBatches(owner: string | undefined) {
       for (const resp of paginatedObjResp.data) {
         const batchObj = parseBatchObjResp(resp);
         if (batchObj) {
-          batches.push(
-            enrichBatchObjResp(batchObj, networkTime)
-          );
+          batches.push(enrichBatchObjResp(batchObj, networkTime));
         }
       }
 

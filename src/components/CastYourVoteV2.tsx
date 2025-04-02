@@ -17,6 +17,7 @@ import isPast from "date-fns/isPast";
 import { RadioGroupField } from "./form/RadioGroupField";
 import { useEffect } from "react";
 import { useGetBatches } from "@/hooks/staking/useGetBatches";
+import { formatNSBalance } from "@/utils/formatNumber";
 
 const VOTE_OPTIONS = ["Yes", "No", "Abstain"] as const;
 
@@ -67,11 +68,12 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
     return null;
   }
 
-  const votingBatchIds = !batches.data
-    ? []
-    : batches.data
-        .filter((batch) => batch.canVote)
-        .map((batch) => batch.content.fields.id.id);
+  const allBatches = batches.data ?? [];
+  const votingBatches = allBatches.filter((batch) => batch.canVote);
+  const votingPower = votingBatches.reduce(
+    (acc, batch) => acc + batch.votingPower,
+    0n,
+  );
 
   return (
     <SectionLayout title="Cast Your Votes" isLarge>
@@ -80,7 +82,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
         onSubmit={() =>
           vote({
             proposalId,
-            batchIds: votingBatchIds,
+            batchIds: votingBatches.map((batch) => batch.content.fields.id.id),
             vote: watch("vote"),
           })
         }
@@ -174,14 +176,16 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
                       )}
                     </div>
                   ) : null}
-                  <Text
-                    variant="B5/medium"
-                    color="fillContent-secondary"
-                    className="w-full text-start"
-                  >
-                    Tokens can not be withdrawn until the end of the voting
-                    period
-                  </Text>
+                  <div className="dummy-ui">
+                    <div className="panel">
+                      <h2>Your Voting Power</h2>
+                      <p>Owned batches: {allBatches.length}</p>
+                      <p>Batches that can vote: {votingBatches.length}</p>
+                      <p>
+                        Available voting power: {formatNSBalance(votingPower)}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>

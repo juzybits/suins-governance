@@ -226,13 +226,15 @@ function CardBatch({ batch }: { batch: Batch }) {
         <>
           {!batch.isCooldownRequested ? (
             <>
-            <button onClick={(e) => onBtnClick("requestUnstake", e)}>
-              Request Unstake
+              <button onClick={(e) => onBtnClick("requestUnstake", e)}>
+                Request Unstake
               </button>
               <button onClick={(e) => onBtnClick("lock", e)}>Lock</button>
             </>
           ) : batch.isCooldownOver ? (
-            <button onClick={(e) => onBtnClick("unstake", e)}>Unstake Now</button>
+            <button onClick={(e) => onBtnClick("unstake", e)}>
+              Unstake Now
+            </button>
           ) : null}
         </>
       );
