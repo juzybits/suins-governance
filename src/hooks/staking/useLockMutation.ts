@@ -37,6 +37,7 @@ export function useLockMutation(
           tx.object(batchId),
           tx.object(SUINS_PACKAGES[NETWORK].stakingConfigId),
           tx.pure.u64(months),
+          tx.object.clock(),
         ],
       });
 

@@ -7,8 +7,9 @@ import { type Batch } from "@/types/Batch";
 import { useSuiClient } from "@mysten/dapp-kit";
 import { client } from "@/app/SuinsClient";
 import { getNetworkTime } from "@/utils/getNetworkTime";
-import { type SuiClient, type SuiObjectResponse } from "@mysten/sui/client";
+import { type SuiObjectResponse } from "@mysten/sui/client";
 
+// TODO: support pagination
 export function useGetBatches(owner: string | undefined) {
   const suiClient = useSuiClient();
 
@@ -18,9 +19,8 @@ export function useGetBatches(owner: string | undefined) {
       if (!owner) return [];
 
       const [networkTime, paginatedObjResp] = await Promise.all([
-        getNetworkTime(suiClient), // probably overkill
+        getNetworkTime(suiClient),
         client.getOwnedObjects({
-          // TODO: pagination
           owner,
           filter: {
             StructType: `${SUINS_PACKAGES[NETWORK].votingPkgId}::staking_batch::StakingBatch`,
@@ -32,32 +32,13 @@ export function useGetBatches(owner: string | undefined) {
         }),
       ]);
 
-      const batchObjs: BatchObjResp[] = [];
+      const batches: Batch[] = [];
       for (const resp of paginatedObjResp.data) {
         const batchObj = parseBatchObjResp(resp);
         if (batchObj) {
-          batchObjs.push(batchObj);
-        }
-      }
-
-      const rewardsPerBatch = await Promise.all(
-        batchObjs.map((batchObj) => {
-          return getBatchRewards(suiClient, batchObj.objectId);
-        }),
-      );
-
-      const batches: Batch[] = [];
-      for (let i = 0; i < batchObjs.length; i++) {
-        const batchObj = batchObjs[i]!;
-        const rewards = rewardsPerBatch[i]!; // TODO pass this to enrichBatchObjResp
-        console.debug(
-          `[useGetBatches] Batch ${batchObj.objectId} has ${rewards.length} rewards`,
-        );
-        try {
-          const enrichedBatch = enrichBatchObjResp(batchObj, networkTime);
-          batches.push(enrichedBatch);
-        } catch (error) {
-          console.warn("[useGetBatches] Error processing batch:", error);
+          batches.push(
+            enrichBatchObjResp(batchObj, networkTime)
+          );
         }
       }
 
@@ -101,22 +82,4 @@ function parseBatchObjResp(resp: SuiObjectResponse): BatchObjResp | null {
     );
     return null;
   }
-}
-
-/**
- * Doesn't support pagination, but for pagination to be needed, a batch would
- * have to have 50+ unclaimed rewards from voting on 50+ proposals, and there
- * have only been 3 proposals in the past few months.
- */
-async function getBatchRewards(suiClient: SuiClient, batchId: string) {
-  const paginatedObjResp = await suiClient.getOwnedObjects({
-    owner: batchId,
-    filter: {
-      StructType: `${SUINS_PACKAGES[NETWORK].votingPkgId}::staking_batch::Reward`,
-    },
-    options: {
-      showContent: true,
-    },
-  });
-  return paginatedObjResp.data.map((obj) => obj.data!.objectId);
 }
