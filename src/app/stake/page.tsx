@@ -1,6 +1,6 @@
 "use client";
 
-import { StakeContent } from "@/components/StakeContent";
+import { StakeContent } from "@/components/staking/StakeContent";
 
 export default function StakePage() {
   return (
