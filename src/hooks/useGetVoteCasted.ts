@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { type z } from "zod";
 import { client } from "@/app/SuinsClient";
 import { votesCastedSchema } from "@/schemas/votesCastedSchema";
-import { proposalV1Schema } from "@/schemas/proposalV1Schema";
+import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 
 type ParsedVotes = z.infer<typeof votesCastedSchema>;
 
@@ -101,31 +101,25 @@ export function useGetVoteCasted({
   address: string;
   proposalId: string;
 }) {
+  const { data: proposal, isLoading: isProposalLoading } = useGetProposalDetail(
+    { proposalId },
+  );
+
   return useQuery({
     queryKey: ["get-vote-casted", address, proposalId],
     queryFn: async () => {
-      const response = await client.getObject({
-        id: proposalId,
-        options: {
-          showContent: true,
-          showDisplay: true,
-          showOwner: true,
-          showType: true,
-        },
-      });
-
-      const data = proposalV1Schema.safeParse(response?.data?.content); // TODO
-      if (data.error) {
-        throw new Error("Invalid proposal detail");
+      if (!proposal) {
+        throw new Error("proposal not found");
       }
 
       const dynamicFields = await client.getDynamicFieldObject({
-        parentId: data.data?.fields.voters.fields.id.id ?? "",
+        parentId: proposal.fields.voters.fields.id.id,
         name: {
           type: "address",
           value: address,
         },
       });
+
       if (dynamicFields.error) {
         return null;
       }
@@ -141,7 +135,7 @@ export function useGetVoteCasted({
       return resp.data;
     },
     select: (data) => (data ? parseVotesData(data) : null),
-    enabled: !!address && !!proposalId,
+    enabled: !!address && !!proposalId && !isProposalLoading && !!proposal,
   });
 }
 
