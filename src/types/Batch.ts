@@ -40,7 +40,6 @@ export const enrichBatchObjResp = (
   obj: BatchObjResp,
   networkTime: number,
 ): Batch => {
-
   const balanceNS = BigInt(obj.content.fields.balance);
   const votingPower = batchHelpers.calculateVotingPower(obj, networkTime);
   const isLocked = batchHelpers.isLocked(obj, networkTime);

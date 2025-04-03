@@ -1,4 +1,3 @@
-import { type z } from "zod";
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@/app/SuinsClient";
 import { CoinFormat, formatBalance } from "@/utils/coins";
@@ -6,7 +5,7 @@ import { NS_COINTYPE_DECIMAL_PLACES } from "@/constants/common";
 import { proposalV1Schema } from "@/schemas/proposalV1Schema";
 import { proposalV2Schema } from "@/schemas/proposalV2Schema";
 import { getProposalVersionFromType } from "@/utils/getProposalVersionFromType";
-import { ProposalObjResp } from "@/types/Proposal";
+import { type ProposalObjResp } from "@/types/Proposal";
 
 type TopVotes =
   ProposalObjResp["fields"]["vote_leaderboards"]["fields"]["contents"];

@@ -5,7 +5,7 @@ import { NS_VOTE_DIVISOR } from "@/constants/common";
 import {
   useCreateProposalMutation,
   useDistributeRewardsMutation,
-  useGetGovernanceAdminCap
+  useGetGovernanceAdminCap,
 } from "@/hooks/dev/useDevHooks";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { Suspense } from "react";

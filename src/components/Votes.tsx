@@ -36,7 +36,7 @@ const PAGE_SIZE = 10;
 
 function VoterDetail({
   voterAddress,
-  position: position,
+  position,
   objID,
 }: {
   voterAddress: string;
@@ -314,12 +314,10 @@ const container = {
 };
 
 function TopVoter({
-  position,
   address,
   votes,
   voteType,
 }: {
-  position: number;
   address: string;
   votes: number;
   voteType?: VoteType;
@@ -445,7 +443,7 @@ function TopVoters({
         </div>
 
         <div className="grid grid-cols-3 gap-2024_XL md:grid-cols-5 md:gap-2024_3XL">
-          {currentTopVoters.map((voter, index) => (
+          {currentTopVoters.map((voter) => (
             <motion.div
               variants={{
                 hidden: { opacity: 0 },
@@ -461,7 +459,6 @@ function TopVoters({
               <TopVoter
                 votes={voter.votes}
                 address={voter.address}
-                position={index + 1}
                 voteType={currentVoteType}
               />
             </motion.div>

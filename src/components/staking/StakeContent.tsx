@@ -54,14 +54,13 @@ export function StakeContent() {
   const availableNS = balance.data ? BigInt(balance.data.totalBalance) : 0n;
 
   const batches = useGetBatches(currAcct?.address);
-  const batchesData = batches.data ?? [];
   const stakingData = useMemo((): StakingData => {
     let lockedNS = 0n;
     let lockedPower = 0n;
     let stakedNS = 0n;
     let stakedPower = 0n;
 
-    batchesData.forEach((batch) => {
+    batches.data?.forEach((batch) => {
       if (batch.isLocked) {
         lockedNS += batch.balanceNS;
         lockedPower += batch.votingPower;
@@ -80,7 +79,7 @@ export function StakeContent() {
       stakedPower,
       totalPower: lockedPower + stakedPower,
     };
-  }, [batchesData]);
+  }, [batches.data]);
 
   if (balance.isLoading || batches.isLoading) {
     return <Loader className="h-5 w-5" />;
@@ -93,7 +92,7 @@ export function StakeContent() {
   return (
     <>
       <PanelOverview availableNS={availableNS} stakingData={stakingData} />
-      <PanelBatches availableNS={availableNS} batches={batchesData} />
+      <PanelBatches availableNS={availableNS} batches={batches.data ?? []} />
       <PanelParticipation />
     </>
   );

@@ -73,7 +73,7 @@ export function MonthSelector({
     if (firstValidMonth !== undefined) {
       setMonths(firstValidMonth);
     }
-  }, [currentMonths]);
+  }, [currentMonths, setMonths]);
 
   return (
     <select
