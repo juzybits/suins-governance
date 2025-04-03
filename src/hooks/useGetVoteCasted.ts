@@ -114,7 +114,7 @@ export function useGetVoteCasted({
         },
       });
 
-      const data = proposalV1Schema.safeParse(response?.data?.content);
+      const data = proposalV1Schema.safeParse(response?.data?.content); // TODO
       if (data.error) {
         throw new Error("Invalid proposal detail");
       }

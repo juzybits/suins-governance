@@ -6,13 +6,10 @@ import { NS_COINTYPE_DECIMAL_PLACES } from "@/constants/common";
 import { proposalV1Schema } from "@/schemas/proposalV1Schema";
 import { proposalV2Schema } from "@/schemas/proposalV2Schema";
 import { getProposalVersionFromType } from "@/utils/getProposalVersionFromType";
-
-type ProposalDataType =
-  | z.infer<typeof proposalV1Schema>
-  | z.infer<typeof proposalV2Schema>;
+import { ProposalObjResp } from "@/types/Proposal";
 
 type TopVotes =
-  ProposalDataType["fields"]["vote_leaderboards"]["fields"]["contents"];
+  ProposalObjResp["fields"]["vote_leaderboards"]["fields"]["contents"];
 
 export type VoteType = "Yes" | "No" | "Abstain";
 type VoteEntry = {
@@ -68,7 +65,7 @@ export function getTopVoters(
   return sortedVoters.slice(0, topN);
 }
 
-export function parseProposalVotes(data: ProposalDataType) {
+export function parseProposalVotes(objResp: ProposalObjResp) {
   // Initialize the proposal field name
   let proposalFieldName = "";
 
@@ -77,7 +74,7 @@ export function parseProposalVotes(data: ProposalDataType) {
   let noVote = 0;
   let abstainVote = 0;
 
-  const contents = data.fields.votes.fields.contents;
+  const contents = objResp.fields.votes.fields.contents;
 
   for (const entry of contents) {
     const keyFields = entry.fields.key.fields;
