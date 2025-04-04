@@ -148,9 +148,6 @@ export function useGetVoteCastedById(objectId: string) {
         options: {
           showType: true,
           showContent: true,
-          showOwner: true,
-          showStorageRebate: true,
-          showPreviousTransaction: true,
         },
       });
       const resp = votesCastedSchema.safeParse(obj.data);

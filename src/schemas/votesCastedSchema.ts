@@ -5,9 +5,6 @@ export const votesCastedSchema = z.object({
   version: z.string(),
   digest: z.string(),
   type: z.string(),
-  owner: z.object({ ObjectOwner: z.string() }),
-  previousTransaction: z.string(),
-  storageRebate: z.string(),
   content: z.object({
     dataType: z.literal("moveObject"),
     type: z.string(),
