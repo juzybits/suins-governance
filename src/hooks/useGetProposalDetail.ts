@@ -171,6 +171,6 @@ export function useGetProposalDetail({ proposalId }: { proposalId: string }) {
       }
       return objDetail.data;
     },
-    refetchInterval: 10_000,
+    refetchInterval: 30_000,
   });
 }

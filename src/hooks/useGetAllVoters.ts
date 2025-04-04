@@ -53,7 +53,7 @@ export function useGetAllVoters({
     enabled: !!parentId,
     getNextPageParam: ({ nextCursor, hasNextPage }) =>
       hasNextPage ? nextCursor : null,
-    refetchInterval: 10_000,
+    refetchInterval: 30_000,
     retry: false,
   });
 }
