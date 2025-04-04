@@ -40,7 +40,7 @@ export function useStakeOrLockMutation(
       const batch = tx.moveCall({
         target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::staking_batch::new`,
         arguments: [
-          tx.object(SUINS_PACKAGES[NETWORK].stakingConfigId),
+          tx.object(SUINS_PACKAGES[NETWORK].stakingSystemId),
           coin,
           tx.pure.u64(months),
           tx.object.clock(),

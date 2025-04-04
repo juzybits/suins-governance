@@ -34,7 +34,7 @@ export function useRequestUnstakeMutation(
         target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::staking_batch::request_unstake`,
         arguments: [
           tx.object(batchId),
-          tx.object(SUINS_PACKAGES[NETWORK].stakingConfigId),
+          tx.object(SUINS_PACKAGES[NETWORK].stakingSystemId),
           tx.object.clock(),
         ],
       });

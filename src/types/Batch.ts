@@ -2,7 +2,7 @@ import { type z } from "zod";
 import { type batchSchema } from "../schemas/batchSchema";
 
 // === constants ===
-// WARNING: these must be kept in sync with the StakingConfig Sui object.
+// WARNING: these must be kept in sync with the StakingSystem Sui object.
 
 const MAX_LOCK_MONTHS = 12;
 const MONTHLY_BOOST_BPS = 110_00n; // 1.1x or 10% boost (in basis points)

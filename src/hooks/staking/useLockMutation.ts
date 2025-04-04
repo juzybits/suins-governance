@@ -35,7 +35,7 @@ export function useLockMutation(
         target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::staking_batch::lock`,
         arguments: [
           tx.object(batchId),
-          tx.object(SUINS_PACKAGES[NETWORK].stakingConfigId),
+          tx.object(SUINS_PACKAGES[NETWORK].stakingSystemId),
           tx.pure.u64(months),
           tx.object.clock(),
         ],
