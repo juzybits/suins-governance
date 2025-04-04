@@ -14,9 +14,9 @@ export function VoteProgressBar({
   const totalVotesCasted = yesVotes + noVotes + abstainVotes;
 
   // Calculate percentage for each vote option
-  const yesPercentage = (yesVotes / totalVotesCasted) * 100;
-  const noPercentage = (noVotes / totalVotesCasted) * 100;
-  const abstainPercentage = (abstainVotes / totalVotesCasted) * 100;
+  const yesPercentage = totalVotesCasted > 0 ? (yesVotes / totalVotesCasted) * 100 : 0;
+  const noPercentage = totalVotesCasted > 0 ? (noVotes / totalVotesCasted) * 100 : 0;
+  const abstainPercentage = totalVotesCasted > 0 ? (abstainVotes / totalVotesCasted) * 100 : 0;
   const votesCast = abstainPercentage + noPercentage + yesPercentage;
 
   const gradient = `linear-gradient(
