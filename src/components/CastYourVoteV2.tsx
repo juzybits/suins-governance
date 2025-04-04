@@ -25,7 +25,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
   const currentAccount = useCurrentAccount();
   const { isConnecting, isDisconnected } = useCurrentWallet();
   const proposal = useGetProposalDetail({ proposalId });
-  const isInactiveProposal = isPast(
+  const isVotingOver = isPast(
     new Date(Number(proposal.data?.fields.end_time_ms ?? 0)),
   );
   const batches = useGetBatches(currentAccount?.address);
@@ -64,7 +64,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
     }
   }, [isSuccess, reset, resetField]);
 
-  if (proposal.isLoading || batches.isLoading) {
+  if (proposal.isLoading || batches.isLoading || isVotingOver) {
     return null;
   }
 
@@ -93,7 +93,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
             className="flex w-full flex-col items-center justify-start gap-2024_R"
             options={VOTE_OPTIONS.map((value) => ({
               value,
-              disabled: isInactiveProposal,
+              disabled: isVotingOver,
             }))}
             disabled={isLoggedOut}
             renderOption={(option, selected) =>
@@ -138,7 +138,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
               )
             }
           />
-          {!isInactiveProposal && (
+          {!isVotingOver && (
             <div className="flex w-full flex-col gap-2024_S">
               <div className="flex w-full flex-col items-center justify-between gap-2024_L md:flex-row">
                 <Button
@@ -148,7 +148,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
                     isLoggedOut && "!max-w-full",
                   )}
                   disabled={
-                    isLoggedOut || !isValid || isPending || isInactiveProposal
+                    isLoggedOut || !isValid || isPending || isVotingOver
                   }
                   type="submit"
                 >
