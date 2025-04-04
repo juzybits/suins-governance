@@ -96,10 +96,10 @@ export function useGetNameAvatar(name?: string) {
     useSuiClientQuery(
       "getDynamicFieldObject",
       {
-        parentId: client.constants.registryTableId ?? "",
+        parentId: client.config.registryTableId ?? "",
         name: {
           value: ["sui", ...(nameQuery?.reverse() ?? [])],
-          type: `${client.constants.suinsPackageId?.v1 ?? ""}::domain::Domain`,
+          type: `${client.config.packageIdV1 ?? ""}::domain::Domain`,
         },
       },
       {
