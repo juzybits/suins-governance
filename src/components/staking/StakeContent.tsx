@@ -33,6 +33,12 @@ import { useCurrentAccount } from "@mysten/dapp-kit";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { useGetBalance } from "@/hooks/useGetBalance";
 import { NETWORK } from "@/constants/env";
+import { useGetProposalsIds } from "@/hooks/useGetProposals";
+import { useGetVoteCastedByProposalId } from "@/hooks/useGetVoteCasted";
+import { useGetProposalDetail, parseProposalVotes } from "@/hooks/useGetProposalDetail";
+import { isPast } from "date-fns";
+import { roundFloat } from "@/utils/roundFloat";
+import { NS_VOTE_DIVISOR, NS_VOTE_THRESHOLD } from "@/constants/common";
 
 type StakingData = {
   lockedNS: bigint;
@@ -557,24 +563,86 @@ function ModalUnstakeBatch({
 }
 
 function PanelParticipation() {
-  const votes: { id: string }[] = [];
+  const { data, isLoading } = useGetProposalsIds();
   return (
     <div className="panel">
-      <h2>Your Governance Participation</h2>
-      {votes.length === 0 ? (
-        <>
-          <h3>No Votes</h3>
-          <p>
-            Once you start voting, your participation will be showcased here
-          </p>
-        </>
-      ) : (
-        <>
-          {votes.map((vote) => (
-            <div key={vote.id}>{vote.id}</div>
-          ))}
-        </>
-      )}
+      <h2>SuiNS Governance Proposals</h2>
+      {data?.map((proposal) => (
+        <CardProposalParticipation key={proposal.fields.proposal_id} proposalId={proposal.fields.proposal_id} />
+      ))}
+    </div>
+  );
+}
+
+function CardProposalParticipation({ proposalId }: { proposalId: string }) {
+  const currAcct = useCurrentAccount();
+  const { data: proposal, isLoading: isProposalLoading } = useGetProposalDetail({ proposalId });
+  const { data: userVote, isLoading: isVoteLoading } = useGetVoteCastedByProposalId({
+    proposalId,
+    address: currAcct?.address ?? "",
+  });
+
+  if (isProposalLoading || isVoteLoading || !proposal) {
+    return null;
+  }
+
+  const isClosed = isPast(new Date(Number(proposal.fields.end_time_ms ?? 0)));
+  const fields = proposal.fields;
+
+  let status = "active";
+  if (isClosed) {
+    if (fields.winning_option?.fields.pos0 === "Yes") {
+      status = "passed";
+    } else if (fields.winning_option === null) {
+      status = "pending";
+    } else {
+      status = "failed";
+    }
+  }
+
+  // Calculate overall voting statistics
+  const votes = parseProposalVotes(proposal);
+  const totalVotes = (votes?.yesVote ?? 0) + (votes?.noVote ?? 0) + (votes?.abstainVote ?? 0);
+  const totalVotesWithoutAbstain = totalVotes - (votes?.abstainVote ?? 0);
+
+  const yesVotesPercentage = totalVotes > 0 ? roundFloat(((votes?.yesVote ?? 0) / totalVotesWithoutAbstain) * 100) : 0;
+  const noVotesPercentage = totalVotes > 0 ? roundFloat(((votes?.noVote ?? 0) / totalVotesWithoutAbstain) * 100) : 0;
+  const abstainVotesPercentage = totalVotes > 0 ? roundFloat(((votes?.abstainVote ?? 0) / totalVotes) * 100) : 0;
+
+  const threshold = Number(proposal?.fields.threshold ?? NS_VOTE_THRESHOLD) / NS_VOTE_DIVISOR;
+  const thresholdReached = totalVotes >= threshold;
+
+  return (
+    <div>
+      <h2>{fields.title}</h2>
+      <div>
+        <div>Status: {status}</div>
+        <p>End time: {new Date(Number(fields.end_time_ms)).toLocaleDateString()}</p>
+
+        <div>
+          <h3>Overall Votes</h3>
+          <div>
+            <p>Yes: {votes?.yesVote ?? 0} ({yesVotesPercentage}%)</p>
+            <p>No: {votes?.noVote ?? 0} ({noVotesPercentage}%)</p>
+            <p>Abstain: {votes?.abstainVote ?? 0} ({abstainVotesPercentage}%)</p>
+            <p>Total votes: {totalVotes}</p>
+            <p>Threshold: {threshold} {thresholdReached ? "(Reached)" : "(Not reached)"}</p>
+          </div>
+        </div>
+
+        {userVote && (
+          <div>
+            <h3>Your Votes</h3>
+            <div>
+              <p>Yes votes: {formatNSBalance(userVote.yesVote)}</p>
+              <p>No votes: {formatNSBalance(userVote.noVote)}</p>
+              <p>Abstain votes: {formatNSBalance(userVote.abstainVote)}</p>
+              <p>Total votes: {formatNSBalance(userVote.totalVotes)}</p>
+            </div>
+          </div>
+        )}
+      </div>
+      <hr />
     </div>
   );
 }

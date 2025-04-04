@@ -55,6 +55,7 @@ export function useGetBatches(owner: string | undefined) {
       });
     },
     enabled: !!owner,
+    refetchInterval: 30_000,
   });
 }
 
