@@ -5,7 +5,7 @@ import { useGetAccountInfo } from "@/hooks/useGetAccountInfo";
 import { Avatar } from "@/components/Avatar";
 
 import { Text } from "@/components/ui/Text";
-import { useGetVoteCasted } from "@/hooks/useGetVoteCasted";
+import { useGetVoteCastedByProposalId } from "@/hooks/useGetVoteCasted";
 import { Divide } from "./ui/Divide";
 import { VotingState } from "./VotingStatus";
 import { NSAmount } from "./ui/NSAmount";
@@ -15,7 +15,7 @@ export function YourVote({ proposalId }: { proposalId: string }) {
   const currentAccount = useCurrentAccount();
   const address = currentAccount?.address;
 
-  const { data: voteCasted } = useGetVoteCasted({
+  const { data: voteCasted } = useGetVoteCastedByProposalId({
     proposalId: proposalId,
     address: address ?? "",
   });

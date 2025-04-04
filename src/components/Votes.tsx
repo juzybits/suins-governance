@@ -17,7 +17,7 @@ import { useExplorerLink } from "@/hooks/useExplorerLink";
 import { formatName } from "@/utils/common";
 import Loader from "./ui/Loader";
 import {
-  useGetVoteCastedById,
+  useGetVoteCastedByVoterId,
   getVoteTypeWithMostVotes,
 } from "@/hooks/useGetVoteCasted";
 import { VoteIndicator } from "@/components/ui/VoteIndicator";
@@ -44,7 +44,7 @@ function VoterDetail({
   position: number;
 }) {
   const { data: accountInfo } = useGetAccountInfo({ address: voterAddress });
-  const { data: voter } = useGetVoteCastedById(objID);
+  const { data: voter } = useGetVoteCastedByVoterId(objID);
   const isSmallOrAbove = useBreakpoint("sm");
   const formattedAddress = truncatedText({
     text: formatAddress(voterAddress),

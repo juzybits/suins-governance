@@ -94,7 +94,7 @@ export function parseVotesData(data: ParsedVotes) {
   };
 }
 
-export function useGetVoteCasted({
+export function useGetVoteCastedByProposalId({
   address,
   proposalId,
 }: {
@@ -139,7 +139,7 @@ export function useGetVoteCasted({
   });
 }
 
-export function useGetVoteCastedById(objectId: string) {
+export function useGetVoteCastedByVoterId(objectId: string) {
   return useQuery({
     queryKey: ["vote-casted-by-id", objectId],
     queryFn: async () => {
