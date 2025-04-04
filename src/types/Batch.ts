@@ -5,8 +5,8 @@ import { type batchSchema } from "../schemas/batchSchema";
 // WARNING: these must be kept in sync with the StakingConfig Sui object.
 
 const MAX_LOCK_MONTHS = 12;
-const MONTHLY_BOOST_BPS = 11000n; // 1.1x or 10% boost (in basis points)
-const MAX_BOOST_BPS = 30000n; // 3.0x for 12-month lock (in basis points)
+const MONTHLY_BOOST_BPS = 110_00n; // 1.1x or 10% boost (in basis points)
+const MAX_BOOST_BPS = 300_00n; // 3.0x for 12-month lock (in basis points)
 
 const MONTH_MS = 2592000000; // 30 days in milliseconds
 const DAY_MS = 86400000; // 1 day in milliseconds
@@ -108,40 +108,28 @@ export const batchHelpers = {
 
   // Mirrors batch::power() in Move contract
   calculateVotingPower: (obj: BatchObjResp, networkTime: number): bigint => {
-    const balance = BigInt(obj.content.fields.balance);
-    const startMs = Number(obj.content.fields.start_ms);
-    const unlockMs = Number(obj.content.fields.unlock_ms);
+    let power = BigInt(obj.content.fields.balance); // base power is the NS balance
+    let months: number; // how many monthly boosts to apply
 
-    // Calculate lock duration in months
-    const lockMs = unlockMs - startMs;
-    const lockMonths = Math.floor(lockMs / MONTH_MS);
-
-    // Special case: locking for max months (12) gets the max boost (3x)
-    if (lockMonths >= MAX_LOCK_MONTHS) {
-      return (balance * MAX_BOOST_BPS) / 10000n;
+    if (batchHelpers.isLocked(obj, networkTime)) {
+      const lockMs = Number(obj.content.fields.unlock_ms) - Number(obj.content.fields.start_ms);
+      months = Math.floor(lockMs / MONTH_MS);
+      // Locking for max months gets a higher multiplier
+      if (months >= MAX_LOCK_MONTHS) {
+        return (power * MAX_BOOST_BPS) / 100_00n;
+      }
+    } else {
+      const stakeMs = networkTime - Number(obj.content.fields.start_ms);
+      months = Math.floor(stakeMs / MONTH_MS);
+      // Staking max boost is capped at max_months - 1
+      if (months >= MAX_LOCK_MONTHS) {
+        months = MAX_LOCK_MONTHS - 1;
+      }
     }
 
-    // Calculate locked + staked months
-    let totalMonths = lockMonths;
-
-    // Add months from staking (if any)
-    const now = networkTime;
-    if (now > unlockMs) {
-      const stakingMs = now - unlockMs;
-      const stakingMonths = Math.floor(stakingMs / MONTH_MS);
-      totalMonths += stakingMonths;
-    }
-
-    // e.g. if max_lock_months is 12, cap at 11 months (which gives 2.85x multiplier)
-    const maxEffectiveMonths = MAX_LOCK_MONTHS - 1;
-    if (totalMonths > maxEffectiveMonths) {
-      totalMonths = maxEffectiveMonths;
-    }
-
-    // Apply multiplier: monthly_boost^total_months
-    let power = balance;
-    for (let i = 0; i < totalMonths; i++) {
-      power = (power * MONTHLY_BOOST_BPS) / 10000n;
+    // Apply multiplier: monthly_boost^months
+    for (let i = 0; i < months; i++) {
+      power = (power * MONTHLY_BOOST_BPS) / 100_00n;
     }
 
     return power;
@@ -154,14 +142,15 @@ export const batchHelpers = {
     balance: bigint;
     lockMonths: number;
   }): bigint => {
-    // Special case: locking for max months (12) gets the max boost (3x)
+    // Special case: locking for max months gets a higher multiplier
     if (lockMonths >= MAX_LOCK_MONTHS) {
-      return (balance * MAX_BOOST_BPS) / 10000n;
+      return (balance * MAX_BOOST_BPS) / 100_00n;
     }
-    // Apply multiplier: monthly_boost^total_months
+
+    // Apply multiplier: monthly_boost^months
     let power = balance;
     for (let i = 0; i < lockMonths; i++) {
-      power = (power * MONTHLY_BOOST_BPS) / 10000n;
+      power = (power * MONTHLY_BOOST_BPS) / 100_00n;
     }
 
     return power;
