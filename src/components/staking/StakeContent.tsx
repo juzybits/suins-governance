@@ -39,6 +39,7 @@ import { useGetProposalDetail, parseProposalVotes } from "@/hooks/useGetProposal
 import { isPast } from "date-fns";
 import { roundFloat } from "@/utils/roundFloat";
 import { NS_VOTE_DIVISOR, NS_VOTE_THRESHOLD } from "@/constants/common";
+import { calcVotingStats } from "@/utils/calcVotingStats";
 
 type StakingData = {
   lockedNS: bigint;
@@ -396,7 +397,7 @@ function ModalViewBatch({
       <h1>{formatNSBalance(batch.balanceNS)} NS</h1>
       <div>
         <p>Votes: {formatNSBalance(batch.votingPower)}</p>
-        <p>Votes multiplier: {batch.votingMultiplier.toFixed(2)}x</p>
+        <p>Votes multiplier: {roundFloat(batch.votingMultiplier, 2)}x</p>
         {batch.isStaked && (
           <>
             <p>Days Staked: {batch.daysSinceStart}</p>
@@ -602,15 +603,10 @@ function CardProposalParticipation({ proposalId }: { proposalId: string }) {
 
   // Calculate overall voting statistics
   const votes = parseProposalVotes(proposal);
-  const totalVotes = (votes?.yesVote ?? 0) + (votes?.noVote ?? 0) + (votes?.abstainVote ?? 0);
-  const totalVotesWithoutAbstain = totalVotes - (votes?.abstainVote ?? 0);
-
-  const yesVotesPercentage = totalVotes > 0 ? roundFloat(((votes?.yesVote ?? 0) / totalVotesWithoutAbstain) * 100) : 0;
-  const noVotesPercentage = totalVotes > 0 ? roundFloat(((votes?.noVote ?? 0) / totalVotesWithoutAbstain) * 100) : 0;
-  const abstainVotesPercentage = totalVotes > 0 ? roundFloat(((votes?.abstainVote ?? 0) / totalVotes) * 100) : 0;
-
-  const threshold = Number(proposal?.fields.threshold ?? NS_VOTE_THRESHOLD) / NS_VOTE_DIVISOR;
-  const thresholdReached = totalVotes >= threshold;
+  const stats = calcVotingStats({
+    ...votes,
+    threshold: Number(proposal?.fields.threshold),
+  });
 
   return (
     <div>
@@ -622,11 +618,11 @@ function CardProposalParticipation({ proposalId }: { proposalId: string }) {
         <div>
           <h3>Overall Votes</h3>
           <div>
-            <p>Yes: {votes?.yesVote ?? 0} ({yesVotesPercentage}%)</p>
-            <p>No: {votes?.noVote ?? 0} ({noVotesPercentage}%)</p>
-            <p>Abstain: {votes?.abstainVote ?? 0} ({abstainVotesPercentage}%)</p>
-            <p>Total votes: {totalVotes}</p>
-            <p>Threshold: {threshold} {thresholdReached ? "(Reached)" : "(Not reached)"}</p>
+            <p>Yes: {stats.yesVotes} ({stats.yesPercentage}%)</p>
+            <p>No: {stats.noVotes} ({stats.noPercentage}%)</p>
+            <p>Abstain: {stats.abstainVotes} ({stats.abstainPercentage}%)</p>
+            <p>Total votes: {stats.totalVotes}</p>
+            <p>Threshold: {stats.threshold} {stats.thresholdReached ? "(Reached)" : "(Not reached)"}</p>
           </div>
         </div>
 

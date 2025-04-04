@@ -15,7 +15,7 @@ import {
 import { roundFloat } from "@/utils/roundFloat";
 import NSToken from "@/icons/NSToken";
 import { CoinFormat, formatBalance } from "@/utils/coins";
-import { NS_VOTE_DIVISOR, NS_VOTE_THRESHOLD } from "@/constants/common";
+import { calcVotingStats } from "@/utils/calcVotingStats";
 
 function MinimumThreshHold({
   isReached,
@@ -142,63 +142,46 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
   const resp = data ? parseProposalVotes(data) : null;
   if (isLoading || !resp) return null;
 
-  const threshold =
-    Number(data?.fields.threshold ?? NS_VOTE_THRESHOLD) / NS_VOTE_DIVISOR; //TODO: update once contract has the right number  Number(data?.fields.threshold ?? 0);
-
-  const totalVotes =
-    (resp?.yesVote ?? 0) + (resp?.noVote ?? 0) + (resp?.abstainVote ?? 0);
-
-  const totalVotesWithoutAbstain = totalVotes - (resp?.abstainVote ?? 0);
-
-  const yesVotesPercentage =
-    totalVotes > 0
-      ? roundFloat(((resp?.yesVote ?? 0) / totalVotesWithoutAbstain) * 100)
-      : 0;
-
-  const noVotesPecentage =
-    totalVotes > 0
-      ? roundFloat(((resp?.noVote ?? 0) / totalVotesWithoutAbstain) * 100)
-      : 0;
-  const abstainVotesPecentage =
-    totalVotes > 0
-      ? roundFloat(((resp?.abstainVote ?? 0) / totalVotes) * 100)
-      : 0;
+  const stats = calcVotingStats({
+    ...resp,
+    threshold: Number(data?.fields.threshold),
+  });
 
   return (
     <SectionLayout title="Voting Status">
       <VoteProgressBar
-        yesVotes={resp?.yesVote ?? 0}
-        noVotes={resp?.noVote ?? 0}
-        abstainVotes={resp?.abstainVote ?? 0}
+        yesVotes={stats.yesVotes}
+        noVotes={stats.noVotes}
+        abstainVotes={stats.abstainVotes}
       />
       <div className="flex flex-col justify-between gap-2">
         <VotingState
           votedState="Yes"
-          percentage={yesVotesPercentage}
-          votes={resp?.yesVote ?? 0}
+          percentage={stats.yesPercentage}
+          votes={stats.yesVotes}
           onlyStatus
           noFormat
         />
         <VotingState
           votedState="No"
-          percentage={noVotesPecentage}
-          votes={resp?.noVote ?? 0}
+          percentage={stats.noPercentage}
+          votes={stats.noVotes}
           onlyStatus
           noFormat
         />
         <VotingState
           votedState="Abstain"
-          percentage={abstainVotesPecentage}
-          votes={resp?.abstainVote ?? 0}
+          percentage={stats.abstainPercentage}
+          votes={stats.abstainVotes}
           onlyStatus
           noFormat
           hidePercentage
         />
       </div>
       <MinimumThreshHold
-        isReached={totalVotes >= threshold}
-        totalVotes={totalVotes}
-        threshold={threshold}
+        isReached={stats.thresholdReached}
+        totalVotes={stats.totalVotes}
+        threshold={stats.threshold}
       />
 
       <YourVote proposalId={proposalId} />
