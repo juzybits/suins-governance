@@ -40,6 +40,7 @@ import { isPast } from "date-fns";
 import { roundFloat } from "@/utils/roundFloat";
 import { NS_VOTE_DIVISOR, NS_VOTE_THRESHOLD } from "@/constants/common";
 import { calcVotingStats } from "@/utils/calcVotingStats";
+import { useGetUserTotalReward } from "@/hooks/staking/useGetUserTotalReward";
 
 type StakingData = {
   lockedNS: bigint;
@@ -564,13 +565,21 @@ function ModalUnstakeBatch({
 }
 
 function PanelParticipation() {
+  const currAcct = useCurrentAccount();
   const { data, isLoading } = useGetProposalsIds();
+  const { data: userTotalReward } = useGetUserTotalReward(currAcct?.address ?? "");
   return (
     <div className="panel">
       <h2>SuiNS Governance Proposals</h2>
       {data?.map((proposal) => (
         <CardProposalParticipation key={proposal.fields.proposal_id} proposalId={proposal.fields.proposal_id} />
       ))}
+      {userTotalReward && (
+        <div>
+          <h2>Your Lifetime Rewards:</h2>
+          <p>{formatNSBalance(userTotalReward)}</p>
+        </div>
+      )}
     </div>
   );
 }
