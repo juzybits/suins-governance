@@ -35,7 +35,10 @@ import { useGetBalance } from "@/hooks/useGetBalance";
 import { NETWORK } from "@/constants/env";
 import { useGetProposalsIds } from "@/hooks/useGetProposals";
 import { useGetVoteCastedByProposalId } from "@/hooks/useGetVoteCasted";
-import { useGetProposalDetail, parseProposalVotes } from "@/hooks/useGetProposalDetail";
+import {
+  useGetProposalDetail,
+  parseProposalVotes,
+} from "@/hooks/useGetProposalDetail";
 import { isPast } from "date-fns";
 import { roundFloat } from "@/utils/roundFloat";
 import { NS_VOTE_DIVISOR, NS_VOTE_THRESHOLD } from "@/constants/common";
@@ -567,12 +570,17 @@ function ModalUnstakeBatch({
 function PanelParticipation() {
   const currAcct = useCurrentAccount();
   const { data, isLoading } = useGetProposalsIds();
-  const { data: userTotalReward } = useGetUserTotalReward(currAcct?.address ?? "");
+  const { data: userTotalReward } = useGetUserTotalReward(
+    currAcct?.address ?? "",
+  );
   return (
     <div className="panel">
       <h2>SuiNS Governance Proposals</h2>
       {data?.map((proposal) => (
-        <CardProposalParticipation key={proposal.fields.proposal_id} proposalId={proposal.fields.proposal_id} />
+        <CardProposalParticipation
+          key={proposal.fields.proposal_id}
+          proposalId={proposal.fields.proposal_id}
+        />
       ))}
       {userTotalReward && (
         <div>
@@ -586,11 +594,14 @@ function PanelParticipation() {
 
 function CardProposalParticipation({ proposalId }: { proposalId: string }) {
   const currAcct = useCurrentAccount();
-  const { data: proposal, isLoading: isProposalLoading } = useGetProposalDetail({ proposalId });
-  const { data: userVote, isLoading: isVoteLoading } = useGetVoteCastedByProposalId({
-    proposalId,
-    address: currAcct?.address ?? "",
-  });
+  const { data: proposal, isLoading: isProposalLoading } = useGetProposalDetail(
+    { proposalId },
+  );
+  const { data: userVote, isLoading: isVoteLoading } =
+    useGetVoteCastedByProposalId({
+      proposalId,
+      address: currAcct?.address ?? "",
+    });
 
   if (isProposalLoading || isVoteLoading || !proposal) {
     return null;
@@ -622,16 +633,27 @@ function CardProposalParticipation({ proposalId }: { proposalId: string }) {
       <h2>{fields.title}</h2>
       <div>
         <div>Status: {status}</div>
-        <p>End time: {new Date(Number(fields.end_time_ms)).toLocaleDateString()}</p>
+        <p>
+          End time: {new Date(Number(fields.end_time_ms)).toLocaleDateString()}
+        </p>
 
         <div>
           <h3>Overall Votes</h3>
           <div>
-            <p>Yes: {stats.yesVotes} ({stats.yesPercentage}%)</p>
-            <p>No: {stats.noVotes} ({stats.noPercentage}%)</p>
-            <p>Abstain: {stats.abstainVotes} ({stats.abstainPercentage}%)</p>
+            <p>
+              Yes: {stats.yesVotes} ({stats.yesPercentage}%)
+            </p>
+            <p>
+              No: {stats.noVotes} ({stats.noPercentage}%)
+            </p>
+            <p>
+              Abstain: {stats.abstainVotes} ({stats.abstainPercentage}%)
+            </p>
             <p>Total votes: {stats.totalVotes}</p>
-            <p>Threshold: {stats.threshold} {stats.thresholdReached ? "(Reached)" : "(Not reached)"}</p>
+            <p>
+              Threshold: {stats.threshold}{" "}
+              {stats.thresholdReached ? "(Reached)" : "(Not reached)"}
+            </p>
           </div>
         </div>
 

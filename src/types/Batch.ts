@@ -112,7 +112,9 @@ export const batchHelpers = {
     let months: number; // how many monthly boosts to apply
 
     if (batchHelpers.isLocked(obj, networkTime)) {
-      const lockMs = Number(obj.content.fields.unlock_ms) - Number(obj.content.fields.start_ms);
+      const lockMs =
+        Number(obj.content.fields.unlock_ms) -
+        Number(obj.content.fields.start_ms);
       months = Math.floor(lockMs / MONTH_MS);
       // Locking for max months gets a higher multiplier
       if (months >= MAX_LOCK_MONTHS) {

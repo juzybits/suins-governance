@@ -26,17 +26,17 @@ export function calcVotingStats(votes: {
   const totalVotes = yesVotes + noVotes + abstainVotes;
   const totalVotesWithoutAbstain = totalVotes - abstainVotes;
 
-  const yesPercentage = totalVotes > 0
-    ? roundFloat((yesVotes / totalVotesWithoutAbstain) * 100)
-    : 0;
-  const noPercentage = totalVotes > 0
-    ? roundFloat((noVotes / totalVotesWithoutAbstain) * 100)
-    : 0;
-  const abstainPercentage = totalVotes > 0
-    ? roundFloat((abstainVotes / totalVotes) * 100)
-    : 0;
+  const yesPercentage =
+    totalVotes > 0
+      ? roundFloat((yesVotes / totalVotesWithoutAbstain) * 100)
+      : 0;
+  const noPercentage =
+    totalVotes > 0 ? roundFloat((noVotes / totalVotesWithoutAbstain) * 100) : 0;
+  const abstainPercentage =
+    totalVotes > 0 ? roundFloat((abstainVotes / totalVotes) * 100) : 0;
 
-  const threshold = Number(votes?.threshold ?? NS_VOTE_THRESHOLD) / NS_VOTE_DIVISOR;
+  const threshold =
+    Number(votes?.threshold ?? NS_VOTE_THRESHOLD) / NS_VOTE_DIVISOR;
   const thresholdReached = totalVotes >= threshold;
 
   return {
