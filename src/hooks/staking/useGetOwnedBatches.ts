@@ -10,7 +10,7 @@ import { getNetworkTime } from "@/utils/getNetworkTime";
 import { type SuiObjectResponse } from "@mysten/sui/client";
 
 // TODO-J: support pagination
-export function useGetBatches(owner: string | undefined) {
+export function useGetOwnedBatches(owner: string | undefined) {
   const suiClient = useSuiClient();
 
   return useQuery({

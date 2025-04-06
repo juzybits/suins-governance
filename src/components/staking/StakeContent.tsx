@@ -28,7 +28,7 @@ import {
   MonthSelector,
 } from "@/components/ui/dummy-ui/dummy-ui";
 import Loader from "@/components/ui/Loader";
-import { useGetBatches } from "@/hooks/staking/useGetBatches";
+import { useGetOwnedBatches } from "@/hooks/staking/useGetOwnedBatches";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { useGetBalance } from "@/hooks/useGetBalance";
@@ -60,7 +60,7 @@ export function StakeContent() {
   });
   const availableNS = balance.data ? BigInt(balance.data.totalBalance) : 0n;
 
-  const batches = useGetBatches(currAcct?.address);
+  const batches = useGetOwnedBatches(currAcct?.address);
   const stakingData = useMemo((): StakingData => {
     let lockedNS = 0n;
     let lockedPower = 0n;

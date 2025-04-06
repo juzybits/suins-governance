@@ -16,7 +16,7 @@ import { motion } from "framer-motion";
 import isPast from "date-fns/isPast";
 import { RadioGroupField } from "./form/RadioGroupField";
 import { useEffect } from "react";
-import { useGetBatches } from "@/hooks/staking/useGetBatches";
+import { useGetOwnedBatches } from "@/hooks/staking/useGetOwnedBatches";
 import { formatNSBalance } from "@/utils/formatNumber";
 
 const VOTE_OPTIONS = ["Yes", "No", "Abstain"] as const;
@@ -28,7 +28,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
   const isVotingOver = isPast(
     new Date(Number(proposal.data?.fields.end_time_ms ?? 0)),
   );
-  const batches = useGetBatches(currentAccount?.address);
+  const batches = useGetOwnedBatches(currentAccount?.address);
 
   const isLoggedOut = (!currentAccount && !isConnecting) ?? isDisconnected;
   const form = useZodForm({
