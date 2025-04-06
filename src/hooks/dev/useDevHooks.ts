@@ -135,7 +135,11 @@ export function useDistributeRewardsMutation(
 
       tx.moveCall({
         target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::proposal_v2::distribute_rewards`,
-        arguments: [tx.object(proposalId), tx.object.clock()],
+        arguments: [
+          tx.object(proposalId),
+          tx.object(SUINS_PACKAGES[NETWORK].stakingStatsId),
+          tx.object.clock(),
+        ],
       });
 
       const resp = await executeAndWaitTx(tx);

@@ -36,7 +36,7 @@ export function useVoteV2Mutation(
             tx.object(proposalId),
             tx.pure.string(vote),
             tx.object(batchId),
-            tx.object(SUINS_PACKAGES[NETWORK].stakingSystemId),
+            tx.object(SUINS_PACKAGES[NETWORK].stakingConfigId),
             tx.object.clock(),
           ],
         });

@@ -39,7 +39,11 @@ export function useUnstakeMutation(
 
       const balance = tx.moveCall({
         target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::staking_batch::unstake`,
-        arguments: [tx.object(batchId), tx.object.clock()],
+        arguments: [
+          tx.object(batchId),
+          tx.object(SUINS_PACKAGES[NETWORK].stakingStatsId),
+          tx.object.clock(),
+        ],
       });
 
       const coin = tx.moveCall({
