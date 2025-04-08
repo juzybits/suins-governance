@@ -10,6 +10,15 @@ import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { useSignExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
 
+/**
+ * How many batches can the user vote with in a single tx.
+ *
+ * On localnet (2025-04), max_tx_size_bytes (128KB) is exceeded with ~880 batches.
+ *
+ * Very unlikely that real users will ever hit this limit.
+ */
+export const MAX_BATCHES_PER_VOTE_TX = 800;
+
 export type VoteV2Request = {
   proposalId: string;
   batchIds: string[];

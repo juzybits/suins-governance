@@ -569,14 +569,14 @@ function ModalUnstakeBatch({
 
 function PanelParticipation() {
   const currAcct = useCurrentAccount();
-  const { data, isLoading } = useGetProposalsIds();
+  const { data: proposalIds } = useGetProposalsIds();
   const { data: userTotalReward } = useGetUserTotalReward(
     currAcct?.address ?? "",
   );
   return (
     <div className="panel">
       <h2>SuiNS Governance Proposals</h2>
-      {data?.map((proposal) => (
+      {proposalIds?.map((proposal) => (
         <CardProposalParticipation
           key={proposal.fields.proposal_id}
           proposalId={proposal.fields.proposal_id}

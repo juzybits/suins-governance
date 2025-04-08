@@ -9,7 +9,7 @@ import {
 import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { parseNSAmount } from "@/utils/parseAmount";
-import { useExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
+import { useSignExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
 
 export type StakeRequest = {
   amount: string;
@@ -25,7 +25,7 @@ export function useStakeOrLockMutation(
     "mutationFn" | "onSuccess"
   >,
 ): UseMutationResult<string, Error, StakeRequest> {
-  const executeAndWaitTx = useExecuteAndWaitTx();
+  const signExecuteAndWaitTx = useSignExecuteAndWaitTx();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -53,7 +53,7 @@ export function useStakeOrLockMutation(
         arguments: [batch],
       });
 
-      const resp = await executeAndWaitTx(tx);
+      const resp = await signExecuteAndWaitTx(tx);
 
       return resp.digest;
     },

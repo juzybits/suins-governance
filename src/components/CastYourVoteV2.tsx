@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button/Button";
 import { GradientBorder } from "./gradient-border";
 import { VoteIndicator } from "./ui/VoteIndicator";
 import { Text } from "@/components/ui/Text";
-import { useVoteV2Mutation } from "@/hooks/staking/useVoteV2Mutation";
+import { MAX_BATCHES_PER_VOTE_TX, useVoteV2Mutation } from "@/hooks/staking/useVoteV2Mutation";
 import { useZodForm } from "@/hooks/useZodForm";
 import { Form } from "@/components/form/Form";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
@@ -69,7 +69,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
   }
 
   const allBatches = batches.data ?? [];
-  const votingBatches = allBatches.filter((batch) => batch.canVote);
+  const votingBatches = allBatches.filter((batch) => batch.canVote).slice(0, MAX_BATCHES_PER_VOTE_TX);
   const votingPower = votingBatches.reduce(
     (acc, batch) => acc + batch.votingPower,
     0n,
