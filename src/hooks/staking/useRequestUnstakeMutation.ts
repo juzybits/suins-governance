@@ -8,7 +8,7 @@ import {
 
 import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
-import { useSignExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
+import { useSignExecuteAndWaitTx } from "@/hooks/useSignExecuteAndWaitTx";
 
 export type RequestUnstakeRequest = {
   batchId: string;

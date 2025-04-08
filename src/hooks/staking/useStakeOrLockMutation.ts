@@ -9,7 +9,7 @@ import {
 import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { parseNSAmount } from "@/utils/parseAmount";
-import { useSignExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
+import { useSignExecuteAndWaitTx } from "@/hooks/useSignExecuteAndWaitTx";
 
 export type StakeRequest = {
   amount: string;

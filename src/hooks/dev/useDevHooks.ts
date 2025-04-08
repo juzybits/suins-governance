@@ -9,7 +9,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { useSignExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
+import { useSignExecuteAndWaitTx } from "@/hooks/useSignExecuteAndWaitTx";
 
 export function useGetGovernanceAdminCap(owner: string | undefined) {
   return useQuery({
