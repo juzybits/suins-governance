@@ -47,7 +47,7 @@ export function useRequestUnstakeMutation(
     onSuccess: async () => {
       await Promise.allSettled([
         queryClient.invalidateQueries({
-          queryKey: ["owned-batches"],
+          queryKey: ["get-owned-batches"],
         }),
       ]);
     },

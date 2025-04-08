@@ -9,31 +9,47 @@ import { client } from "@/app/SuinsClient";
 import { getNetworkTime } from "@/utils/getNetworkTime";
 import { type SuiObjectResponse } from "@mysten/sui/client";
 
-// TODO-J: support pagination
 export function useGetOwnedBatches(owner: string | undefined) {
   const suiClient = useSuiClient();
 
   return useQuery({
-    queryKey: ["owned-batches", owner],
+    queryKey: ["get-owned-batches", owner],
     queryFn: async () => {
       if (!owner) return [];
 
-      const [networkTime, paginatedObjResp] = await Promise.all([
+      const getAllOwnedBatches = async () => {
+        const ownedBatches: SuiObjectResponse[] = [];
+        let hasNextPage = true;
+        let cursor: string | null | undefined = null;
+
+        while (hasNextPage) {
+          const response = await client.getOwnedObjects({
+            owner,
+            filter: {
+              StructType: `${SUINS_PACKAGES[NETWORK].votingPkgId}::staking_batch::StakingBatch`,
+            },
+            options: {
+              showContent: true,
+              showType: true,
+            },
+            cursor,
+          });
+
+          ownedBatches.push(...response.data);
+          hasNextPage = response.hasNextPage;
+          cursor = response.nextCursor;
+        }
+
+        return ownedBatches;
+      };
+
+      const [networkTime, ownedBatches] = await Promise.all([
         getNetworkTime(suiClient),
-        client.getOwnedObjects({
-          owner,
-          filter: {
-            StructType: `${SUINS_PACKAGES[NETWORK].votingPkgId}::staking_batch::StakingBatch`,
-          },
-          options: {
-            showContent: true,
-            showType: true,
-          },
-        }),
+        getAllOwnedBatches(),
       ]);
 
       const batches: Batch[] = [];
-      for (const resp of paginatedObjResp.data) {
+      for (const resp of ownedBatches) {
         const batchObj = parseBatchObjResp(resp);
         if (batchObj) {
           batches.push(enrichBatchObjResp(batchObj, networkTime));

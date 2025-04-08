@@ -77,7 +77,7 @@ export function StakeContent() {
         lockedPower += batch.votingPower;
       } else if (batch.isStaked) {
         stakedNS += batch.balanceNS;
-        if (batch.canVote) {
+        if (!batch.isCooldownRequested) {
           stakedPower += batch.votingPower;
         }
       }

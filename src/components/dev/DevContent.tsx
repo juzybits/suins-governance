@@ -49,9 +49,8 @@ function DevContentForm({
 }) {
   const { mutateAsync: createProposal } = useCreateProposalMutation();
   const { mutateAsync: distributeRewards } = useDistributeRewardsMutation();
-  const [proposalNumber, setProposalNumber] = useState(1);
   const [formData, setFormData] = useState({
-    title: `Proposal ${proposalNumber}`,
+    title: `Proposal 1`,
     description:
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
     duration_seconds: 60,
@@ -79,7 +78,6 @@ function DevContentForm({
       });
       console.debug("[onCreateProposal] success:", newProposalId);
       setFormData((prev) => ({ ...prev, proposalId: newProposalId ?? "" }));
-      setProposalNumber(proposalNumber + 1);
     } catch (error) {
       console.warn("[onCreateProposal] failed:", error);
     }
