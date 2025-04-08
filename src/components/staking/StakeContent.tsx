@@ -41,7 +41,6 @@ import {
 } from "@/hooks/useGetProposalDetail";
 import { isPast } from "date-fns";
 import { roundFloat } from "@/utils/roundFloat";
-import { NS_VOTE_DIVISOR, NS_VOTE_THRESHOLD } from "@/constants/common";
 import { calcVotingStats } from "@/utils/calcVotingStats";
 import { useGetUserTotalReward } from "@/hooks/staking/useGetUserTotalReward";
 

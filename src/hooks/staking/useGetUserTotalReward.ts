@@ -1,6 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { SUINS_PACKAGES } from "@/constants/endpoints";
-import { NETWORK } from "@/constants/env";
 import { useSuiClient } from "@mysten/dapp-kit";
 import { useGetStakingStats } from "@/hooks/staking/useGetStakingStats";
 import { userTotalRewardSchema } from "@/schemas/userTotalRewardSchema";
