@@ -9,7 +9,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { useExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
+import { useSignExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
 
 export function useGetGovernanceAdminCap(owner: string | undefined) {
   return useQuery({
@@ -49,7 +49,7 @@ export function useCreateProposalMutation(
     "mutationFn" | "onSuccess"
   >,
 ): UseMutationResult<string | null, Error, CreateProposalRequest> {
-  const executeAndWaitTx = useExecuteAndWaitTx();
+  const signExecuteAndWaitTx = useSignExecuteAndWaitTx();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -92,7 +92,7 @@ export function useCreateProposalMutation(
         ],
       });
 
-      const resp = await executeAndWaitTx(tx);
+      const resp = await signExecuteAndWaitTx(tx);
 
       const proposalV2Type = `${SUINS_PACKAGES[NETWORK].votingPkgId}::proposal_v2::ProposalV2`;
       let proposalId: null | string = null;
@@ -126,7 +126,7 @@ export function useDistributeRewardsMutation(
     "mutationFn" | "onSuccess"
   >,
 ): UseMutationResult<string, Error, DistributeRewardsRequest> {
-  const executeAndWaitTx = useExecuteAndWaitTx();
+  const executeAndWaitTx = useSignExecuteAndWaitTx();
   const queryClient = useQueryClient();
 
   return useMutation({

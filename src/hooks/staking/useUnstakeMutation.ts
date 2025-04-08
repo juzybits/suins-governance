@@ -8,7 +8,7 @@ import {
 
 import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
-import { useExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
+import { useSignExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 
 export type UnstakeRequest = {
@@ -24,7 +24,7 @@ export function useUnstakeMutation(
     "mutationFn" | "onSuccess"
   >,
 ): UseMutationResult<string, Error, UnstakeRequest> {
-  const executeAndWaitTx = useExecuteAndWaitTx();
+  const signExecuteAndWaitTx = useSignExecuteAndWaitTx();
   const currAcct = useCurrentAccount();
   const queryClient = useQueryClient();
 
@@ -60,7 +60,7 @@ export function useUnstakeMutation(
         arguments: [coin, tx.pure.address(currAcct.address)],
       });
 
-      const resp = await executeAndWaitTx(tx);
+      const resp = await signExecuteAndWaitTx(tx);
 
       return resp.digest;
     },

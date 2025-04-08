@@ -8,7 +8,7 @@ import {
 
 import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
-import { useExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
+import { useSignExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
 
 export type LockRequest = {
   batchId: string;
@@ -24,7 +24,7 @@ export function useLockMutation(
     "mutationFn" | "onSuccess"
   >,
 ): UseMutationResult<string, Error, LockRequest> {
-  const executeAndWaitTx = useExecuteAndWaitTx();
+  const signExecuteAndWaitTx = useSignExecuteAndWaitTx();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -41,7 +41,7 @@ export function useLockMutation(
         ],
       });
 
-      const resp = await executeAndWaitTx(tx);
+      const resp = await signExecuteAndWaitTx(tx);
 
       return resp.digest;
     },

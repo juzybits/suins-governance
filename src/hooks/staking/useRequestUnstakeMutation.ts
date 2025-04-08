@@ -8,7 +8,7 @@ import {
 
 import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
-import { useExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
+import { useSignExecuteAndWaitTx } from "@/hooks/useExecuteAndWaitTx";
 
 export type RequestUnstakeRequest = {
   batchId: string;
@@ -23,7 +23,7 @@ export function useRequestUnstakeMutation(
     "mutationFn" | "onSuccess"
   >,
 ): UseMutationResult<string, Error, RequestUnstakeRequest> {
-  const executeAndWaitTx = useExecuteAndWaitTx();
+  const signExecuteAndWaitTx = useSignExecuteAndWaitTx();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -39,7 +39,7 @@ export function useRequestUnstakeMutation(
         ],
       });
 
-      const resp = await executeAndWaitTx(tx);
+      const resp = await signExecuteAndWaitTx(tx);
 
       return resp.digest;
     },

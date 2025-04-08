@@ -17,7 +17,7 @@ const RESPONSE_OPTIONS: SuiTransactionBlockResponseOptions = {
   showObjectChanges: true,
 };
 
-export function useExecuteAndWaitTx() {
+export function useSignExecuteAndWaitTx() {
   const { mutateAsync: walletSignTx } = useSignTransaction();
   const currAcct = useCurrentAccount();
   const suiClient = useSuiClient();
