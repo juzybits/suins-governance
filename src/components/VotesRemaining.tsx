@@ -13,7 +13,7 @@ export function VotesRemaining() {
 
   const { data: balance, isLoading } = useGetBalance({
     owner: address,
-    coinType: SUINS_PACKAGES[NETWORK].votingTokenType,
+    coinType: SUINS_PACKAGES[NETWORK].coinType,
   });
 
   if (!address) {

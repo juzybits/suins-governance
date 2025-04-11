@@ -34,7 +34,7 @@ export function useStakeOrLockMutation(
 
       const coin = coinWithBalance({
         balance: parseNSAmount(amount),
-        type: SUINS_PACKAGES[NETWORK].votingTokenType,
+        type: SUINS_PACKAGES[NETWORK].coinType,
       })(tx);
 
       const batch = tx.moveCall({

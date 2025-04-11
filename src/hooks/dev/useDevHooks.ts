@@ -64,7 +64,7 @@ export function useCreateProposalMutation(
 
       const coin = coinWithBalance({
         balance: reward,
-        type: SUINS_PACKAGES[NETWORK].votingTokenType,
+        type: SUINS_PACKAGES[NETWORK].coinType,
       })(tx);
 
       const options = tx.moveCall({

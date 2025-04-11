@@ -27,7 +27,7 @@ export function NSAmount({
   noTokenIcon?: boolean;
 }) {
   const { data: coinMetadata } = useCoinMetadata({
-    coinType: SUINS_PACKAGES[NETWORK].votingTokenType,
+    coinType: SUINS_PACKAGES[NETWORK].coinType,
   });
 
   const amountFormatted = formatBalance({

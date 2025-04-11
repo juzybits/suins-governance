@@ -48,14 +48,14 @@ export function useUnstakeMutation(
 
       const coin = tx.moveCall({
         target: "0x2::coin::from_balance",
-        typeArguments: [SUINS_PACKAGES[NETWORK].votingTokenType],
+        typeArguments: [SUINS_PACKAGES[NETWORK].coinType],
         arguments: [balance],
       });
 
       tx.moveCall({
         target: "0x2::transfer::public_transfer",
         typeArguments: [
-          `0x2::coin::Coin<${SUINS_PACKAGES[NETWORK].votingTokenType}>`,
+          `0x2::coin::Coin<${SUINS_PACKAGES[NETWORK].coinType}>`,
         ],
         arguments: [coin, tx.pure.address(currAcct.address)],
       });

@@ -59,7 +59,7 @@ export function StakeContent() {
 
   const balance = useGetBalance({
     owner: currAcct?.address,
-    coinType: SUINS_PACKAGES[NETWORK].votingTokenType,
+    coinType: SUINS_PACKAGES[NETWORK].coinType,
   });
   const availableNS = balance.data ? BigInt(balance.data.totalBalance) : 0n;
 

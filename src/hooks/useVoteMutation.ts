@@ -45,17 +45,17 @@ export function useVoteMutation(
       const txb = new Transaction();
       txb.setSender(address);
       const coinMetadata = await client.getCoinMetadata({
-        coinType: SUINS_PACKAGES[NETWORK].votingTokenType,
+        coinType: SUINS_PACKAGES[NETWORK].coinType,
       });
       const coins = await client.getCoins({
         owner: address,
-        coinType: SUINS_PACKAGES[NETWORK].votingTokenType,
+        coinType: SUINS_PACKAGES[NETWORK].coinType,
       });
       const bigIntAmount = parseAmount(amount, coinMetadata?.decimals ?? 8);
 
       const [primaryCoin, ...mergeCoins] =
         coins?.data?.filter(
-          (coin) => coin.coinType === SUINS_PACKAGES[NETWORK].votingTokenType,
+          (coin) => coin.coinType === SUINS_PACKAGES[NETWORK].coinType,
         ) || [];
       const primaryCoinInput = txb.object(primaryCoin!.coinObjectId);
       if (mergeCoins.length) {

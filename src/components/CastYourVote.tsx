@@ -39,7 +39,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
 
   const { data: balance } = useGetBalance({
     owner: address,
-    coinType: SUINS_PACKAGES[NETWORK].votingTokenType,
+    coinType: SUINS_PACKAGES[NETWORK].coinType,
   });
 
   const tokenBalance = Number(balance?.formatted?.replaceAll(",", "") ?? 0);
