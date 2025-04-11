@@ -6,11 +6,6 @@ import { SuiNSLogo } from "@/components/SuiNSLogo";
 import { ConnectWallet } from "@/components/WalletConnet/ConnectWallet";
 import { cn } from "@/utils/cn";
 import { ProposalsMenu } from "@/components/ProposalsMenu";
-import { GradientBorder } from "../gradient-border";
-import { Text } from "../ui/Text";
-import { NETWORK } from "@/constants/env";
-import { useGetTestTokenMutation } from "@/hooks/useGetTestTokenMutation";
-import { toast } from "sonner";
 import { VotesRemaining } from "@/components/VotesRemaining";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 
@@ -29,14 +24,6 @@ export function Header({
   logoAction,
 }: HeaderProps) {
   const isSmallOrAbove = useBreakpoint("sm");
-  const getTokens = useGetTestTokenMutation({
-    onSuccess: () => {
-      toast.success("Testnet NS token sent to your address");
-    },
-    onError: (error) => {
-      toast.error(error.message);
-    },
-  });
   return (
     <div className="z-10 mx-auto flex w-full flex-col items-center justify-center gap-2024_XL pt-2024_L sm:gap-2024_3XL">
       <div
@@ -66,26 +53,6 @@ export function Header({
           </div>
 
           <div className="flex items-center gap-2024_M">
-            {NETWORK === "testnet" && (
-              <button
-                className="w-full rounded-2024_S bg-transparent md:w-fit"
-                onClick={getTokens.mutate}
-              >
-                <GradientBorder
-                  variant="green_pink_blue"
-                  animateOnHover
-                  className="flex w-full items-center justify-center rounded-2024_M border-2 bg-[#62519c66] px-2024_R py-2024_R md:p-2024_M"
-                >
-                  <Text
-                    variant="B6/bold"
-                    color="fillContent-primary"
-                    className="leading-none"
-                  >
-                    Request tokens
-                  </Text>
-                </GradientBorder>
-              </button>
-            )}
             {isSmallOrAbove && <VotesRemaining />}
 
             <div className="flex max-w-[200px] justify-end">

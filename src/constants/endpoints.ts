@@ -12,7 +12,6 @@ export const SUINS_PACKAGES = {
       "0xe6a003ee00949ec17463a21875bc235d73714b1a9f1a48b0b2587fc0d2c4049b::ns::NS",
     votingTokenType:
       "0xe6a003ee00949ec17463a21875bc235d73714b1a9f1a48b0b2587fc0d2c4049b::ns::NS",
-    faucet: "",
   },
   testnet: {
     votingPkgId:
@@ -26,8 +25,6 @@ export const SUINS_PACKAGES = {
       "0xe3c2291f345d6dd96855e0f9415e58fd981cf95fd18331f0fb899d91a8969293::ns::NS",
     votingTokenType:
       "0x2df7fb6fce94faeb1fb819d51f73fe4549e5d6f827828a641b2806a6dbf2d21b::token::TOKEN",
-    faucet:
-      "0xf6d7f2d00a2521f75fcbce03df5dd0d71887287a78296c3d786f36238122f8c9",
   },
   mainnet: {
     votingPkgId:
@@ -41,8 +38,6 @@ export const SUINS_PACKAGES = {
     // TODO-J: unify with coinType
     votingTokenType:
       "0x5145494a5f5100e645e4b0aa950fa6b68f614e8c59e17bc5ded3495123a79178::ns::NS",
-    // No faucet for mainnet
-    faucet: "",
   },
 };
 
