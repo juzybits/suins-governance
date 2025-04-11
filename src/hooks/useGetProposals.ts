@@ -33,8 +33,7 @@ export function useGetProposalsIds() {
         dynamicFieldsObject.data?.content,
       );
 
-      if (governanceData.error)
-        return [];
+      if (governanceData.error) return [];
 
       const proposals = governanceData.data?.fields.value.fields.pos0;
       if (NETWORK === "mainnet") {
@@ -60,26 +59,29 @@ export function useGetProposalsIds() {
 const V1_PROPOSAL_IDS = [
   // #1: SuiNS DAO Constitution
   {
-    "type": "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41::early_voting::ProposalPointer",
-    "fields": {
-      "end_time": "1732816800000",
-      "proposal_id": "0xd4c794821436f03f1dc8321f4939c17d67c54aa6661a7b8dee12b3d179601001"
-    }
+    type: "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41::early_voting::ProposalPointer",
+    fields: {
+      end_time: "1732816800000",
+      proposal_id:
+        "0xd4c794821436f03f1dc8321f4939c17d67c54aa6661a7b8dee12b3d179601001",
+    },
   },
   // #2: SuiNS Pricing & Renewal Rates
   {
-    "type": "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41::early_voting::ProposalPointer",
-    "fields": {
-      "end_time": "1734811200000",
-      "proposal_id": "0x8e71b81bd327fc8ae721518ccbfc0964fe19c8300773307eb6f0746e7f620b8f"
-    }
+    type: "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41::early_voting::ProposalPointer",
+    fields: {
+      end_time: "1734811200000",
+      proposal_id:
+        "0x8e71b81bd327fc8ae721518ccbfc0964fe19c8300773307eb6f0746e7f620b8f",
+    },
   },
   // #3: SuiNS RFP Selection
   {
-    "type": "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41::early_voting::ProposalPointer",
-    "fields": {
-      "end_time": "1740175200000",
-      "proposal_id": "0x9ee1af58d737418649101836c8ba926cbe28e522e22e315dd7bd649c94425a0b"
-    }
+    type: "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41::early_voting::ProposalPointer",
+    fields: {
+      end_time: "1740175200000",
+      proposal_id:
+        "0x9ee1af58d737418649101836c8ba926cbe28e522e22e315dd7bd649c94425a0b",
+    },
   },
 ];

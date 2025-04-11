@@ -54,9 +54,7 @@ export function useUnstakeMutation(
 
       tx.moveCall({
         target: "0x2::transfer::public_transfer",
-        typeArguments: [
-          `0x2::coin::Coin<${SUINS_PACKAGES[NETWORK].coinType}>`,
-        ],
+        typeArguments: [`0x2::coin::Coin<${SUINS_PACKAGES[NETWORK].coinType}>`],
         arguments: [coin, tx.pure.address(currAcct.address)],
       });
 
