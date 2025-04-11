@@ -1,19 +1,21 @@
-import { getFullnodeUrl, SuiClient } from "@mysten/sui/client";
-import { formatNSBalance } from "../src/utils/formatNumber";
+import { SuiClient } from "@mysten/sui/client";
+import { SUINS_ENDPOINTS } from "../src/constants/endpoints";
+import { CoinFormat, formatBalance, formatNSBalance } from "../src/utils/formatNumber";
 
 const governancePkgV1 = "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41";
-const eventsPerQuery = 1;
 
 const main = async () => {
-    const client = new SuiClient({ url: getFullnodeUrl("mainnet") });
-    // console.log(JSON.stringify(await queryTxs(client), null, 2));
-    console.log(await queryTxs(client));
-    // console.log(JSON.stringify(await queryEvents(client), null, 2));
+    const client = new SuiClient({ url: SUINS_ENDPOINTS.mainnet.fullNodes });
+    const events = await queryTxs(client);
+    for (const e of events) {
+        console.log(`"${e.tx_digest}"\t"${e.date}"\t"${e.voter_addr}"\t"${e.amount_ns}"`);
+    }
 };
 
 type ReturnTokenEvent = {
     tx_digest: string;
     timestamp: string;
+    date: string;
     voter_addr: string;
     amount_raw: string;
     amount_ns: string;
@@ -26,7 +28,6 @@ async function queryTxs(client: SuiClient) {
     while (hasNextPage) {
         const txs = await client.queryTransactionBlocks({
             cursor,
-            limit: eventsPerQuery,
             filter: {
                 MoveFunction: {
                     package: governancePkgV1,
@@ -35,13 +36,7 @@ async function queryTxs(client: SuiClient) {
                 },
             },
             options: {
-                // showBalanceChanges: true,
-                // showEffects: true,
                 showEvents: true,
-                // showInput: true,
-                // showObjectChanges: true,
-                // showRawEffects: true,
-                // showRawInput: true,
             },
         });
         hasNextPage = txs.hasNextPage;
@@ -52,25 +47,15 @@ async function queryTxs(client: SuiClient) {
                 events.push({
                     tx_digest: tx.digest,
                     timestamp: tx.timestampMs!,
+                    date: new Date(Number(tx.timestampMs)).toISOString(),
                     voter_addr: json.voter,
                     amount_raw: json.amount,
-                    amount_ns: formatNSBalance(json.amount),
+                    amount_ns: formatBalance(json.amount, 6, CoinFormat.FULL),
                 })
             }
         }
-        break; // TODO: remove
     }
     return events;
 }
-
-// async function queryEvents(client: SuiClient) {
-//     const events = await client.queryEvents({
-//         query: {
-//             MoveEventType: `${governancePkgV1}::proposal::ReturnTokenEvent`,
-//         },
-//         limit: 1,
-//     });
-//     return events;
-// }
 
 main();
