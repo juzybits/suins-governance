@@ -8,7 +8,7 @@ import { CoinFormat, formatBalance } from "../src/utils/formatNumber";
 
 const governancePkgV1 = "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41";
 
-type ReturnTokenEvent = {
+export type ReturnTokenEvent = {
     tx_digest: string;
     timestamp: string;
     date: string;
