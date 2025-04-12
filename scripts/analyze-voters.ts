@@ -4,7 +4,7 @@
 
 import { readFileSync } from "fs";
 import type { ReturnTokenEvent } from "./find-voters";
-import { CoinFormat, formatBalance } from "../src/utils/formatNumber";
+import { CoinFormat, formatBalance, formatNSBalance, NS_DECIMALS } from "../src/utils/formatNumber";
 
 function main() {
     const filePath = process.argv[2];
@@ -28,11 +28,13 @@ function main() {
 function analyzeTopVotes(events: ReturnTokenEvent[]) {
     const uniqVoters = new Set<string>();
     const commonAmounts = new Map<string, number>();
+    let totalVoteAmount = BigInt(0);
 
     for (const event of events) {
         const { amount_raw, voter_addr } = event;
         commonAmounts.set(amount_raw, (commonAmounts.get(amount_raw) || 0) + 1);
         uniqVoters.add(voter_addr);
+        totalVoteAmount += BigInt(amount_raw);
     }
 
     // sort by frequency, highest first
@@ -47,7 +49,7 @@ function analyzeTopVotes(events: ReturnTokenEvent[]) {
     for (const [amount, count] of sortedAmounts) {
         const percentage = ((count / events.length) * 100).toFixed(2);
         console.log(
-            `${formatBalance(amount, 6, CoinFormat.FULL).padStart(6)}` +
+            `${formatBalance(amount, NS_DECIMALS, CoinFormat.FULL).padStart(6)}` +
             `${count.toString().padStart(15)}` +
             `${percentage.toString().padStart(14)}%`
         );
@@ -56,6 +58,7 @@ function analyzeTopVotes(events: ReturnTokenEvent[]) {
     console.log(`\nTotal votes: ${events.length}`);
     console.log(`Unique voters: ${uniqVoters.size}`);
     console.log(`Unique amounts: ${commonAmounts.size}`);
+    console.log(`Total NS voted: ${formatNSBalance(totalVoteAmount)}`);
 }
 
 function analyze154Votes(events: ReturnTokenEvent[]) {
