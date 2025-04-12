@@ -11,7 +11,6 @@ function main() {
 
     if (!filePath) {
         console.error("Error: provide a JSON file path as an argument.");
-        console.log("Usage: bun analyze-voters.ts <json_file_path>");
         process.exit(1);
     }
 
