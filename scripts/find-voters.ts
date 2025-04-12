@@ -1,16 +1,12 @@
+/**
+ * Find user addresses who voted on proposals 1-3, and how much NS they voted with.
+ */
+
 import { SuiClient } from "@mysten/sui/client";
 import { SUINS_ENDPOINTS } from "../src/constants/endpoints";
-import { CoinFormat, formatBalance, formatNSBalance } from "../src/utils/formatNumber";
+import { CoinFormat, formatBalance } from "../src/utils/formatNumber";
 
 const governancePkgV1 = "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41";
-
-const main = async () => {
-    const client = new SuiClient({ url: SUINS_ENDPOINTS.mainnet.fullNodes });
-    const events = await queryTxs(client);
-    for (const e of events) {
-        console.log(`"${e.tx_digest}"\t"${e.date}"\t"${e.voter_addr}"\t"${e.amount_ns}"`);
-    }
-};
 
 type ReturnTokenEvent = {
     tx_digest: string;
@@ -20,6 +16,15 @@ type ReturnTokenEvent = {
     amount_raw: string;
     amount_ns: string;
 }
+
+const main = async () => {
+    const client = new SuiClient({ url: SUINS_ENDPOINTS.mainnet.fullNodes });
+    const events = await queryTxs(client);
+    // for (const e of events) {
+    //     console.log(`"${e.tx_digest}"\t"${e.date}"\t"${e.voter_addr}"\t"${e.amount_ns}"`);
+    // }
+    console.log(JSON.stringify(events, null, 2));
+};
 
 async function queryTxs(client: SuiClient) {
     let events: ReturnTokenEvent[] = [];
