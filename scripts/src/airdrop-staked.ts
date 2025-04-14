@@ -7,7 +7,8 @@ import type { AirdropConfig } from "./generate-airdrop-config";
 import { promptUser } from "./utils";
 import { getRandomAirdropConfig } from "./getRandomAirdropConfig";
 import { coinWithBalance, Transaction } from "@mysten/sui/transactions";
-import { SUINS_PACKAGES } from "../../src/constants/endpoints";
+import { isSupportedNetwork, SUINS_PACKAGES, type NetworkConfig, type SupportedNetwork } from "../../src/constants/endpoints";
+import type { Keypair } from "@mysten/sui/cryptography";
 
 /**
  * Maximum commands in a PTB is 1024, and each airdrop calls 3 commands:
@@ -16,28 +17,47 @@ import { SUINS_PACKAGES } from "../../src/constants/endpoints";
 const AIRDROPS_PER_TX = 341;
 
 async function main() {
-    // const airdrops = readAirdropConfigFromFile();
-    const airdrops = getRandomAirdropConfig(84533);
-
-    const proceed = await showSummaryAndConfirm(airdrops);
-    if (!proceed) {
-        console.log("Aborting.");
-        process.exit(0);
-    }
-
-    await executeAirdrop(airdrops);
-}
-
-async function executeAirdrop(airdrops: AirdropConfig[]) {
     const [network, signer] = await Promise.all([
         getActiveEnv(),
         getActiveKeypair(),
     ]);
 
-    const networkConf = SUINS_PACKAGES.localnet; // TODO
+    if (!isSupportedNetwork(network)) {
+        throw new Error(`Unsupported network: ${network}`);
+    }
 
+    const networkConf = SUINS_PACKAGES[network];
     const client = new SuiClient({ url: getFullnodeUrl(network) });
-    const stakingAdminCapId = await getStakingAdminCapId({ // TODO: discuss security implications
+
+    // const airdrops = readAirdropConfigFromFile();
+    const airdrops = getRandomAirdropConfig(84533);
+
+    const proceed = await showSummaryAndConfirm({ airdrops, network });
+    if (!proceed) {
+        console.log("Aborting.");
+        process.exit(0);
+    }
+
+    await executeAirdrop({
+        airdrops,
+        client,
+        signer,
+        networkConf,
+    });
+}
+
+async function executeAirdrop({
+    airdrops,
+    client,
+    signer,
+    networkConf,
+}: {
+    airdrops: AirdropConfig[],
+    client: SuiClient,
+    signer: Keypair,
+    networkConf: NetworkConfig,
+}) {
+    const stakingAdminCapId = await getStakingAdminCapId({
         client,
         packageId: networkConf.votingPkgId,
         owner: signer.toSuiAddress(),
@@ -108,9 +128,13 @@ function readAirdropConfigFromFile(): AirdropConfig[] {
     return airdrops;
 }
 
-async function showSummaryAndConfirm(
+async function showSummaryAndConfirm({
+    airdrops,
+    network,
+}: {
     airdrops: AirdropConfig[],
-): Promise<boolean> {
+    network: SupportedNetwork,
+}): Promise<boolean> {
     let totalAmount = 0n;
     let totalRecipients = 0;
     airdrops.forEach((airdrop) => {
@@ -119,6 +143,10 @@ async function showSummaryAndConfirm(
     });
     console.log(`Total amount: ${formatBalance(totalAmount, NS_DECIMALS, CoinFormat.FULL)}`);
     console.log(`Total recipients: ${totalRecipients}`);
+
+    if (network === "localnet") {
+        return true;
+    }
 
     return await promptUser();
 }
