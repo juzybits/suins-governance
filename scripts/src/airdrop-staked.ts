@@ -87,6 +87,7 @@ async function main({
   /* Initialize signer and client */
 
   const signer = pairFromSecretKey(privateKey);
+  const owner = signer.toSuiAddress();
   const client = new SuiClient({ url: getFullnodeUrl(network) });
   const netCnf = SUINS_PACKAGES[network]; // SuiNS package and object IDs
 
@@ -112,14 +113,7 @@ async function main({
 
   /* Check user has enough NS balance */
 
-  const userBalance = BigInt(
-    (
-      await client.getBalance({
-        owner: signer.toSuiAddress(),
-        coinType: netCnf.coinType,
-      })
-    ).totalBalance,
-  );
+  const userBalance = await getNsBalance({ client, owner, netCnf });
   console.log(
     `Your NS balance: ${formatBalance(userBalance, NS_DECIMALS, CoinFormat.ROUNDED)}`,
   );
@@ -140,31 +134,7 @@ async function main({
 
   /* Initialize airdrop log */
 
-  const log: AirdropLog = {
-    status: "in_progress",
-    network,
-    startTime: new Date().toISOString(),
-    endTime: null,
-    totalRecipients,
-    totalAmount: totalAmount.toString(),
-    txRequired: dropsPerTx.length,
-    balanceBefore: userBalance.toString(),
-    balanceAfter: null,
-    balanceUsed: null,
-    transactions: dropsPerTx.map((drops, index) => {
-      let dropsTotalAmount = 0n;
-      drops.forEach((drop) => (dropsTotalAmount += BigInt(drop.amount_raw)));
-
-      return {
-        txIndex: index,
-        status: "not_started",
-        digest: null,
-        recipients: drops.length,
-        totalAmount: dropsTotalAmount.toString(),
-      };
-    }),
-  };
-  writeLog(output, log);
+  const log = writeInitialLog();
 
   /* Get user confirmation */
 
@@ -188,30 +158,51 @@ async function main({
       output,
       log,
     });
+    console.log("Airdrop completed successfully");
+    await writeFinalLog(true);
+  } catch (error) {
+    console.error("Airdrop failed:", error);
+    await writeFinalLog(false);
+  }
 
-    /* Update log file */
+  function writeInitialLog(): AirdropLog {
+    const log: AirdropLog = {
+      status: "in_progress",
+      network,
+      startTime: new Date().toISOString(),
+      endTime: null,
+      totalRecipients,
+      totalAmount: totalAmount.toString(),
+      txRequired: dropsPerTx.length,
+      balanceBefore: userBalance.toString(),
+      balanceAfter: null,
+      balanceUsed: null,
+      transactions: dropsPerTx.map((drops, index) => {
+        let dropsTotalAmount = 0n;
+        drops.forEach((drop) => (dropsTotalAmount += BigInt(drop.amount_raw)));
 
-    log.status = "success";
+        return {
+          txIndex: index,
+          status: "not_started",
+          digest: null,
+          recipients: drops.length,
+          totalAmount: dropsTotalAmount.toString(),
+        };
+      }),
+    };
+    writeLog(output, log);
+    return log;
+  }
+
+  async function writeFinalLog(success: boolean) {
+    log.status = success ? "success" : "failure";
     log.endTime = new Date().toISOString();
     writeLog(output, log);
-    const finalBalance = BigInt(
-      (
-        await client.getBalance({
-          owner: signer.toSuiAddress(),
-          coinType: netCnf.coinType,
-        })
-      ).totalBalance,
-    );
+    const finalBalance = await getNsBalance({ client, owner, netCnf });
     log.balanceAfter = finalBalance.toString();
     log.balanceUsed = (userBalance - finalBalance).toString();
     writeLog(output, log);
-    console.log("Airdrop completed successfully");
-  } catch (error) {
-    log.endTime = new Date().toISOString();
-    log.status = "failure";
-    writeLog(output, log);
-    console.error("Airdrop failed:", error);
-  }
+  };
 }
 
 async function executeAirdrop({
@@ -320,6 +311,22 @@ function writeLog(outputPath: string, log: AirdropLog): void {
   } catch (error) {
     throw new Error("Failed to write log file");
   }
+}
+
+async function getNsBalance({
+  client,
+  owner,
+  netCnf,
+}: {
+  client: SuiClient;
+  owner: string;
+  netCnf: NetworkConfig;
+}): Promise<bigint> {
+  const balance = await client.getBalance({
+    owner,
+    coinType: netCnf.coinType,
+  });
+  return BigInt(balance.totalBalance);
 }
 
 async function getStakingAdminCapId({
