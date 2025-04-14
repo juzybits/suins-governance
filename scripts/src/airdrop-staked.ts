@@ -1,14 +1,13 @@
 import { readFileSync } from "fs";
-import { getFullnodeUrl, SuiClient } from "@mysten/sui/client";
-import { getActiveEnv, getActiveKeypair, signAndExecuteTx } from "@polymedia/suitcase-node";
-import { chunkArray } from "@polymedia/suitcase-core";
+import { getFullnodeUrl, SuiClient, type SuiTransactionBlockResponse, type SuiTransactionBlockResponseOptions } from "@mysten/sui/client";
+import { chunkArray, pairFromSecretKey } from "@polymedia/suitcase-core";
 import { CoinFormat, formatBalance, NS_DECIMALS } from "../../src/utils/formatNumber";
 import type { AirdropConfig } from "./generate-airdrop-config";
 import { promptUser } from "./utils";
 import { getRandomAirdropConfig } from "./getRandomAirdropConfig";
 import { coinWithBalance, Transaction } from "@mysten/sui/transactions";
 import { isSupportedNetwork, SUINS_PACKAGES, type NetworkConfig, type SupportedNetwork } from "../../src/constants/endpoints";
-import type { Keypair } from "@mysten/sui/cryptography";
+import type { Keypair, Signer } from "@mysten/sui/cryptography";
 
 /**
  * Maximum commands in a PTB is 1024, and each airdrop calls 3 commands:
@@ -17,15 +16,18 @@ import type { Keypair } from "@mysten/sui/cryptography";
 const AIRDROPS_PER_TX = 341;
 
 async function main() {
-    const [network, signer] = await Promise.all([
-        getActiveEnv(),
-        getActiveKeypair(),
-    ]);
+    const network = process.env.NETWORK;
+    const privateKey = process.env.PRIVATE_KEY;
+
+    if (!network || !privateKey) {
+        throw new Error("NETWORK and PRIVATE_KEY must be set in your .env file");
+    }
 
     if (!isSupportedNetwork(network)) {
         throw new Error(`Unsupported network: ${network}`);
     }
 
+    const signer = pairFromSecretKey(privateKey);
     const networkConf = SUINS_PACKAGES[network];
     const client = new SuiClient({ url: getFullnodeUrl(network) });
 
@@ -171,6 +173,29 @@ async function getStakingAdminCapId({
         return resp.data?.objectId ?? null;
     }
     return null;
+}
+
+export async function signAndExecuteTx({
+    client,
+    tx,
+    signer,
+}: {
+    client: SuiClient;
+    tx: Transaction;
+    signer: Signer;
+}): Promise<SuiTransactionBlockResponse>
+{
+    const resp = await client.signAndExecuteTransaction({
+        signer,
+        transaction: tx,
+    });
+
+    return await client.waitForTransaction({
+        digest: resp.digest,
+        options: { showEffects: true, showObjectChanges: true },
+        timeout: 60_000,
+        pollInterval: 250,
+    });
 }
 
 // === main ===
