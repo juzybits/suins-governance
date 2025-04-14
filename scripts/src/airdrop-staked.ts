@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "fs";
+import { existsSync, readFileSync, renameSync, writeFileSync } from "fs";
 import {
   getFullnodeUrl,
   SuiClient,
@@ -42,6 +42,10 @@ command
     "-c, --config <path>",
     "Path to airdrop config JSON file (see `generate-airdrop-config.ts`)",
   )
+  .requiredOption(
+    "-o, --output <path>",
+    "Path to output log JSON file that will be updated after each transaction",
+  )
   .option("-y, --yes", "Skip confirmation prompt")
   .action(async (options) => {
     try {
@@ -57,10 +61,12 @@ command.parse(process.argv);
 async function main({
   network,
   config,
+  output,
   yes,
 }: {
   network: string;
   config: string;
+  output: string;
   yes: boolean;
 }) {
   /* Validate args and env vars */
@@ -88,15 +94,25 @@ async function main({
 
   const airdrops = readAirdropConfigFromFile(config);
 
-  /* Fetch StakingAdminCap (aborts if not owned by `signer`) */
+  /* Print airdrop summary */
 
-  const stakingAdminCapId = await getStakingAdminCapId({
-    client,
-    packageId: netCnf.votingPkgId,
-    owner: signer.toSuiAddress(),
+  const dropsPerTx = chunkArray(airdrops, AIRDROPS_PER_TX);
+  console.log(`Transactions required: ${dropsPerTx.length}`);
+
+  let totalAmount = 0n;
+  let totalRecipients = 0;
+  airdrops.forEach((airdrop) => {
+    totalAmount += BigInt(airdrop.amount_raw);
+    totalRecipients++;
   });
+  console.log(
+    `Total airdrop recipients: ${totalRecipients}`
+  );
+  console.log(
+    `Total airdrop amount: ${formatBalance(totalAmount, NS_DECIMALS, CoinFormat.ROUNDED)}`,
+  );
 
-  /* Confirm user has enough NS balance */
+  /* Check user has enough NS balance */
 
   const userBalance = BigInt(
     (
@@ -109,24 +125,46 @@ async function main({
   console.log(
     `Your NS balance: ${formatBalance(userBalance, NS_DECIMALS, CoinFormat.ROUNDED)}`,
   );
-
-  let totalAmount = 0n;
-  let totalRecipients = 0;
-  airdrops.forEach((airdrop) => {
-    totalAmount += BigInt(airdrop.amount_raw);
-    totalRecipients++;
-  });
-  console.log(`Total airdrop recipients: ${totalRecipients}`);
-  console.log(
-    `Total airdrop amount: ${formatBalance(totalAmount, NS_DECIMALS, CoinFormat.ROUNDED)}`,
-  );
-  console.log(
-    `Transactions required: ${Math.ceil(totalRecipients / AIRDROPS_PER_TX)}`,
-  );
   if (userBalance < totalAmount) {
-    console.log("Your NS balance is lower than the total airdrop amount");
-    process.exit(0);
+    console.error("Error: Your NS balance is lower than the total airdrop amount");
+    process.exit(1);
   }
+
+  /* Fetch StakingAdminCap (aborts if not owned by `signer`) */
+
+  const stakingAdminCapId = await getStakingAdminCapId({
+    client,
+    packageId: netCnf.votingPkgId,
+    owner: signer.toSuiAddress(),
+  });
+
+  /* Initialize airdrop log */
+
+  const log: AirdropLog = {
+    network,
+    startTime: new Date().toISOString(),
+    endTime: null,
+    totalRecipients,
+    totalAmount: totalAmount.toString(),
+    txRequired: dropsPerTx.length,
+    balanceBefore: userBalance.toString(),
+    balanceAfter: null,
+    balanceUsed: null,
+    isComplete: false,
+    transactions: dropsPerTx.map((drops, index) => {
+      let dropsTotalAmount = 0n;
+      drops.forEach(drop => dropsTotalAmount += BigInt(drop.amount_raw));
+
+      return {
+        txIndex: index,
+        status: TxStatus.NOT_STARTED,
+        digest: null,
+        recipients: drops.length,
+        totalAmount: dropsTotalAmount.toString(),
+      };
+    }),
+  };
+  writeLog(output, log);
 
   /* Get user confirmation */
 
@@ -140,13 +178,40 @@ async function main({
 
   /* Execute airdrop */
 
-  await executeAirdrop({
-    airdrops,
-    client,
-    signer,
-    netCnf,
-    stakingAdminCapId,
-  });
+  try {
+    await executeAirdrop({
+      airdrops,
+      client,
+      signer,
+      netCnf,
+      stakingAdminCapId,
+      output,
+      log,
+    });
+
+    /* Update log file */
+
+    const finalBalance = BigInt(
+      (
+        await client.getBalance({
+          owner: signer.toSuiAddress(),
+          coinType: netCnf.coinType,
+        })
+      ).totalBalance,
+    );
+
+    log.balanceAfter = finalBalance.toString();
+    log.balanceUsed = (userBalance - finalBalance).toString();
+    log.endTime = new Date().toISOString();
+    log.isComplete = true;
+    writeLog(output, log);
+
+    console.log("Airdrop completed successfully!");
+    console.log(`Final NS balance: ${formatBalance(finalBalance, NS_DECIMALS, CoinFormat.ROUNDED)}`);
+    console.log(`NS used: ${formatBalance(userBalance - finalBalance, NS_DECIMALS, CoinFormat.ROUNDED)}`);
+  } catch (error) {
+    console.error("Airdrop failed:", error);
+  }
 }
 
 async function executeAirdrop({
@@ -155,53 +220,90 @@ async function executeAirdrop({
   signer,
   netCnf,
   stakingAdminCapId,
+  output,
+  log,
 }: {
   airdrops: AirdropConfig[];
   client: SuiClient;
   signer: Keypair;
   netCnf: NetworkConfig;
   stakingAdminCapId: string;
+  output: string;
+  log: AirdropLog;
 }) {
   const dropsPerTx = chunkArray(airdrops, AIRDROPS_PER_TX);
 
-  let txNumber = 0;
-  for (const txDrops of dropsPerTx) {
-    console.log(`Starting tx ${txNumber} of ${dropsPerTx.length}`);
-    txNumber++;
+  for (let txIndex = 0; txIndex < dropsPerTx.length; txIndex++) {
+    const txDrops = dropsPerTx[txIndex]!;
+    console.log(`Starting tx ${txIndex + 1} of ${dropsPerTx.length}`);
 
-    const tx = new Transaction();
-    tx.setSender(signer.toSuiAddress());
-    for (const drop of txDrops) {
-      const payCoin = coinWithBalance({
-        type: netCnf.coinType,
-        balance: BigInt(drop.amount_raw),
-      });
-      const batch = tx.moveCall({
-        target: `${netCnf.votingPkgId}::staking_batch::admin_new`,
-        typeArguments: [],
-        arguments: [
-          tx.object(stakingAdminCapId),
-          tx.object(netCnf.stakingStatsId),
-          payCoin,
-          tx.pure.u64(drop.start_ms),
-          tx.pure.u64(drop.unlock_ms),
-        ],
-      });
-      tx.moveCall({
-        target: `${netCnf.votingPkgId}::staking_batch::admin_transfer`,
-        typeArguments: [],
-        arguments: [
-          tx.object(stakingAdminCapId),
-          batch,
-          tx.pure.address(drop.recipient),
-        ],
-      });
-    }
-    const resp = await signExecuteAndWaitTx({ client, tx, signer });
-    if (resp.effects?.status.status !== "success") {
-      throw new Error(
-        `Transaction status was '${resp.effects?.status.status}': ${resp.digest}. Response: ${JSON.stringify(resp, null, 2)}`,
-      );
+    log.transactions[txIndex]!.status = TxStatus.BUILDING;
+    writeLog(output, log);
+
+    try {
+      const tx = new Transaction();
+      tx.setSender(signer.toSuiAddress());
+      for (const drop of txDrops) {
+        const payCoin = coinWithBalance({
+          type: netCnf.coinType,
+          balance: BigInt(drop.amount_raw),
+        });
+        const batch = tx.moveCall({
+          target: `${netCnf.votingPkgId}::staking_batch::admin_new`,
+          typeArguments: [],
+          arguments: [
+            tx.object(stakingAdminCapId),
+            tx.object(netCnf.stakingStatsId),
+            payCoin,
+            tx.pure.u64(drop.start_ms),
+            tx.pure.u64(drop.unlock_ms),
+          ],
+        });
+        tx.moveCall({
+          target: `${netCnf.votingPkgId}::staking_batch::admin_transfer`,
+          typeArguments: [],
+          arguments: [
+            tx.object(stakingAdminCapId),
+            batch,
+            tx.pure.address(drop.recipient),
+          ],
+        });
+      }
+
+      log.transactions[txIndex]!.status = TxStatus.EXECUTING;
+      writeLog(output, log);
+
+      const resp = await signExecuteAndWaitTx({ client, tx, signer });
+
+      if (resp.effects?.status.status !== "success") {
+        // Handle transaction failure
+        log.transactions[txIndex]!.status = TxStatus.FAILURE;
+        log.transactions[txIndex]!.digest = resp.digest;
+        log.transactions[txIndex]!.errorMessage =
+          `Transaction status was '${resp.effects?.status.status}'`;
+        writeLog(output, log);
+
+        throw new Error(
+          `Transaction status was '${resp.effects?.status.status}': ${resp.digest}. Response: ${JSON.stringify(resp, null, 2)}`,
+        );
+      }
+
+      // Update log with successful transaction
+      log.transactions[txIndex]!.status = TxStatus.SUCCESS;
+      log.transactions[txIndex]!.digest = resp.digest;
+      writeLog(output, log);
+
+      console.log(`Transaction ${txIndex + 1} completed successfully. Digest: ${resp.digest}`);
+    } catch (error) {
+      // Handle any error during transaction
+      if (!log.transactions[txIndex]!.status) {
+        log.transactions[txIndex]!.status = TxStatus.FAILURE;
+      }
+      log.transactions[txIndex]!.errorMessage = error instanceof Error ? error.message : String(error);
+      writeLog(output, log);
+
+      console.error(`Transaction ${txIndex + 1} failed:`, error);
+      throw error; // Re-throw to stop the airdrop process
     }
   }
 }
@@ -217,6 +319,20 @@ function readAirdropConfigFromFile(filePath: string): AirdropConfig[] {
   }
 
   return airdrops;
+}
+
+/**
+ * Safely writes the airdrop log to the output file.
+ * Uses a temporary file to avoid corrupting the log if the process crashes during writing.
+ */
+function writeLog(outputPath: string, log: AirdropLog): void {
+  try {
+    const tmpPath = `${outputPath}.tmp`;
+    writeFileSync(tmpPath, JSON.stringify(log, null, 2), "utf8");
+    renameSync(tmpPath, outputPath);
+  } catch (error) {
+    throw new Error("Failed to write log file");
+  }
 }
 
 async function getStakingAdminCapId({
@@ -292,3 +408,36 @@ export async function promptUser(
     });
   });
 }
+
+// === logging ===
+
+enum TxStatus {
+  NOT_STARTED = "not_started",
+  BUILDING = "building",
+  EXECUTING = "executing",
+  SUCCESS = "success",
+  FAILURE = "failure",
+}
+
+type TxLog = {
+  txIndex: number;
+  status: TxStatus;
+  digest: string | null;
+  errorMessage?: string;
+  recipients: number;
+  totalAmount: string;
+};
+
+type AirdropLog = {
+  network: string;
+  startTime: string;
+  endTime: string | null;
+  totalRecipients: number;
+  totalAmount: string;
+  txRequired: number;
+  balanceBefore: string;
+  balanceAfter: string | null;
+  balanceUsed: string | null;
+  isComplete: boolean;
+  transactions: TxLog[];
+};
