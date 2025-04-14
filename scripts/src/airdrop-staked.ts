@@ -141,6 +141,7 @@ async function main({
   /* Initialize airdrop log */
 
   const log: AirdropLog = {
+    status: "in_progress",
     network,
     startTime: new Date().toISOString(),
     endTime: null,
@@ -150,14 +151,13 @@ async function main({
     balanceBefore: userBalance.toString(),
     balanceAfter: null,
     balanceUsed: null,
-    isComplete: false,
     transactions: dropsPerTx.map((drops, index) => {
       let dropsTotalAmount = 0n;
       drops.forEach((drop) => (dropsTotalAmount += BigInt(drop.amount_raw)));
 
       return {
         txIndex: index,
-        status: TxStatus.NOT_STARTED,
+        status: "not_started",
         digest: null,
         recipients: drops.length,
         totalAmount: dropsTotalAmount.toString(),
@@ -191,6 +191,9 @@ async function main({
 
     /* Update log file */
 
+    log.status = "success";
+    log.endTime = new Date().toISOString();
+    writeLog(output, log);
     const finalBalance = BigInt(
       (
         await client.getBalance({
@@ -199,21 +202,14 @@ async function main({
         })
       ).totalBalance,
     );
-
     log.balanceAfter = finalBalance.toString();
     log.balanceUsed = (userBalance - finalBalance).toString();
-    log.endTime = new Date().toISOString();
-    log.isComplete = true;
     writeLog(output, log);
-
-    console.log("Airdrop completed successfully!");
-    console.log(
-      `Final NS balance: ${formatBalance(finalBalance, NS_DECIMALS, CoinFormat.ROUNDED)}`,
-    );
-    console.log(
-      `NS used: ${formatBalance(userBalance - finalBalance, NS_DECIMALS, CoinFormat.ROUNDED)}`,
-    );
+    console.log("Airdrop completed successfully");
   } catch (error) {
+    log.endTime = new Date().toISOString();
+    log.status = "failure";
+    writeLog(output, log);
     console.error("Airdrop failed:", error);
   }
 }
@@ -269,14 +265,14 @@ async function executeAirdrop({
         });
       }
 
-      log.transactions[txIndex]!.status = TxStatus.EXECUTING;
+      log.transactions[txIndex]!.status = "executing";
       writeLog(output, log);
 
       const resp = await signExecuteAndWaitTx({ client, tx, signer });
       log.transactions[txIndex]!.digest = resp.digest;
 
       if (resp.effects?.status.status === "success") {
-        log.transactions[txIndex]!.status = TxStatus.SUCCESS;
+        log.transactions[txIndex]!.status = "success";
         writeLog(output, log);
         console.log(
           `Transaction ${txIndex + 1} completed. Digest: ${resp.digest}`,
@@ -288,7 +284,7 @@ async function executeAirdrop({
         throw new Error(errorMessage);
       }
     } catch (error) {
-      log.transactions[txIndex]!.status = TxStatus.FAILURE;
+      log.transactions[txIndex]!.status = "failure";
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       log.transactions[txIndex]!.errorMessage = errorMessage;
@@ -402,16 +398,9 @@ export async function promptUser(
 
 // === logging ===
 
-enum TxStatus {
-  NOT_STARTED = "not_started",
-  EXECUTING = "executing",
-  SUCCESS = "success",
-  FAILURE = "failure",
-}
-
 type TxLog = {
   txIndex: number;
-  status: TxStatus;
+  status: "not_started" | "executing" | "success" | "failure";
   digest: string | null;
   errorMessage?: string;
   recipients: number;
@@ -419,6 +408,7 @@ type TxLog = {
 };
 
 type AirdropLog = {
+  status: "in_progress" | "success" | "failure";
   network: string;
   startTime: string;
   endTime: string | null;
@@ -428,6 +418,5 @@ type AirdropLog = {
   balanceBefore: string;
   balanceAfter: string | null;
   balanceUsed: string | null;
-  isComplete: boolean;
   transactions: TxLog[];
 };
