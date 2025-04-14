@@ -9,12 +9,15 @@ import { getRandomAirdropConfig } from "./getRandomAirdropConfig";
 import { coinWithBalance, Transaction } from "@mysten/sui/transactions";
 import { SUINS_PACKAGES } from "../../src/constants/endpoints";
 
-const AIRDROPS_PER_TX = 100;
+/**
+ * Maximum commands in a PTB is 1024, and each airdrop calls 3 commands:
+ * SplitCoins + admin_new + admin_transfer
+ */
+const AIRDROPS_PER_TX = 341;
 
 async function main() {
     // const airdrops = readAirdropConfigFromFile();
-    // const airdrops = getRandomAirdropConfig(84533);
-    const airdrops = getRandomAirdropConfig(845);
+    const airdrops = getRandomAirdropConfig(84533);
 
     const proceed = await showSummaryAndConfirm(airdrops);
     if (!proceed) {
@@ -26,8 +29,6 @@ async function main() {
 }
 
 async function executeAirdrop(airdrops: AirdropConfig[]) {
-    console.log("Proceeding...");
-
     const [network, signer] = await Promise.all([
         getActiveEnv(),
         getActiveKeypair(),
@@ -47,10 +48,10 @@ async function executeAirdrop(airdrops: AirdropConfig[]) {
 
     const dropsPerTx = chunkArray(airdrops, AIRDROPS_PER_TX);
 
-    let dropNumber = 0;
+    let txNumber = 0;
     for (const txDrops of dropsPerTx) {
-        console.log(`Processing drop ${dropNumber} of ${dropsPerTx.length}`);
-        dropNumber++;
+        console.log(`Starting tx ${txNumber} of ${dropsPerTx.length}`);
+        txNumber++;
 
         const tx = new Transaction();
         tx.setSender(signer.toSuiAddress());
