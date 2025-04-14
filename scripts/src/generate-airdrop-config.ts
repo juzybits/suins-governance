@@ -1,5 +1,6 @@
 import { readFileSync } from "fs";
 import type { ReturnTokenEvent } from "./find-voters";
+import { getRandomAirdropConfig } from "./getRandomAirdropConfig";
 
 export type AirdropConfig = {
   recipient: string;
@@ -23,12 +24,13 @@ function main() {
     throw new Error("No valid voter data found in the file.");
   }
 
-  const airdropConfig = generateAirdropConfig(events);
-  console.log(JSON.stringify(airdropConfig, null, 2));
+  // const airdrops = generateAirdropConfig(events);
+  const airdrops = getRandomAirdropConfig(84533); // TODO: dev only
+  console.log(JSON.stringify(airdrops, null, 2));
 }
 
 function generateAirdropConfig(events: ReturnTokenEvent[]): AirdropConfig[] {
-  // TODO: rules tbd
+  // TODO
   // Calculate how much NS each voter_addr voted with in total
   const voterTotals = new Map<string, bigint>();
 

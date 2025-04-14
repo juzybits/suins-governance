@@ -1,4 +1,4 @@
-import { readFileSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import {
   getFullnodeUrl,
   SuiClient,
@@ -11,15 +11,16 @@ import {
   NS_DECIMALS,
 } from "../../src/utils/formatNumber";
 import type { AirdropConfig } from "./generate-airdrop-config";
-import { getRandomAirdropConfig } from "./getRandomAirdropConfig";
 import { coinWithBalance, Transaction } from "@mysten/sui/transactions";
 import {
   isSupportedNetwork,
   SUINS_PACKAGES,
-  type NetworkConfig
+  SUPPORTED_NETWORKS,
+  type NetworkConfig,
 } from "../../src/constants/endpoints";
 import type { Keypair, Signer } from "@mysten/sui/cryptography";
 import { createInterface } from "readline";
+import { Command } from "commander";
 
 /**
  * Maximum commands in a PTB is 1024, and each airdrop calls 3 commands:
@@ -27,18 +28,54 @@ import { createInterface } from "readline";
  */
 const AIRDROPS_PER_TX = 341;
 
-async function main() {
-  /* Load environment variables */
+const command = new Command();
 
-  const network = process.env.NETWORK;
+command
+  .description(
+    "A tool for the StakingAdminCap holder to create and transfer StakingBatch objects",
+  )
+  .requiredOption(
+    "-n, --network <network>",
+    `Sui network to use (${SUPPORTED_NETWORKS.join(" | ")})`,
+  )
+  .requiredOption(
+    "-c, --config <path>",
+    "Path to airdrop config JSON file (see `generate-airdrop-config.ts`)",
+  )
+  .option("-y, --yes", "Skip confirmation prompt")
+  .action(async (options) => {
+    try {
+      await main(options);
+    } catch (error) {
+      console.error(error);
+      process.exit(1);
+    }
+  });
+
+command.parse(process.argv);
+
+async function main({
+  network,
+  config,
+  yes,
+}: {
+  network: string;
+  config: string;
+  yes: boolean;
+}) {
+  /* Validate args and env vars */
+
   const privateKey = process.env.PRIVATE_KEY;
-
-  if (!network || !privateKey) {
-    throw new Error("NETWORK and PRIVATE_KEY must be set in your .env file");
+  if (!privateKey) {
+    throw new Error("PRIVATE_KEY must be set in your .env file");
   }
 
   if (!isSupportedNetwork(network)) {
     throw new Error(`Unsupported network: ${network}`);
+  }
+
+  if (!existsSync(config)) {
+    throw new Error(`Config file does not exist: ${config}`);
   }
 
   /* Initialize signer and client */
@@ -49,8 +86,7 @@ async function main() {
 
   /* Load airdrop config */
 
-  const airdrops = getRandomAirdropConfig(84533); // TODO: dev only
-  // const airdrops = readAirdropConfigFromFile();
+  const airdrops = readAirdropConfigFromFile(config);
 
   /* Fetch StakingAdminCap (aborts if not owned by `signer`) */
 
@@ -80,9 +116,7 @@ async function main() {
     totalAmount += BigInt(airdrop.amount_raw);
     totalRecipients++;
   });
-  console.log(
-    `Total airdrop recipients: ${totalRecipients}`,
-  );
+  console.log(`Total airdrop recipients: ${totalRecipients}`);
   console.log(
     `Total airdrop amount: ${formatBalance(totalAmount, NS_DECIMALS, CoinFormat.ROUNDED)}`,
   );
@@ -96,13 +130,13 @@ async function main() {
 
   /* Get user confirmation */
 
-  // if (network !== "localnet") {
-  const proceed = await promptUser();
-  if (!proceed) {
-    console.log("Aborting.");
-    process.exit(0);
+  if (!yes) {
+    const proceed = await promptUser();
+    if (!proceed) {
+      console.log("Aborting.");
+      process.exit(0);
+    }
   }
-  // }
 
   /* Execute airdrop */
 
@@ -174,14 +208,7 @@ async function executeAirdrop({
 
 // === utils ===
 
-function readAirdropConfigFromFile(): AirdropConfig[] {
-  const filePath = process.argv[2];
-
-  if (!filePath) {
-    console.error("Error: provide a JSON file path as an argument.");
-    process.exit(1);
-  }
-
+function readAirdropConfigFromFile(filePath: string): AirdropConfig[] {
   const data = readFileSync(filePath, "utf8");
   const airdrops: AirdropConfig[] = JSON.parse(data);
 
@@ -265,9 +292,3 @@ export async function promptUser(
     });
   });
 }
-
-// === main ===
-
-main().catch((error) => {
-  throw error;
-});
