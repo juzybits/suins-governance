@@ -1,6 +1,6 @@
 export const SUPPORTED_NETWORKS = ["localnet", "testnet", "mainnet"] as const;
 
-export type SupportedNetwork = typeof SUPPORTED_NETWORKS[number];
+export type SupportedNetwork = (typeof SUPPORTED_NETWORKS)[number];
 
 export function isSupportedNetwork(str: string): str is SupportedNetwork {
   return SUPPORTED_NETWORKS.includes(str as SupportedNetwork);
