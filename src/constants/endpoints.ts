@@ -1,4 +1,22 @@
-export const SUINS_PACKAGES = {
+export const SUPPORTED_NETWORKS = ["localnet", "testnet", "mainnet"] as const;
+
+export type SupportedNetwork = typeof SUPPORTED_NETWORKS[number];
+
+export function isSupportedNetwork(str: string): str is SupportedNetwork {
+  return SUPPORTED_NETWORKS.includes(str as SupportedNetwork);
+}
+
+export type NetworkConfig = {
+  votingPkgId: string;
+  governanceObjId: string;
+  stakingConfigId: string;
+  stakingStatsId: string;
+  coinType: string;
+};
+
+export const SUINS_PACKAGES: {
+  [network in SupportedNetwork]: NetworkConfig;
+} = {
   localnet: {
     votingPkgId:
       "0x749a3cce0636f6034790acf054a03b6fb216bdf9a6ea7f326aa2e717c5638a7e",
