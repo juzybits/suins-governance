@@ -105,9 +105,7 @@ async function main({
     totalAmount += BigInt(airdrop.amount_raw);
     totalRecipients++;
   });
-  console.log(
-    `Total airdrop recipients: ${totalRecipients}`
-  );
+  console.log(`Total airdrop recipients: ${totalRecipients}`);
   console.log(
     `Total airdrop amount: ${formatBalance(totalAmount, NS_DECIMALS, CoinFormat.ROUNDED)}`,
   );
@@ -126,7 +124,9 @@ async function main({
     `Your NS balance: ${formatBalance(userBalance, NS_DECIMALS, CoinFormat.ROUNDED)}`,
   );
   if (userBalance < totalAmount) {
-    console.error("Error: Your NS balance is lower than the total airdrop amount");
+    console.error(
+      "Error: Your NS balance is lower than the total airdrop amount",
+    );
     process.exit(1);
   }
 
@@ -153,7 +153,7 @@ async function main({
     isComplete: false,
     transactions: dropsPerTx.map((drops, index) => {
       let dropsTotalAmount = 0n;
-      drops.forEach(drop => dropsTotalAmount += BigInt(drop.amount_raw));
+      drops.forEach((drop) => (dropsTotalAmount += BigInt(drop.amount_raw)));
 
       return {
         txIndex: index,
@@ -180,7 +180,7 @@ async function main({
 
   try {
     await executeAirdrop({
-      airdrops,
+      dropsPerTx,
       client,
       signer,
       netCnf,
@@ -207,15 +207,19 @@ async function main({
     writeLog(output, log);
 
     console.log("Airdrop completed successfully!");
-    console.log(`Final NS balance: ${formatBalance(finalBalance, NS_DECIMALS, CoinFormat.ROUNDED)}`);
-    console.log(`NS used: ${formatBalance(userBalance - finalBalance, NS_DECIMALS, CoinFormat.ROUNDED)}`);
+    console.log(
+      `Final NS balance: ${formatBalance(finalBalance, NS_DECIMALS, CoinFormat.ROUNDED)}`,
+    );
+    console.log(
+      `NS used: ${formatBalance(userBalance - finalBalance, NS_DECIMALS, CoinFormat.ROUNDED)}`,
+    );
   } catch (error) {
     console.error("Airdrop failed:", error);
   }
 }
 
 async function executeAirdrop({
-  airdrops,
+  dropsPerTx,
   client,
   signer,
   netCnf,
@@ -223,7 +227,7 @@ async function executeAirdrop({
   output,
   log,
 }: {
-  airdrops: AirdropConfig[];
+  dropsPerTx: AirdropConfig[][];
   client: SuiClient;
   signer: Keypair;
   netCnf: NetworkConfig;
@@ -231,18 +235,13 @@ async function executeAirdrop({
   output: string;
   log: AirdropLog;
 }) {
-  const dropsPerTx = chunkArray(airdrops, AIRDROPS_PER_TX);
-
   for (let txIndex = 0; txIndex < dropsPerTx.length; txIndex++) {
-    const txDrops = dropsPerTx[txIndex]!;
     console.log(`Starting tx ${txIndex + 1} of ${dropsPerTx.length}`);
-
-    log.transactions[txIndex]!.status = TxStatus.BUILDING;
-    writeLog(output, log);
-
     try {
       const tx = new Transaction();
       tx.setSender(signer.toSuiAddress());
+
+      const txDrops = dropsPerTx[txIndex]!;
       for (const drop of txDrops) {
         const payCoin = coinWithBalance({
           type: netCnf.coinType,
@@ -274,36 +273,28 @@ async function executeAirdrop({
       writeLog(output, log);
 
       const resp = await signExecuteAndWaitTx({ client, tx, signer });
-
-      if (resp.effects?.status.status !== "success") {
-        // Handle transaction failure
-        log.transactions[txIndex]!.status = TxStatus.FAILURE;
-        log.transactions[txIndex]!.digest = resp.digest;
-        log.transactions[txIndex]!.errorMessage =
-          `Transaction status was '${resp.effects?.status.status}'`;
-        writeLog(output, log);
-
-        throw new Error(
-          `Transaction status was '${resp.effects?.status.status}': ${resp.digest}. Response: ${JSON.stringify(resp, null, 2)}`,
-        );
-      }
-
-      // Update log with successful transaction
-      log.transactions[txIndex]!.status = TxStatus.SUCCESS;
       log.transactions[txIndex]!.digest = resp.digest;
-      writeLog(output, log);
 
-      console.log(`Transaction ${txIndex + 1} completed successfully. Digest: ${resp.digest}`);
-    } catch (error) {
-      // Handle any error during transaction
-      if (!log.transactions[txIndex]!.status) {
-        log.transactions[txIndex]!.status = TxStatus.FAILURE;
+      if (resp.effects?.status.status === "success") {
+        log.transactions[txIndex]!.status = TxStatus.SUCCESS;
+        writeLog(output, log);
+        console.log(
+          `Transaction ${txIndex + 1} completed. Digest: ${resp.digest}`,
+        );
+      } else {
+        const errorMessage =
+          resp.effects?.status.error ??
+          `Transaction status was '${resp.effects?.status.status}'`;
+        throw new Error(errorMessage);
       }
-      log.transactions[txIndex]!.errorMessage = error instanceof Error ? error.message : String(error);
+    } catch (error) {
+      log.transactions[txIndex]!.status = TxStatus.FAILURE;
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      log.transactions[txIndex]!.errorMessage = errorMessage;
       writeLog(output, log);
-
-      console.error(`Transaction ${txIndex + 1} failed:`, error);
-      throw error; // Re-throw to stop the airdrop process
+      console.error(`Transaction ${txIndex + 1} failed:`, errorMessage);
+      throw error; // abort the airdrop process
     }
   }
 }
@@ -413,7 +404,6 @@ export async function promptUser(
 
 enum TxStatus {
   NOT_STARTED = "not_started",
-  BUILDING = "building",
   EXECUTING = "executing",
   SUCCESS = "success",
   FAILURE = "failure",
