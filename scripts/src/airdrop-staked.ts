@@ -1,8 +1,8 @@
 import { readFileSync } from "fs";
 import { SuiClient } from "@mysten/sui/client";
 import type { AirdropConfig } from "./generate-airdrop-config";
-import { SUINS_ENDPOINTS } from "../src/constants/endpoints";
-import { CoinFormat, formatBalance, NS_DECIMALS } from "../src/utils/formatNumber";
+import { SUINS_ENDPOINTS } from "../../src/constants/endpoints";
+import { CoinFormat, formatBalance, NS_DECIMALS } from "../../src/utils/formatNumber";
 import { promptUser } from "./utils";
 
 async function main() {

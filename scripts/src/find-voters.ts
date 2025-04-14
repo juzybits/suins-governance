@@ -3,8 +3,8 @@
  */
 
 import { SuiClient } from "@mysten/sui/client";
-import { SUINS_ENDPOINTS } from "../src/constants/endpoints";
-import { CoinFormat, formatBalance } from "../src/utils/formatNumber";
+import { SUINS_ENDPOINTS } from "../../src/constants/endpoints";
+import { CoinFormat, formatBalance } from "../../src/utils/formatNumber";
 
 const governancePkgV1 = "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41";
 

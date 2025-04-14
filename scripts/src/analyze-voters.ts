@@ -4,7 +4,7 @@
 
 import { readFileSync } from "fs";
 import type { ReturnTokenEvent } from "./find-voters";
-import { CoinFormat, formatBalance, formatNSBalance, NS_DECIMALS } from "../src/utils/formatNumber";
+import { CoinFormat, formatBalance, formatNSBalance, NS_DECIMALS } from "../../src/utils/formatNumber";
 
 function main() {
     const filePath = process.argv[2];
