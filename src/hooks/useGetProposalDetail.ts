@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { client } from "@/app/SuinsClient";
 import { CoinFormat, formatBalance } from "@/utils/coins";
-import { NS_COINTYPE_DECIMAL_PLACES } from "@/constants/common";
+import { NS_DECIMALS } from "@/constants/common";
 import { proposalV1Schema } from "@/schemas/proposalV1Schema";
 import { proposalV2Schema } from "@/schemas/proposalV2Schema";
 import { getProposalVersionFromType } from "@/utils/getProposalVersionFromType";
@@ -123,21 +123,21 @@ export function parseProposalVotes(objResp: ProposalObjResp) {
     yesVote: Number(
       formatBalance({
         balance: yesVote,
-        decimals: NS_COINTYPE_DECIMAL_PLACES,
+        decimals: NS_DECIMALS,
         format: CoinFormat.FULL,
       }).replace(/,/g, ""),
     ),
     noVote: Number(
       formatBalance({
         balance: noVote,
-        decimals: NS_COINTYPE_DECIMAL_PLACES,
+        decimals: NS_DECIMALS,
         format: CoinFormat.FULL,
       }).replace(/,/g, ""),
     ),
     abstainVote: Number(
       formatBalance({
         balance: abstainVote,
-        decimals: NS_COINTYPE_DECIMAL_PLACES,
+        decimals: NS_DECIMALS,
         format: CoinFormat.FULL,
       }).replace(/,/g, ""),
     ),

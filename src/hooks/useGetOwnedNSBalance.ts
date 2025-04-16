@@ -5,7 +5,7 @@ import { useSuiClient } from "@mysten/dapp-kit";
 
 import { CoinFormat, formatBalance } from "@/utils/coins";
 
-import { NS_COINTYPE_DECIMAL_PLACES } from "@/constants/common";
+import { NS_DECIMALS } from "@/constants/common";
 
 export function useGetOwnedNSBalance(owner: string | undefined) {
   const suiClient = useSuiClient();
@@ -21,7 +21,7 @@ export function useGetOwnedNSBalance(owner: string | undefined) {
     select: (data) => {
       const formatted = formatBalance({
         balance: data.totalBalance,
-        decimals: NS_COINTYPE_DECIMAL_PLACES,
+        decimals: NS_DECIMALS,
         format: CoinFormat.FULL,
       });
       return {

@@ -8,9 +8,8 @@ import {
   CoinFormat,
   formatBalance,
   formatNSBalance,
-  NS_DECIMALS,
 } from "../../src/utils/formatNumber";
-
+import { NS_DECIMALS } from "../../src/constants/common";
 function main() {
   const filePath = process.argv[2];
 

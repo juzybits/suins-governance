@@ -1,11 +1,10 @@
+import { NS_DECIMALS } from "@/constants/common";
 import BigNumber from "bignumber.js";
 
 export enum CoinFormat {
   ROUNDED = "ROUNDED",
   FULL = "FULL",
 }
-
-export const NS_DECIMALS = 6;
 
 export function formatBalance(
   balance: bigint | number | string,

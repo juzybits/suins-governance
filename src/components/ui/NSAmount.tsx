@@ -1,7 +1,7 @@
 import { Text, type TextProps } from "@/components/ui/Text";
 import NSToken from "@/icons/NSToken";
 import { CoinFormat, formatBalance } from "@/utils/coins";
-import { NS_COINTYPE_DECIMAL_PLACES } from "@/constants/common";
+import { NS_DECIMALS } from "@/constants/common";
 import clsx from "clsx";
 
 export function NSAmount({
@@ -25,7 +25,7 @@ export function NSAmount({
 }) {
   const amountFormatted = formatBalance({
     balance: amount,
-    decimals: noFormat ? 0 : NS_COINTYPE_DECIMAL_PLACES,
+    decimals: noFormat ? 0 : NS_DECIMALS,
     format: roundedCoinFormat ? CoinFormat.ROUNDED : CoinFormat.FULL,
   });
 

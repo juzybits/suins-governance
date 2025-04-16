@@ -1,6 +1,5 @@
+import { NS_DECIMALS } from "@/constants/common";
 import BigNumber from "bignumber.js";
-
-export const NS_DECIMALS = 6;
 
 export function parseAmount(amount: string | number, decimals: number) {
   try {
