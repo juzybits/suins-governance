@@ -6,7 +6,7 @@ import { NETWORK } from "@/constants/env";
 import { Transaction } from "@mysten/sui/transactions";
 import { bcs } from "@mysten/sui/bcs";
 
-type UserProposalStats = {
+export type UserProposalStats = {
   proposalId: string;
   power: bigint;
   reward: bigint;
@@ -20,13 +20,17 @@ export function useGetVoterParticipation({
   user,
   proposalIds,
 }: {
-  user: string;
-  proposalIds: string[];
+  user: string | undefined;
+  proposalIds: string[] | undefined;
 }) {
   const suiClient = useSuiClient();
   return useQuery({
     queryKey: ["user-participation", user, proposalIds],
     queryFn: async () => {
+      if (!user || !proposalIds) {
+        throw new Error("User or proposal IDs are required");
+      }
+
       const tx = new Transaction();
 
       tx.moveCall({
@@ -64,6 +68,6 @@ export function useGetVoterParticipation({
 
       return { totalReward, proposalStats };
     },
-    enabled: !!user,
+    enabled: !!user && !!proposalIds,
   });
 }

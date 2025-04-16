@@ -37,11 +37,10 @@ import {
 import { isPast } from "date-fns";
 import { roundFloat } from "@/utils/roundFloat";
 import { calcVotingStats } from "@/utils/calcVotingStats";
-import { useGetUserTotalReward } from "@/hooks/staking/useGetUserTotalReward";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { useGetAllProposals } from "@/hooks/useGetAllProposals";
 import { ProposalObjResp } from "@/types/Proposal";
-import { useGetVoterParticipation } from "@/hooks/useGetVoterParticipation";
+import { useGetVoterParticipation, UserProposalStats } from "@/hooks/useGetVoterParticipation";
 
 type StakingData = {
   lockedNS: bigint;
@@ -565,10 +564,13 @@ function ModalUnstakeBatch({
 
 function PanelParticipation() {
   const currAcct = useCurrentAccount();
+  const currAddr = currAcct?.address;
   const { data: proposals } = useGetAllProposals();
-  const { data: userTotalReward } = useGetUserTotalReward(
-    currAcct?.address ?? "",
-  );
+  const { data: userStats } = useGetVoterParticipation({
+    user: currAddr,
+    proposalIds: proposals?.map((proposal) => proposal.fields.id.id),
+  });
+
   return (
     <div className="panel">
       <h2>SuiNS Governance Proposals</h2>
@@ -576,27 +578,31 @@ function PanelParticipation() {
         <CardProposalParticipation
           key={proposal.fields.id.id}
           proposal={proposal}
+          userStats={userStats?.proposalStats.find(
+            (stat) => stat.proposalId === proposal.fields.id.id,
+          )}
         />
       ))}
-      {userTotalReward && (
+      {userStats && (
         <div>
           <h2>Your Lifetime Rewards:</h2>
-          <p>{formatNSBalance(userTotalReward)}</p>
+          <p>{formatNSBalance(userStats.totalReward)}</p>
         </div>
       )}
     </div>
   );
 }
 
-function CardProposalParticipation({ proposal }: { proposal: ProposalObjResp }) {
+function CardProposalParticipation({
+  proposal,
+  userStats,
+}: {
+  proposal: ProposalObjResp;
+  userStats: UserProposalStats | undefined;
+}) {
   const currAcct = useCurrentAccount();
-  const { data: userVote, isLoading: isVoteLoading } =
-    useGetVoteCastedByProposalId({
-      proposalId: proposal.fields.id.id,
-      address: currAcct?.address ?? "",
-    });
 
-  if (isVoteLoading || !proposal) {
+  if (!proposal) {
     return null;
   }
 
@@ -650,14 +656,12 @@ function CardProposalParticipation({ proposal }: { proposal: ProposalObjResp }) 
           </div>
         </div>
 
-        {userVote && (
+        {userStats && (
           <div>
-            <h3>Your Votes</h3>
+            <h3>Your Participation</h3>
             <div>
-              <p>Yes votes: {formatNSBalance(userVote.yesVote)}</p>
-              <p>No votes: {formatNSBalance(userVote.noVote)}</p>
-              <p>Abstain votes: {formatNSBalance(userVote.abstainVote)}</p>
-              <p>Total votes: {formatNSBalance(userVote.totalVotes)}</p>
+              <p>Your Votes: {formatNSBalance(userStats.power)}</p>
+              <p>Your Rewards: {formatNSBalance(userStats.reward)}</p>
             </div>
           </div>
         )}
