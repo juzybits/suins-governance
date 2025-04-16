@@ -15,7 +15,7 @@ import FileText from "@/icons/FileText";
 
 import { motion } from "framer-motion";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
-import { useGetProposalsIds } from "@/hooks/useGetProposals";
+import { useGetProposalIds } from "@/hooks/useGetProposalIds";
 import { ProposalStatus } from "./ui/ProposalStatus";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { Text } from "@/components/ui/Text";
@@ -108,7 +108,7 @@ function ProposalPreview({
 
 export function ProposalsMenu() {
   const isSmallOrAbove = useBreakpoint("sm");
-  const { data, isLoading } = useGetProposalsIds();
+  const { data, isLoading } = useGetProposalIds();
   const inactiveProposals = data?.filter((proposal) => !proposal.isActive);
   const params = useParams<{ proposal: string }>();
 

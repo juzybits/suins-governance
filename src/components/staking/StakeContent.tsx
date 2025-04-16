@@ -30,7 +30,7 @@ import {
 import Loader from "@/components/ui/Loader";
 import { useGetOwnedBatches } from "@/hooks/staking/useGetOwnedBatches";
 import { useCurrentAccount } from "@mysten/dapp-kit";
-import { useGetProposalsIds } from "@/hooks/useGetProposals";
+import { useGetProposalIds } from "@/hooks/useGetProposalIds";
 import { useGetVoteCastedByProposalId } from "@/hooks/useGetVoteCasted";
 import {
   useGetProposalDetail,
@@ -564,7 +564,7 @@ function ModalUnstakeBatch({
 
 function PanelParticipation() {
   const currAcct = useCurrentAccount();
-  const { data: proposalIds } = useGetProposalsIds();
+  const { data: proposalIds } = useGetProposalIds();
   const { data: userTotalReward } = useGetUserTotalReward(
     currAcct?.address ?? "",
   );

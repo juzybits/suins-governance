@@ -3,10 +3,10 @@
 import { ProposalContent } from "@/components/ProposalContent";
 import { Suspense } from "react";
 import Loader from "@/components/ui/Loader";
-import { useGetProposalsIds } from "@/hooks/useGetProposals";
+import { useGetProposalIds } from "@/hooks/useGetProposalIds";
 
 export default function HomePage() {
-  const { data, isLoading, error } = useGetProposalsIds();
+  const { data, isLoading, error } = useGetProposalIds();
 
   if (isLoading) return <Loader className="h-5 w-5" />;
 

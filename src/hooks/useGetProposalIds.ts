@@ -6,9 +6,9 @@ import { governanceSchema } from "@/schemas/governanceSchema";
 import isFuture from "date-fns/isFuture";
 
 // TODO: support pagination
-export function useGetProposalsIds() {
+export function useGetProposalIds() {
   return useQuery({
-    queryKey: ["governanceObject-dynamic-fields-objects"],
+    queryKey: ["proposal-ids"],
     queryFn: async () => {
       const proposalsContent = await client.getDynamicFields({
         parentId: SUINS_PACKAGES[NETWORK].governanceObjId,
