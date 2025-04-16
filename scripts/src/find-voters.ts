@@ -22,7 +22,7 @@ const main = async () => {
   const client = new SuiClient({ url: SUINS_ENDPOINTS.mainnet.fullNodes });
   const events = await queryTxs(client);
   // for (const e of events) {
-  //     console.log(`"${e.tx_digest}"\t"${e.date}"\t"${e.voter_addr}"\t"${e.amount_ns}"`);
+  //     console.log(`"${e.date}"\t"${e.voter_addr}"\t"${e.amount_ns}"`);
   // }
   console.log(JSON.stringify(events, null, 2));
 };
@@ -53,7 +53,7 @@ async function queryTxs(client: SuiClient) {
         events.push({
           tx_digest: tx.digest,
           timestamp: tx.timestampMs!,
-          date: new Date(Number(tx.timestampMs)).toISOString(),
+          date: new Date(Number(tx.timestampMs)).toISOString().slice(0, 10),
           voter_addr: json.voter,
           amount_raw: json.amount,
           amount_ns: formatBalance(json.amount, 6, CoinFormat.FULL),
