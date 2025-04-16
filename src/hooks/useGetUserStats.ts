@@ -8,15 +8,15 @@ import { bcs } from "@mysten/sui/bcs";
 
 export type UserProposalStats = {
   proposalId: string;
-  power: bigint;
-  reward: bigint;
-}
+  power: string;
+  reward: string;
+};
 
 /**
  * Get a user's lifetime rewards and their participation in multiple proposals,
  * with a single RPC call.
  */
-export function useGetVoterParticipation({
+export function useGetUserStats({
   user,
   proposalIds,
 }: {
@@ -25,7 +25,7 @@ export function useGetVoterParticipation({
 }) {
   const suiClient = useSuiClient();
   return useQuery({
-    queryKey: ["user-participation", user, proposalIds],
+    queryKey: ["user-stats", user, proposalIds],
     queryFn: async () => {
       if (!user || !proposalIds) {
         throw new Error("User or proposal IDs are required");
@@ -53,18 +53,20 @@ export function useGetVoterParticipation({
       }
 
       const retVals = await devInspectAndGetReturnValues(suiClient, tx, [
-        [ bcs.u64() ], // [total_reward] (1st moveCall)
-        ...proposalIds.map(() => // (one moveCall per proposal)
-          [ bcs.u64(), bcs.u64() ] // [power, reward]
+        [bcs.u64()], // [total_reward]
+        ...proposalIds.map(
+          () => [bcs.u64(), bcs.u64()], // [power, reward]
         ),
       ]);
 
-      const totalReward = BigInt(retVals.shift()![0]!);
-      const proposalStats: UserProposalStats[] = proposalIds.map((proposalId, idx) => ({
-        proposalId,
-        power: BigInt(retVals[idx]![0]!),
-        reward: BigInt(retVals[idx]![1]!),
-      }));
+      const totalReward = retVals.shift()![0] as string;
+      const proposalStats: UserProposalStats[] = proposalIds.map(
+        (proposalId, idx) => ({
+          proposalId,
+          power: retVals[idx]![0] as string,
+          reward: retVals[idx]![1] as string,
+        }),
+      );
 
       return { totalReward, proposalStats };
     },

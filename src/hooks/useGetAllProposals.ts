@@ -18,13 +18,11 @@ export function useGetAllProposals() {
       const tx = new Transaction();
       tx.moveCall({
         target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::early_voting::view_proposal_ids`,
-        arguments: [
-          tx.object(SUINS_PACKAGES[NETWORK].governanceObjId),
-        ],
+        arguments: [tx.object(SUINS_PACKAGES[NETWORK].governanceObjId)],
       });
 
       const retVals = await devInspectAndGetReturnValues(suiClient, tx, [
-        [ bcs.vector(bcs.Address) ],
+        [bcs.vector(bcs.Address)],
       ]);
       const proposalIds = retVals[0]![0]! as string[];
 
@@ -32,7 +30,8 @@ export function useGetAllProposals() {
         proposalIds.push(...V1_PROPOSAL_IDS);
       }
 
-      const objs = await suiClient.multiGetObjects({ // TODO: supports up to 50 objects
+      // NOTE: can fetch up to 50 objects at once
+      const objs = await suiClient.multiGetObjects({
         ids: proposalIds,
         options: {
           showContent: true,

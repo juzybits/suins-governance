@@ -6,7 +6,7 @@ import { proposalV1Schema } from "@/schemas/proposalV1Schema";
 import { proposalV2Schema } from "@/schemas/proposalV2Schema";
 import { getProposalVersionFromType } from "@/utils/getProposalVersionFromType";
 import { type ProposalObjResp } from "@/types/Proposal";
-import { SuiObjectResponse } from "@mysten/sui/client";
+import { type SuiObjectResponse } from "@mysten/sui/client";
 
 type TopVotes =
   ProposalObjResp["fields"]["vote_leaderboards"]["fields"]["contents"];
@@ -164,7 +164,7 @@ export function useGetProposalDetail({ proposalId }: { proposalId: string }) {
   });
 }
 
-export function parseProposalObjResp(resp: SuiObjectResponse): ProposalObjResp  {
+export function parseProposalObjResp(resp: SuiObjectResponse): ProposalObjResp {
   const version = getProposalVersionFromType(resp?.data?.type ?? "");
   const objDetail =
     version === 1

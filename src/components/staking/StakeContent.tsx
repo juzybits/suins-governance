@@ -30,17 +30,17 @@ import {
 import Loader from "@/components/ui/Loader";
 import { useGetOwnedBatches } from "@/hooks/staking/useGetOwnedBatches";
 import { useCurrentAccount } from "@mysten/dapp-kit";
-import { useGetVoteCastedByProposalId } from "@/hooks/useGetVoteCasted";
-import {
-  parseProposalVotes
-} from "@/hooks/useGetProposalDetail";
+import { parseProposalVotes } from "@/hooks/useGetProposalDetail";
 import { isPast } from "date-fns";
 import { roundFloat } from "@/utils/roundFloat";
 import { calcVotingStats } from "@/utils/calcVotingStats";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { useGetAllProposals } from "@/hooks/useGetAllProposals";
-import { ProposalObjResp } from "@/types/Proposal";
-import { useGetVoterParticipation, UserProposalStats } from "@/hooks/useGetVoterParticipation";
+import { type ProposalObjResp } from "@/types/Proposal";
+import {
+  useGetUserStats,
+  type UserProposalStats,
+} from "@/hooks/useGetUserStats";
 
 type StakingData = {
   lockedNS: bigint;
@@ -564,10 +564,9 @@ function ModalUnstakeBatch({
 
 function PanelParticipation() {
   const currAcct = useCurrentAccount();
-  const currAddr = currAcct?.address;
   const { data: proposals } = useGetAllProposals();
-  const { data: userStats } = useGetVoterParticipation({
-    user: currAddr,
+  const { data: userStats } = useGetUserStats({
+    user: currAcct?.address,
     proposalIds: proposals?.map((proposal) => proposal.fields.id.id),
   });
 
@@ -575,7 +574,7 @@ function PanelParticipation() {
     <div className="panel">
       <h2>SuiNS Governance Proposals</h2>
       {proposals?.map((proposal) => (
-        <CardProposalParticipation
+        <CardProposalSummary
           key={proposal.fields.id.id}
           proposal={proposal}
           userStats={userStats?.proposalStats.find(
@@ -593,15 +592,13 @@ function PanelParticipation() {
   );
 }
 
-function CardProposalParticipation({
+function CardProposalSummary({
   proposal,
   userStats,
 }: {
   proposal: ProposalObjResp;
   userStats: UserProposalStats | undefined;
 }) {
-  const currAcct = useCurrentAccount();
-
   if (!proposal) {
     return null;
   }
