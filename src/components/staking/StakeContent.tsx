@@ -41,6 +41,7 @@ import { useGetUserTotalReward } from "@/hooks/staking/useGetUserTotalReward";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { useGetAllProposals } from "@/hooks/useGetAllProposals";
 import { ProposalObjResp } from "@/types/Proposal";
+import { useGetVoterParticipation } from "@/hooks/useGetVoterParticipation";
 
 type StakingData = {
   lockedNS: bigint;

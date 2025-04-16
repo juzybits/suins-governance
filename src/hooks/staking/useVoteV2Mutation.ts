@@ -44,6 +44,7 @@ export function useVoteV2Mutation(
           arguments: [
             tx.object(proposalId),
             tx.object(SUINS_PACKAGES[NETWORK].stakingConfigId),
+            tx.object(SUINS_PACKAGES[NETWORK].stakingStatsId),
             tx.object(batchId),
             tx.pure.string(vote),
             tx.object.clock(),
