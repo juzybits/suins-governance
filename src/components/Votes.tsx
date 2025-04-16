@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Heading } from "@/components/ui/Heading";
 import { Text } from "@/components/ui/Text";
 import { formatAddress } from "@mysten/sui/utils";
-import { useGetAllVoters } from "@/hooks/useGetAllVoters";
+import { useGetAllVotersDfs } from "@/hooks/useGetAllVotersDfs";
 
 import {
   useGetProposalDetail,
@@ -177,8 +177,8 @@ function AllVoter({
   topVotersSwitch: () => void;
 }) {
   const { data: resp } = useGetProposalDetail({ proposalId });
-  const allVotersQuery = useGetAllVoters({
-    parentId: resp?.fields.voters.fields.id.id,
+  const allVotersQuery = useGetAllVotersDfs({
+    votersLinkedTableId: resp?.fields.voters.fields.id.id,
     size: PAGE_SIZE,
   });
 

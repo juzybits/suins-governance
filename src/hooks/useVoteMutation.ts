@@ -109,7 +109,7 @@ export function useVoteMutation(
         }),
 
         queryClient.invalidateQueries({
-          queryKey: ["get-all-voter"],
+          queryKey: ["all-voters-dfs"],
         }),
         queryClient.invalidateQueries({
           queryKey: ["vote-casted-by-id"],

@@ -24,23 +24,26 @@ const votesCastedSchema = z.object({
 
 type ParsedVoter = z.infer<typeof votesCastedSchema>;
 
-export function useGetAllVoters({
-  parentId,
+/**
+ * Get all dynamic fields in the proposal.voters LinkedTable
+ */
+export function useGetAllVotersDfs({
+  votersLinkedTableId,
   size = 10,
 }: {
   size?: number;
-  parentId?: string;
+  votersLinkedTableId?: string;
 }) {
   return useInfiniteQuery<ParsedVoter>({
     initialPageParam: null,
-    queryKey: ["get-all-voter", parentId],
+    queryKey: ["all-voters-dfs", votersLinkedTableId],
     queryFn: async ({ pageParam = null }) => {
-      if (!parentId) {
+      if (!votersLinkedTableId) {
         throw new Error("Voter ID is missing");
       }
 
       const response = await client.getDynamicFields({
-        parentId: normalizeSuiAddress(parentId),
+        parentId: normalizeSuiAddress(votersLinkedTableId),
         limit: size,
         cursor: pageParam as string | null, // Use the pageParam for pagination
       });
@@ -50,7 +53,7 @@ export function useGetAllVoters({
       }
       return data.data;
     },
-    enabled: !!parentId,
+    enabled: !!votersLinkedTableId,
     getNextPageParam: ({ nextCursor, hasNextPage }) =>
       hasNextPage ? nextCursor : null,
     refetchInterval: 30_000,
