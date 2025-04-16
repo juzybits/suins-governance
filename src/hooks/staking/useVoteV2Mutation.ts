@@ -13,7 +13,7 @@ import { useSignExecuteAndWaitTx } from "@/hooks/useSignExecuteAndWaitTx";
 /**
  * How many batches can the user vote with in a single tx.
  *
- * On localnet (2025-04), max_tx_size_bytes (128KB) is exceeded with ~880 batches.
+ * As of 2025-04, max_tx_size_bytes (128KB) is exceeded with ~880 batches.
  *
  * Very unlikely that real users will ever hit this limit.
  */
