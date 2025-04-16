@@ -1,9 +1,6 @@
 import { Text, type TextProps } from "@/components/ui/Text";
 import NSToken from "@/icons/NSToken";
-import { useCoinMetadata } from "@/hooks/useCoinMetadata";
 import { CoinFormat, formatBalance } from "@/utils/coins";
-import { SUINS_PACKAGES } from "@/constants/endpoints";
-import { NETWORK } from "@/constants/env";
 import { NS_COINTYPE_DECIMAL_PLACES } from "@/constants/common";
 import clsx from "clsx";
 
@@ -26,15 +23,11 @@ export function NSAmount({
   className?: string;
   noTokenIcon?: boolean;
 }) {
-  const { data: coinMetadata } = useCoinMetadata({
-    coinType: SUINS_PACKAGES[NETWORK].coinType,
-  });
-
   const amountFormatted = formatBalance({
     balance: amount,
     decimals: noFormat
       ? 0
-      : (coinMetadata?.decimals ?? NS_COINTYPE_DECIMAL_PLACES),
+      : NS_COINTYPE_DECIMAL_PLACES,
     format: roundedCoinFormat ? CoinFormat.ROUNDED : CoinFormat.FULL,
   });
 

@@ -8,7 +8,7 @@ export function useGetUserTotalReward(owner: string | undefined) {
   const stats = useGetStakingStats();
 
   return useQuery({
-    queryKey: ["get-user-total-reward", owner],
+    queryKey: ["user-total-reward", owner],
     queryFn: async () => {
       if (!owner || !stats.data) return null;
 

@@ -13,7 +13,7 @@ export function useGetOwnedBatches(owner: string | undefined) {
   const suiClient = useSuiClient();
 
   return useQuery({
-    queryKey: ["get-owned-batches", owner],
+    queryKey: ["owned-batches", owner],
     queryFn: async () => {
       if (!owner) return [];
 

@@ -60,7 +60,7 @@ export function useVoteV2Mutation(
       await Promise.allSettled([
         queryClient.invalidateQueries(),
         queryClient.invalidateQueries({
-          queryKey: ["get-vote-casted"],
+          queryKey: ["vote-casted"],
         }),
         queryClient.invalidateQueries({
           queryKey: ["proposal-detail-by-id"],
@@ -73,7 +73,7 @@ export function useVoteV2Mutation(
           queryKey: ["vote-casted-by-id"],
         }),
         queryClient.invalidateQueries({
-          queryKey: ["get-owned-batches"],
+          queryKey: ["owned-batches"],
         }),
       ]);
     },

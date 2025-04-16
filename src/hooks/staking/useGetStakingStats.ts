@@ -8,7 +8,7 @@ export function useGetStakingStats() {
   const suiClient = useSuiClient();
 
   return useQuery({
-    queryKey: ["get-staking-stats"],
+    queryKey: ["staking-stats"],
     queryFn: async () => {
       const suiObjResp = await suiClient.getObject({
         id: SUINS_PACKAGES[NETWORK].stakingStatsId,

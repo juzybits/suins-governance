@@ -153,7 +153,7 @@ export function useDistributeRewardsMutation(
           queryKey: [NETWORK, "getBalance"],
         }),
         queryClient.invalidateQueries({
-          queryKey: ["get-owned-batches"],
+          queryKey: ["owned-batches"],
         }),
       ]);
     },

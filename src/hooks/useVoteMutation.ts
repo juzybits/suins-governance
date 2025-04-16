@@ -102,7 +102,7 @@ export function useVoteMutation(
       await Promise.allSettled([
         queryClient.invalidateQueries(),
         queryClient.invalidateQueries({
-          queryKey: ["get-vote-casted"],
+          queryKey: ["vote-casted"],
         }),
         queryClient.invalidateQueries({
           queryKey: ["proposal-detail-by-id"],

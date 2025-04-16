@@ -106,7 +106,7 @@ export function useGetVoteCastedByProposalId({
   );
 
   return useQuery({
-    queryKey: ["get-vote-casted", address, proposalId],
+    queryKey: ["vote-casted", address, proposalId],
     queryFn: async () => {
       if (!proposal) {
         throw new Error("proposal not found");
