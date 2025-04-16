@@ -6,6 +6,7 @@ import { proposalV1Schema } from "@/schemas/proposalV1Schema";
 import { proposalV2Schema } from "@/schemas/proposalV2Schema";
 import { getProposalVersionFromType } from "@/utils/getProposalVersionFromType";
 import { type ProposalObjResp } from "@/types/Proposal";
+import { SuiObjectResponse } from "@mysten/sui/client";
 
 type TopVotes =
   ProposalObjResp["fields"]["vote_leaderboards"]["fields"]["contents"];
@@ -154,23 +155,24 @@ export function useGetProposalDetail({ proposalId }: { proposalId: string }) {
         id: proposalId,
         options: {
           showContent: true,
-          showDisplay: true,
-          showOwner: true,
           showType: true,
         },
       });
-
-      const version = getProposalVersionFromType(resp?.data?.type ?? "");
-      const objDetail =
-        version === 1
-          ? proposalV1Schema.safeParse(resp?.data?.content)
-          : proposalV2Schema.safeParse(resp?.data?.content);
-
-      if (objDetail.error) {
-        throw new Error("Invalid proposal detail");
-      }
-      return objDetail.data;
+      return parseProposalObjResp(resp);
     },
     refetchInterval: 30_000,
   });
+}
+
+export function parseProposalObjResp(resp: SuiObjectResponse): ProposalObjResp  {
+  const version = getProposalVersionFromType(resp?.data?.type ?? "");
+  const objDetail =
+    version === 1
+      ? proposalV1Schema.safeParse(resp?.data?.content)
+      : proposalV2Schema.safeParse(resp?.data?.content);
+
+  if (objDetail.error) {
+    throw new Error("Invalid proposal detail");
+  }
+  return objDetail.data;
 }

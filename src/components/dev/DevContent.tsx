@@ -148,7 +148,6 @@ function DevContentForm({
         </div>
 
         <button onClick={onCreateProposal}>Create Proposal</button>
-        <button onClick={onDistributeRewards}>Distribute Rewards</button>
       </div>
 
       <div className="panel">
