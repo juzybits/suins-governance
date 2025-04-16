@@ -2,7 +2,7 @@
 
 import { type ReactNode } from "react";
 import { registerStashedWallet } from "@mysten/zksend";
-import { createNetworkConfig, SuiClientProvider } from "@mysten/dapp-kit";
+import { SuiClientProvider } from "@mysten/dapp-kit";
 import { KioskClientProvider } from "@/app/KioskClientProvider";
 import { SuinsClientProvider } from "@/app/SuinsClient";
 import { SUINS_ENDPOINTS } from "@/constants/endpoints";
@@ -11,6 +11,7 @@ import { NETWORK } from "@/constants/env";
 import { TRPCReactProvider } from "@/trpc/react";
 import { suiNSTheme } from "@/app/themes";
 import dynamic from "next/dynamic";
+import { SUPPORTED_NETWORKS } from "@/constants/endpoints";
 
 export const DAPP_KIT_WALLET_STORAGE_KEY = "dapp-kit-wallet-m";
 
@@ -27,11 +28,12 @@ if (env.NEXT_PUBLIC_VITE_NETWORK === "mainnet") {
 }
 
 export function Providers({ children }: { children: ReactNode }) {
-  const { networkConfig } = createNetworkConfig({
-    localnet: { url: SUINS_ENDPOINTS.localnet.fullNodes },
-    testnet: { url: SUINS_ENDPOINTS.testnet.fullNodes },
-    mainnet: { url: SUINS_ENDPOINTS.mainnet.fullNodes },
-  });
+  const networkConfig = Object.fromEntries(
+    SUPPORTED_NETWORKS.map((network) => [
+      network,
+      { url: SUINS_ENDPOINTS[network] },
+    ]),
+  );
 
   return (
     <TRPCReactProvider>

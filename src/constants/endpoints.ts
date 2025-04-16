@@ -1,4 +1,11 @@
-export const SUPPORTED_NETWORKS = ["localnet", "testnet", "mainnet"] as const;
+import { getFullnodeUrl } from "@mysten/sui/client";
+
+export const SUPPORTED_NETWORKS = [
+  "localnet",
+  "devnet",
+  "testnet",
+  "mainnet",
+] as const;
 
 export type SupportedNetwork = (typeof SUPPORTED_NETWORKS)[number];
 
@@ -29,6 +36,13 @@ export const SUINS_PACKAGES: {
     coinType:
       "0xffcc10b8b2b1e3acdee1f85e488b2d6af5791b4519eb982fe1ccfd3fde6d6a0a::ns::NS",
   },
+  devnet: {
+    votingPkgId: "",
+    governanceObjId: "",
+    stakingConfigId: "",
+    stakingStatsId: "",
+    coinType: "",
+  },
   testnet: {
     votingPkgId:
       "0x2df7fb6fce94faeb1fb819d51f73fe4549e5d6f827828a641b2806a6dbf2d21b",
@@ -51,16 +65,11 @@ export const SUINS_PACKAGES: {
   },
 };
 
-export const SUINS_ENDPOINTS = {
-  localnet: {
-    fullNodes: "http://127.0.0.1:9000",
-  },
-  testnet: {
-    fullNodes: "https://suins-rpc.testnet.sui.io:443",
-    backend: "https://api-testnet.suins.io",
-  },
-  mainnet: {
-    fullNodes: "https://suins-rpc.mainnet.sui.io:443",
-    backend: "https://api-mainnet.suins.io",
-  },
+export const SUINS_ENDPOINTS: {
+  [network in SupportedNetwork]: string;
+} = {
+  localnet: "http://127.0.0.1:9000",
+  devnet: getFullnodeUrl("devnet"),
+  testnet: "https://suins-rpc.testnet.sui.io:443",
+  mainnet: "https://suins-rpc.mainnet.sui.io:443",
 };

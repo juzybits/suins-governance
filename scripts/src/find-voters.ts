@@ -19,7 +19,7 @@ export type ReturnTokenEvent = {
 };
 
 const main = async () => {
-  const client = new SuiClient({ url: SUINS_ENDPOINTS.mainnet.fullNodes });
+  const client = new SuiClient({ url: SUINS_ENDPOINTS.mainnet });
   const events = await queryTxs(client);
   // for (const e of events) {
   //     console.log(`"${e.date}"\t"${e.voter_addr}"\t"${e.amount_ns}"`);

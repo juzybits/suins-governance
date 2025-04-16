@@ -5,7 +5,7 @@ import { NETWORK } from "@/constants/env";
 import { SUINS_ENDPOINTS } from "@/constants/endpoints";
 
 export const client = new SuiClient({
-  url: SUINS_ENDPOINTS[NETWORK].fullNodes,
+  url: SUINS_ENDPOINTS[NETWORK],
 });
 
 // Now you can use it to create a SuiNS client.
