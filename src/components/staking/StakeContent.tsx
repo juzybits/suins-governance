@@ -30,17 +30,17 @@ import {
 import Loader from "@/components/ui/Loader";
 import { useGetOwnedBatches } from "@/hooks/staking/useGetOwnedBatches";
 import { useCurrentAccount } from "@mysten/dapp-kit";
-import { useGetProposalIds } from "@/hooks/useGetProposalIds";
 import { useGetVoteCastedByProposalId } from "@/hooks/useGetVoteCasted";
 import {
-  useGetProposalDetail,
-  parseProposalVotes,
+  parseProposalVotes
 } from "@/hooks/useGetProposalDetail";
 import { isPast } from "date-fns";
 import { roundFloat } from "@/utils/roundFloat";
 import { calcVotingStats } from "@/utils/calcVotingStats";
 import { useGetUserTotalReward } from "@/hooks/staking/useGetUserTotalReward";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
+import { useGetAllProposals } from "@/hooks/useGetAllProposals";
+import { ProposalObjResp } from "@/types/Proposal";
 
 type StakingData = {
   lockedNS: bigint;
@@ -564,17 +564,17 @@ function ModalUnstakeBatch({
 
 function PanelParticipation() {
   const currAcct = useCurrentAccount();
-  const { data: proposalIds } = useGetProposalIds();
+  const { data: proposals } = useGetAllProposals();
   const { data: userTotalReward } = useGetUserTotalReward(
     currAcct?.address ?? "",
   );
   return (
     <div className="panel">
       <h2>SuiNS Governance Proposals</h2>
-      {proposalIds?.map((proposal) => (
+      {proposals?.map((proposal) => (
         <CardProposalParticipation
-          key={proposal.fields.proposal_id}
-          proposalId={proposal.fields.proposal_id}
+          key={proposal.fields.id.id}
+          proposal={proposal}
         />
       ))}
       {userTotalReward && (
@@ -587,18 +587,15 @@ function PanelParticipation() {
   );
 }
 
-function CardProposalParticipation({ proposalId }: { proposalId: string }) {
+function CardProposalParticipation({ proposal }: { proposal: ProposalObjResp }) {
   const currAcct = useCurrentAccount();
-  const { data: proposal, isLoading: isProposalLoading } = useGetProposalDetail(
-    { proposalId },
-  );
   const { data: userVote, isLoading: isVoteLoading } =
     useGetVoteCastedByProposalId({
-      proposalId,
+      proposalId: proposal.fields.id.id,
       address: currAcct?.address ?? "",
     });
 
-  if (isProposalLoading || isVoteLoading || !proposal) {
+  if (isVoteLoading || !proposal) {
     return null;
   }
 
