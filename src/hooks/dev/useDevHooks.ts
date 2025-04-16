@@ -108,7 +108,7 @@ export function useCreateProposalMutation(
     onSuccess: async () => {
       await Promise.allSettled([
         queryClient.invalidateQueries({
-          queryKey: [NETWORK, "getBalance"],
+          queryKey: ["owned-ns-balance"],
         }),
       ]);
     },
@@ -150,7 +150,7 @@ export function useDistributeRewardsMutation(
     onSuccess: async () => {
       await Promise.allSettled([
         queryClient.invalidateQueries({
-          queryKey: [NETWORK, "getBalance"],
+          queryKey: ["owned-ns-balance"],
         }),
         queryClient.invalidateQueries({
           queryKey: ["owned-batches"],

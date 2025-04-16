@@ -12,14 +12,12 @@ import NSToken from "@/icons/NSToken";
 import { useVoteMutation } from "@/hooks/useVoteMutation";
 import { useZodForm } from "@/hooks/useZodForm";
 import { Form } from "@/components/form/Form";
-import { useGetBalance } from "@/hooks/useGetBalance";
-import { NETWORK } from "@/constants/env";
-import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { motion } from "framer-motion";
 import isPast from "date-fns/isPast";
 import { RadioGroupField } from "./form/RadioGroupField";
 import { useEffect } from "react";
+import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 
 const VOTE_OPTIONS = ["Yes", "No", "Abstain"] as const;
 
@@ -29,7 +27,6 @@ const VOTE_OPTIONS = ["Yes", "No", "Abstain"] as const;
 export function CastYourVote({ proposalId }: { proposalId: string }) {
   const currentAccount = useCurrentAccount();
   const { isConnecting, isDisconnected } = useCurrentWallet();
-  const address = currentAccount?.address;
   const { data: proposalDetail, isLoading } = useGetProposalDetail({
     proposalId,
   });
@@ -37,10 +34,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
     new Date(Number(proposalDetail?.fields.end_time_ms ?? 0)),
   );
 
-  const { data: balance } = useGetBalance({
-    owner: address,
-    coinType: SUINS_PACKAGES[NETWORK].coinType,
-  });
+  const { data: balance } = useGetOwnedNSBalance(currentAccount?.address);
 
   const tokenBalance = Number(balance?.formatted?.replaceAll(",", "") ?? 0);
   const isLoggedOut = (!currentAccount && !isConnecting) ?? isDisconnected;

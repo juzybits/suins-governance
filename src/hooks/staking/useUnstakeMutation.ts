@@ -69,7 +69,7 @@ export function useUnstakeMutation(
           queryKey: ["owned-batches"],
         }),
         queryClient.invalidateQueries({
-          queryKey: [NETWORK, "getBalance"],
+          queryKey: ["owned-ns-balance"],
         }),
       ]);
     },

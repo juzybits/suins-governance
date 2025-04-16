@@ -64,7 +64,7 @@ export function useStakeOrLockMutation(
           queryKey: ["owned-batches"],
         }),
         queryClient.invalidateQueries({
-          queryKey: [NETWORK, "getBalance"],
+          queryKey: ["owned-ns-balance"],
         }),
       ]);
     },

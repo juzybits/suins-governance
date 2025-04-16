@@ -25,9 +25,7 @@ export function NSAmount({
 }) {
   const amountFormatted = formatBalance({
     balance: amount,
-    decimals: noFormat
-      ? 0
-      : NS_COINTYPE_DECIMAL_PLACES,
+    decimals: noFormat ? 0 : NS_COINTYPE_DECIMAL_PLACES,
     format: roundedCoinFormat ? CoinFormat.ROUNDED : CoinFormat.FULL,
   });
 

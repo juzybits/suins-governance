@@ -30,9 +30,6 @@ import {
 import Loader from "@/components/ui/Loader";
 import { useGetOwnedBatches } from "@/hooks/staking/useGetOwnedBatches";
 import { useCurrentAccount } from "@mysten/dapp-kit";
-import { SUINS_PACKAGES } from "@/constants/endpoints";
-import { useGetBalance } from "@/hooks/useGetBalance";
-import { NETWORK } from "@/constants/env";
 import { useGetProposalsIds } from "@/hooks/useGetProposals";
 import { useGetVoteCastedByProposalId } from "@/hooks/useGetVoteCasted";
 import {
@@ -43,6 +40,7 @@ import { isPast } from "date-fns";
 import { roundFloat } from "@/utils/roundFloat";
 import { calcVotingStats } from "@/utils/calcVotingStats";
 import { useGetUserTotalReward } from "@/hooks/staking/useGetUserTotalReward";
+import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 
 type StakingData = {
   lockedNS: bigint;
@@ -56,14 +54,12 @@ type BatchAction = "view" | "lock" | "requestUnstake" | "unstake";
 
 export function StakeContent() {
   const currAcct = useCurrentAccount();
+  const currAddr = currAcct?.address;
 
-  const balance = useGetBalance({
-    owner: currAcct?.address,
-    coinType: SUINS_PACKAGES[NETWORK].coinType,
-  });
+  const balance = useGetOwnedNSBalance(currAddr);
   const availableNS = balance.data ? BigInt(balance.data.totalBalance) : 0n;
 
-  const batches = useGetOwnedBatches(currAcct?.address);
+  const batches = useGetOwnedBatches(currAddr);
   const stakingData = useMemo((): StakingData => {
     let lockedNS = 0n;
     let lockedPower = 0n;

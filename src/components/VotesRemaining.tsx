@@ -1,22 +1,17 @@
 "use client";
 
 import { Text } from "@/components/ui/Text";
-import { NETWORK } from "@/constants/env";
-import { SUINS_PACKAGES } from "@/constants/endpoints";
 import { useCurrentAccount } from "@mysten/dapp-kit";
-import { useGetBalance } from "@/hooks/useGetBalance";
 import Loader from "@/components/ui/Loader";
+import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 
 export function VotesRemaining() {
   const currentAccount = useCurrentAccount();
-  const address = currentAccount?.address;
+  const currAddr = currentAccount?.address;
 
-  const { data: balance, isLoading } = useGetBalance({
-    owner: address,
-    coinType: SUINS_PACKAGES[NETWORK].coinType,
-  });
+  const { data: balance, isLoading } = useGetOwnedNSBalance(currAddr);
 
-  if (!address) {
+  if (!currAddr) {
     return null;
   }
 
