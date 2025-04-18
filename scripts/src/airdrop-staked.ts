@@ -19,10 +19,9 @@ import { createInterface } from "readline";
 import { Command } from "commander";
 
 /**
- * Maximum commands in a PTB is 1024, and each airdrop calls 3 commands:
- * SplitCoins + admin_new + admin_transfer
+ * Maximum commands in a PTB is 1023, and each airdrop calls 2 commands
  */
-const AIRDROPS_PER_TX = 341;
+const AIRDROPS_PER_TX = 511;
 
 const command = new Command();
 
@@ -227,24 +226,16 @@ async function executeAirdrop({
           type: netCnf.coinType,
           balance: BigInt(drop.amount_raw),
         })(tx);
-        const batch = tx.moveCall({
+        tx.moveCall({
           target: `${netCnf.votingPkgId}::staking_batch::admin_new`,
           typeArguments: [],
           arguments: [
             tx.object(stakingAdminCapId),
             tx.object(netCnf.stakingStatsId),
+            tx.pure.address(drop.recipient),
             payCoin,
             tx.pure.u64(drop.start_ms),
             tx.pure.u64(drop.unlock_ms),
-          ],
-        });
-        tx.moveCall({
-          target: `${netCnf.votingPkgId}::staking_batch::admin_transfer`,
-          typeArguments: [],
-          arguments: [
-            tx.object(stakingAdminCapId),
-            batch,
-            tx.pure.address(drop.recipient),
           ],
         });
       }

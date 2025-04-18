@@ -26,15 +26,15 @@ export const SUINS_PACKAGES: {
 } = {
   localnet: {
     votingPkgId:
-      "0x99373128e65da35961543080a1a280ab37e3bf289da2404b5f7c82a09d23be22",
+      "0xc1f4ab9b55cb4498866ab9040a0bf9b5d516e2ff7b68c4960e18b00509214c76",
     governanceObjId:
-      "0x9d2f38e3caa9e6102a335be5c9f7d94893b90b64a7572580b8220df5492c7dc9",
+      "0x8a785c33675ae540c6d90f2939d9eb0332c724f2eb77da911c63920682953bc8",
     stakingConfigId:
-      "0xd62d5d48125d047d46ddbe22c9a42a868b73d37dd5b2f2d02850c77b64848606",
+      "0xee5fc9d162634505a5d57d5e32e02c269e2b677d40979cff08c01a8586d1b35f",
     stakingStatsId:
-      "0x44e63f3c15b4e0dccde442c3552a884dd1e5a0ccb6f66ec3ad602be491af72cb",
+      "0xd1e94f1e89bb6ff79d7950a80a75cffe63006d1e6af6ae4faaa752939fc1702b",
     coinType:
-      "0xbfc49f8d166feaafa55d374c9600d898604f5a94d89d12dee8a07827991e4c07::ns::NS",
+      "0x1a06fd265f6761e339c6a82e5b0a195a73d8df4c9676728e99bef50cba1e9125::ns::NS",
   },
   devnet: {
     votingPkgId: "",
