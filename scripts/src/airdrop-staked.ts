@@ -226,7 +226,7 @@ async function executeAirdrop({
         const payCoin = coinWithBalance({
           type: netCnf.coinType,
           balance: BigInt(drop.amount_raw),
-        });
+        })(tx);
         const batch = tx.moveCall({
           target: `${netCnf.votingPkgId}::staking_batch::admin_new`,
           typeArguments: [],
