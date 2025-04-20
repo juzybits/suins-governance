@@ -34,7 +34,7 @@ export function useGetUserStats({
       const tx = new Transaction();
 
       tx.moveCall({
-        target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::stats::user_total_reward`,
+        target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::stats::user_rewards`,
         arguments: [
           tx.object(SUINS_PACKAGES[NETWORK].statsId),
           tx.pure.address(user),

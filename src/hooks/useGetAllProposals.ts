@@ -17,7 +17,7 @@ export function useGetAllProposals() {
     queryFn: async () => {
       const tx = new Transaction();
       tx.moveCall({
-        target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::early_voting::view_proposal_ids`,
+        target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::early_voting::get_proposal_ids`,
         arguments: [tx.object(SUINS_PACKAGES[NETWORK].governanceObjId)],
       });
 
