@@ -231,11 +231,13 @@ async function executeAirdrop({
           typeArguments: [],
           arguments: [
             tx.object(stakingAdminCapId),
+            tx.object(netCnf.stakingConfigId),
             tx.object(netCnf.stakingStatsId),
-            tx.pure.address(drop.recipient),
             payCoin,
+            tx.pure.u64(drop.lock_months),
             tx.pure.u64(drop.start_ms),
-            tx.pure.u64(drop.unlock_ms),
+            tx.pure.address(drop.recipient),
+            tx.object.clock(),
           ],
         });
       }

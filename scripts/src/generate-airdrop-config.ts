@@ -5,8 +5,8 @@ import { getRandomAirdropConfig } from "./getRandomAirdropConfig";
 export type AirdropConfig = {
   recipient: string;
   amount_raw: string;
-  start_ms: string;
-  unlock_ms: string;
+  start_ms: number;
+  lock_months: number;
 };
 
 function main() {
@@ -43,8 +43,6 @@ function generateAirdropConfig(events: ReturnTokenEvent[]): AirdropConfig[] {
 
   // Calculate 1% of each voter's total and create airdrop config
   const airdropConfig: AirdropConfig[] = [];
-  const start_ms = Date.now().toString(); // TODO: tbd
-  const unlock_ms = start_ms; // staked, not locked
 
   for (const [voter, totalAmount] of voterTotals.entries()) {
     const airdropAmount = totalAmount / BigInt(100);
@@ -52,8 +50,8 @@ function generateAirdropConfig(events: ReturnTokenEvent[]): AirdropConfig[] {
       airdropConfig.push({
         recipient: voter,
         amount_raw: airdropAmount.toString(),
-        start_ms,
-        unlock_ms,
+        start_ms: Date.now(), // TODO: tbd
+        lock_months: 0,
       });
     }
   }
