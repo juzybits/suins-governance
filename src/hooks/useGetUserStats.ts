@@ -34,18 +34,18 @@ export function useGetUserStats({
       const tx = new Transaction();
 
       tx.moveCall({
-        target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::staking_stats::user_total_reward`,
+        target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::stats::user_total_reward`,
         arguments: [
-          tx.object(SUINS_PACKAGES[NETWORK].stakingStatsId),
+          tx.object(SUINS_PACKAGES[NETWORK].statsId),
           tx.pure.address(user),
         ],
       });
 
       for (const proposalId of proposalIds) {
         tx.moveCall({
-          target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::staking_stats::user_proposal_stats`,
+          target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::stats::user_proposal_stats`,
           arguments: [
-            tx.object(SUINS_PACKAGES[NETWORK].stakingStatsId),
+            tx.object(SUINS_PACKAGES[NETWORK].statsId),
             tx.pure.address(user),
             tx.pure.address(proposalId),
           ],

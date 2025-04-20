@@ -232,7 +232,7 @@ async function executeAirdrop({
           arguments: [
             tx.object(stakingAdminCapId),
             tx.object(netCnf.stakingConfigId),
-            tx.object(netCnf.stakingStatsId),
+            tx.object(netCnf.statsId),
             payCoin,
             tx.pure.u64(drop.lock_months),
             tx.pure.u64(drop.start_ms),

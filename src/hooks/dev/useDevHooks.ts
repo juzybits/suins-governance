@@ -137,7 +137,7 @@ export function useDistributeRewardsMutation(
         target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::proposal_v2::distribute_rewards`,
         arguments: [
           tx.object(proposalId),
-          tx.object(SUINS_PACKAGES[NETWORK].stakingStatsId),
+          tx.object(SUINS_PACKAGES[NETWORK].statsId),
           tx.object.clock(),
         ],
       });

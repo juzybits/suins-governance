@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const stakingStatsSchema = z.object({
+export const statsSchema = z.object({
   objectId: z.string(),
   version: z.string(),
   digest: z.string(),
