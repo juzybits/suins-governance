@@ -53,11 +53,11 @@ export const SUINS_PACKAGES: {
     coinType: "",
   },
   localnet: {
-    votingPkgId: env.NEXT_PUBLIC_VITE_votingPkgId,
-    governanceObjId: env.NEXT_PUBLIC_VITE_governanceObjId,
-    stakingConfigId: env.NEXT_PUBLIC_VITE_stakingConfigId,
-    statsId: env.NEXT_PUBLIC_VITE_statsId,
-    coinType: env.NEXT_PUBLIC_VITE_coinType,
+    votingPkgId: env.NEXT_PUBLIC_VITE_votingPkgId ?? "",
+    governanceObjId: env.NEXT_PUBLIC_VITE_governanceObjId ?? "",
+    stakingConfigId: env.NEXT_PUBLIC_VITE_stakingConfigId ?? "",
+    statsId: env.NEXT_PUBLIC_VITE_statsId ?? "",
+    coinType: env.NEXT_PUBLIC_VITE_coinType ?? "",
   },
 };
 

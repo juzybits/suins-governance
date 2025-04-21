@@ -10,7 +10,11 @@ import { ProposalsMenu } from "@/components/ProposalsMenu";
 import { VotesRemaining } from "@/components/VotesRemaining";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { Menu } from "./Menu";
-import { MenuContent, MenuContentContext, type MenuContentContextProps } from "./MenuContent";
+import {
+  MenuContent,
+  MenuContentContext,
+  type MenuContentContextProps,
+} from "./MenuContent";
 
 export interface HeaderProps {
   logoVariant?: "outline" | "fill";
@@ -27,11 +31,17 @@ export function Header({
 }: HeaderProps) {
   const isSmallOrAbove = useBreakpoint("sm");
   const [openMenu, setOpenMenu] = useState(false);
-  const [menuContent, setMenuContent] = useState<MenuContentContextProps["content"]>(null);
+  const [menuContent, setMenuContent] =
+    useState<MenuContentContextProps["content"]>(null);
 
   return (
     <MenuContentContext.Provider
-      value={{ open: openMenu, setOpen: setOpenMenu, content: menuContent, setContent: setMenuContent }}
+      value={{
+        open: openMenu,
+        setOpen: setOpenMenu,
+        content: menuContent,
+        setContent: setMenuContent,
+      }}
     >
       <div className="z-10 mx-auto flex w-full flex-col items-center justify-center gap-2024_XL pt-2024_L sm:gap-2024_3XL">
         <div

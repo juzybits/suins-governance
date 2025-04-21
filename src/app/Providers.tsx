@@ -54,4 +54,6 @@ export function Providers({ children }: { children: ReactNode }) {
 
 // So we can JSON.stringify BigInts
 // @ts-expect-error Property 'toJSON' does not exist on type 'BigInt'
-BigInt.prototype.toJSON = function() { return this.toString(); };
+BigInt.prototype.toJSON = function () {
+  return this.toString();
+};

@@ -19,12 +19,12 @@ export const env = createEnv({
     NEXT_PUBLIC_VITE_NETWORK: z
       .enum(["mainnet", "testnet", "devnet", "localnet"])
       .default("mainnet"),
-      // only for development on localnet:
-      NEXT_PUBLIC_VITE_votingPkgId: z.string(),
-      NEXT_PUBLIC_VITE_governanceObjId: z.string(),
-      NEXT_PUBLIC_VITE_stakingConfigId: z.string(),
-      NEXT_PUBLIC_VITE_statsId: z.string(),
-      NEXT_PUBLIC_VITE_coinType: z.string(),
+    // only for development on localnet:
+    NEXT_PUBLIC_VITE_votingPkgId: z.string().optional(),
+    NEXT_PUBLIC_VITE_governanceObjId: z.string().optional(),
+    NEXT_PUBLIC_VITE_stakingConfigId: z.string().optional(),
+    NEXT_PUBLIC_VITE_statsId: z.string().optional(),
+    NEXT_PUBLIC_VITE_coinType: z.string().optional(),
   },
 
   /**
@@ -36,8 +36,10 @@ export const env = createEnv({
     NEXT_PUBLIC_VITE_NETWORK: process.env.NEXT_PUBLIC_VITE_NETWORK,
     // only for development on localnet:
     NEXT_PUBLIC_VITE_votingPkgId: process.env.NEXT_PUBLIC_VITE_votingPkgId,
-    NEXT_PUBLIC_VITE_governanceObjId: process.env.NEXT_PUBLIC_VITE_governanceObjId,
-    NEXT_PUBLIC_VITE_stakingConfigId: process.env.NEXT_PUBLIC_VITE_stakingConfigId,
+    NEXT_PUBLIC_VITE_governanceObjId:
+      process.env.NEXT_PUBLIC_VITE_governanceObjId,
+    NEXT_PUBLIC_VITE_stakingConfigId:
+      process.env.NEXT_PUBLIC_VITE_stakingConfigId,
     NEXT_PUBLIC_VITE_statsId: process.env.NEXT_PUBLIC_VITE_statsId,
     NEXT_PUBLIC_VITE_coinType: process.env.NEXT_PUBLIC_VITE_coinType,
   },
