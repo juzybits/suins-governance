@@ -18,6 +18,7 @@ export const batchSchema = z.object({
       start_ms: z.string(),
       unlock_ms: z.string(),
       voting_until_ms: z.string(),
+      last_vote: z.string().nullable(),
     }),
   }),
 });
