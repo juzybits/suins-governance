@@ -73,6 +73,11 @@
   border: 1px solid #ccc;
 }
 
+.dummy-ui a {
+  color: blue;
+  text-decoration: underline;
+}
+
 /* staking batch */
 
 .dummy-ui .batch {
