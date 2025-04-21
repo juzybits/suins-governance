@@ -2,14 +2,7 @@ import Discord from "@/icons/Discord";
 import Twitter from "@/icons/Twitter";
 import { Text } from "@/components/ui/Text";
 import Link from "next/link";
-
-export const PRIVACY_POLICY_URL =
-  "https://mystenlabs.com/legal?content=privacy";
-export const X_URL = "https://twitter.com/suinsdapp";
-export const DISCORD_URL = "https://discord.gg/69te6EwCxN";
-export const ALL_DOMAINS_EXPLORER_URL =
-  "https://suiscan.xyz/mainnet/nfts/domains";
-export const TOKENOMICS_URL = "https://token.suins.io";
+import { DISCORD_URL, PRIVACY_POLICY_URL, X_URL } from "@/constants/urls";
 
 export function FooterLinks() {
   return (
