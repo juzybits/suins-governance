@@ -2,11 +2,11 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 
 import { FooterLinks } from '@/components/footer/FooterLinks';
-// import { MENU_NAVS } from '@/components/header/utils';
 import { MENU_OVERLAY_ANIMATIONS_DURATION } from '@/components/ui/MobileMenuOverlay';
 import { Text } from '@/components/ui/Text';
 import { ButtonOrLink } from '@/components/ui/utils/ButtonOrLink';
 import { cn } from '@/utils/cn';
+import { CLAIM_AEON_URL, CLAIM_NS_URL, CONSTITUTION_URL, TOKENOMICS_URL } from '@/constants/urls';
 
 const CONTENT_INITIAL_ANIMATIONS = {
     opacity: 0,
@@ -20,13 +20,12 @@ const CONTENT_ANIMATIONS = {
 
 interface MenuContentButtonProps {
     title: string;
-    mobileTitle?: string;
     to?: string;
     href?: string;
     target?: string;
 }
 
-function MenuContentButton({ title, to, href, mobileTitle, target }: MenuContentButtonProps) {
+function MenuContentButton({ title, to, href, target }: MenuContentButtonProps) {
     const [isClicked, setIsClicked] = useState(false);
     const handleStart = () => {
         setIsClicked(true);
@@ -51,7 +50,7 @@ function MenuContentButton({ title, to, href, mobileTitle, target }: MenuContent
             onTouchEnd={handleEnd}
         >
             <Text variant='Large/regular'>
-                {mobileTitle || title}
+                {title}
             </Text>
         </ButtonOrLink>
     );
@@ -75,20 +74,41 @@ export function NavigationContent() {
                 }}
             >
                 <div className='flex h-full flex-col gap-0'>
-                    <MenuContentButton title='Claim Your $NS' href='https://claim.suins.io/' target='_blank' />
-                    <MenuContentButton title='$NS Tokenomics' href='https://token.suins.io' target='_blank' />
+                    <MenuContentButton
+                        title="Claim Your $NS"
+                        href={CLAIM_NS_URL}
+                        target="_blank"
+                    />
+                    <MenuContentButton
+                        title="$NS Tokenomics"
+                        href={TOKENOMICS_URL}
+                        target="_blank"
+                    />
                 </div>
                 <div className='flex h-full flex-col gap-0 pt-2024_S'>
-                    <MenuContentButton title='SuiNS Governance Rules' href='https://docs.suins.io' target='_blank' />
-                    <MenuContentButton title='SuiNS Governance Voting' href='https://vote.suins.io' target='_blank' />
+                    <MenuContentButton
+                        title="SuiNS Governance Voting"
+                        href="vote"
+                    />
+                    <MenuContentButton
+                        title="SuiNS Constitution"
+                        href={CONSTITUTION_URL}
+                        target="_blank"
+                    />
                 </div>
-                <div className='flex h-full flex-col gap-2024_S pt-2024_S'>
-                    <MenuContentButton title='Claim Aeon NFT' to='aeon' />
+                <div className='flex h-full flex-col gap-0 pt-2024_S'>
+                    <MenuContentButton
+                        title="SuiNS Staking"
+                        href="stake"
+                    />
                 </div>
-
-                {/* {MENU_NAVS.map(({ title, to, href, mobileTitle }) => (
-                    <MenuContentButton key={title} title={title} to={to} href={href} mobileTitle={mobileTitle} />
-                ))} */}
+                <div className='flex h-full flex-col gap-0 pt-2024_S'>
+                    <MenuContentButton
+                        title="Claim Aeon NFT"
+                        href={CLAIM_AEON_URL}
+                        target="_blank"
+                    />
+                </div>
             </motion.section>
             <motion.section
                 className='mt-auto w-full sm:hidden'
