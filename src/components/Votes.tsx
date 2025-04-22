@@ -31,17 +31,19 @@ import { useCursorPagination } from "@/hooks/useCursorPagination";
 import SvgPaginationNext24 from "@/icons/PaginationNext24";
 import SvgPaginationPrev24 from "@/icons/PaginationPrev24";
 import { cn } from "@/utils/cn";
-
+import { useIsPersonVote } from "@/hooks/useIsPersonVote";
 const PAGE_SIZE = 10;
 
 function VoterDetail({
   voterAddress,
   position: position,
   objID,
+  isPersonVote,
 }: {
   voterAddress: string;
   objID: string;
   position: number;
+  isPersonVote?: boolean;
 }) {
   const { data: accountInfo } = useGetAccountInfo({ address: voterAddress });
   const { data: voter } = useGetVoteCastedById(objID);
@@ -114,7 +116,11 @@ function VoterDetail({
                 className="flex w-full flex-row items-center justify-end gap-2.5"
                 key={item.key}
               >
-                <VoteIndicator votedStatus={item.key as VoteType} onlyStatus />
+                <VoteIndicator
+                  votedStatus={item.key as VoteType}
+                  onlyStatus
+                  isPersonVote={isPersonVote}
+                />
                 <div className="flex min-w-[60px] items-center justify-end gap-1">
                   <NSAmount
                     amount={item?.votes ?? 0}
@@ -150,7 +156,11 @@ function VoterDetail({
           {votes && (
             <div className="flex w-full flex-row items-center justify-end gap-2.5">
               <div className="w-fit basis-1/3">
-                <VoteIndicator votedStatus={votes.key as VoteType} onlyStatus />
+                <VoteIndicator
+                  votedStatus={votes.key as VoteType}
+                  onlyStatus
+                  isPersonVote={isPersonVote}
+                />
               </div>
               <div className="flex min-w-[80px] items-center justify-end gap-1">
                 <NSAmount
@@ -172,9 +182,11 @@ function VoterDetail({
 function AllVoter({
   proposalId,
   topVotersSwitch,
+  isPersonVote,
 }: {
   proposalId: string;
   topVotersSwitch: () => void;
+  isPersonVote?: boolean;
 }) {
   const { data: resp } = useGetProposalDetail({ proposalId });
   const allVotersQuery = useGetAllVoters({
@@ -228,6 +240,7 @@ function AllVoter({
                 objID={voter.objectId}
                 voterAddress={voter.name.value}
                 position={index + 1 + pagination.currentPage * PAGE_SIZE}
+                isPersonVote={isPersonVote}
               />
             </motion.div>
           ))}
@@ -353,7 +366,9 @@ function TopVoter({
             {formattedName ?? formattedAddress}
           </Text>
         </Link>
-        {voteType && <VoteIndicator votedStatus={voteType} onlyStatus />}
+        {voteType && (
+          <VoteIndicator votedStatus={voteType} onlyStatus isPersonVote />
+        )}
         <NSAmount amount={votes} isMedium roundedCoinFormat centerAlign />
       </div>
     </div>
@@ -363,12 +378,15 @@ function TopVoter({
 function TopVoters({
   proposalId,
   allVotersSwitch,
+  isPersonVote,
 }: {
   proposalId: string;
   allVotersSwitch: () => void;
+  isPersonVote?: boolean;
 }) {
   const { data: resp } = useGetProposalDetail({ proposalId });
   const voteTypes: VoteType[] = ["Yes", "No", "Abstain"];
+  const voteTypesWithPerson = ["Team 1", "Team 2", "Team 3"];
   const [currentVoteTypeIndex, setCurrentVoteTypeIndex] = useState(0);
 
   if (!resp?.fields.vote_leaderboards.fields.contents) {
@@ -408,7 +426,7 @@ function TopVoters({
             Top Voters
           </Heading>
           <div className="flex gap-1">
-            {voteTypes.map((type) => {
+            {voteTypes.map((type, index) => {
               const isAvailable = !!topVoters.get(type)?.length;
               return (
                 <button
@@ -436,7 +454,7 @@ function TopVoters({
                     }
                     className="leading-none"
                   >
-                    {type}
+                    {isPersonVote ? voteTypesWithPerson[index] : type}
                   </Text>
                 </button>
               );
@@ -495,6 +513,7 @@ function TopVoters({
 
 export function Votes({ proposalId }: { proposalId: string }) {
   const { data: resp } = useGetProposalDetail({ proposalId });
+  const isPersonVote = useIsPersonVote(proposalId);
   const [topVoters, setTopVoters] = useState(false);
   if (!resp || Number(resp?.fields.voters.fields.size || 0) < 1) return null;
   const counts = resp?.fields.voters.fields.size;
@@ -521,11 +540,13 @@ export function Votes({ proposalId }: { proposalId: string }) {
           <TopVoters
             proposalId={proposalId}
             allVotersSwitch={() => setTopVoters(false)}
+            isPersonVote={isPersonVote}
           />
         ) : (
           <AllVoter
             proposalId={proposalId}
             topVotersSwitch={() => setTopVoters(true)}
+            isPersonVote={isPersonVote}
           />
         )}
       </div>
