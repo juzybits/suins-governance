@@ -41,7 +41,7 @@ export function VoteIndicator({
             />
           )}
           <Text variant={fontSize} color="issue-dark">
-            {isPersonVote ? "Team 2" : "No"}
+            {isPersonVote ? "Welp" : "No"}
           </Text>
         </div>
       );
@@ -67,7 +67,7 @@ export function VoteIndicator({
             />
           )}
           <Text variant={fontSize} color="warning">
-            {isPersonVote ? "Team 3" : "Abstain"}
+            {isPersonVote ? "William" : "Abstain"}
           </Text>
         </div>
       );
@@ -93,7 +93,7 @@ export function VoteIndicator({
             />
           )}
           <Text variant={fontSize} color="good">
-            {isPersonVote ? "Team 1" : "Yes"}
+            {isPersonVote ? "Nigiri" : "Yes"}
           </Text>
         </div>
       );

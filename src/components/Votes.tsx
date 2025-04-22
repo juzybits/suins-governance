@@ -386,7 +386,7 @@ function TopVoters({
 }) {
   const { data: resp } = useGetProposalDetail({ proposalId });
   const voteTypes: VoteType[] = ["Yes", "No", "Abstain"];
-  const voteTypesWithPerson = ["Team 1", "Team 2", "Team 3"];
+  const voteTypesWithPerson = ["Nigiri", "Welp", "William"];
   const [currentVoteTypeIndex, setCurrentVoteTypeIndex] = useState(0);
 
   if (!resp?.fields.vote_leaderboards.fields.contents) {
