@@ -2,15 +2,16 @@ import { NETWORK } from "@/constants/env";
 
 import { useGetProposalDetail } from "./useGetProposalDetail";
 
+// Proposal IDs for team votes
+const PROPOSAL_IDS = {
+  mainnet: [4],
+  testnet: [11, 12, 13],
+};
 export function useIsPersonVote(proposalId: string) {
   const { data: proposalDetail } = useGetProposalDetail({
     proposalId,
   });
-  return NETWORK === "testnet" &&
-    (Number(proposalDetail?.fields.serial_no) === 11 ||
-      Number(proposalDetail?.fields.serial_no) === 12)
-    ? true
-    : NETWORK === "mainnet" && Number(proposalDetail?.fields.serial_no) === 4
-      ? true
-      : false;
+  return PROPOSAL_IDS[NETWORK].includes(
+    Number(proposalDetail?.fields.serial_no),
+  );
 }
