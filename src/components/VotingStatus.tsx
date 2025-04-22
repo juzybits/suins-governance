@@ -201,7 +201,6 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
           votes={resp?.abstainVote ?? 0}
           onlyStatus
           noFormat
-          hidePercentage
           isPersonVote={isPersonVote}
         />
       </div>
