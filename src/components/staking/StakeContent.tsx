@@ -39,7 +39,6 @@ import { useGetAllProposals } from "@/hooks/useGetAllProposals";
 import { type ProposalObjResp } from "@/types/Proposal";
 import {
   useGetUserStats,
-  UserStats,
   type UserProposalStats,
 } from "@/hooks/useGetUserStats";
 
@@ -96,11 +95,13 @@ export function StakeContent() {
     return <div>Error: {balance.error?.message ?? batches.error?.message}</div>;
   }
 
-  return <>
-    <PanelOverview availableNS={availableNS} stakingData={stakingData} />
-    <PanelBatches availableNS={availableNS} batches={batches.data ?? []} />
-    <PanelRecentProposals />
-  </>;
+  return (
+    <>
+      <PanelOverview availableNS={availableNS} stakingData={stakingData} />
+      <PanelBatches availableNS={availableNS} batches={batches.data ?? []} />
+      <PanelRecentProposals />
+    </>
+  );
 }
 
 function PanelOverview({

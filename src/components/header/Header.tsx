@@ -56,12 +56,7 @@ export function Header({
             )}
           >
             <div className="flex items-center justify-center gap-2024_S md:gap-2024_M">
-              <Link
-                href="https://suins.io/"
-                target="_blank"
-                className="max-w-[200px]"
-                onClick={logoAction}
-              >
+              <Link href="/" className="max-w-[200px]" onClick={logoAction}>
                 <SuiNSLogo
                   variant={logoVariant}
                   className="h-2024_2XL sm:h-2024_3XL"
