@@ -60,6 +60,11 @@
   font-weight: bold;
 }
 
+.dummy-ui h4 {
+  font-size: 14px;
+  font-weight: bold;
+}
+
 .dummy-ui button {
   padding: 8px 16px;
   border: 1px solid #ddd;
@@ -76,6 +81,14 @@
 .dummy-ui a {
   color: blue;
   text-decoration: underline;
+}
+
+.dummy-ui ul {
+  list-style-position: inside;
+}
+
+.dummy-ui li {
+  padding-left: 4px;
 }
 
 /* staking batch */
