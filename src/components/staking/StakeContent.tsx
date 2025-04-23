@@ -39,6 +39,7 @@ import { useGetAllProposals } from "@/hooks/useGetAllProposals";
 import { type ProposalObjResp } from "@/types/Proposal";
 import {
   useGetUserStats,
+  UserStats,
   type UserProposalStats,
 } from "@/hooks/useGetUserStats";
 
@@ -95,13 +96,11 @@ export function StakeContent() {
     return <div>Error: {balance.error?.message ?? batches.error?.message}</div>;
   }
 
-  return (
-    <>
-      <PanelOverview availableNS={availableNS} stakingData={stakingData} />
-      <PanelBatches availableNS={availableNS} batches={batches.data ?? []} />
-      <PanelParticipation />
-    </>
-  );
+  return <>
+    <PanelOverview availableNS={availableNS} stakingData={stakingData} />
+    <PanelBatches availableNS={availableNS} batches={batches.data ?? []} />
+    <PanelRecentProposals />
+  </>;
 }
 
 function PanelOverview({
@@ -562,7 +561,7 @@ function ModalUnstakeBatch({
   );
 }
 
-function PanelParticipation() {
+export function PanelRecentProposals() {
   const currAcct = useCurrentAccount();
   const { data: proposals } = useGetAllProposals();
   const { data: userStats } = useGetUserStats({
@@ -572,7 +571,7 @@ function PanelParticipation() {
 
   return (
     <div className="panel">
-      <h2>SuiNS Governance Proposals</h2>
+      <h2>Recent Proposals</h2>
       {proposals?.map((proposal) => (
         <CardProposalSummary
           key={proposal.fields.id.id}

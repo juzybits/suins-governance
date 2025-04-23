@@ -6,6 +6,11 @@ import { NETWORK } from "@/constants/env";
 import { Transaction } from "@mysten/sui/transactions";
 import { bcs } from "@mysten/sui/bcs";
 
+export type UserStats = {
+  totalReward: string;
+  proposalStats: UserProposalStats[];
+};
+
 export type UserProposalStats = {
   proposalId: string;
   power: string;
@@ -68,7 +73,12 @@ export function useGetUserStats({
         }),
       );
 
-      return { totalReward, proposalStats };
+      const userStats: UserStats = {
+        totalReward,
+        proposalStats,
+      };
+
+      return userStats;
     },
     enabled: !!user && !!proposalIds,
   });
