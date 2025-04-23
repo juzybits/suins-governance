@@ -155,7 +155,8 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
   const totalVotes =
     (resp?.yesVote ?? 0) + (resp?.noVote ?? 0) + (resp?.abstainVote ?? 0);
 
-  const totalVotesWithoutAbstain = totalVotes - (resp?.abstainVote ?? 0);
+  const totalVotesWithoutAbstain =
+    totalVotes - (isPersonVote ? 0 : (resp?.abstainVote ?? 0));
 
   const yesVotesPercentage =
     totalVotes > 0
