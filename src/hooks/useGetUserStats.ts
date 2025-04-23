@@ -36,7 +36,7 @@ export function useGetUserStats({
       tx.moveCall({
         target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::stats::user_rewards`,
         arguments: [
-          tx.object(SUINS_PACKAGES[NETWORK].statsId),
+          tx.object(SUINS_PACKAGES[NETWORK].statsObjId),
           tx.pure.address(user),
         ],
       });
@@ -45,7 +45,7 @@ export function useGetUserStats({
         tx.moveCall({
           target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::stats::user_proposal_stats`,
           arguments: [
-            tx.object(SUINS_PACKAGES[NETWORK].statsId),
+            tx.object(SUINS_PACKAGES[NETWORK].statsObjId),
             tx.pure.address(user),
             tx.pure.address(proposalId),
           ],

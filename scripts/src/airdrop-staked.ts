@@ -231,8 +231,8 @@ async function executeAirdrop({
           typeArguments: [],
           arguments: [
             tx.object(stakingAdminCapId),
-            tx.object(netCnf.stakingConfigId),
-            tx.object(netCnf.statsId),
+            tx.object(netCnf.stakingConfigObjId),
+            tx.object(netCnf.statsObjId),
             payCoin,
             tx.pure.u64(drop.lock_months),
             tx.pure.u64(drop.start_ms),

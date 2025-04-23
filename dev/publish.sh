@@ -18,12 +18,12 @@ VOTING_DIR="$CONTRACTS_DIR/voting"
 
 ### variables ###
 
-TOKEN_PACKAGE_ID=""
-VOTING_PACKAGE_ID=""
-GOVERNANCE_OBJ_ID=""
-STAKING_CONFIG_OBJ_ID=""
-STATS_OBJ_ID=""
 ACTIVE_ENV=$(sui client active-env)
+coinPkgId=""
+votingPkgId=""
+governanceObjId=""
+stakingConfigObjId=""
+statsObjId=""
 
 ### functions ###
 
@@ -34,19 +34,14 @@ function publish() {
     cd "$dir"
     local json=$(sui client publish --json)
     local package_id=$(get_package_id "$json")
-    echo "Package ID: $package_id"
 
     if [ "$dir" == "$TOKEN_DIR" ]; then
-        TOKEN_PACKAGE_ID=$package_id
+        coinPkgId=$package_id
     elif [ "$dir" == "$VOTING_DIR" ]; then
-        VOTING_PACKAGE_ID=$package_id
-        GOVERNANCE_OBJ_ID=$(get_object_id "$json" "$package_id" "governance::NSGovernance")
-        STAKING_CONFIG_OBJ_ID=$(get_object_id "$json" "$package_id" "staking_config::StakingConfig")
-        STATS_OBJ_ID=$(get_object_id "$json" "$package_id" "stats::Stats")
-
-        echo "NSGovernance ID: $GOVERNANCE_OBJ_ID"
-        echo "StakingConfig ID: $STAKING_CONFIG_OBJ_ID"
-        echo "Stats ID: $STATS_OBJ_ID"
+        votingPkgId=$package_id
+        governanceObjId=$(get_object_id "$json" "$package_id" "governance::NSGovernance")
+        stakingConfigObjId=$(get_object_id "$json" "$package_id" "staking_config::StakingConfig")
+        statsObjId=$(get_object_id "$json" "$package_id" "stats::Stats")
     fi
 }
 
@@ -66,11 +61,11 @@ function get_object_id() {
 
 function print_env_config() {
     echo "NEXT_PUBLIC_VITE_NETWORK=$ACTIVE_ENV"
-    echo "NEXT_PUBLIC_VITE_votingPkgId=$VOTING_PACKAGE_ID"
-    echo "NEXT_PUBLIC_VITE_governanceObjId=$GOVERNANCE_OBJ_ID"
-    echo "NEXT_PUBLIC_VITE_stakingConfigId=$STAKING_CONFIG_OBJ_ID"
-    echo "NEXT_PUBLIC_VITE_statsId=$STATS_OBJ_ID"
-    echo "NEXT_PUBLIC_VITE_coinType=$TOKEN_PACKAGE_ID::ns::NS"
+    echo "NEXT_PUBLIC_VITE_votingPkgId=$votingPkgId"
+    echo "NEXT_PUBLIC_VITE_governanceObjId=$governanceObjId"
+    echo "NEXT_PUBLIC_VITE_stakingConfigObjId=$stakingConfigObjId"
+    echo "NEXT_PUBLIC_VITE_statsObjId=$statsObjId"
+    echo "NEXT_PUBLIC_VITE_coinType=$coinPkgId::ns::NS"
 }
 
 ### main ###
@@ -85,3 +80,8 @@ publish "$TOKEN_DIR"
 publish "$VOTING_DIR"
 
 print_env_config > "$ENV_FILE"
+
+echo "================================================"
+echo "Updated environment file: $ENV_FILE":
+print_env_config
+echo "================================================"

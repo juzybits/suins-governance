@@ -43,8 +43,8 @@ export function useVoteV2Mutation(
           target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::proposal_v2::vote`,
           arguments: [
             tx.object(proposalId),
-            tx.object(SUINS_PACKAGES[NETWORK].stakingConfigId),
-            tx.object(SUINS_PACKAGES[NETWORK].statsId),
+            tx.object(SUINS_PACKAGES[NETWORK].stakingConfigObjId),
+            tx.object(SUINS_PACKAGES[NETWORK].statsObjId),
             tx.object(batchId),
             tx.pure.string(vote),
             tx.object.clock(),
