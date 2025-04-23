@@ -17,6 +17,7 @@ import NSToken from "@/icons/NSToken";
 import { CoinFormat, formatBalance } from "@/utils/coins";
 import { NS_VOTE_DIVISOR, NS_VOTE_THRESHOLD } from "@/constants/common";
 import { useIsPersonVote } from "@/hooks/useIsPersonVote";
+import { useMemo } from "react";
 function MinimumThreshHold({
   isReached,
   totalVotes,
@@ -147,7 +148,6 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
   const isPersonVote = useIsPersonVote(proposalId);
   const resp = data ? parseProposalVotes(data) : null;
-  if (isLoading || !resp) return null;
 
   const threshold =
     Number(data?.fields.threshold ?? NS_VOTE_THRESHOLD) / NS_VOTE_DIVISOR; //TODO: update once contract has the right number  Number(data?.fields.threshold ?? 0);
@@ -172,6 +172,39 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
       ? roundFloat(((resp?.abstainVote ?? 0) / totalVotes) * 100)
       : 0;
 
+  const votingStatus = useMemo(() => {
+    const response = [
+      {
+        votedState: "Yes" as const,
+        percentage: yesVotesPercentage,
+        votes: resp?.yesVote ?? 0,
+      },
+      {
+        votedState: "No" as const,
+        percentage: noVotesPecentage,
+        votes: resp?.noVote ?? 0,
+      },
+      {
+        votedState: "Abstain" as const,
+        percentage: abstainVotesPecentage,
+        votes: resp?.abstainVote ?? 0,
+      },
+    ];
+    return isPersonVote
+      ? response.sort((a, b) => b.percentage - a.percentage)
+      : response;
+  }, [
+    abstainVotesPecentage,
+    isPersonVote,
+    noVotesPecentage,
+    resp?.abstainVote,
+    resp?.noVote,
+    resp?.yesVote,
+    yesVotesPercentage,
+  ]);
+
+  if (isLoading || !resp) return null;
+
   return (
     <SectionLayout title="Voting Status">
       <VoteProgressBar
@@ -180,30 +213,17 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
         abstainVotes={resp?.abstainVote ?? 0}
       />
       <div className="flex flex-col justify-between gap-2">
-        <VotingState
-          votedState="Yes"
-          percentage={yesVotesPercentage}
-          votes={resp?.yesVote ?? 0}
-          onlyStatus
-          noFormat
-          isPersonVote={isPersonVote}
-        />
-        <VotingState
-          votedState="No"
-          percentage={noVotesPecentage}
-          votes={resp?.noVote ?? 0}
-          onlyStatus
-          noFormat
-          isPersonVote={isPersonVote}
-        />
-        <VotingState
-          votedState="Abstain"
-          percentage={abstainVotesPecentage}
-          votes={resp?.abstainVote ?? 0}
-          onlyStatus
-          noFormat
-          isPersonVote={isPersonVote}
-        />
+        {votingStatus.map((voting) => (
+          <VotingState
+            key={voting.votedState}
+            votedState={voting.votedState}
+            percentage={voting.percentage}
+            votes={voting.votes}
+            onlyStatus
+            noFormat
+            isPersonVote={isPersonVote}
+          />
+        ))}
       </div>
       <MinimumThreshHold
         isReached={totalVotes >= threshold}
