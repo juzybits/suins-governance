@@ -147,6 +147,7 @@ export function parseProposalVotes(objResp: ProposalObjResp) {
   return votes;
 }
 
+// TODO-J: cache finalized proposals forever
 export function useGetProposalDetail({ proposalId }: { proposalId: string }) {
   return useQuery({
     queryKey: ["proposal-detail-by-id", proposalId],
