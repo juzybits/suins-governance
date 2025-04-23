@@ -27,7 +27,7 @@ import Loader from "./ui/Loader";
 import { formatContractText } from "@/utils/formatContractText";
 import { ContentBlockParser } from "./ui/ContentBlockParser";
 import { useParams } from "next/navigation";
-
+import { useIsPersonVote } from "@/hooks/useIsPersonVote";
 function ProposalPreview({
   proposalId,
   isActive,
@@ -36,10 +36,11 @@ function ProposalPreview({
   isActive?: boolean;
 }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
-
+  const isPersonVote = useIsPersonVote(proposalId);
   if (!data || isLoading) return null;
 
   const isClosed = isPast(new Date(Number(data.fields.end_time_ms ?? 0)));
+
   const fields = data.fields;
   const truncatedDescription = formatContractText(
     truncatedText({
@@ -53,11 +54,13 @@ function ProposalPreview({
       <ProposalStatus
         status={
           isClosed
-            ? data.fields.winning_option?.fields.pos0 === "Yes"
+            ? isPersonVote && data?.fields.winning_option !== null
               ? "passed"
-              : data?.fields.winning_option === null && isClosed
-                ? "pending"
-                : "failed"
+              : data.fields.winning_option?.fields.pos0 === "Yes"
+                ? "passed"
+                : data?.fields.winning_option === null && isClosed
+                  ? "pending"
+                  : "failed"
             : "active"
         }
       />
@@ -119,7 +122,7 @@ export function ProposalsMenu() {
   return (
     <Root>
       <Trigger asChild>
-        <button className='group relative flex w-full items-center justify-between gap-2 rounded-2024_M bg-2024_fillContent-tertiary p-2024_S shadow-previewMenu before:absolute before:inset-[2px] before:rounded-[99px] before:bg-[#2e2747] before:content-[""] hover:bg-2024_button-gradient focus:outline-none data-[state=open]:bg-[] data-[state="open"]:bg-2024_button-gradient before:data-[state=open]:bg-2024_gradient-active md:p-2024_M'>
+        <button className='group relative flex w-full items-center justify-between gap-2 rounded-2024_M bg-2024_fillContent-tertiary p-2024_S before:absolute before:inset-[2px] before:rounded-[99px] before:bg-[#2e2747] before:content-[""] hover:bg-2024_button-gradient focus:outline-none data-[state=open]:bg-[] data-[state="open"]:bg-2024_button-gradient before:data-[state=open]:bg-2024_gradient-active md:p-2024_M'>
           <FileText className="relative h-2024_XL w-2024_XL" />
           {isSmallOrAbove && (
             <Text

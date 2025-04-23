@@ -20,7 +20,7 @@ import { motion } from "framer-motion";
 import isPast from "date-fns/isPast";
 import { RadioGroupField } from "./form/RadioGroupField";
 import { useEffect } from "react";
-
+import { useIsPersonVote } from "@/hooks/useIsPersonVote";
 const VOTE_OPTIONS = ["Yes", "No", "Abstain"] as const;
 
 export function CastYourVote({ proposalId }: { proposalId: string }) {
@@ -38,6 +38,8 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
     owner: address,
     coinType: SUINS_PACKAGES[NETWORK].votingTokenType,
   });
+
+  const isPersonVote = useIsPersonVote(proposalId);
 
   const tokenBalance = Number(balance?.formatted?.replaceAll(",", "") ?? 0);
   const isLoggedOut = (!currentAccount && !isConnecting) ?? isDisconnected;
@@ -122,6 +124,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                         <VoteIndicator
                           votedStatus={option.value as "Yes" | "No" | "Abstain"}
                           size="medium"
+                          isPersonVote={isPersonVote}
                         />
                       </div>
                     </div>
@@ -139,6 +142,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                       <VoteIndicator
                         votedStatus={option.value as "Yes" | "No" | "Abstain"}
                         size="medium"
+                        isPersonVote={isPersonVote}
                       />
                     </div>
                   </div>

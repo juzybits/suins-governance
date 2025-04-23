@@ -16,7 +16,7 @@ import { roundFloat } from "@/utils/roundFloat";
 import NSToken from "@/icons/NSToken";
 import { CoinFormat, formatBalance } from "@/utils/coins";
 import { NS_VOTE_DIVISOR, NS_VOTE_THRESHOLD } from "@/constants/common";
-
+import { useIsPersonVote } from "@/hooks/useIsPersonVote";
 function MinimumThreshHold({
   isReached,
   totalVotes,
@@ -101,6 +101,7 @@ type VotedStateProps = {
   roundedCoinFormat?: boolean;
   noFormat?: boolean;
   hidePercentage?: boolean;
+  isPersonVote?: boolean;
 };
 
 export function VotingState({
@@ -111,11 +112,16 @@ export function VotingState({
   roundedCoinFormat,
   noFormat,
   hidePercentage,
+  isPersonVote,
 }: VotedStateProps) {
   return (
     <div className="flex w-full items-center justify-between gap-2">
       <div className="flex items-start">
-        <VoteIndicator votedStatus={votedState} onlyStatus={onlyStatus} />
+        <VoteIndicator
+          votedStatus={votedState}
+          onlyStatus={onlyStatus}
+          isPersonVote={isPersonVote}
+        />
       </div>
       <div className="flex min-w-[100px] basis-1/2 flex-row items-end justify-between gap-3">
         {percentage !== undefined && !hidePercentage && (
@@ -139,6 +145,7 @@ export function VotingState({
 
 export function VotingStatus({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
+  const isPersonVote = useIsPersonVote(proposalId);
   const resp = data ? parseProposalVotes(data) : null;
   if (isLoading || !resp) return null;
 
@@ -178,6 +185,7 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
           votes={resp?.yesVote ?? 0}
           onlyStatus
           noFormat
+          isPersonVote={isPersonVote}
         />
         <VotingState
           votedState="No"
@@ -185,6 +193,7 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
           votes={resp?.noVote ?? 0}
           onlyStatus
           noFormat
+          isPersonVote={isPersonVote}
         />
         <VotingState
           votedState="Abstain"
@@ -192,7 +201,7 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
           votes={resp?.abstainVote ?? 0}
           onlyStatus
           noFormat
-          hidePercentage
+          isPersonVote={isPersonVote}
         />
       </div>
       <MinimumThreshHold
