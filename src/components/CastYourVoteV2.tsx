@@ -21,6 +21,7 @@ import { RadioGroupField } from "./form/RadioGroupField";
 import { useEffect } from "react";
 import { useGetOwnedBatches } from "@/hooks/staking/useGetOwnedBatches";
 import { formatNSBalance } from "@/utils/formatNumber";
+import Link from "next/link";
 
 const VOTE_OPTIONS = ["Yes", "No", "Abstain"] as const;
 
@@ -166,6 +167,24 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
                   </Text>
                 </Button>
               </div>
+              <div className="dummy-ui">
+                <div className="panel">
+                  {votingPower > 0n ? (
+                    <p>
+                      All your {formatNSBalance(votingPower)} available votes
+                      will be used.
+                    </p>
+                  ) : (
+                    <p>
+                      You do not have any available votes to cast.{" "}
+                      <Link href="/stake">
+                        Stake or Lock to earn more votes
+                      </Link>
+                      .
+                    </p>
+                  )}
+                </div>
+              </div>
               {!isLoggedOut && (
                 <div className="mt-2 flex w-full flex-col gap-0.5">
                   {!!errors ? (
@@ -181,16 +200,6 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
                       )}
                     </div>
                   ) : null}
-                  <div className="dummy-ui">
-                    <div className="panel">
-                      <h2>Your Voting Power</h2>
-                      <p>Owned batches: {allBatches.length}</p>
-                      <p>Batches that can vote: {votingBatches.length}</p>
-                      <p>
-                        Available voting power: {formatNSBalance(votingPower)}
-                      </p>
-                    </div>
-                  </div>
                 </div>
               )}
             </div>

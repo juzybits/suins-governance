@@ -45,6 +45,8 @@ export function useGetAllProposals() {
 }
 
 const V1_PROPOSAL_IDS = [
+  // #4: Community Council voting
+  "0x94952ab99ac0303b9857d6e40ef478b0156f4680f4a069d042525ffdfd44ecc5",
   // #3: SuiNS RFP Selection
   "0x9ee1af58d737418649101836c8ba926cbe28e522e22e315dd7bd649c94425a0b",
   // #2: SuiNS Pricing & Renewal Rates

@@ -1,7 +1,7 @@
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { formatNSBalance } from "@/utils/formatNumber";
 
-{/* TODO-J: only show if the user has voted */}
+// TODO-J: only show if the user has voted
 export function ProposalPricePool({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
   if (isLoading || !data || data.version == 1) return null;
