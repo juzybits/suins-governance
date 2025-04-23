@@ -82,30 +82,34 @@ function PanelFAQ() {
         <div>
           <h4>VOTES GROWTH TABLE:</h4>
           <table>
-            <tr>
-              <th>Month</th>
-              <th>Votes Multiplier</th>
-            </tr>
-            <tr>
-              <td>1 (Day 1-30)</td>
-              <td>1x</td>
-            </tr>
-            <tr>
-              <td>2 (Day 31-60)</td>
-              <td>1.10x</td>
-            </tr>
-            <tr>
-              <td>3 (Day 61-90)</td>
-              <td>1.21x</td>
-            </tr>
-            <tr>
-              <td>12 (Day 331-360)</td>
-              <td>2.85x</td>
-            </tr>
-            <tr>
-              <td>13 (Day 361-390)</td>
-              <td>2.85x</td>
-            </tr>
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th>Votes Multiplier</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1 (Day 1-30)</td>
+                <td>1x</td>
+              </tr>
+              <tr>
+                <td>2 (Day 31-60)</td>
+                <td>1.10x</td>
+              </tr>
+              <tr>
+                <td>3 (Day 61-90)</td>
+                <td>1.21x</td>
+              </tr>
+              <tr>
+                <td>12 (Day 331-360)</td>
+                <td>2.85x</td>
+              </tr>
+              <tr>
+                <td>13 (Day 361-390)</td>
+                <td>2.85x</td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -131,31 +135,35 @@ function PanelFAQ() {
         <div>
           <h4>LOCK DURATION BENEFITS:</h4>
           <table>
-            <tr>
-              <th>Month</th>
-              <th>Immediate Multiplier</th>
-              <th>Additional Benefits</th>
-            </tr>
-            <tr>
-              <td>1 Month</td>
-              <td>1.10x</td>
-              <td>Minimum commitment for enhanced Votes</td>
-            </tr>
-            <tr>
-              <td>2 Months</td>
-              <td>1.33x</td>
-              <td>Quarterly commitment bonus</td>
-            </tr>
-            <tr>
-              <td>6 Months</td>
-              <td>1.77x</td>
-              <td>Mid-term commitment with significant boost</td>
-            </tr>
-            <tr>
-              <td>12 Months</td>
-              <td>3.00x</td>
-              <td>Maximum multiplier with 0.15 bonus</td>
-            </tr>
+            <thead>
+              <tr>
+                <th>Month</th>
+                <th>Immediate Multiplier</th>
+                <th>Additional Benefits</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1 Month</td>
+                <td>1.10x</td>
+                <td>Minimum commitment for enhanced Votes</td>
+              </tr>
+              <tr>
+                <td>2 Months</td>
+                <td>1.33x</td>
+                <td>Quarterly commitment bonus</td>
+              </tr>
+              <tr>
+                <td>6 Months</td>
+                <td>1.77x</td>
+                <td>Mid-term commitment with significant boost</td>
+              </tr>
+              <tr>
+                <td>12 Months</td>
+                <td>3.00x</td>
+                <td>Maximum multiplier with 0.15 bonus</td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -183,34 +191,38 @@ function PanelFAQ() {
         <div>
           <h4>EXAMPLE SCENARIOS:</h4>
           <table>
-            <tr>
-              <th>Scenario</th>
-              <th>Tokens Staked</th>
-              <th>Lock Period</th>
-              <th>Votes</th>
-              <th>Reward Share</th>
-            </tr>
-            <tr>
-              <td>Basic Staking</td>
-              <td>1000 NS</td>
-              <td>None</td>
-              <td>1000 votes</td>
-              <td>1x share</td>
-            </tr>
-            <tr>
-              <td>6mo Staking</td>
-              <td>1000 NS</td>
-              <td>None (6mo elapsed)</td>
-              <td>1770 votes</td>
-              <td>1.77x share</td>
-            </tr>
-            <tr>
-              <td>12mo Staking</td>
-              <td>1000 NS</td>
-              <td>12 Months</td>
-              <td>3000 votes</td>
-              <td>3x share</td>
-            </tr>
+            <thead>
+              <tr>
+                <th>Scenario</th>
+                <th>Tokens Staked</th>
+                <th>Lock Period</th>
+                <th>Votes</th>
+                <th>Reward Share</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Basic Staking</td>
+                <td>1000 NS</td>
+                <td>None</td>
+                <td>1000 votes</td>
+                <td>1x share</td>
+              </tr>
+              <tr>
+                <td>6mo Staking</td>
+                <td>1000 NS</td>
+                <td>None (6mo elapsed)</td>
+                <td>1770 votes</td>
+                <td>1.77x share</td>
+              </tr>
+              <tr>
+                <td>12mo Staking</td>
+                <td>1000 NS</td>
+                <td>12 Months</td>
+                <td>3000 votes</td>
+                <td>3x share</td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>

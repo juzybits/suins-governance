@@ -132,6 +132,7 @@ function PanelOverview({
   );
 }
 
+// TODO-J: group into "Voting on latest proposal", "Available for voting", "Unavailable for voting"
 function PanelBatches({
   availableNS,
   batches,
@@ -155,6 +156,7 @@ function PanelBatches({
         </>
       )}
 
+      {/* TODO-J: only show if the user has no batches. Otherwise show buttons in header. */}
       <div className="button-group">
         <button onClick={() => setModalAction("stake")}>Stake</button>
         <button onClick={() => setModalAction("lock")}>Lock</button>
@@ -562,6 +564,7 @@ function ModalUnstakeBatch({
   );
 }
 
+// TODO-J: group into "voting in progress" and "voting ended"
 export function PanelRecentProposals() {
   const currAcct = useCurrentAccount();
   const { data: proposals } = useGetAllProposals();
