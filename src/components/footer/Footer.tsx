@@ -1,6 +1,5 @@
 "use client";
 
-import { useProductAnalyticsConfig } from "@/hooks/useProductAnalyticsConfig";
 import { FooterLinks } from "@/components/footer/FooterLinks";
 import { Text } from "@/components/ui/Text";
 
