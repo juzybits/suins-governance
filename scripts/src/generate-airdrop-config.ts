@@ -77,17 +77,15 @@ function generateAirdropConfig(events: ReturnTokenEvent[]): AirdropConfig[] {
 
     // calculate each voter's share of this proposal's reward
     for (const [voter, votes] of voterVotes.entries()) {
-      if (votes === BigInt(0)) continue;
-
       // calculate voter's percentage of total votes for this proposal
-      const voterShare = (votes * BigInt(1_000_000)) / proposalReward.total_ns_voted;
+      const voterShare = (votes * BigInt(1_000_000_000)) / proposalReward.total_ns_voted;
       // calculate voter's reward for this proposal
-      const voterReward = (proposalReward.total_ns_reward * voterShare) / BigInt(1_000_000);
+      const voterReward = (proposalReward.total_ns_reward * voterShare) / BigInt(1_000_000_000);
 
       // create new airdrop for this proposal
       const airdrop: Airdrop = {
         amount_raw: voterReward.toString(),
-        start_ms: Date.now(), // TODO: tbd
+        start_ms: new Date(proposalDate).getTime(),
         lock_months: 0,
       };
 
@@ -103,12 +101,10 @@ function generateAirdropConfig(events: ReturnTokenEvent[]): AirdropConfig[] {
   const airdropConfig: AirdropConfig[] = [];
 
   for (const [voter, airdrops] of voterAirdrops.entries()) {
-    if (airdrops.length > 0) {
-      airdropConfig.push({
-        recipient: voter,
-        airdrops,
-      });
-    }
+    airdropConfig.push({
+      recipient: voter,
+      airdrops,
+    });
   }
 
   return airdropConfig;
