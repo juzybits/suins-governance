@@ -27,6 +27,7 @@ function main() {
 
   analyzeTopVotes(events);
   analyze154Votes(events);
+  analyzeVotesByProposal(events);
 }
 
 function analyzeTopVotes(events: ReturnTokenEvent[]) {
@@ -102,6 +103,43 @@ function analyze154Votes(events: ReturnTokenEvent[]) {
   }
 
   console.log(`\nTotal unique voters using 154 NS: ${voters.size}`);
+}
+
+function analyzeVotesByProposal(events: ReturnTokenEvent[]) {
+  const votesByDate = new Map<string, bigint>();
+
+  for (const event of events) {
+    const { amount_raw, date } = event;
+    const proposalDate = String(date.split("T")[0]);
+    const amount = BigInt(amount_raw);
+
+    const currentDateTotal = votesByDate.get(proposalDate) || BigInt(0);
+    votesByDate.set(proposalDate, currentDateTotal + amount);
+  }
+
+  // sort dates chronologically
+  const sortedDates = Array.from(votesByDate.keys()).sort();
+
+  console.log("\nTotal NS voted per proposal:\n");
+  console.log(
+    "Date".padEnd(20) +
+    "Total NS".padEnd(15) +
+    "Total NS (raw)"
+  );
+  console.log(
+    "----".padEnd(20) +
+    "--------".padEnd(15) +
+    "------------"
+  );
+
+  for (const date of sortedDates) {
+    const amount = votesByDate.get(date)!;
+    console.log(
+      `${date.padEnd(20)}` +
+      `${formatNSBalance(amount).padEnd(15)}` +
+      `${amount.toString()}`
+    );
+  }
 }
 
 main();
