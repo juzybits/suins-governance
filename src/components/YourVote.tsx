@@ -108,6 +108,7 @@ export function YourVote({ proposalId }: { proposalId: string }) {
                     voteCasted.noVote ||
                     voteCasted.abstainVote
                   }
+                  roundedCoinFormat
                   className="!justify-start"
                 />
               </div>
