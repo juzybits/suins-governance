@@ -2,12 +2,27 @@ import { readFileSync } from "fs";
 import type { ReturnTokenEvent } from "./find-voters";
 import { getRandomAirdropConfig } from "./getRandomAirdropConfig";
 
+type ProposalReward = {
+  total_ns_voted: bigint
+  total_ns_reward: bigint;
+};
+
+const PROPOSAL_REWARDS = new Map<string, ProposalReward>([
+  ["2024-11-28", { total_ns_voted: 26_277_549_590_448n, total_ns_reward: 1_529_857_340_000n }],
+  ["2024-12-21", { total_ns_voted: 31_595_015_428_494n, total_ns_reward: 1_839_435_830_000n }],
+  ["2025-02-21", { total_ns_voted: 35_043_832_029_705n, total_ns_reward: 2_040_223_100_000n }],
+]);
+
 export type AirdropConfig = {
   recipient: string;
+  airdrops: Airdrop[];
+};
+
+export type Airdrop = {
   amount_raw: string;
   start_ms: number;
   lock_months: number;
-};
+}
 
 function main() {
   const filePath = process.argv[2];
@@ -24,41 +39,77 @@ function main() {
     throw new Error("No valid voter data found in the file.");
   }
 
-  // const airdrops = generateAirdropConfig(events);
-  const airdrops = getRandomAirdropConfig(84533); // TODO: dev only
+  const airdrops = generateAirdropConfig(events);
+  // const airdrops = getRandomAirdropConfig(84533); // TODO: dev only
   console.log(JSON.stringify(airdrops, null, 2));
 }
 
 function generateAirdropConfig(events: ReturnTokenEvent[]): AirdropConfig[] {
-  // TODO
-  // Calculate how much NS each voter_addr voted with in total
-  const voterTotals = new Map<string, bigint>();
+  // first group votes by proposal date and voter
+  const votesByProposalAndVoter = new Map<string, Map<string, bigint>>();
 
-  for (const event of events) {
-    const { voter_addr, amount_raw } = event;
-    const currentTotal = voterTotals.get(voter_addr) || BigInt(0);
-    const amount = BigInt(amount_raw);
-    voterTotals.set(voter_addr, currentTotal + amount);
+  // initialize maps for each proposal date
+  for (const proposalDate of PROPOSAL_REWARDS.keys()) {
+    votesByProposalAndVoter.set(proposalDate, new Map<string, bigint>());
   }
 
-  // Calculate 1% of each voter's total and create airdrop config
-  const airdropConfig: AirdropConfig[] = [];
+  // aggregate votes by proposal and voter
+  for (const event of events) {
+    const proposalDate = event.date.split("T")[0]!;
+    const voterMap = votesByProposalAndVoter.get(proposalDate);
+    if (!voterMap) {
+      throw new Error(`No voter map found for proposal date: ${proposalDate}`);
+    }
 
-  for (const [voter, totalAmount] of voterTotals.entries()) {
-    const airdropAmount = totalAmount / BigInt(100);
-    if (airdropAmount > BigInt(0)) {
-      airdropConfig.push({
-        recipient: voter,
-        amount_raw: airdropAmount.toString(),
+    const currentVotes = voterMap.get(event.voter_addr) || BigInt(0);
+    voterMap.set(event.voter_addr, currentVotes + BigInt(event.amount_raw));
+  }
+
+  // track all unique voters and their airdrops
+  const voterAirdrops = new Map<string, Airdrop[]>();
+
+  // for each proposal
+  for (const [proposalDate, voterVotes] of votesByProposalAndVoter.entries()) {
+    const proposalReward = PROPOSAL_REWARDS.get(proposalDate);
+    if (!proposalReward) {
+      throw new Error(`No proposal reward found for proposal date: ${proposalDate}`);
+    }
+
+    // calculate each voter's share of this proposal's reward
+    for (const [voter, votes] of voterVotes.entries()) {
+      if (votes === BigInt(0)) continue;
+
+      // calculate voter's percentage of total votes for this proposal
+      const voterShare = (votes * BigInt(1_000_000)) / proposalReward.total_ns_voted;
+      // calculate voter's reward for this proposal
+      const voterReward = (proposalReward.total_ns_reward * voterShare) / BigInt(1_000_000);
+
+      // create new airdrop for this proposal
+      const airdrop: Airdrop = {
+        amount_raw: voterReward.toString(),
         start_ms: Date.now(), // TODO: tbd
         lock_months: 0,
-      });
+      };
+
+      // add to voter's airdrops
+      if (!voterAirdrops.has(voter)) {
+        voterAirdrops.set(voter, []);
+      }
+      voterAirdrops.get(voter)!.push(airdrop);
     }
   }
 
-  airdropConfig.sort((a, b) =>
-    BigInt(b.amount_raw) > BigInt(a.amount_raw) ? 1 : -1,
-  );
+  // create final airdrop config
+  const airdropConfig: AirdropConfig[] = [];
+
+  for (const [voter, airdrops] of voterAirdrops.entries()) {
+    if (airdrops.length > 0) {
+      airdropConfig.push({
+        recipient: voter,
+        airdrops,
+      });
+    }
+  }
 
   return airdropConfig;
 }
