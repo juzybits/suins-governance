@@ -103,7 +103,11 @@ export function YourVote({ proposalId }: { proposalId: string }) {
                 </Text>
 
                 <NSAmount
-                  amount={voteCasted.yesVote}
+                  amount={
+                    voteCasted.yesVote ||
+                    voteCasted.noVote ||
+                    voteCasted.abstainVote
+                  }
                   className="!justify-start"
                 />
               </div>
