@@ -93,7 +93,7 @@ export function VoteIndicator({
             />
           )}
           <Text variant={fontSize} color="good">
-            {isPersonVote ? "Nigiri" : "Yes"}
+            {isPersonVote ? "Nigri" : "Yes"}
           </Text>
         </div>
       );
