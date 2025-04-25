@@ -111,11 +111,6 @@
   cursor: pointer;
 }
 
-.dummy-ui .batch-actions {
-  display: flex;
-  justify-content: flex-end;
-}
-
 /* modal */
 
 .dummy-ui .modal-overlay {

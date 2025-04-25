@@ -215,11 +215,6 @@ function BatchGroup({ batches, title }: { batches: Batch[]; title: string }) {
 function CardBatch({ batch }: { batch: Batch }) {
   const [modalAction, setModalAction] = useState<BatchAction | null>(null);
 
-  const onBtnClick = (action: BatchAction, event: React.MouseEvent) => {
-    event.stopPropagation();
-    setModalAction(action);
-  };
-
   const onBatchClick = () => {
     if (modalAction === null) {
       setModalAction("view");
@@ -263,7 +258,52 @@ function CardBatch({ batch }: { batch: Batch }) {
     </>
   ))();
 
-  const batchActions = (() => {
+  return (
+    <div className="batch" onClick={onBatchClick}>
+      <div>
+        <h3>{formatNSBalance(batch.balanceNS)} NS</h3>
+        {batchOverview}
+      </div>
+
+      <div className="button-group">
+        <BatchActions
+          batch={batch}
+          onActionChange={setModalAction}
+        />
+      </div>
+
+      {modalAction === "view" && (
+        <ModalViewBatch batch={batch} onClose={onModalClose} onActionChange={setModalAction} />
+      )}
+
+      {modalAction === "lock" && (
+        <ModalLockBatch batch={batch} onClose={onModalClose} />
+      )}
+
+      {modalAction === "requestUnstake" && (
+        <ModalRequestUnstakeBatch batch={batch} onClose={onModalClose} />
+      )}
+
+      {modalAction === "unstake" && (
+        <ModalUnstakeBatch batch={batch} onClose={onModalClose} />
+      )}
+    </div>
+  );
+}
+
+function BatchActions({
+  batch,
+  onActionChange,
+}: {
+  batch: Batch,
+  onActionChange: (action: BatchAction) => void,
+}) {
+
+  const onBtnClick = (action: BatchAction, event: React.MouseEvent) => {
+    event.stopPropagation();
+    onActionChange(action);
+  };
+
     if (batch.isVoting) {
       return null;
     }
@@ -294,39 +334,8 @@ function CardBatch({ batch }: { batch: Batch }) {
         </>
       );
     }
+
     return null;
-  })();
-
-  return (
-    <div className="batch" onClick={onBatchClick}>
-      <div>
-        <h3>{formatNSBalance(batch.balanceNS)} NS</h3>
-        {batchOverview}
-      </div>
-
-      {batchActions && (
-        <div className="batch-actions">
-          <div className="button-group">{batchActions}</div>
-        </div>
-      )}
-
-      {modalAction === "view" && (
-        <ModalViewBatch batch={batch} onClose={onModalClose} />
-      )}
-
-      {modalAction === "lock" && (
-        <ModalLockBatch batch={batch} onClose={onModalClose} />
-      )}
-
-      {modalAction === "requestUnstake" && (
-        <ModalRequestUnstakeBatch batch={batch} onClose={onModalClose} />
-      )}
-
-      {modalAction === "unstake" && (
-        <ModalUnstakeBatch batch={batch} onClose={onModalClose} />
-      )}
-    </div>
-  );
 }
 
 function ModalStakeOrLockNewBatch({
@@ -431,9 +440,11 @@ function ModalStakeOrLockNewBatch({
 
 function ModalViewBatch({
   batch,
+  onActionChange,
   onClose,
 }: {
   batch: Batch;
+  onActionChange: (action: BatchAction) => void;
   onClose: () => void;
 }) {
   return (
@@ -442,19 +453,26 @@ function ModalViewBatch({
       <h1>{formatNSBalance(batch.balanceNS)} NS</h1>
       <div>
         <p>Votes: {formatNSBalance(batch.votingPower)}</p>
-        <p>Votes multiplier: {roundFloat(batch.votingMultiplier, 2)}x</p>
         {batch.isStaked && (
           <>
             <p>Days Staked: {batch.daysSinceStart}</p>
+            <p>Votes multiplier: {batch.votingMultiplier.toFixed(2)}x</p>
           </>
         )}
         {batch.isLocked && (
           <>
             <p>Locked for: {batch.lockDurationDays} days</p>
+            <p>Votes multiplier: {batch.votingMultiplier.toFixed(2)}x</p>
             <p>Date Locked: {batch.startDate.toLocaleDateString()}</p>
             <p>Unlocks On: {batch.unlockDate.toLocaleDateString()}</p>
           </>
         )}
+      </div>
+      <div className="button-group">
+        <BatchActions
+          batch={batch}
+          onActionChange={onActionChange}
+        />
       </div>
     </Modal>
   );
