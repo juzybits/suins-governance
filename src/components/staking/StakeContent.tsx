@@ -42,6 +42,7 @@ import {
   type UserProposalStats,
 } from "@/hooks/useGetUserStats";
 import { formatTimeDiff, TimeUnit } from "@polymedia/suitcase-core";
+import { DAY_MS } from "@/constants/common";
 
 type StakingData = {
   lockedNS: bigint;
@@ -377,11 +378,14 @@ function ModalStakeOrLockNewBatch({
 
   return (
     <Modal onClose={onClose}>
-      <h2>{`${action === "lock" ? "Lock" : "Stake"} Tokens`}</h2>
+      <h2>Stake or Lock Tokens</h2>
 
       <p>
-        Stake your NS tokens to receive Votes, which increases over time, with
-        an immediate boost based on a lockup period of 1-12 months.
+        Stake your NS tokens to receive Votes. The longer you leave them staked,
+        the more votes they accumulate over time.
+      </p>
+      <p>
+        Lock your NS tokens to receive an immediate boost to your voting power!
       </p>
 
       <div className="radio-group">
@@ -393,7 +397,6 @@ function ModalStakeOrLockNewBatch({
           />
           Stake
         </label>
-
         <label>
           <input
             type="radio"
@@ -414,18 +417,23 @@ function ModalStakeOrLockNewBatch({
       </div>
 
       {action === "lock" && (
-        <div className="box">
-          <MonthSelector
-            months={months}
-            setMonths={setMonths}
-            currentMonths={0}
-          />
-        </div>
+        <>
+          <div className="box">
+            <MonthSelector
+              months={months}
+              setMonths={setMonths}
+              currentMonths={0}
+            />
+          </div>
+          <div>
+            <p>Votes {formatNSBalance(votes)}</p>
+          </div>
+          <div>
+            <p>Lock on: {new Date().toLocaleDateString()}</p>
+            <p>Unlocks on: {new Date(Date.now() + (months * 30 * DAY_MS)).toLocaleDateString()}</p>
+          </div>
+        </>
       )}
-
-      <div>
-        <div>Votes {formatNSBalance(votes)}</div>
-      </div>
 
       <ModalFooter
         actionText={actionText}
