@@ -41,6 +41,7 @@ import {
   useGetUserStats,
   type UserProposalStats,
 } from "@/hooks/useGetUserStats";
+import { formatTimeDiff, TimeUnit } from "@polymedia/suitcase-core";
 
 type StakingData = {
   lockedNS: bigint;
@@ -219,64 +220,74 @@ function CardBatch({ batch }: { batch: Batch }) {
     setModalAction(null);
   };
 
-  const getStatusText = () => {
-    if (batch.isLocked) {
-      return `Locked for ${batch.lockDurationDays} Days`;
-    } else if (batch.isCooldownOver) {
-      return `Cooldown Over`;
-    } else if (batch.isCooldownRequested) {
-      return `Cooldown Requested`;
-    } else if (batch.isVoting) {
-      return `Used for Voting`;
-    } else {
-      return `Staked for ${batch.daysSinceStart} Days`;
-    }
-  };
+  const batchOverview = (() => <>
+    <p>Votes: {formatNSBalance(batch.votingPower)}</p>
+    <p>Multiplier: {batch.votingMultiplier.toFixed(2)}x</p>
 
-  const batchActions = (() => {
-    if (batch.isVoting) {
-      // voting batches cannot take any actions until voting ends
-      return null;
-    }
+    {batch.isLocked ? (
+      <>
+        <p>Locked for: {batch.lockDurationDays} days</p>
+        <p>Locked on: {batch.startDate.toLocaleDateString()}</p>
+        <p>Unlocks on: {batch.unlockDate.toLocaleDateString()}</p>
+      </>
+    ): ( // staked
+      <>
+        <p>Staked for: {batch.daysSinceStart} days</p>
+        <p>Staked on: {batch.startDate.toLocaleDateString()}</p>
+        {batch.isCooldownRequested && !batch.isCooldownOver && (
+          <>
+            <p>In cooldown</p>
+            <p>
+              Available in: {formatTimeDiff({
+                timestamp: batch.cooldownEndDate!.getTime(),
+                minTimeUnit: TimeUnit.ONE_MINUTE,
+              })}
+            </p>
+          </>
+        )}
+      </>
+    )}
+  </>)();
 
-    if (batch.isLocked) {
-      if (batch.lockDurationDays < MAX_LOCK_DURATION_DAYS) {
-        return (
-          <button onClick={(e) => onBtnClick("lock", e)}>Extend Lock</button>
-        );
-      }
-    }
+const batchActions = (() => {
+  if (batch.isVoting) {
+    return null;
+  }
 
-    if (batch.isStaked) {
+  if (batch.isLocked) {
+    if (batch.lockDurationDays < MAX_LOCK_DURATION_DAYS) {
       return (
-        <>
-          {!batch.isCooldownRequested ? (
-            <>
-              <button onClick={(e) => onBtnClick("requestUnstake", e)}>
-                Request Unstake
-              </button>
-              <button onClick={(e) => onBtnClick("lock", e)}>Lock</button>
-            </>
-          ) : batch.isCooldownOver ? (
-            <button onClick={(e) => onBtnClick("unstake", e)}>
-              Unstake Now
-            </button>
-          ) : null}
-        </>
+        <button onClick={(e) => onBtnClick("lock", e)}>Extend Lock</button>
       );
     }
-    return null;
-  })();
+  }
+
+  if (batch.isStaked) {
+    return (
+      <>
+        {!batch.isCooldownRequested ? (
+          <>
+            <button onClick={(e) => onBtnClick("requestUnstake", e)}>
+              Request Unstake
+            </button>
+            <button onClick={(e) => onBtnClick("lock", e)}>Lock</button>
+          </>
+        ) : batch.isCooldownOver ? (
+          <button onClick={(e) => onBtnClick("unstake", e)}>
+            Unstake Now
+          </button>
+        ) : null}
+      </>
+    );
+  }
+  return null;
+})();
 
   return (
     <div className="batch" onClick={onBatchClick}>
-      <div className="batch-header">
-        <b>{formatNSBalance(batch.balanceNS)} NS</b>
-        <b>{formatNSBalance(batch.votingPower)} Votes</b>
-      </div>
-
-      <div className="batch-status">
-        <div>{getStatusText()}</div>
+      <div>
+        <h3>{formatNSBalance(batch.balanceNS)} NS</h3>
+        {batchOverview}
       </div>
 
       {batchActions && (

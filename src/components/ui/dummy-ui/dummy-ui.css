@@ -111,16 +111,6 @@
   cursor: pointer;
 }
 
-.dummy-ui .batch-header {
-  display: flex;
-  justify-content: space-between;
-}
-
-.dummy-ui .batch-status {
-  font-size: 14px;
-  color: #666;
-}
-
 .dummy-ui .batch-actions {
   display: flex;
   justify-content: flex-end;
