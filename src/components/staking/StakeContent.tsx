@@ -93,7 +93,14 @@ export function StakeContent() {
   }
 
   if (balance.error || batches.error) {
-    return <div>Error: {balance.error?.message ?? batches.error?.message ?? "Something went wrong"}</div>;
+    return (
+      <div>
+        Error:{" "}
+        {balance.error?.message ??
+          batches.error?.message ??
+          "Something went wrong"}
+      </div>
+    );
   }
 
   return (
@@ -144,7 +151,9 @@ function PanelBatches({
 
   const votingBatches = batches.filter((batch) => batch.isVoting);
   const availableBatches = batches.filter((batch) => batch.canVote);
-  const unavailableBatches = batches.filter((batch) => batch.isCooldownRequested);
+  const unavailableBatches = batches.filter(
+    (batch) => batch.isCooldownRequested,
+  );
 
   return (
     <div className="panel">
@@ -182,7 +191,7 @@ function PanelBatches({
   );
 }
 
-function BatchGroup({ batches, title }: { batches: Batch[], title: string }) {
+function BatchGroup({ batches, title }: { batches: Batch[]; title: string }) {
   if (batches.length === 0) {
     return null;
   }
@@ -191,7 +200,8 @@ function BatchGroup({ batches, title }: { batches: Batch[], title: string }) {
     <div className="batch-group">
       {title === "Voting on latest proposal" && (
         <i>
-          The Staked and Locked NS tokens participating in voting will be unavailable until the voting finishes.
+          The Staked and Locked NS tokens participating in voting will be
+          unavailable until the voting finishes.
         </i>
       )}
       <h2>{title}</h2>
@@ -220,68 +230,72 @@ function CardBatch({ batch }: { batch: Batch }) {
     setModalAction(null);
   };
 
-  const batchOverview = (() => <>
-    <p>Votes: {formatNSBalance(batch.votingPower)}</p>
-    <p>Multiplier: {batch.votingMultiplier.toFixed(2)}x</p>
+  const batchOverview = (() => (
+    <>
+      <p>Votes: {formatNSBalance(batch.votingPower)}</p>
+      <p>Multiplier: {batch.votingMultiplier.toFixed(2)}x</p>
 
-    {batch.isLocked ? (
-      <>
-        <p>Locked for: {batch.lockDurationDays} days</p>
-        <p>Locked on: {batch.startDate.toLocaleDateString()}</p>
-        <p>Unlocks on: {batch.unlockDate.toLocaleDateString()}</p>
-      </>
-    ): ( // staked
-      <>
-        <p>Staked for: {batch.daysSinceStart} days</p>
-        <p>Staked on: {batch.startDate.toLocaleDateString()}</p>
-        {batch.isCooldownRequested && !batch.isCooldownOver && (
-          <>
-            <p>In cooldown</p>
-            <p>
-              Available in: {formatTimeDiff({
-                timestamp: batch.cooldownEndDate!.getTime(),
-                minTimeUnit: TimeUnit.ONE_MINUTE,
-              })}
-            </p>
-          </>
-        )}
-      </>
-    )}
-  </>)();
+      {batch.isLocked ? (
+        <>
+          <p>Locked for: {batch.lockDurationDays} days</p>
+          <p>Locked on: {batch.startDate.toLocaleDateString()}</p>
+          <p>Unlocks on: {batch.unlockDate.toLocaleDateString()}</p>
+        </>
+      ) : (
+        // staked
+        <>
+          <p>Staked for: {batch.daysSinceStart} days</p>
+          <p>Staked on: {batch.startDate.toLocaleDateString()}</p>
+          {batch.isCooldownRequested && !batch.isCooldownOver && (
+            <>
+              <p>In cooldown</p>
+              <p>
+                Available in:{" "}
+                {formatTimeDiff({
+                  timestamp: batch.cooldownEndDate!.getTime(),
+                  minTimeUnit: TimeUnit.ONE_MINUTE,
+                })}
+              </p>
+            </>
+          )}
+        </>
+      )}
+    </>
+  ))();
 
-const batchActions = (() => {
-  if (batch.isVoting) {
-    return null;
-  }
+  const batchActions = (() => {
+    if (batch.isVoting) {
+      return null;
+    }
 
-  if (batch.isLocked) {
-    if (batch.lockDurationDays < MAX_LOCK_DURATION_DAYS) {
+    if (batch.isLocked) {
+      if (batch.lockDurationDays < MAX_LOCK_DURATION_DAYS) {
+        return (
+          <button onClick={(e) => onBtnClick("lock", e)}>Extend Lock</button>
+        );
+      }
+    }
+
+    if (batch.isStaked) {
       return (
-        <button onClick={(e) => onBtnClick("lock", e)}>Extend Lock</button>
+        <>
+          {!batch.isCooldownRequested ? (
+            <>
+              <button onClick={(e) => onBtnClick("requestUnstake", e)}>
+                Request Unstake
+              </button>
+              <button onClick={(e) => onBtnClick("lock", e)}>Lock</button>
+            </>
+          ) : batch.isCooldownOver ? (
+            <button onClick={(e) => onBtnClick("unstake", e)}>
+              Unstake Now
+            </button>
+          ) : null}
+        </>
       );
     }
-  }
-
-  if (batch.isStaked) {
-    return (
-      <>
-        {!batch.isCooldownRequested ? (
-          <>
-            <button onClick={(e) => onBtnClick("requestUnstake", e)}>
-              Request Unstake
-            </button>
-            <button onClick={(e) => onBtnClick("lock", e)}>Lock</button>
-          </>
-        ) : batch.isCooldownOver ? (
-          <button onClick={(e) => onBtnClick("unstake", e)}>
-            Unstake Now
-          </button>
-        ) : null}
-      </>
-    );
-  }
-  return null;
-})();
+    return null;
+  })();
 
   return (
     <div className="batch" onClick={onBatchClick}>

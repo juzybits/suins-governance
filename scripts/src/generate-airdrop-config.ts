@@ -3,14 +3,32 @@ import type { ReturnTokenEvent } from "./find-voters";
 import { getRandomAirdropConfig } from "./getRandomAirdropConfig";
 
 type ProposalReward = {
-  total_ns_voted: bigint
+  total_ns_voted: bigint;
   total_ns_reward: bigint;
 };
 
 const PROPOSAL_REWARDS = new Map<string, ProposalReward>([
-  ["2024-11-28", { total_ns_voted: 26_277_549_590_448n, total_ns_reward: 1_529_857_340_000n }],
-  ["2024-12-21", { total_ns_voted: 31_595_015_428_494n, total_ns_reward: 1_839_435_830_000n }],
-  ["2025-02-21", { total_ns_voted: 35_043_832_029_705n, total_ns_reward: 2_040_223_100_000n }],
+  [
+    "2024-11-28",
+    {
+      total_ns_voted: 26_277_549_590_448n,
+      total_ns_reward: 1_529_857_340_000n,
+    },
+  ],
+  [
+    "2024-12-21",
+    {
+      total_ns_voted: 31_595_015_428_494n,
+      total_ns_reward: 1_839_435_830_000n,
+    },
+  ],
+  [
+    "2025-02-21",
+    {
+      total_ns_voted: 35_043_832_029_705n,
+      total_ns_reward: 2_040_223_100_000n,
+    },
+  ],
 ]);
 
 export type AirdropConfig = {
@@ -22,7 +40,7 @@ export type Airdrop = {
   amount_raw: string;
   start_ms: number;
   lock_months: number;
-}
+};
 
 function main() {
   const filePath = process.argv[2];
@@ -72,15 +90,19 @@ function generateAirdropConfig(events: ReturnTokenEvent[]): AirdropConfig[] {
   for (const [proposalDate, voterVotes] of votesByProposalAndVoter.entries()) {
     const proposalReward = PROPOSAL_REWARDS.get(proposalDate);
     if (!proposalReward) {
-      throw new Error(`No proposal reward found for proposal date: ${proposalDate}`);
+      throw new Error(
+        `No proposal reward found for proposal date: ${proposalDate}`,
+      );
     }
 
     // calculate each voter's share of this proposal's reward
     for (const [voter, votes] of voterVotes.entries()) {
       // calculate voter's percentage of total votes for this proposal
-      const voterShare = (votes * BigInt(1_000_000_000)) / proposalReward.total_ns_voted;
+      const voterShare =
+        (votes * BigInt(1_000_000_000)) / proposalReward.total_ns_voted;
       // calculate voter's reward for this proposal
-      const voterReward = (proposalReward.total_ns_reward * voterShare) / BigInt(1_000_000_000);
+      const voterReward =
+        (proposalReward.total_ns_reward * voterShare) / BigInt(1_000_000_000);
 
       // create new airdrop for this proposal
       const airdrop: Airdrop = {

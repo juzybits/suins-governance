@@ -121,23 +121,15 @@ function analyzeVotesByProposal(events: ReturnTokenEvent[]) {
   const sortedDates = Array.from(votesByDate.keys()).sort();
 
   console.log("\nTotal NS voted per proposal:\n");
-  console.log(
-    "Date".padEnd(20) +
-    "Total NS".padEnd(15) +
-    "Total NS (raw)"
-  );
-  console.log(
-    "----".padEnd(20) +
-    "--------".padEnd(15) +
-    "------------"
-  );
+  console.log("Date".padEnd(20) + "Total NS".padEnd(15) + "Total NS (raw)");
+  console.log("----".padEnd(20) + "--------".padEnd(15) + "------------");
 
   for (const date of sortedDates) {
     const amount = votesByDate.get(date)!;
     console.log(
       `${date.padEnd(20)}` +
-      `${formatNSBalance(amount).padEnd(15)}` +
-      `${amount.toString()}`
+        `${formatNSBalance(amount).padEnd(15)}` +
+        `${amount.toString()}`,
     );
   }
 }

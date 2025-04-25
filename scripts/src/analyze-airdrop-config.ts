@@ -25,7 +25,7 @@ function analyzeAirdropDistribution(configs: AirdropConfig[]) {
   const totalRecipients = configs.length;
   let totalAirdrops = 0;
   let totalAmount = BigInt(0);
-  const airdropAmounts = new Map<string, bigint>();  // date -> amount
+  const airdropAmounts = new Map<string, bigint>(); // date -> amount
 
   // reward range tracking (in raw units)
   const ranges = new Map([
@@ -42,7 +42,10 @@ function analyzeAirdropDistribution(configs: AirdropConfig[]) {
     ["250-500", { min: 250_000_000n, max: 500_000_000n, count: 0 }],
     ["500-1k", { min: 500_000_000n, max: 1_000_000_000n, count: 0 }],
     ["1k-10k", { min: 1_000_000_000n, max: 10_000_000_000n, count: 0 }],
-    ["10k+", { min: 10_000_000_000n, max: BigInt(Number.MAX_SAFE_INTEGER), count: 0 }],
+    [
+      "10k+",
+      { min: 10_000_000_000n, max: BigInt(Number.MAX_SAFE_INTEGER), count: 0 },
+    ],
   ]);
 
   for (const config of configs) {
@@ -63,7 +66,10 @@ function analyzeAirdropDistribution(configs: AirdropConfig[]) {
 
       // group by start_ms to track amounts per proposal
       const date = new Date(airdrop.start_ms).toISOString().split("T")[0]!;
-      airdropAmounts.set(date, (airdropAmounts.get(date) || BigInt(0)) + amount);
+      airdropAmounts.set(
+        date,
+        (airdropAmounts.get(date) || BigInt(0)) + amount,
+      );
     }
   }
 
@@ -71,32 +77,30 @@ function analyzeAirdropDistribution(configs: AirdropConfig[]) {
   console.log("\nAirdrop Distribution Analysis\n");
   console.log(`Total recipients:          ${totalRecipients.toLocaleString()}`);
   console.log(`Total airdrops:           ${totalAirdrops.toLocaleString()}`);
-  console.log(`Total NS to distribute:    ${formatNSBalance(totalAmount)} (raw: ${totalAmount.toLocaleString()})`);
+  console.log(
+    `Total NS to distribute:    ${formatNSBalance(totalAmount)} (raw: ${totalAmount.toLocaleString()})`,
+  );
 
   console.log("\n### Airdrop size distribution (in NS) ###\n");
   console.log(
     "NS reward".padEnd(10) +
-    "Batches".padStart(10) +
-    "% of Total".padStart(15) + "\n"
+      "Batches".padStart(10) +
+      "% of Total".padStart(15) +
+      "\n",
   );
   for (const [range, data] of ranges) {
     const percentage = ((data.count / totalAirdrops) * 100).toFixed(2);
     console.log(
       `${range.padEnd(10)}` +
-      `${data.count.toString().padStart(10)}` +
-      `${percentage.padStart(14)}%`
+        `${data.count.toString().padStart(10)}` +
+        `${percentage.padStart(14)}%`,
     );
   }
 
   console.log("\n### Amount distributed per proposal ###\n");
-  console.log(
-    "Date".padEnd(20) +
-    "Amount".padStart(10) + "\n"
-  );
+  console.log("Date".padEnd(20) + "Amount".padStart(10) + "\n");
   for (const [date, amount] of Array.from(airdropAmounts.entries()).sort()) {
-    console.log(
-      `${date.padEnd(20)}${formatNSBalance(amount).padStart(10)}`
-    );
+    console.log(`${date.padEnd(20)}${formatNSBalance(amount).padStart(10)}`);
   }
 }
 
