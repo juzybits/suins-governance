@@ -97,6 +97,8 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  border: 1px solid #eee;
+  padding: 10px;
 }
 
 .dummy-ui .batch {

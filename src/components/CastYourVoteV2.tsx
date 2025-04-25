@@ -154,7 +154,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
                     isLoggedOut && "!max-w-full",
                   )}
                   disabled={
-                    isLoggedOut || !isValid || isPending || isVotingOver
+                    isLoggedOut || !isValid || isPending || isVotingOver || votingPower === 0n
                   }
                   type="submit"
                 >

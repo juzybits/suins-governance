@@ -59,14 +59,12 @@ export function useVoteV2Mutation(
 
     onSuccess: async () => {
       await Promise.allSettled([
-        queryClient.invalidateQueries(),
         queryClient.invalidateQueries({
           queryKey: ["vote-casted"],
         }),
         queryClient.invalidateQueries({
           queryKey: ["proposal-detail-by-id"],
         }),
-
         queryClient.invalidateQueries({
           queryKey: ["all-voters-dfs"],
         }),

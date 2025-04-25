@@ -188,8 +188,15 @@ function BatchGroup({ batches, title }: { batches: Batch[], title: string }) {
 
   return (
     <div className="batch-group">
+      {title === "Voting on latest proposal" && (
+        <i>
+          The Staked and Locked NS tokens participating in voting will be unavailable until the voting finishes.
+        </i>
+      )}
       <h2>{title}</h2>
-      {batches.map((batch) => <CardBatch key={batch.objectId} batch={batch} />)}
+      {batches.map((batch) => (
+        <CardBatch key={batch.objectId} batch={batch} />
+      ))}
     </div>
   );
 }
