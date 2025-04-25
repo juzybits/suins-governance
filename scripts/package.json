@@ -8,7 +8,6 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "@polymedia/suitcase-core": "^0.0.51",
     "commander": "^13.1.0"
   }
 }
