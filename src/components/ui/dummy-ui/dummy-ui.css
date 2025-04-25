@@ -93,6 +93,12 @@
 
 /* staking batch */
 
+.dummy-ui .batch-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .dummy-ui .batch {
   border: 1px solid #eee;
   padding: 10px;

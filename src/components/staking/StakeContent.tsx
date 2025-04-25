@@ -92,7 +92,7 @@ export function StakeContent() {
   }
 
   if (balance.error || batches.error) {
-    return <div>Error: {balance.error?.message ?? batches.error?.message}</div>;
+    return <div>Error: {balance.error?.message ?? batches.error?.message ?? "Something went wrong"}</div>;
   }
 
   return (
@@ -132,7 +132,6 @@ function PanelOverview({
   );
 }
 
-// TODO-J: group into "Voting on latest proposal", "Available for voting", "Unavailable for voting"
 function PanelBatches({
   availableNS,
   batches,
@@ -141,6 +140,10 @@ function PanelBatches({
   batches: Batch[];
 }) {
   const [modalAction, setModalAction] = useState<null | "stake" | "lock">(null);
+
+  const votingBatches = batches.filter((batch) => batch.isVoting);
+  const availableBatches = batches.filter((batch) => batch.canVote);
+  const unavailableBatches = batches.filter((batch) => batch.isCooldownRequested);
 
   return (
     <div className="panel">
@@ -162,13 +165,9 @@ function PanelBatches({
         <button onClick={() => setModalAction("lock")}>Lock</button>
       </div>
 
-      {batches.length > 0 && (
-        <>
-          {batches.map((batch) => (
-            <CardBatch key={batch.objectId} batch={batch} />
-          ))}
-        </>
-      )}
+      <BatchGroup batches={votingBatches} title="Voting on latest proposal" />
+      <BatchGroup batches={availableBatches} title="Available for voting" />
+      <BatchGroup batches={unavailableBatches} title="Unavailable for voting" />
 
       {modalAction && (
         <ModalStakeOrLockNewBatch
@@ -178,6 +177,19 @@ function PanelBatches({
           onClose={() => setModalAction(null)}
         />
       )}
+    </div>
+  );
+}
+
+function BatchGroup({ batches, title }: { batches: Batch[], title: string }) {
+  if (batches.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="batch-group">
+      <h2>{title}</h2>
+      {batches.map((batch) => <CardBatch key={batch.objectId} batch={batch} />)}
     </div>
   );
 }
