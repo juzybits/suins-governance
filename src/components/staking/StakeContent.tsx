@@ -266,14 +266,15 @@ function CardBatch({ batch }: { batch: Batch }) {
       </div>
 
       <div className="button-group">
-        <BatchActions
-          batch={batch}
-          onActionChange={setModalAction}
-        />
+        <BatchActions batch={batch} onActionChange={setModalAction} />
       </div>
 
       {modalAction === "view" && (
-        <ModalViewBatch batch={batch} onClose={onModalClose} onActionChange={setModalAction} />
+        <ModalViewBatch
+          batch={batch}
+          onActionChange={setModalAction}
+          onClose={onModalClose}
+        />
       )}
 
       {modalAction === "lock" && (
@@ -295,47 +296,44 @@ function BatchActions({
   batch,
   onActionChange,
 }: {
-  batch: Batch,
-  onActionChange: (action: BatchAction) => void,
+  batch: Batch;
+  onActionChange: (action: BatchAction) => void;
 }) {
-
   const onBtnClick = (action: BatchAction, event: React.MouseEvent) => {
     event.stopPropagation();
     onActionChange(action);
   };
 
-    if (batch.isVoting) {
-      return null;
-    }
+  if (batch.isVoting) {
+    return null;
+  }
 
-    if (batch.isLocked) {
-      if (batch.lockDurationDays < MAX_LOCK_DURATION_DAYS) {
-        return (
-          <button onClick={(e) => onBtnClick("lock", e)}>Extend Lock</button>
-        );
-      }
-    }
-
-    if (batch.isStaked) {
+  if (batch.isLocked) {
+    if (batch.lockDurationDays < MAX_LOCK_DURATION_DAYS) {
       return (
-        <>
-          {!batch.isCooldownRequested ? (
-            <>
-              <button onClick={(e) => onBtnClick("requestUnstake", e)}>
-                Request Unstake
-              </button>
-              <button onClick={(e) => onBtnClick("lock", e)}>Lock</button>
-            </>
-          ) : batch.isCooldownOver ? (
-            <button onClick={(e) => onBtnClick("unstake", e)}>
-              Unstake Now
-            </button>
-          ) : null}
-        </>
+        <button onClick={(e) => onBtnClick("lock", e)}>Extend Lock</button>
       );
     }
+  }
 
-    return null;
+  if (batch.isStaked) {
+    return (
+      <>
+        {!batch.isCooldownRequested ? (
+          <>
+            <button onClick={(e) => onBtnClick("requestUnstake", e)}>
+              Request Unstake
+            </button>
+            <button onClick={(e) => onBtnClick("lock", e)}>Lock</button>
+          </>
+        ) : batch.isCooldownOver ? (
+          <button onClick={(e) => onBtnClick("unstake", e)}>Unstake Now</button>
+        ) : null}
+      </>
+    );
+  }
+
+  return null;
 }
 
 function ModalStakeOrLockNewBatch({
@@ -469,10 +467,7 @@ function ModalViewBatch({
         )}
       </div>
       <div className="button-group">
-        <BatchActions
-          batch={batch}
-          onActionChange={onActionChange}
-        />
+        <BatchActions batch={batch} onActionChange={onActionChange} />
       </div>
     </Modal>
   );
@@ -510,14 +505,16 @@ function ModalLockBatch({
       <h2>Lock Tokens</h2>
 
       <p>
-        Lock your already Staked NS tokens to receive an immediate Votes
-        multiplier.
+        Lock your staked NS tokens to receive an immediate boost to your voting
+        power!
       </p>
 
       <div className="box">
         <div>Staked for {batch.daysSinceStart} Days</div>
-        <div>{formatNSBalance(batch.balanceNS)} NS</div>
         <div>Votes {formatNSBalance(batch.votingPower)}</div>
+        <div>
+          <h3>{formatNSBalance(batch.balanceNS)} NS</h3>
+        </div>
       </div>
 
       <div>

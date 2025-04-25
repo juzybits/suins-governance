@@ -1,5 +1,7 @@
 "use client";
 
+import { NS_VOTE_DIVISOR } from "@/constants/common";
+import { batchHelpers } from "@/types/Batch";
 import { type ReactNode, useEffect, useState } from "react";
 
 export function Modal({
@@ -80,11 +82,18 @@ export function MonthSelector({
       value={months}
       onChange={(e) => setMonths(parseInt(e.target.value))}
     >
-      {validMonths.map((month) => (
-        <option key={month} value={month}>
-          {month * 30} days
-        </option>
-      ))}
+      {validMonths.map((month) => {
+        const multiplier = batchHelpers.calculateLockedVotingPower({
+          balance: BigInt(NS_VOTE_DIVISOR),
+          lockMonths: month,
+        });
+        const multiplierStr = (Number(multiplier) / NS_VOTE_DIVISOR).toFixed(2);
+        return (
+          <option key={month} value={month}>
+            {month * 30} days ({multiplierStr}x)
+          </option>
+        );
+      })}
     </select>
   );
 }
