@@ -91,6 +91,13 @@
   padding-left: 4px;
 }
 
+.dummy-ui table {
+  width: 100%;
+}
+
+.dummy-ui table th {
+  text-align: left;
+}
 /* staking batch */
 
 .dummy-ui .batch-group {

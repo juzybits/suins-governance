@@ -32,7 +32,6 @@ import { useGetOwnedBatches } from "@/hooks/staking/useGetOwnedBatches";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { parseProposalVotes } from "@/hooks/useGetProposalDetail";
 import { isPast } from "date-fns";
-import { roundFloat } from "@/utils/roundFloat";
 import { calcVotingStats } from "@/utils/calcVotingStats";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { useGetAllProposals } from "@/hooks/useGetAllProposals";
@@ -42,7 +41,7 @@ import {
   type UserProposalStats,
 } from "@/hooks/useGetUserStats";
 import { formatTimeDiff, TimeUnit } from "@polymedia/suitcase-core";
-import { DAY_MS } from "@/constants/common";
+import { DAY_MS, NS_VOTE_DIVISOR } from "@/constants/common";
 
 type StakingData = {
   lockedNS: bigint;
@@ -430,9 +429,51 @@ function ModalStakeOrLockNewBatch({
           </div>
           <div>
             <p>Lock on: {new Date().toLocaleDateString()}</p>
-            <p>Unlocks on: {new Date(Date.now() + (months * 30 * DAY_MS)).toLocaleDateString()}</p>
+            <p>
+              Unlocks on:{" "}
+              {new Date(Date.now() + months * 30 * DAY_MS).toLocaleDateString()}
+            </p>
           </div>
         </>
+      )}
+
+      {action === "stake" && (
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th>Duration</th>
+                <th>Multiplier</th>
+                <th>Votes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[0, 1, 2, 6, 12].map((months) => {
+                const votes = batchHelpers.calculateLockedVotingPower({
+                  balance: parseNSAmount(amount),
+                  lockMonths: months,
+                });
+                const multiplier =
+                  Number(
+                    batchHelpers.calculateLockedVotingPower({
+                      balance: BigInt(NS_VOTE_DIVISOR),
+                      lockMonths: months,
+                    }),
+                  ) / NS_VOTE_DIVISOR;
+                const startDay = months * 30 + 1;
+                const endDay = months * 30 + 30;
+                const label = `Day ${startDay}-${endDay}`;
+                return (
+                  <tr key={months}>
+                    <td>{label}</td>
+                    <td>{multiplier.toFixed(2)}x</td>
+                    <td>{formatNSBalance(votes)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <ModalFooter
