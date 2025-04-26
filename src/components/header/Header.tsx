@@ -8,7 +8,6 @@ import { SuiNSLogo } from "@/components/SuiNSLogo";
 import { ConnectWallet } from "@/components/WalletConnet/ConnectWallet";
 import { cn } from "@/utils/cn";
 import { ProposalsMenu } from "@/components/ProposalsMenu";
-import { OwnedNSBalance } from "@/components/OwnedNSBalance";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { Menu } from "./Menu";
 import {
@@ -30,7 +29,7 @@ export function Header({
   logoVariant = "fill",
   logoAction,
 }: HeaderProps) {
-  const isSmallOrAbove = useBreakpoint("sm");
+  // const isSmallOrAbove = useBreakpoint("sm");
   const [openMenu, setOpenMenu] = useState(false);
   const [menuContent, setMenuContent] =
     useState<MenuContentContextProps["content"]>(null);
@@ -74,14 +73,22 @@ export function Header({
               <div className="flex items-center gap-2024_S">
                 {pathname === "/" && (
                   <>
-                    <button className="px-4 py-2 bg-gray-200 rounded">Stake</button>
-                    <button className="px-4 py-2 bg-gray-200 rounded">Vote</button>
+                    <button className="rounded bg-gray-200 px-4 py-2">
+                      Stake
+                    </button>
+                    <button className="rounded bg-gray-200 px-4 py-2">
+                      Vote
+                    </button>
                   </>
                 )}
                 {pathname === "/stake" && (
                   <>
-                    <button className="px-4 py-2 bg-gray-200 rounded">Stake</button>
-                    <button className="px-4 py-2 bg-gray-200 rounded">Lock</button>
+                    <button className="rounded bg-gray-200 px-4 py-2">
+                      Stake
+                    </button>
+                    <button className="rounded bg-gray-200 px-4 py-2">
+                      Lock
+                    </button>
                   </>
                 )}
                 <div className="flex max-w-[200px] justify-end">
