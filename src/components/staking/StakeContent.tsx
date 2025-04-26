@@ -338,6 +338,9 @@ function BatchActions({
   return null;
 }
 
+/**
+ * Stake or lock NS into a new batch.
+ */
 function ModalStakeOrLockNewBatch({
   action,
   availableNS,
@@ -528,6 +531,9 @@ function ModalViewBatch({
   );
 }
 
+/**
+ * Lock a staked batch, or extend the lock period of a locked batch.
+ */
 function ModalLockBatch({
   batch,
   onClose,
@@ -561,12 +567,18 @@ function ModalLockBatch({
       <h2>Lock Tokens</h2>
 
       <p>
-        Lock your staked NS tokens to receive an immediate boost to your voting
-        power!
+        {batch.isStaked
+          ? "Lock your staked NS tokens "
+          : "Extend the lock period of your locked NS tokens "}
+        to receive an immediate boost to your voting power!
       </p>
 
       <div className="box">
-        <div>Staked for {batch.daysSinceStart} Days</div>
+        <div>
+          {batch.isStaked
+            ? `Staked for ${batch.daysSinceStart} Days`
+            : `Locked for ${batch.lockDurationDays} Days`}
+        </div>
         <div>Votes {formatNSBalance(batch.votingPower)}</div>
         <div>
           <h3>{formatNSBalance(batch.balanceNS)} NS</h3>
