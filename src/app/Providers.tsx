@@ -23,7 +23,7 @@ const WalletProvider = dynamic(
   },
 );
 
-if (env.NEXT_PUBLIC_VITE_NETWORK === "mainnet") {
+if (NETWORK === "mainnet") {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   registerStashedWallet("SuiNS", {});
 }

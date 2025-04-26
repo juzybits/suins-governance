@@ -59,7 +59,7 @@ function get_object_id() {
     echo "$json" | jq -r ".objectChanges[] | select(.objectType == \"$package_id::$object_type\") | .objectId"
 }
 
-function print_env_config() {
+function print_env_config_localnet() {
     echo "NEXT_PUBLIC_VITE_NETWORK=$ACTIVE_ENV"
     echo "NEXT_PUBLIC_VITE_votingPkgId=$votingPkgId"
     echo "NEXT_PUBLIC_VITE_governanceObjId=$governanceObjId"
@@ -68,20 +68,42 @@ function print_env_config() {
     echo "NEXT_PUBLIC_VITE_coinType=$coinPkgId::ns::NS"
 }
 
+function print_env_config_devnet() {
+    echo ""
+    echo "  devnet: {"
+    echo "    votingPkgId:"
+    echo "      \"$votingPkgId\","
+    echo "    governanceObjId:"
+    echo "      \"$governanceObjId\","
+    echo "    stakingConfigObjId:"
+    echo "      \"$stakingConfigObjId\","
+    echo "    statsObjId:"
+    echo "      \"$statsObjId\","
+    echo "    coinType:"
+    echo "      \"$coinPkgId::ns::NS\","
+    echo "  },"
+}
+
 ### main ###
 
-# prevent from running on mainnet
-if [ "$ACTIVE_ENV" != "localnet" ]; then
-    echo "The active environment is not localnet. Aborting."
+if [ "$ACTIVE_ENV" == "localnet" ]; then
+    publish "$TOKEN_DIR"
+    publish "$VOTING_DIR"
+    print_env_config_localnet > "$ENV_FILE"
+    echo "================================================"
+    echo "Updated environment file: $ENV_FILE":
+    print_env_config_localnet
+    echo "================================================"
+elif [ "$ACTIVE_ENV" == "devnet" ]; then
+    read -p "You are about to publish to devnet. Are you sure? (y/n): " confirm
+    if [ "$confirm" != "y" ]; then
+        echo "Aborted by user."
+        exit 1
+    fi
+    publish "$TOKEN_DIR"
+    publish "$VOTING_DIR"
+    print_env_config_devnet
+else
+    echo "The active environment is not localnet or devnet. Aborting."
     exit 1
 fi
-
-publish "$TOKEN_DIR"
-publish "$VOTING_DIR"
-
-print_env_config > "$ENV_FILE"
-
-echo "================================================"
-echo "Updated environment file: $ENV_FILE":
-print_env_config
-echo "================================================"
