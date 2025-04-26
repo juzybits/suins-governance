@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { PanelRecentProposals } from "./staking/StakeContent";
-import { useCurrentAccount } from "@mysten/dapp-kit";
+import { useCurrentAccount, useCurrentWallet } from "@mysten/dapp-kit";
 import { ConnectWalletButton } from "./WalletConnet/ConnectWallet";
 
 export function HomeContent() {
@@ -18,6 +18,8 @@ export function HomeContent() {
 
 function PanelHero() {
   const currAcct = useCurrentAccount();
+  const { isConnecting, isDisconnected } = useCurrentWallet();
+  const isLoggedOut = (!currAcct && !isConnecting) ?? isDisconnected;
 
   return (
     <div className="panel">
@@ -25,7 +27,7 @@ function PanelHero() {
       <h2>
         Participate in governance, earn rewards, and shape the future of SuiNS
       </h2>
-      {!currAcct ? (
+      {isLoggedOut ? (
         <>
           <ConnectWalletButton />
         </>
