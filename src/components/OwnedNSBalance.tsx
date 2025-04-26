@@ -5,7 +5,7 @@ import { useCurrentAccount } from "@mysten/dapp-kit";
 import Loader from "@/components/ui/Loader";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 
-export function VotesRemaining() {
+export function OwnedNSBalance() {
   const currentAccount = useCurrentAccount();
   const currAddr = currentAccount?.address;
 

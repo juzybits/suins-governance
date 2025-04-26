@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 
 import { SuiNSLogo } from "@/components/SuiNSLogo";
 import { ConnectWallet } from "@/components/WalletConnet/ConnectWallet";
 import { cn } from "@/utils/cn";
 import { ProposalsMenu } from "@/components/ProposalsMenu";
-import { VotesRemaining } from "@/components/VotesRemaining";
+import { OwnedNSBalance } from "@/components/OwnedNSBalance";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { Menu } from "./Menu";
 import {
@@ -33,6 +34,8 @@ export function Header({
   const [openMenu, setOpenMenu] = useState(false);
   const [menuContent, setMenuContent] =
     useState<MenuContentContextProps["content"]>(null);
+
+  const pathname = usePathname();
 
   return (
     <MenuContentContext.Provider
@@ -62,13 +65,25 @@ export function Header({
                   className="h-2024_2XL sm:h-2024_3XL"
                 />
               </Link>
-              <ProposalsMenu />
+              {pathname === "/vote" && <ProposalsMenu />}
             </div>
 
             <div className="flex items-center gap-2024_M">
-              {isSmallOrAbove && <VotesRemaining />}
+              {/* {pathname === "/vote" && isSmallOrAbove && <OwnedNSBalance />} */}
 
               <div className="flex items-center gap-2024_S">
+                {pathname === "/" && (
+                  <>
+                    <button className="px-4 py-2 bg-gray-200 rounded">Stake</button>
+                    <button className="px-4 py-2 bg-gray-200 rounded">Vote</button>
+                  </>
+                )}
+                {pathname === "/stake" && (
+                  <>
+                    <button className="px-4 py-2 bg-gray-200 rounded">Stake</button>
+                    <button className="px-4 py-2 bg-gray-200 rounded">Lock</button>
+                  </>
+                )}
                 <div className="flex max-w-[200px] justify-end">
                   <ConnectWallet />
                 </div>
