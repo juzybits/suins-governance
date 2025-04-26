@@ -1,6 +1,6 @@
 "use client";
 
-import { HomeContent } from "@/components/staking/HomeContent";
+import { HomeContent } from "@/components/HomeContent";
 
 export default function HomePage() {
   return (
