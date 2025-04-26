@@ -157,23 +157,25 @@ function PanelBatches({
 
   return (
     <div className="panel">
-      <h2>Staked & Locked (count: {batches.length})</h2>
-
-      {batches.length === 0 && (
-        <>
-          <h3>No Stakes or Locks</h3>
-          <p>
-            Start Staking your NS to participate in governance, earn rewards,
-            and shape the future of SuiNS
-          </p>
-        </>
-      )}
-
-      {/* TODO-J: only show if the user has no batches. Otherwise show buttons in header. */}
-      <div className="button-group">
-        <button onClick={() => setModalAction("stake")}>Stake</button>
-        <button onClick={() => setModalAction("lock")}>Lock</button>
-      </div>
+      {batches.length === 0 &&
+        (availableNS === 0n ? (
+          <>
+            <h3>No NS tokens found</h3>
+            <p>Stake or Lock NS tokens to participate in SuiNS governance</p>
+          </>
+        ) : (
+          <>
+            <h3>Stake or Lock NS to Vote</h3>
+            <p>
+              Start Staking your NS to Participate in governance, earn rewards,
+              and shape the future of SuiNS
+            </p>
+            <div className="button-group">
+              <button onClick={() => setModalAction("stake")}>Stake</button>
+              <button onClick={() => setModalAction("lock")}>Lock</button>
+            </div>
+          </>
+        ))}
 
       <BatchGroup batches={votingBatches} title="Voting on latest proposal" />
       <BatchGroup batches={availableBatches} title="Available for voting" />
