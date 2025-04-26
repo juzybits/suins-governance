@@ -41,7 +41,7 @@ import {
   type UserProposalStats,
 } from "@/hooks/useGetUserStats";
 import { formatTimeDiff, TimeUnit } from "@polymedia/suitcase-core";
-import { DAY_MS, NS_VOTE_DIVISOR } from "@/constants/common";
+import { DAY_MS, ONE_NS_RAW } from "@/constants/common";
 
 type StakingData = {
   lockedNS: bigint;
@@ -458,10 +458,10 @@ function ModalStakeOrLockNewBatch({
                 const multiplier =
                   Number(
                     batchHelpers.calculateLockedVotingPower({
-                      balance: BigInt(NS_VOTE_DIVISOR),
+                      balance: BigInt(ONE_NS_RAW),
                       lockMonths: months,
                     }),
-                  ) / NS_VOTE_DIVISOR;
+                  ) / ONE_NS_RAW;
                 const startDay = months * 30 + 1;
                 const endDay = months * 30 + 30;
                 const label = `Day ${startDay}-${endDay}`;

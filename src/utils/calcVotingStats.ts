@@ -1,5 +1,5 @@
 import { roundFloat } from "./roundFloat";
-import { NS_VOTE_DIVISOR, NS_VOTE_THRESHOLD } from "@/constants/common";
+import { ONE_NS_RAW, NS_VOTE_THRESHOLD } from "@/constants/common";
 
 export type VoteStats = {
   yesVotes: number;
@@ -35,8 +35,7 @@ export function calcVotingStats(votes: {
   const abstainPercentage =
     totalVotes > 0 ? roundFloat((abstainVotes / totalVotes) * 100) : 0;
 
-  const threshold =
-    Number(votes?.threshold ?? NS_VOTE_THRESHOLD) / NS_VOTE_DIVISOR;
+  const threshold = (votes?.threshold ?? NS_VOTE_THRESHOLD) / ONE_NS_RAW;
   const thresholdReached = totalVotes >= threshold;
 
   return {

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { NS_VOTE_DIVISOR } from "@/constants/common";
+import { ONE_NS_RAW } from "@/constants/common";
 import {
   useCreateProposalMutation,
   useDistributeRewardsMutation,
@@ -74,7 +74,7 @@ function DevContentForm({
         title: formData.title,
         description: formData.description,
         end_time_ms: Date.now() + formData.duration_seconds * 1000,
-        reward: BigInt(formData.reward_ns * NS_VOTE_DIVISOR),
+        reward: BigInt(formData.reward_ns * ONE_NS_RAW),
       });
       console.debug("[onCreateProposal] success:", newProposalId);
       setFormData((prev) => ({ ...prev, proposalId: newProposalId ?? "" }));
