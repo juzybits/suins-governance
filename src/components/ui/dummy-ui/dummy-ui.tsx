@@ -54,7 +54,7 @@ export function ModalFooter({
 
 const allMonthOptions = [1, 2, 6, 12];
 
-export function MonthSelector({
+export function LockMonthSelector({
   months,
   setMonths,
   currentMonths,
@@ -83,9 +83,10 @@ export function MonthSelector({
       onChange={(e) => setMonths(parseInt(e.target.value))}
     >
       {validMonths.map((month) => {
-        const multiplier = batchHelpers.calculateLockedVotingPower({
+        const multiplier = batchHelpers.calculateBalanceVotingPower({
           balance: BigInt(ONE_NS_RAW),
-          lockMonths: month,
+          months: month,
+          mode: "lock",
         });
         const multiplierStr = (Number(multiplier) / ONE_NS_RAW).toFixed(2);
         return (

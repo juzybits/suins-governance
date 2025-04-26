@@ -41,7 +41,7 @@ export const enrichBatchObjResp = (
   networkTime: number,
 ): Batch => {
   const balanceNS = BigInt(obj.content.fields.balance);
-  const votingPower = batchHelpers.calculateVotingPower(obj, networkTime);
+  const votingPower = batchHelpers.calculateBatchVotingPower(obj, networkTime);
   const isLocked = batchHelpers.isLocked(obj, networkTime);
   const isStaked = !isLocked;
   const cooldownEndMs = Number(obj.content.fields.cooldown_end_ms);
@@ -106,8 +106,13 @@ export const batchHelpers = {
     return Math.round((unlockMs - startMs) / DAY_MS);
   },
 
-  // Mirrors batch::power() in Move contract
-  calculateVotingPower: (obj: BatchObjResp, networkTime: number): bigint => {
+  /**
+   * Mirrors batch::power() in Move contract
+   */
+  calculateBatchVotingPower: (
+    obj: BatchObjResp,
+    networkTime: number,
+  ): bigint => {
     let power = BigInt(obj.content.fields.balance); // base power is the NS balance
     let months: number; // how many monthly boosts to apply
 
@@ -137,21 +142,30 @@ export const batchHelpers = {
     return power;
   },
 
-  calculateLockedVotingPower: ({
+  /**
+   * Used to preview voting power in the app (e.g. when staking/locking a new batch)
+   */
+  calculateBalanceVotingPower: ({
     balance,
-    lockMonths,
+    months,
+    mode,
   }: {
     balance: bigint;
-    lockMonths: number;
+    months: number;
+    mode: "stake" | "lock";
   }): bigint => {
     // Special case: locking for max months gets a higher multiplier
-    if (lockMonths >= MAX_LOCK_MONTHS) {
+    if (mode === "lock" && months >= MAX_LOCK_MONTHS) {
       return (balance * MAX_BOOST_BPS) / 100_00n;
+    }
+
+    if (months >= MAX_LOCK_MONTHS) {
+      months = MAX_LOCK_MONTHS - 1; // 0th month doesn't multiply
     }
 
     // Apply multiplier: monthly_boost^months
     let power = balance;
-    for (let i = 0; i < lockMonths; i++) {
+    for (let i = 0; i < months; i++) {
       power = (power * MONTHLY_BOOST_BPS) / 100_00n;
     }
 

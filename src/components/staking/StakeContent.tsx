@@ -25,7 +25,7 @@ import {
 import {
   Modal,
   ModalFooter,
-  MonthSelector,
+  LockMonthSelector,
 } from "@/components/ui/dummy-ui/dummy-ui";
 import Loader from "@/components/ui/Loader";
 import { useGetOwnedBatches } from "@/hooks/staking/useGetOwnedBatches";
@@ -351,6 +351,17 @@ function ModalStakeOrLockNewBatch({
 }) {
   const stakeOrLockMutation = useStakeOrLockMutation();
 
+  const [amount, setAmount] = useState("");
+  const [months, setMonths] = useState(action === "lock" ? 1 : 0);
+
+  const balance = parseNSAmount(amount);
+  const power = batchHelpers.calculateBalanceVotingPower({
+    balance,
+    months,
+    mode: action,
+  });
+  const actionText = action === "lock" ? "Lock Tokens" : "Stake Tokens";
+
   const onStakeOrLock = async (data: StakeRequest) => {
     try {
       await stakeOrLockMutation.mutateAsync(data);
@@ -364,18 +375,9 @@ function ModalStakeOrLockNewBatch({
     }
   };
 
-  const [amount, setAmount] = useState("");
-  const [months, setMonths] = useState(action === "lock" ? 1 : 0);
-
   useEffect(() => {
     setMonths(action === "lock" ? 1 : 0);
   }, [action]);
-
-  const votes = batchHelpers.calculateLockedVotingPower({
-    balance: parseNSAmount(amount),
-    lockMonths: months,
-  });
-  const actionText = action === "lock" ? "Lock Tokens" : "Stake Tokens";
 
   return (
     <Modal onClose={onClose}>
@@ -420,14 +422,14 @@ function ModalStakeOrLockNewBatch({
       {action === "lock" && (
         <>
           <div className="box">
-            <MonthSelector
+            <LockMonthSelector
               months={months}
               setMonths={setMonths}
               currentMonths={0}
             />
           </div>
           <div>
-            <p>Votes {formatNSBalance(votes)}</p>
+            <p>Votes {formatNSBalance(power)}</p>
           </div>
           <div>
             <p>Lock on: {new Date().toLocaleDateString()}</p>
@@ -451,15 +453,17 @@ function ModalStakeOrLockNewBatch({
             </thead>
             <tbody>
               {[0, 1, 2, 6, 12].map((months) => {
-                const votes = batchHelpers.calculateLockedVotingPower({
-                  balance: parseNSAmount(amount),
-                  lockMonths: months,
+                const powerPreview = batchHelpers.calculateBalanceVotingPower({
+                  balance,
+                  months,
+                  mode: "stake",
                 });
-                const multiplier =
+                const multiplierPreview =
                   Number(
-                    batchHelpers.calculateLockedVotingPower({
+                    batchHelpers.calculateBalanceVotingPower({
                       balance: BigInt(ONE_NS_RAW),
-                      lockMonths: months,
+                      months,
+                      mode: "stake",
                     }),
                   ) / ONE_NS_RAW;
                 const startDay = months * 30 + 1;
@@ -468,8 +472,8 @@ function ModalStakeOrLockNewBatch({
                 return (
                   <tr key={months}>
                     <td>{label}</td>
-                    <td>{multiplier.toFixed(2)}x</td>
-                    <td>{formatNSBalance(votes)}</td>
+                    <td>{multiplierPreview.toFixed(2)}x</td>
+                    <td>{formatNSBalance(powerPreview)}</td>
                   </tr>
                 );
               })}
@@ -546,9 +550,10 @@ function ModalLockBatch({
 
   const [months, setMonths] = useState(1);
 
-  const votes = batchHelpers.calculateLockedVotingPower({
+  const votes = batchHelpers.calculateBalanceVotingPower({
     balance: batch.balanceNS,
-    lockMonths: months,
+    months,
+    mode: "lock",
   });
 
   return (
@@ -571,7 +576,7 @@ function ModalLockBatch({
       <div>
         <div>Select Lock Period</div>
         <div className="box">
-          <MonthSelector
+          <LockMonthSelector
             months={months}
             setMonths={setMonths}
             currentMonths={batch.lockDurationDays / 30}
