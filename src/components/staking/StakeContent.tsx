@@ -1,11 +1,7 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { type Batch } from "@/types/Batch";
-import {
-  type StakeRequest,
-  useStakeOrLockMutation,
-} from "@/hooks/staking/useStakeOrLockMutation";
 import {
   type LockRequest,
   useLockMutation,
@@ -17,7 +13,6 @@ import {
 import { toast } from "sonner";
 import { formatNSBalance } from "@/utils/formatNumber";
 import { MAX_LOCK_DURATION_DAYS, batchHelpers } from "@/types/Batch";
-import { parseNSAmount } from "@/utils/parseAmount";
 import {
   type UnstakeRequest,
   useUnstakeMutation,
@@ -41,7 +36,7 @@ import {
   type UserProposalStats,
 } from "@/hooks/useGetUserStats";
 import { formatTimeDiff, TimeUnit } from "@polymedia/suitcase-core";
-import { DAY_MS, ONE_NS_RAW } from "@/constants/common";
+import { useStakeModal } from "./StakeModalContext";
 
 type StakingData = {
   lockedNS: bigint;
@@ -147,7 +142,7 @@ function PanelBatches({
   availableNS: bigint;
   batches: Batch[];
 }) {
-  const [modalAction, setModalAction] = useState<null | "stake" | "lock">(null);
+  const { openModal } = useStakeModal();
 
   const votingBatches = batches.filter((batch) => batch.isVoting);
   const availableBatches = batches.filter((batch) => batch.canVote);
@@ -171,8 +166,8 @@ function PanelBatches({
               and shape the future of SuiNS
             </p>
             <div className="button-group">
-              <button onClick={() => setModalAction("stake")}>Stake</button>
-              <button onClick={() => setModalAction("lock")}>Lock</button>
+              <button onClick={() => openModal("stake")}>Stake</button>
+              <button onClick={() => openModal("lock")}>Lock</button>
             </div>
           </>
         ))}
@@ -180,15 +175,6 @@ function PanelBatches({
       <BatchGroup batches={votingBatches} title="Voting on latest proposal" />
       <BatchGroup batches={availableBatches} title="Available for voting" />
       <BatchGroup batches={unavailableBatches} title="Unavailable for voting" />
-
-      {modalAction && (
-        <ModalStakeOrLockNewBatch
-          availableNS={availableNS}
-          action={modalAction}
-          onActionChange={setModalAction}
-          onClose={() => setModalAction(null)}
-        />
-      )}
     </div>
   );
 }
@@ -336,162 +322,6 @@ function BatchActions({
   }
 
   return null;
-}
-
-/**
- * Stake or lock NS into a new batch.
- */
-function ModalStakeOrLockNewBatch({
-  action,
-  availableNS,
-  onActionChange,
-  onClose,
-}: {
-  availableNS: bigint;
-  action: "stake" | "lock";
-  onActionChange: (action: "stake" | "lock") => void;
-  onClose: () => void;
-}) {
-  const stakeOrLockMutation = useStakeOrLockMutation();
-
-  const [amount, setAmount] = useState("");
-  const [months, setMonths] = useState(action === "lock" ? 1 : 0);
-
-  const balance = parseNSAmount(amount);
-  const power = batchHelpers.calculateBalanceVotingPower({
-    balance,
-    months,
-    mode: action,
-  });
-  const actionText = action === "lock" ? "Lock Tokens" : "Stake Tokens";
-
-  const onStakeOrLock = async (data: StakeRequest) => {
-    try {
-      await stakeOrLockMutation.mutateAsync(data);
-      toast.success(
-        `Successfully ${action === "lock" ? "locked" : "staked"} tokens`,
-      );
-    } catch (error) {
-      toast.error((error as Error).message || "Failed to stake tokens");
-    } finally {
-      onClose();
-    }
-  };
-
-  useEffect(() => {
-    setMonths(action === "lock" ? 1 : 0);
-  }, [action]);
-
-  return (
-    <Modal onClose={onClose}>
-      <h2>Stake or Lock Tokens</h2>
-
-      <p>
-        Stake your NS tokens to receive Votes. The longer you leave them staked,
-        the more votes they accumulate over time.
-      </p>
-      <p>
-        Lock your NS tokens to receive an immediate boost to your voting power!
-      </p>
-
-      <div className="radio-group">
-        <label>
-          <input
-            type="radio"
-            checked={action === "stake"}
-            onChange={() => onActionChange("stake")}
-          />
-          Stake
-        </label>
-        <label>
-          <input
-            type="radio"
-            checked={action === "lock"}
-            onChange={() => onActionChange("lock")}
-          />
-          Lock
-        </label>
-      </div>
-
-      <div className="box">
-        <input
-          type="text"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-        />
-        /{formatNSBalance(availableNS)} NS
-      </div>
-
-      {action === "lock" && (
-        <>
-          <div className="box">
-            <LockMonthSelector
-              months={months}
-              setMonths={setMonths}
-              currentMonths={0}
-            />
-          </div>
-          <div>
-            <p>Votes {formatNSBalance(power)}</p>
-          </div>
-          <div>
-            <p>Lock on: {new Date().toLocaleDateString()}</p>
-            <p>
-              Unlocks on:{" "}
-              {new Date(Date.now() + months * 30 * DAY_MS).toLocaleDateString()}
-            </p>
-          </div>
-        </>
-      )}
-
-      {action === "stake" && (
-        <div>
-          <table>
-            <thead>
-              <tr>
-                <th>Duration</th>
-                <th>Multiplier</th>
-                <th>Votes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[0, 1, 2, 6, 12].map((months) => {
-                const powerPreview = batchHelpers.calculateBalanceVotingPower({
-                  balance,
-                  months,
-                  mode: "stake",
-                });
-                const multiplierPreview =
-                  Number(
-                    batchHelpers.calculateBalanceVotingPower({
-                      balance: BigInt(ONE_NS_RAW),
-                      months,
-                      mode: "stake",
-                    }),
-                  ) / ONE_NS_RAW;
-                const startDay = months * 30 + 1;
-                const endDay = months * 30 + 30;
-                const label = `Day ${startDay}-${endDay}`;
-                return (
-                  <tr key={months}>
-                    <td>{label}</td>
-                    <td>{multiplierPreview.toFixed(2)}x</td>
-                    <td>{formatNSBalance(powerPreview)}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      <ModalFooter
-        actionText={actionText}
-        onClose={onClose}
-        onAction={() => onStakeOrLock({ amount, months })}
-      />
-    </Modal>
-  );
 }
 
 function ModalViewBatch({
@@ -808,14 +638,26 @@ export function StakeHeaderButtons() {
   const batches = useGetOwnedBatches(currAddr);
   const ownedBatches = batches.data ?? [];
 
+  const { openModal } = useStakeModal();
+
   if (availableNS === 0n || ownedBatches.length === 0) {
     return null;
   }
 
   return (
     <>
-      <button className="rounded bg-green-400 px-4 py-2">Stake</button>
-      <button className="rounded bg-blue-400 px-4 py-2">Lock</button>
+      <button
+        className="rounded bg-green-400 px-4 py-2"
+        onClick={() => openModal("stake")}
+      >
+        Stake
+      </button>
+      <button
+        className="rounded bg-blue-400 px-4 py-2"
+        onClick={() => openModal("lock")}
+      >
+        Lock
+      </button>
     </>
   );
 }
