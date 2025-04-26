@@ -797,3 +797,25 @@ function CardProposalSummary({
     </div>
   );
 }
+
+export function StakeHeaderButtons() {
+  const currAcct = useCurrentAccount();
+  const currAddr = currAcct?.address;
+
+  const balance = useGetOwnedNSBalance(currAddr);
+  const availableNS = balance.data ? BigInt(balance.data.totalBalance) : 0n;
+
+  const batches = useGetOwnedBatches(currAddr);
+  const ownedBatches = batches.data ?? [];
+
+  if (availableNS === 0n || ownedBatches.length === 0) {
+    return null;
+  }
+
+  return (
+    <>
+      <button className="rounded bg-green-400 px-4 py-2">Stake</button>
+      <button className="rounded bg-blue-400 px-4 py-2">Lock</button>
+    </>
+  );
+}

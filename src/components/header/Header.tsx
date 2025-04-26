@@ -8,13 +8,13 @@ import { SuiNSLogo } from "@/components/SuiNSLogo";
 import { ConnectWallet } from "@/components/WalletConnet/ConnectWallet";
 import { cn } from "@/utils/cn";
 import { ProposalsMenu } from "@/components/ProposalsMenu";
-import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { Menu } from "./Menu";
 import {
   MenuContent,
   MenuContentContext,
   type MenuContentContextProps,
 } from "./MenuContent";
+import { StakeHeaderButtons } from "@/components/staking/StakeContent";
 
 export interface HeaderProps {
   logoVariant?: "outline" | "fill";
@@ -73,24 +73,21 @@ export function Header({
               <div className="flex items-center gap-2024_S">
                 {pathname === "/" && (
                   <>
-                    <button className="rounded bg-gray-200 px-4 py-2">
+                    <Link
+                      href="/stake"
+                      className="rounded bg-green-400 px-4 py-2"
+                    >
                       Stake
-                    </button>
-                    <button className="rounded bg-gray-200 px-4 py-2">
+                    </Link>
+                    <Link
+                      href="/vote"
+                      className="rounded bg-pink-400 px-4 py-2"
+                    >
                       Vote
-                    </button>
+                    </Link>
                   </>
                 )}
-                {pathname === "/stake" && (
-                  <>
-                    <button className="rounded bg-gray-200 px-4 py-2">
-                      Stake
-                    </button>
-                    <button className="rounded bg-gray-200 px-4 py-2">
-                      Lock
-                    </button>
-                  </>
-                )}
+                {pathname === "/stake" && <StakeHeaderButtons />}
                 <div className="flex max-w-[200px] justify-end">
                   <ConnectWallet />
                 </div>
