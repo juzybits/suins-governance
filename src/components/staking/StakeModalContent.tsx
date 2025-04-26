@@ -11,10 +11,20 @@ import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { formatNSBalance } from "@/utils/formatNumber";
 import { DAY_MS, ONE_NS_RAW } from "@/constants/common";
+import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
+import { useCurrentAccount } from "@mysten/dapp-kit";
 
-export function StakeModalContent({ availableNS }: { availableNS: bigint }) {
+export function StakeModalContent() {
   const { modalAction, closeModal, openModal } = useStakeModal();
+
+  const currAcct = useCurrentAccount();
+  const currAddr = currAcct?.address;
+
+  const balance = useGetOwnedNSBalance(currAddr);
+  const availableNS = balance.data ? BigInt(balance.data.totalBalance) : 0n;
+
   if (!modalAction) return null;
+
   return (
     <ModalStakeOrLockNewBatch
       availableNS={availableNS}

@@ -171,6 +171,7 @@ function PanelBatches({
   );
 }
 
+// TODO-J: add "sort by"
 function BatchGroup({ batches, title }: { batches: Batch[]; title: string }) {
   if (batches.length === 0) {
     return null;

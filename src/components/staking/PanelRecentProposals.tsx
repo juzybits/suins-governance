@@ -12,8 +12,6 @@ import {
   type UserProposalStats,
 } from "@/hooks/useGetUserStats";
 
-
-
 // TODO-J: group into "voting in progress" and "voting ended"
 export function PanelRecentProposals() {
   const currAcct = useCurrentAccount();
@@ -44,7 +42,6 @@ export function PanelRecentProposals() {
     </div>
   );
 }
-
 
 function CardProposalSummary({
   proposal,

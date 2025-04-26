@@ -4,11 +4,11 @@ import { createContext, useContext, useState, type ReactNode } from "react";
 
 export type ModalAction = "stake" | "lock" | null;
 
-interface StakeModalContextProps {
+type StakeModalContextProps = {
   modalAction: ModalAction;
   openModal: (action: "stake" | "lock") => void;
   closeModal: () => void;
-}
+};
 
 const StakeModalContext = createContext<StakeModalContextProps | undefined>(
   undefined,
