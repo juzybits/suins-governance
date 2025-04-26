@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { PanelRecentProposals } from "../staking/StakeContent";
+import { PanelRecentProposals } from "@/components/staking/PanelRecentProposals";
 import { useCurrentAccount, useCurrentWallet } from "@mysten/dapp-kit";
 import { ConnectWalletButton } from "../WalletConnet/ConnectWallet";
 

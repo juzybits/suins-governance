@@ -14,7 +14,7 @@ import {
   MenuContentContext,
   type MenuContentContextProps,
 } from "./MenuContent";
-import { StakeHeaderButtons } from "@/components/staking/StakeContent";
+import { StakeHeaderButtons } from "@/components/staking/StakeHeaderButtons";
 
 export interface HeaderProps {
   logoVariant?: "outline" | "fill";

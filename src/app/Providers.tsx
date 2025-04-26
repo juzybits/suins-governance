@@ -12,6 +12,7 @@ import { TRPCReactProvider } from "@/trpc/react";
 import { suiNSTheme } from "@/app/themes";
 import dynamic from "next/dynamic";
 import { SUPPORTED_NETWORKS } from "@/constants/endpoints";
+import { StakeModalProvider } from "@/components/staking/StakeModalContext";
 
 export const DAPP_KIT_WALLET_STORAGE_KEY = "dapp-kit-wallet-m";
 
@@ -44,7 +45,9 @@ export function Providers({ children }: { children: ReactNode }) {
           theme={suiNSTheme}
         >
           <SuinsClientProvider>
-            <KioskClientProvider>{children}</KioskClientProvider>
+            <KioskClientProvider>
+              <StakeModalProvider>{children}</StakeModalProvider>
+            </KioskClientProvider>
           </SuinsClientProvider>
         </WalletProvider>
       </SuiClientProvider>
