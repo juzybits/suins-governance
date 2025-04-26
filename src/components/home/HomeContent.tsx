@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { PanelRecentProposals } from "./staking/StakeContent";
+import { PanelRecentProposals } from "../staking/StakeContent";
 import { useCurrentAccount, useCurrentWallet } from "@mysten/dapp-kit";
-import { ConnectWalletButton } from "./WalletConnet/ConnectWallet";
+import { ConnectWalletButton } from "../WalletConnet/ConnectWallet";
 
 export function HomeContent() {
   return (
