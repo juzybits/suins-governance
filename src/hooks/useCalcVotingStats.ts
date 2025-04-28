@@ -7,7 +7,7 @@ export function useCalcVotingStats(votes: {
   noVote?: number;
   abstainVote?: number;
   threshold?: number;
-  isPersonVote?: boolean;
+  isPersonVote: boolean;
 }) {
   const yesVotes = votes?.yesVote ?? 0;
   const noVotes = votes?.noVote ?? 0;

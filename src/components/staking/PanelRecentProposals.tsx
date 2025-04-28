@@ -11,6 +11,7 @@ import {
   useGetUserStats,
   type UserProposalStats,
 } from "@/hooks/useGetUserStats";
+import { useIsPersonVote } from "@/hooks/useIsPersonVote";
 
 // TODO-J: group into "voting in progress" and "voting ended"
 export function PanelRecentProposals() {
@@ -52,9 +53,11 @@ function CardProposalSummary({
 }) {
   // Calculate overall voting statistics
   const votes = parseProposalVotes(proposal);
+  const isPersonVote = useIsPersonVote(proposal.fields.id.id);
   const stats = useCalcVotingStats({
     ...votes,
     threshold: Number(proposal?.fields.threshold),
+    isPersonVote,
   });
 
   const isClosed = isPast(new Date(Number(proposal.fields.end_time_ms ?? 0)));

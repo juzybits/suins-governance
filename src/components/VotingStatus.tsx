@@ -172,6 +172,7 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
             votes={voting.votes}
             onlyStatus
             noFormat
+            isPersonVote={isPersonVote}
           />
         ))}
       </div>
