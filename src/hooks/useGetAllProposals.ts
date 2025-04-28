@@ -16,7 +16,6 @@ export function useGetAllProposals() {
   return useQuery({
     queryKey: ["all-proposals"],
     queryFn: async () => {
-
       let proposalIds: string[] = [];
 
       try {

@@ -2,16 +2,14 @@
 
 import { formatNSBalance } from "@/utils/formatNumber";
 import { useCurrentAccount } from "@mysten/dapp-kit";
-import { parseProposalVotes } from "@/hooks/useGetProposalDetail";
 import { isPast } from "date-fns";
-import { useCalcVotingStats } from "@/hooks/useCalcVotingStats";
 import { useGetAllProposals } from "@/hooks/useGetAllProposals";
 import { type ProposalObjResp } from "@/types/Proposal";
 import {
   useGetUserStats,
   type UserProposalStats,
 } from "@/hooks/useGetUserStats";
-import { useIsPersonVote } from "@/hooks/useIsPersonVote";
+import { VotingStatus } from "@/components/VotingStatus";
 
 // TODO-J: group into "voting in progress" and "voting ended"
 export function PanelRecentProposals() {
@@ -51,15 +49,6 @@ function CardProposalSummary({
   proposal: ProposalObjResp;
   userStats: UserProposalStats | undefined;
 }) {
-  // Calculate overall voting statistics
-  const votes = parseProposalVotes(proposal);
-  const isPersonVote = useIsPersonVote(proposal.fields.id.id);
-  const stats = useCalcVotingStats({
-    ...votes,
-    threshold: Number(proposal?.fields.threshold),
-    isPersonVote,
-  });
-
   const isClosed = isPast(new Date(Number(proposal.fields.end_time_ms ?? 0)));
   const fields = proposal.fields;
 
@@ -83,26 +72,6 @@ function CardProposalSummary({
           End time: {new Date(Number(fields.end_time_ms)).toLocaleDateString()}
         </p>
 
-        <div>
-          <h3>Overall Votes</h3>
-          <div>
-            <p>
-              Yes: {stats.yesVotes} ({stats.yesPercentage}%)
-            </p>
-            <p>
-              No: {stats.noVotes} ({stats.noPercentage}%)
-            </p>
-            <p>
-              Abstain: {stats.abstainVotes} ({stats.abstainPercentage}%)
-            </p>
-            <p>Total votes: {stats.totalVotes}</p>
-            <p>
-              Threshold: {stats.threshold}{" "}
-              {stats.thresholdReached ? "(Reached)" : "(Not reached)"}
-            </p>
-          </div>
-        </div>
-
         {userStats && (
           <div>
             <h3>Your Participation</h3>
@@ -112,7 +81,10 @@ function CardProposalSummary({
             </div>
           </div>
         )}
+
+        <VotingStatus proposalId={proposal.fields.id.id} />
       </div>
+      <br />
       <hr />
     </div>
   );
