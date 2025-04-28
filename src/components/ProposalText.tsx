@@ -10,6 +10,7 @@ import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { isPast } from "date-fns";
 import { formatContractText } from "@/utils/formatContractText";
 import { ContentBlockParser } from "./ui/ContentBlockParser";
+import { useIsPersonVote } from "@/hooks/useIsPersonVote";
 
 export function ProposalText({ proposalId }: { proposalId: string }) {
   const isSmallOrAbove = useBreakpoint("sm");
@@ -17,7 +18,7 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
   const [isOverflowing, setIsOverflowing] = useState(false); // Check if the content overflows
   const contentRef = useRef<HTMLDivElement>(null);
   const { data, isLoading } = useGetProposalDetail({ proposalId });
-
+  const isPersonVote = useIsPersonVote(proposalId);
   const toggleExpanded = () => setIsExpanded(!isExpanded);
   const description = formatContractText(data?.fields.description ?? "");
 
@@ -36,11 +37,13 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
         <ProposalStatus
           status={
             isClosed
-              ? data?.fields.winning_option?.fields.pos0 === "Yes"
+              ? isPersonVote && data?.fields.winning_option !== null
                 ? "passed"
-                : data?.fields.winning_option === null && isClosed
-                  ? "pending"
-                  : "failed"
+                : data?.fields.winning_option?.fields.pos0 === "Yes"
+                  ? "passed"
+                  : data?.fields.winning_option === null && isClosed
+                    ? "pending"
+                    : "failed"
               : "active"
           }
         />

@@ -1,11 +1,18 @@
 export function formatContractText(text: string) {
   const groups = text.split("\n[PS]\n");
+  const regex =
+    /\[URL\]\[TEXT\](.*?)\[\/TEXT\]\[Link\](.*?)\[\/Link\]\[\/URL\]/g;
   // Process each group
   const processedGroups = groups.map((group) => {
     return `<div>${group
+      .replace(
+        regex,
+        '<a href="$2" target="_blank" class="text-2024_fillContent-link">$1</a>',
+      )
       // Bold text
       .replaceAll("[B]", "<strong>")
       .replaceAll("[/B]", "</strong>")
+
       // Lists
       .replaceAll("[L]", "<ul class='ml-7 list-disc list-outside'>")
       .replaceAll("[/L]", "</ul>")

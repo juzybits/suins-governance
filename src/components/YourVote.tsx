@@ -10,9 +10,11 @@ import { Divide } from "./ui/Divide";
 import { VotingState } from "./VotingStatus";
 import { NSAmount } from "./ui/NSAmount";
 import { VoteIndicator } from "./ui/VoteIndicator";
+import { useIsPersonVote } from "@/hooks/useIsPersonVote";
 
 export function YourVote({ proposalId }: { proposalId: string }) {
   const currentAccount = useCurrentAccount();
+  const isPersonVote = useIsPersonVote(proposalId);
   const address = currentAccount?.address;
 
   const { data: voteCasted } = useGetVoteCastedByProposalId({
@@ -56,13 +58,25 @@ export function YourVote({ proposalId }: { proposalId: string }) {
           </div>
           <Divide className="bg-[#62519C]" />
           {voteCasted.yesVote ? (
-            <VotingState votedState="Yes" votes={voteCasted.yesVote} />
+            <VotingState
+              votedState="Yes"
+              votes={voteCasted.yesVote}
+              isPersonVote={isPersonVote}
+            />
           ) : null}
           {voteCasted.noVote ? (
-            <VotingState votedState="No" votes={voteCasted.noVote} />
+            <VotingState
+              votedState="No"
+              votes={voteCasted.noVote}
+              isPersonVote={isPersonVote}
+            />
           ) : null}
           {voteCasted.abstainVote ? (
-            <VotingState votedState="Abstain" votes={voteCasted.abstainVote} />
+            <VotingState
+              votedState="Abstain"
+              votes={voteCasted.abstainVote}
+              isPersonVote={isPersonVote}
+            />
           ) : null}
           <Divide className="bg-[#62519C]" />
           <Text
@@ -89,18 +103,35 @@ export function YourVote({ proposalId }: { proposalId: string }) {
                 </Text>
 
                 <NSAmount
-                  amount={voteCasted.yesVote}
+                  amount={
+                    voteCasted.yesVote ||
+                    voteCasted.noVote ||
+                    voteCasted.abstainVote
+                  }
+                  roundedCoinFormat
                   className="!justify-start"
                 />
               </div>
               {voteCasted.yesVote ? (
-                <VoteIndicator votedStatus="Yes" size="small" />
+                <VoteIndicator
+                  votedStatus="Yes"
+                  size="small"
+                  isPersonVote={isPersonVote}
+                />
               ) : null}
               {voteCasted.noVote ? (
-                <VoteIndicator votedStatus="No" size="small" />
+                <VoteIndicator
+                  votedStatus="No"
+                  size="small"
+                  isPersonVote={isPersonVote}
+                />
               ) : null}
               {voteCasted.abstainVote ? (
-                <VoteIndicator votedStatus="Abstain" size="small" />
+                <VoteIndicator
+                  votedStatus="Abstain"
+                  size="small"
+                  isPersonVote={isPersonVote}
+                />
               ) : null}
             </div>
           </div>
