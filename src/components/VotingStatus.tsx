@@ -15,7 +15,7 @@ import {
 import { roundFloat } from "@/utils/roundFloat";
 import NSToken from "@/icons/NSToken";
 import { CoinFormat, formatBalance } from "@/utils/coins";
-import { calcVotingStats } from "@/utils/calcVotingStats";
+import { useCalcVotingStats } from "@/hooks/useCalcVotingStats";
 import { useIsPersonVote } from "@/hooks/useIsPersonVote";
 
 function MinimumThreshHold({
@@ -148,7 +148,7 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
   const isPersonVote = useIsPersonVote(proposalId);
   const resp = data ? parseProposalVotes(data) : null;
-  const stats = calcVotingStats({
+  const stats = useCalcVotingStats({
     ...resp,
     threshold: Number(data?.fields.threshold),
     isPersonVote,
@@ -166,6 +166,7 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
       <div className="flex flex-col justify-between gap-2">
         {stats.status.map((voting) => (
           <VotingState
+            key={voting.votedState}
             votedState={voting.votedState}
             percentage={voting.percentage}
             votes={voting.votes}

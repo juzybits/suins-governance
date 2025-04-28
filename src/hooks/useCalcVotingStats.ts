@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import { roundFloat } from "./roundFloat";
+import { roundFloat } from "../utils/roundFloat";
 import { ONE_NS_RAW, NS_VOTE_THRESHOLD } from "@/constants/common";
 
-export function calcVotingStats(votes: {
+export function useCalcVotingStats(votes: {
   yesVote?: number;
   noVote?: number;
   abstainVote?: number;

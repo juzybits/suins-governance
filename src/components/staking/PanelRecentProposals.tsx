@@ -4,7 +4,7 @@ import { formatNSBalance } from "@/utils/formatNumber";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { parseProposalVotes } from "@/hooks/useGetProposalDetail";
 import { isPast } from "date-fns";
-import { calcVotingStats } from "@/utils/calcVotingStats";
+import { useCalcVotingStats } from "@/hooks/useCalcVotingStats";
 import { useGetAllProposals } from "@/hooks/useGetAllProposals";
 import { type ProposalObjResp } from "@/types/Proposal";
 import {
@@ -50,9 +50,12 @@ function CardProposalSummary({
   proposal: ProposalObjResp;
   userStats: UserProposalStats | undefined;
 }) {
-  if (!proposal) {
-    return null;
-  }
+  // Calculate overall voting statistics
+  const votes = parseProposalVotes(proposal);
+  const stats = useCalcVotingStats({
+    ...votes,
+    threshold: Number(proposal?.fields.threshold),
+  });
 
   const isClosed = isPast(new Date(Number(proposal.fields.end_time_ms ?? 0)));
   const fields = proposal.fields;
@@ -67,13 +70,6 @@ function CardProposalSummary({
       status = "failed";
     }
   }
-
-  // Calculate overall voting statistics
-  const votes = parseProposalVotes(proposal);
-  const stats = calcVotingStats({
-    ...votes,
-    threshold: Number(proposal?.fields.threshold),
-  });
 
   return (
     <div>
