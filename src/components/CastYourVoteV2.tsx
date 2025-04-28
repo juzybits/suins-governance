@@ -22,6 +22,7 @@ import { useEffect } from "react";
 import { useGetOwnedBatches } from "@/hooks/staking/useGetOwnedBatches";
 import { formatNSBalance } from "@/utils/formatNumber";
 import Link from "next/link";
+import { useIsPersonVote } from "@/hooks/useIsPersonVote";
 
 const VOTE_OPTIONS = ["Yes", "No", "Abstain"] as const;
 
@@ -33,6 +34,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
     new Date(Number(proposal.data?.fields.end_time_ms ?? 0)),
   );
   const batches = useGetOwnedBatches(currentAccount?.address);
+  const isPersonVote = useIsPersonVote(proposalId);
 
   const isLoggedOut = (!currentAccount && !isConnecting) ?? isDisconnected;
   const form = useZodForm({
@@ -120,6 +122,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
                         <VoteIndicator
                           votedStatus={option.value as "Yes" | "No" | "Abstain"}
                           size="medium"
+                          isPersonVote={isPersonVote}
                         />
                       </div>
                     </div>
@@ -137,6 +140,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
                       <VoteIndicator
                         votedStatus={option.value as "Yes" | "No" | "Abstain"}
                         size="medium"
+                        isPersonVote={isPersonVote}
                       />
                     </div>
                   </div>

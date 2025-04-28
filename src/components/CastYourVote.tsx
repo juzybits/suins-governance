@@ -18,6 +18,7 @@ import isPast from "date-fns/isPast";
 import { RadioGroupField } from "./form/RadioGroupField";
 import { useEffect } from "react";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
+import { useIsPersonVote } from "@/hooks/useIsPersonVote";
 
 const VOTE_OPTIONS = ["Yes", "No", "Abstain"] as const;
 
@@ -34,6 +35,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
     new Date(Number(proposalDetail?.fields.end_time_ms ?? 0)),
   );
 
+  const isPersonVote = useIsPersonVote(proposalId);
   const { data: balance } = useGetOwnedNSBalance(currentAccount?.address);
 
   const tokenBalance = Number(balance?.formatted?.replaceAll(",", "") ?? 0);
@@ -119,6 +121,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                         <VoteIndicator
                           votedStatus={option.value as "Yes" | "No" | "Abstain"}
                           size="medium"
+                          isPersonVote={isPersonVote}
                         />
                       </div>
                     </div>
@@ -136,6 +139,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                       <VoteIndicator
                         votedStatus={option.value as "Yes" | "No" | "Abstain"}
                         size="medium"
+                        isPersonVote={isPersonVote}
                       />
                     </div>
                   </div>
