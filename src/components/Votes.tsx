@@ -330,10 +330,12 @@ function TopVoter({
   address,
   votes,
   voteType,
+  isPersonVote,
 }: {
   address: string;
   votes: number;
   voteType?: VoteType;
+  isPersonVote?: boolean;
 }) {
   const { data: accountInfo } = useGetAccountInfo({ address });
 
@@ -365,7 +367,11 @@ function TopVoter({
           </Text>
         </Link>
         {voteType && (
-          <VoteIndicator votedStatus={voteType} onlyStatus isPersonVote />
+          <VoteIndicator
+            votedStatus={voteType}
+            onlyStatus={true}
+            isPersonVote={isPersonVote}
+          />
         )}
         <NSAmount amount={votes} isMedium roundedCoinFormat centerAlign />
       </div>
@@ -478,6 +484,7 @@ function TopVoters({
                 votes={voter.votes}
                 address={voter.address}
                 voteType={currentVoteType}
+                isPersonVote={isPersonVote}
               />
             </motion.div>
           ))}
