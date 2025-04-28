@@ -16,30 +16,41 @@ export function useGetAllProposals() {
   return useQuery({
     queryKey: ["all-proposals"],
     queryFn: async () => {
-      const tx = new Transaction();
-      tx.moveCall({
-        target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::early_voting::get_proposal_ids`,
-        arguments: [tx.object(SUINS_PACKAGES[NETWORK].governanceObjId)],
-      });
 
-      const retVals = await devInspectAndGetReturnValues(suiClient, tx, [
-        [bcs.vector(bcs.Address)],
-      ]);
-      const proposalIds = retVals[0]![0]! as string[];
+      let proposalIds: string[] = [];
+
+      try {
+        const tx = new Transaction();
+        tx.moveCall({
+          target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::early_voting::get_proposal_ids`,
+          arguments: [tx.object(SUINS_PACKAGES[NETWORK].governanceObjId)],
+        });
+        const retVals = await devInspectAndGetReturnValues(suiClient, tx, [
+          [bcs.vector(bcs.Address)],
+        ]);
+        proposalIds = retVals[0]![0]! as string[];
+      } catch (e) {
+        console.debug("[useGetAllProposals] devinspect failed:", e);
+      }
 
       if (NETWORK === "mainnet") {
         proposalIds.push(...V1_PROPOSAL_IDS);
       }
 
-      // NOTE: can fetch up to 50 objects at once
-      const objs = await suiClient.multiGetObjects({
-        ids: proposalIds,
-        options: {
-          showContent: true,
-          showType: true,
-        },
-      });
-      return objs.map(parseProposalObjResp);
+      try {
+        // NOTE: can fetch up to 50 objects at once
+        const objs = await suiClient.multiGetObjects({
+          ids: proposalIds,
+          options: {
+            showContent: true,
+            showType: true,
+          },
+        });
+        return objs.map(parseProposalObjResp);
+      } catch (e) {
+        console.debug("[useGetAllProposals] multiGetObjects failed:", e);
+        return [];
+      }
     },
   });
 }
