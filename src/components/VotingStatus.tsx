@@ -16,6 +16,7 @@ import { roundFloat } from "@/utils/roundFloat";
 import NSToken from "@/icons/NSToken";
 import { CoinFormat, formatBalance } from "@/utils/coins";
 import { calcVotingStats } from "@/utils/calcVotingStats";
+import { useIsPersonVote } from "@/hooks/useIsPersonVote";
 
 function MinimumThreshHold({
   isReached,
@@ -101,6 +102,7 @@ type VotedStateProps = {
   roundedCoinFormat?: boolean;
   noFormat?: boolean;
   hidePercentage?: boolean;
+  isPersonVote?: boolean;
 };
 
 export function VotingState({
@@ -111,11 +113,16 @@ export function VotingState({
   roundedCoinFormat,
   noFormat,
   hidePercentage,
+  isPersonVote,
 }: VotedStateProps) {
   return (
     <div className="flex w-full items-center justify-between gap-2">
       <div className="flex items-start">
-        <VoteIndicator votedStatus={votedState} onlyStatus={onlyStatus} />
+        <VoteIndicator
+          votedStatus={votedState}
+          onlyStatus={onlyStatus}
+          isPersonVote={isPersonVote}
+        />
       </div>
       <div className="flex min-w-[100px] basis-1/2 flex-row items-end justify-between gap-3">
         {percentage !== undefined && !hidePercentage && (
@@ -139,13 +146,15 @@ export function VotingState({
 
 export function VotingStatus({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
+  const isPersonVote = useIsPersonVote(proposalId);
   const resp = data ? parseProposalVotes(data) : null;
-  if (isLoading || !resp) return null;
-
   const stats = calcVotingStats({
     ...resp,
     threshold: Number(data?.fields.threshold),
+    isPersonVote,
   });
+
+  if (isLoading || !resp) return null;
 
   return (
     <SectionLayout title="Voting Status">
@@ -155,28 +164,15 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
         abstainVotes={stats.abstainVotes}
       />
       <div className="flex flex-col justify-between gap-2">
-        <VotingState
-          votedState="Yes"
-          percentage={stats.yesPercentage}
-          votes={stats.yesVotes}
-          onlyStatus
-          noFormat
-        />
-        <VotingState
-          votedState="No"
-          percentage={stats.noPercentage}
-          votes={stats.noVotes}
-          onlyStatus
-          noFormat
-        />
-        <VotingState
-          votedState="Abstain"
-          percentage={stats.abstainPercentage}
-          votes={stats.abstainVotes}
-          onlyStatus
-          noFormat
-          hidePercentage
-        />
+        {stats.status.map((voting) => (
+          <VotingState
+            votedState={voting.votedState}
+            percentage={voting.percentage}
+            votes={voting.votes}
+            onlyStatus
+            noFormat
+          />
+        ))}
       </div>
       <MinimumThreshHold
         isReached={stats.thresholdReached}

@@ -6,7 +6,6 @@ import { SuiClientProvider } from "@mysten/dapp-kit";
 import { KioskClientProvider } from "@/app/KioskClientProvider";
 import { SuinsClientProvider } from "@/app/SuinsClient";
 import { SUINS_ENDPOINTS } from "@/constants/endpoints";
-import { env } from "@/env";
 import { NETWORK } from "@/constants/env";
 import { TRPCReactProvider } from "@/trpc/react";
 import { suiNSTheme } from "@/app/themes";
