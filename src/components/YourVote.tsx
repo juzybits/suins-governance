@@ -78,15 +78,6 @@ export function YourVote({ proposalId }: { proposalId: string }) {
               isPersonVote={isPersonVote}
             />
           ) : null}
-          <Divide className="bg-[#62519C]" />
-          <Text
-            variant="B7/regular"
-            color="fillContent-secondary"
-            className="w-full text-start"
-          >
-            Locked tokens will be returned to users automatically after voting
-            concludes.
-          </Text>
         </div>
       ) : (
         <div className="flex w-full flex-col items-center justify-start gap-2024_R rounded-12 bg-2024_fillBackground-secondary-Highlight/40 p-2024_R">
@@ -135,15 +126,6 @@ export function YourVote({ proposalId }: { proposalId: string }) {
               ) : null}
             </div>
           </div>
-          <Divide className="bg-[#62519C]" />
-          <Text
-            variant="B7/regular"
-            color="fillContent-secondary"
-            className="w-full text-start"
-          >
-            Locked tokens will be returned to users automatically after voting
-            concludes.
-          </Text>
         </div>
       )}
     </div>
