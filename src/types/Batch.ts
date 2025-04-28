@@ -107,7 +107,7 @@ export const batchHelpers = {
   },
 
   /**
-   * Mirrors batch::power() in Move contract
+   * Mirrors batch::power() in Sui contract
    */
   calculateBatchVotingPower: (
     obj: BatchObjResp,

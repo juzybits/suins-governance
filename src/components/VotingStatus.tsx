@@ -6,6 +6,7 @@ import { VoteProgressBar } from "./VoteProgressBar";
 import { GradientProgressBar } from "./ui/GradientProgressBar";
 import { Text } from "@/components/ui/Text";
 import { YourVote } from "@/components/YourVote";
+import { YourReward } from "@/components/YourReward";
 import { NSAmount } from "@/components/ui/NSAmount";
 
 import {
@@ -183,6 +184,7 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
       />
 
       <YourVote proposalId={proposalId} />
+      <YourReward proposalId={proposalId} />
     </SectionLayout>
   );
 }

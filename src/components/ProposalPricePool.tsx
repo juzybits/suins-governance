@@ -12,7 +12,12 @@ export function ProposalPricePool({ proposalId }: { proposalId: string }) {
       <div className="panel">
         <h2>Proposal Voting Rewards</h2>
         <h2>{balanceStr} NS</h2>
-        <p>Upon reaching the Minimum Voting Threshold, each voter receives a portion of the {balanceStr} SuiNS tokens reward based on the number of tokens they used to vote, proportional to the total tokens used by all voters.</p>
+        <p>
+          Upon reaching the Minimum Voting Threshold, each voter receives a
+          portion of the {balanceStr} SuiNS tokens reward based on the number of
+          tokens they used to vote, proportional to the total tokens used by all
+          voters.
+        </p>
       </div>
     </div>
   );
