@@ -5,6 +5,12 @@
 import { readFileSync } from "fs";
 import type { ReturnTokenEvent } from "./fetch-events";
 
+/**
+ * 0.1 NS, as defined in
+ * suins-contracts/packages/voting/sources/staking/config.move
+ */
+export const MIN_BALANCE_RAW = 100_000n;
+
 export type AirdropConfig = {
   recipient: string;
   amount_raw: string;
@@ -68,22 +74,32 @@ function main() {
 }
 
 function generateAirdropConfig(events: ReturnTokenEvent[]): AirdropConfig[] {
-  return events.map(event => {
+  const airdrops: AirdropConfig[] = [];
+
+  for (const event of events) {
     const date = event.date.split("T")[0]!;
     const proposal = PROPOSAL_REWARDS.get(date);
     if (!proposal) {
       throw new Error(`No proposal reward found for proposal date: ${date}`);
     }
+
     const userVotes = BigInt(event.amount_raw);
     const userShare = (userVotes * BigInt(1_000_000_000)) / proposal.total_ns_voted;
     const userReward = (proposal.total_ns_reward * userShare) / BigInt(1_000_000_000);
-    return {
+
+    if (userReward < MIN_BALANCE_RAW) {
+      continue;
+    }
+
+    airdrops.push({
       recipient: event.voter_addr,
       amount_raw: userReward.toString(),
       start_ms: new Date(date).getTime(),
       lock_months: 0,
-    };
-  });
+    });
+  }
+
+  return airdrops;
 }
 
 main();
