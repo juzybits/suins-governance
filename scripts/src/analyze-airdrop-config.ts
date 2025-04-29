@@ -26,8 +26,9 @@ function main() {
 
 function analyzeAirdropDistribution(configs: AirdropConfig[]) {
   // general stats
-  const totalRecipients = configs.length;
-  let totalAirdrops = 0;
+  const totalAirdrops = configs.length;
+  const uniqueRecipients = new Set(configs.map((c) => c.recipient));
+  const totalRecipients = uniqueRecipients.size;
   let totalAmount = BigInt(0);
   const airdropAmounts = new Map<string, bigint>(); // date -> amount
 
@@ -53,28 +54,23 @@ function analyzeAirdropDistribution(configs: AirdropConfig[]) {
   ]);
 
   for (const config of configs) {
-    totalAirdrops += config.airdrops.length;
+    const amount = BigInt(config.amount_raw);
+    totalAmount += amount;
 
-    // calculate total reward for this recipient
-    for (const airdrop of config.airdrops) {
-      const amount = BigInt(airdrop.amount_raw);
-      totalAmount += amount;
-
-      // track reward range
-      for (const range of ranges.values()) {
-        if (amount >= range.min && amount < range.max) {
-          range.count++;
-          break;
-        }
+    // track reward range
+    for (const range of ranges.values()) {
+      if (amount >= range.min && amount < range.max) {
+        range.count++;
+        break;
       }
-
-      // group by start_ms to track amounts per proposal
-      const date = new Date(airdrop.start_ms).toISOString().split("T")[0]!;
-      airdropAmounts.set(
-        date,
-        (airdropAmounts.get(date) || BigInt(0)) + amount,
-      );
     }
+
+    // group by start_ms to track amounts per proposal
+    const date = new Date(config.start_ms).toISOString().split("T")[0]!;
+    airdropAmounts.set(
+      date,
+      (airdropAmounts.get(date) || BigInt(0)) + amount,
+    );
   }
 
   // output results
