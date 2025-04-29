@@ -52,12 +52,13 @@ export const SUINS_PACKAGES: {
     statsObjId: "",
     coinType: "",
   },
+  // see dev/publish.sh
   localnet: {
-    votingPkgId: env.NEXT_PUBLIC_VITE_votingPkgId ?? "",
-    governanceObjId: env.NEXT_PUBLIC_VITE_governanceObjId ?? "",
-    stakingConfigObjId: env.NEXT_PUBLIC_VITE_stakingConfigObjId ?? "",
-    statsObjId: env.NEXT_PUBLIC_VITE_statsObjId ?? "",
-    coinType: env.NEXT_PUBLIC_VITE_coinType ?? "",
+    votingPkgId: "0xca1e41691bad7e9ad65229d0f408c73ff6b6f8a61d6b78dd1d1be32542c35ceb",
+    governanceObjId: "0x1be15be0e7299ffa851e9988c3143262b9dfca99fa075397c350c4b877f3b85f",
+    stakingConfigObjId: "0x01f8275b1486d28e81e66cd774a566f2e3dc5742ee379e9de0462e135f8c7e40",
+    statsObjId: "0x5b9e9baad8131e340d124c49d61d569da72cdc462dd4b2ed5c23188ee69242fc",
+    coinType: "0xb1a3db33993bd0f7f2ef70ebddf0687cd04e7d26a2e9958f80db2d1c60305890::ns::NS",
   },
 };
 
