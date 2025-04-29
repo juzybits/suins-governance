@@ -104,14 +104,14 @@ async function main({
     totalRecipients++;
   });
   console.log(`Transactions required: ${dropsPerTx.length}`);
-  console.log(`Total airdrop recipients: ${totalRecipients}`);
-  console.log(`Total airdrop amount: ${formatNSBalance(totalAmount)}`);
+  console.log(`Total airdropped batches: ${totalRecipients}`);
+  console.log(`Total airdropped NS amount: ${formatNSBalance(totalAmount)}`);
 
   /* Check user has enough NS balance */
 
-  const userBalance = await getNsBalance({ client, owner, netCnf });
-  console.log(`Your NS balance: ${formatNSBalance(userBalance)}`);
-  if (userBalance < totalAmount) {
+  const userNsBalance = await getNsBalance({ client, owner, netCnf });
+  console.log(`Your NS balance: ${formatNSBalance(userNsBalance)}`);
+  if (userNsBalance < totalAmount) {
     throw new Error("Your NS balance is lower than the total airdrop amount");
   }
 
@@ -166,9 +166,9 @@ async function main({
       totalRecipients,
       totalAmount: totalAmount.toString(),
       txRequired: dropsPerTx.length,
-      balanceBefore: userBalance.toString(),
-      balanceAfter: null,
-      balanceUsed: null,
+      nsBalanceBefore: userNsBalance.toString(),
+      nsBalanceAfter: null,
+      nsBalanceUsed: null,
       transactions: dropsPerTx.map((drops, index) => {
         let dropsTotalAmount = 0n;
         drops.forEach((drop) => (dropsTotalAmount += BigInt(drop.amount_raw)));
@@ -191,12 +191,12 @@ async function main({
     log.endTime = new Date().toISOString();
     writeLog(output, log);
     try {
-      const finalBalance = await getNsBalance({ client, owner, netCnf });
-      log.balanceAfter = finalBalance.toString();
-      log.balanceUsed = (userBalance - finalBalance).toString();
+      const finalNsBalance = await getNsBalance({ client, owner, netCnf });
+      log.nsBalanceAfter = finalNsBalance.toString();
+      log.nsBalanceUsed = (userNsBalance - finalNsBalance).toString();
       writeLog(output, log);
     } catch (error) {
-      // no big deal
+      // no big deal, we just lose the final balance logging
     }
   }
 }
@@ -339,7 +339,7 @@ async function getStakingAdminCapId({
   return null;
 }
 
-export async function signExecuteAndWaitTx({
+async function signExecuteAndWaitTx({
   client,
   tx,
   signer,
@@ -357,14 +357,14 @@ export async function signExecuteAndWaitTx({
     digest: resp.digest,
     options: { showEffects: true, showObjectChanges: true },
     timeout: 60_000,
-    pollInterval: 250,
+    pollInterval: 200,
   });
 }
 
 /**
  * Display a query to the user and wait for their input. Return true if the user enters `y`.
  */
-export async function promptUser(
+async function promptUser(
   question: string = "\nDoes this look okay? (y/n) ",
 ): Promise<boolean> {
   return new Promise((resolve) => {
@@ -399,9 +399,9 @@ type AirdropLog = {
   totalRecipients: number;
   totalAmount: string;
   txRequired: number;
-  balanceBefore: string;
-  balanceAfter: string | null;
-  balanceUsed: string | null;
+  nsBalanceBefore: string;
+  nsBalanceAfter: string | null;
+  nsBalanceUsed: string | null;
   transactions: TxLog[];
 };
 
