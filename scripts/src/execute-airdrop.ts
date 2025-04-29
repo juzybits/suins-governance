@@ -72,7 +72,7 @@ async function main({
 
   const privateKey = process.env.PRIVATE_KEY;
   if (!privateKey) {
-    throw new Error("PRIVATE_KEY must be set in your .env file");
+    throw new Error("PRIVATE_KEY must be set in your .env.local file");
   }
 
   if (!isSupportedNetwork(network)) {

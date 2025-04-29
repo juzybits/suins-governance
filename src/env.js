@@ -19,12 +19,6 @@ export const env = createEnv({
     NEXT_PUBLIC_VITE_NETWORK: z
       .enum(["mainnet", "testnet", "devnet", "localnet"])
       .default("mainnet"),
-    // only for development on localnet:
-    NEXT_PUBLIC_VITE_votingPkgId: z.string().optional(),
-    NEXT_PUBLIC_VITE_governanceObjId: z.string().optional(),
-    NEXT_PUBLIC_VITE_stakingConfigObjId: z.string().optional(),
-    NEXT_PUBLIC_VITE_statsObjId: z.string().optional(),
-    NEXT_PUBLIC_VITE_coinType: z.string().optional(),
   },
 
   /**
@@ -34,14 +28,6 @@ export const env = createEnv({
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_VITE_NETWORK: process.env.NEXT_PUBLIC_VITE_NETWORK,
-    // only for development on localnet:
-    NEXT_PUBLIC_VITE_votingPkgId: process.env.NEXT_PUBLIC_VITE_votingPkgId,
-    NEXT_PUBLIC_VITE_governanceObjId:
-      process.env.NEXT_PUBLIC_VITE_governanceObjId,
-    NEXT_PUBLIC_VITE_stakingConfigObjId:
-      process.env.NEXT_PUBLIC_VITE_stakingConfigObjId,
-    NEXT_PUBLIC_VITE_statsObjId: process.env.NEXT_PUBLIC_VITE_statsObjId,
-    NEXT_PUBLIC_VITE_coinType: process.env.NEXT_PUBLIC_VITE_coinType,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

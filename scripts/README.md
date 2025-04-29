@@ -1,3 +1,13 @@
+## Setup
+
+```shell
+cd scripts/
+cp .env.example .env.local
+# Edit .env.local
+```
+
+## Usage
+
 ```shell
 # Find addresses who voted on proposals 1-4, and how much NS they voted with.
 bun src/fetch-events.ts > data/events.json
@@ -12,5 +22,5 @@ bun src/generate-airdrop-config.ts data/events.json > data/airdrop-config.json
 bun src/analyze-airdrop-config.ts data/airdrop-config.json
 
 # Airdrop staked NS to users according to given config.
-bun src/airdrop-staked.ts -n localnet -c data/airdrop-config.json -o data/airdrop-output.json
+bun src/execute-airdrop.ts -n localnet -c data/airdrop-config.json -o data/airdrop-output.json
 ```
