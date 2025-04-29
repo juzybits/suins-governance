@@ -1,5 +1,5 @@
 /**
- * Find user addresses who voted on proposals 1-3, and how much NS they voted with.
+ * Find addresses who voted on proposals 1-4, and how much NS they voted with.
  */
 
 import { SuiClient } from "@mysten/sui/client";

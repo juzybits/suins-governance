@@ -1,6 +1,20 @@
+/**
+ * Generate airdrop config from voter data and predefined rewards.
+ */
+
 import { readFileSync } from "fs";
-import type { ReturnTokenEvent } from "./find-voters";
-import { getRandomAirdropConfig } from "./getRandomAirdropConfig";
+import type { ReturnTokenEvent } from "./fetch-events";
+
+export type AirdropConfig = {
+  recipient: string;
+  airdrops: Airdrop[];
+};
+
+export type Airdrop = {
+  amount_raw: string;
+  start_ms: number;
+  lock_months: number;
+};
 
 type ProposalReward = {
   total_ns_voted: bigint;
@@ -29,18 +43,14 @@ const PROPOSAL_REWARDS = new Map<string, ProposalReward>([
       total_ns_reward: 2_040_223_100_000n,
     },
   ],
+  [
+    "2025-04-27",
+    {
+      total_ns_voted: 25_204_857_872_530n,
+      total_ns_reward: 1_222_333_444_555n, // TODO
+    },
+  ],
 ]);
-
-export type AirdropConfig = {
-  recipient: string;
-  airdrops: Airdrop[];
-};
-
-export type Airdrop = {
-  amount_raw: string;
-  start_ms: number;
-  lock_months: number;
-};
 
 function main() {
   const filePath = process.argv[2];
@@ -58,7 +68,6 @@ function main() {
   }
 
   const airdrops = generateAirdropConfig(events);
-  // const airdrops = getRandomAirdropConfig(84533); // TODO: dev only
   console.log(JSON.stringify(airdrops, null, 2));
 }
 

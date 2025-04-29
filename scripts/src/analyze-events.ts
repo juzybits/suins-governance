@@ -1,9 +1,9 @@
 /**
- * Analyze the output of `find-voters.ts`
+ * Analyze the output of `fetch-events.ts`.
  */
 
 import { readFileSync } from "fs";
-import type { ReturnTokenEvent } from "./find-voters";
+import type { ReturnTokenEvent } from "./fetch-events";
 import {
   CoinFormat,
   formatBalance,
@@ -26,8 +26,8 @@ function main() {
   }
 
   analyzeTopVotes(events);
-  analyze154Votes(events);
   analyzeVotesByProposal(events);
+  // analyze154Votes(events);
 }
 
 function analyzeTopVotes(events: ReturnTokenEvent[]) {
@@ -45,7 +45,7 @@ function analyzeTopVotes(events: ReturnTokenEvent[]) {
   // sort by frequency, highest first
   const sortedAmounts = Array.from(commonAmounts.entries())
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 25);
+    .slice(0, 20);
 
   console.log("\nMost common NS amounts:\n");
   console.log(
@@ -72,37 +72,6 @@ function analyzeTopVotes(events: ReturnTokenEvent[]) {
   console.log(`Unique voters: ${uniqVoters.size}`);
   console.log(`Unique amounts: ${commonAmounts.size}`);
   console.log(`Total NS voted: ${formatNSBalance(totalVoteAmount)}`);
-}
-
-function analyze154Votes(events: ReturnTokenEvent[]) {
-  const amount154raw = "154000000";
-  const voters = new Set<string>();
-  const votersByDate = new Map<string, Set<string>>();
-
-  for (const event of events) {
-    if (event.amount_raw !== amount154raw) {
-      continue;
-    }
-
-    voters.add(event.voter_addr);
-
-    const date = String(event.date.split("T")[0]);
-    if (!votersByDate.has(date)) {
-      votersByDate.set(date, new Set<string>());
-    }
-    votersByDate.get(date)!.add(event.voter_addr);
-  }
-
-  console.log("\n\nAddresses that voted with 154 NS:\n");
-  console.log("Date".padEnd(12) + "Unique Voters".padStart(15));
-  console.log("----".padEnd(12) + "-------------".padStart(15));
-
-  for (const date of Array.from(votersByDate.keys())) {
-    const voterSet = votersByDate.get(date)!;
-    console.log(`${date.padEnd(12)}${voterSet.size.toString().padStart(15)}`);
-  }
-
-  console.log(`\nTotal unique voters using 154 NS: ${voters.size}`);
 }
 
 function analyzeVotesByProposal(events: ReturnTokenEvent[]) {
@@ -132,6 +101,37 @@ function analyzeVotesByProposal(events: ReturnTokenEvent[]) {
         `${amount.toString()}`,
     );
   }
+}
+
+function analyze154Votes(events: ReturnTokenEvent[]) {
+  const amount154raw = "154000000";
+  const voters = new Set<string>();
+  const votersByDate = new Map<string, Set<string>>();
+
+  for (const event of events) {
+    if (event.amount_raw !== amount154raw) {
+      continue;
+    }
+
+    voters.add(event.voter_addr);
+
+    const date = String(event.date.split("T")[0]);
+    if (!votersByDate.has(date)) {
+      votersByDate.set(date, new Set<string>());
+    }
+    votersByDate.get(date)!.add(event.voter_addr);
+  }
+
+  console.log("\nAddresses that voted with 154 NS:\n");
+  console.log("Date".padEnd(12) + "Unique Voters".padStart(15));
+  console.log("----".padEnd(12) + "-------------".padStart(15));
+
+  for (const date of Array.from(votersByDate.keys())) {
+    const voterSet = votersByDate.get(date)!;
+    console.log(`${date.padEnd(12)}${voterSet.size.toString().padStart(15)}`);
+  }
+
+  console.log(`\nTotal unique voters using 154 NS: ${voters.size}`);
 }
 
 main();

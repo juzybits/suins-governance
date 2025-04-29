@@ -1,3 +1,7 @@
+/**
+ * Airdrop staked NS to users according to given config.
+ */
+
 import { existsSync, readFileSync, renameSync, writeFileSync } from "fs";
 import {
   getFullnodeUrl,

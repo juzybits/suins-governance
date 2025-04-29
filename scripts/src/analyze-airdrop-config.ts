@@ -1,3 +1,7 @@
+/**
+ * Analyze the output of `generate-airdrop-config.ts`.
+ */
+
 import { readFileSync } from "fs";
 import type { AirdropConfig } from "./generate-airdrop-config";
 import { formatNSBalance } from "../../src/utils/formatNumber";
@@ -74,7 +78,7 @@ function analyzeAirdropDistribution(configs: AirdropConfig[]) {
   }
 
   // output results
-  console.log("\nAirdrop Distribution Analysis\n");
+  console.log("\n### Airdrop summary ###\n");
   console.log(`Total recipients:          ${totalRecipients.toLocaleString()}`);
   console.log(`Total airdrops:           ${totalAirdrops.toLocaleString()}`);
   console.log(
@@ -97,7 +101,7 @@ function analyzeAirdropDistribution(configs: AirdropConfig[]) {
     );
   }
 
-  console.log("\n### Amount distributed per proposal ###\n");
+  console.log("\n### NS distributed per proposal ###\n");
   console.log("Date".padEnd(20) + "Amount".padStart(10) + "\n");
   for (const [date, amount] of Array.from(airdropAmounts.entries()).sort()) {
     console.log(`${date.padEnd(20)}${formatNSBalance(amount).padStart(10)}`);
