@@ -1,5 +1,8 @@
 /**
  * Airdrop staked NS to users according to given config.
+ *
+ * On localnet (gas price 1000 MIST), airdropping 256,958 batches costs 548 SUI.
+ * On mainnet (gas price 741 MIST), it should cost about 406 SUI.
  */
 
 import { existsSync, readFileSync, renameSync, writeFileSync } from "fs";
@@ -98,22 +101,27 @@ async function main({
   /* Print airdrop summary */
 
   let totalAmount = 0n;
-  let totalRecipients = 0;
+  let totalBatches = 0;
   airdrops.forEach((airdrop) => {
     totalAmount += BigInt(airdrop.amount_raw);
-    totalRecipients++;
+    totalBatches++;
   });
   console.log(`Transactions required: ${dropsPerTx.length}`);
-  console.log(`Total airdropped batches: ${totalRecipients}`);
+  console.log(`Total airdropped batches: ${totalBatches}`);
   console.log(`Total airdropped NS amount: ${formatNSBalance(totalAmount)}`);
 
   /* Check user has enough NS balance */
 
-  const userNsBalance = await getNsBalance({ client, owner, netCnf });
+  const [userNsBalance, userSuiBalance] = await Promise.all([
+    getOwnedBalance({ client, owner, coinType: netCnf.coinType }),
+    getOwnedBalance({ client, owner, coinType: "0x2::sui::SUI" }),
+  ]);
   console.log(`Your NS balance: ${formatNSBalance(userNsBalance)}`);
   if (userNsBalance < totalAmount) {
     throw new Error("Your NS balance is lower than the total airdrop amount");
   }
+
+  // TODO-J: check if user has enough SUI balance to pay for gas
 
   /* Fetch StakingAdminCap */
 
@@ -163,12 +171,15 @@ async function main({
       network,
       startTime: new Date().toISOString(),
       endTime: null,
-      totalRecipients,
+      totalBatches,
       totalAmount: totalAmount.toString(),
       txRequired: dropsPerTx.length,
       nsBalanceBefore: userNsBalance.toString(),
       nsBalanceAfter: null,
       nsBalanceUsed: null,
+      suiBalanceBefore: userSuiBalance.toString(),
+      suiBalanceAfter: null,
+      suiBalanceUsed: null,
       transactions: dropsPerTx.map((drops, index) => {
         let dropsTotalAmount = 0n;
         drops.forEach((drop) => (dropsTotalAmount += BigInt(drop.amount_raw)));
@@ -177,8 +188,8 @@ async function main({
           txIndex: index,
           status: TxStatus.NOT_STARTED,
           digest: null,
-          recipients: drops.length,
           totalAmount: dropsTotalAmount.toString(),
+          recipients: drops.length,
         };
       }),
     };
@@ -191,9 +202,14 @@ async function main({
     log.endTime = new Date().toISOString();
     writeLog(output, log);
     try {
-      const finalNsBalance = await getNsBalance({ client, owner, netCnf });
+      const [finalNsBalance, finalSuiBalance] = await Promise.all([
+        getOwnedBalance({ client, owner, coinType: netCnf.coinType }),
+        getOwnedBalance({ client, owner, coinType: "0x2::sui::SUI" }),
+      ]);
       log.nsBalanceAfter = finalNsBalance.toString();
       log.nsBalanceUsed = (userNsBalance - finalNsBalance).toString();
+      log.suiBalanceAfter = finalSuiBalance.toString();
+      log.suiBalanceUsed = (userSuiBalance - finalSuiBalance).toString();
       writeLog(output, log);
     } catch (error) {
       // no big deal, we just lose the final balance logging
@@ -299,19 +315,16 @@ function writeLog(outputPath: string, log: AirdropLog): void {
   }
 }
 
-async function getNsBalance({
+async function getOwnedBalance({
   client,
   owner,
-  netCnf,
+  coinType,
 }: {
   client: SuiClient;
   owner: string;
-  netCnf: NetworkConfig;
+  coinType: string
 }): Promise<bigint> {
-  const balance = await client.getBalance({
-    owner,
-    coinType: netCnf.coinType,
-  });
+  const balance = await client.getBalance({ owner, coinType });
   return BigInt(balance.totalBalance);
 }
 
@@ -357,7 +370,7 @@ async function signExecuteAndWaitTx({
     digest: resp.digest,
     options: { showEffects: true, showObjectChanges: true },
     timeout: 60_000,
-    pollInterval: 200,
+    pollInterval: 250,
   });
 }
 
@@ -387,8 +400,8 @@ type TxLog = {
   status: TxStatus;
   digest: string | null;
   errorMessage?: string;
-  recipients: number;
   totalAmount: string;
+  recipients: number;
 };
 
 type AirdropLog = {
@@ -396,12 +409,15 @@ type AirdropLog = {
   network: string;
   startTime: string;
   endTime: string | null;
-  totalRecipients: number;
+  totalBatches: number;
   totalAmount: string;
   txRequired: number;
   nsBalanceBefore: string;
   nsBalanceAfter: string | null;
   nsBalanceUsed: string | null;
+  suiBalanceBefore: string;
+  suiBalanceAfter: string | null;
+  suiBalanceUsed: string | null;
   transactions: TxLog[];
 };
 

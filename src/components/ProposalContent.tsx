@@ -13,6 +13,7 @@ export function ProposalContent({ proposalId }: { proposalId: string }) {
       <div className="mx-auto flex w-full flex-col items-center justify-center gap-2024_3XL sm:gap-2024_5XL md:basis-2/3">
         <ProposalText proposalId={proposalId} />
         <CastYourVoteV2 proposalId={proposalId} />
+        {/* TODO-J show locked/staked/total votes panel */}
         <Votes proposalId={proposalId} />
       </div>
       <div className="order-first flex flex-col gap-2024_XL md:sticky md:h-[987px] md:min-h-fit md:basis-1/3 md:pt-10 lg:sticky lg:top-0 lg:order-last">
