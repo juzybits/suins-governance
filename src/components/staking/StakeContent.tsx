@@ -115,11 +115,23 @@ function PanelBatches() {
   );
 }
 
-// TODO-J: add "sort by"
 function BatchGroup({ batches, title }: { batches: Batch[]; title: string }) {
+  const [sortBy, setSortBy] = useState<"Votes" | "Newest" | "Oldest">("Votes");
+
   if (batches.length === 0) {
     return null;
   }
+
+  batches.sort((a, b) => {
+    if (sortBy === "Votes") {
+      return Number(b.votingPower - a.votingPower);
+    }
+    if (sortBy === "Newest") {
+      return b.startDate.getTime() - a.startDate.getTime();
+    }
+    // oldest
+    return a.startDate.getTime() - b.startDate.getTime();
+  });
 
   return (
     <div className="batch-group">
@@ -130,6 +142,21 @@ function BatchGroup({ batches, title }: { batches: Batch[]; title: string }) {
         </i>
       )}
       <h2>{title}</h2>
+      {batches.length > 1 && (
+        <div>
+          <label htmlFor="sort-by">Sort by:</label>
+          <select
+            id="sort-by"
+            onChange={(e) =>
+              setSortBy(e.target.value as "Votes" | "Newest" | "Oldest")
+            }
+          >
+            <option value="Votes">Votes</option>
+            <option value="Newest">Newest</option>
+            <option value="Oldest">Oldest</option>
+          </select>
+        </div>
+      )}
       {batches.map((batch) => (
         <CardBatch key={batch.objectId} batch={batch} />
       ))}

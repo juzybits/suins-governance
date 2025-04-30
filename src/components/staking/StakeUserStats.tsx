@@ -28,9 +28,7 @@ export function StakeUserStats({ showTokens }: { showTokens: boolean }) {
           {formatNSBalance(stats.stakedPower)} Votes)
         </p>
         <p>Your Total Votes: {formatNSBalance(stats.totalPower)}</p>
-        {showTokens && (
-          <p>Available Tokens: {balance.data.formatted} NS</p>
-        )}
+        {showTokens && <p>Available Tokens: {balance.data.formatted} NS</p>}
       </div>
     </div>
   );
