@@ -1,6 +1,6 @@
 "use client";
 
-import { useGetOwnedBatches } from "@/hooks/staking/useGetOwnedBatches";
+import { useGetUserStakingData } from "@/hooks/staking/useGetUserStakingData";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { useStakeModal } from "./StakeModalContext";
@@ -12,7 +12,7 @@ export function StakeHeaderButtons() {
   const balance = useGetOwnedNSBalance(currAddr);
   const availableNS = balance.data ? BigInt(balance.data.totalBalance) : 0n;
 
-  const batches = useGetOwnedBatches(currAddr);
+  const batches = useGetUserStakingData(currAddr);
   const ownedBatches = batches.data?.batches ?? [];
 
   const { openModal } = useStakeModal();

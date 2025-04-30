@@ -23,7 +23,7 @@ import {
   LockMonthSelector,
 } from "@/components/ui/dummy-ui/dummy-ui";
 import Loader from "@/components/ui/Loader";
-import { useGetOwnedBatches } from "@/hooks/staking/useGetOwnedBatches";
+import { useGetUserStakingData } from "@/hooks/staking/useGetUserStakingData";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { formatTimeDiff, TimeUnit } from "@polymedia/suitcase-core";
@@ -34,7 +34,7 @@ type BatchAction = "view" | "lock" | "requestUnstake" | "unstake";
 
 export function StakeContent() {
   const currAcct = useCurrentAccount();
-  const batches = useGetOwnedBatches(currAcct?.address);
+  const batches = useGetUserStakingData(currAcct?.address);
   const balance = useGetOwnedNSBalance(currAcct?.address);
 
   if (balance.isLoading || batches.isLoading) {
@@ -63,7 +63,7 @@ export function StakeContent() {
 
 function PanelOverview() {
   const currAcct = useCurrentAccount();
-  const batches = useGetOwnedBatches(currAcct?.address);
+  const batches = useGetUserStakingData(currAcct?.address);
   const balance = useGetOwnedNSBalance(currAcct?.address);
 
   if (batches.data === undefined || balance.data === undefined) {
@@ -93,7 +93,7 @@ function PanelOverview() {
 function PanelBatches() {
   const { openModal } = useStakeModal();
   const currAcct = useCurrentAccount();
-  const batches = useGetOwnedBatches(currAcct?.address);
+  const batches = useGetUserStakingData(currAcct?.address);
   const balance = useGetOwnedNSBalance(currAcct?.address);
 
   if (batches.data === undefined || balance.data === undefined) {

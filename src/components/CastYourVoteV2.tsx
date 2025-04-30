@@ -19,7 +19,7 @@ import { motion } from "framer-motion";
 import isPast from "date-fns/isPast";
 import { RadioGroupField } from "./form/RadioGroupField";
 import { useEffect } from "react";
-import { useGetOwnedBatches } from "@/hooks/staking/useGetOwnedBatches";
+import { useGetUserStakingData } from "@/hooks/staking/useGetUserStakingData";
 import { formatNSBalance } from "@/utils/formatNumber";
 import Link from "next/link";
 import { useIsPersonVote } from "@/hooks/useIsPersonVote";
@@ -33,7 +33,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
   const isVotingOver = isPast(
     new Date(Number(proposal.data?.fields.end_time_ms ?? 0)),
   );
-  const batches = useGetOwnedBatches(currentAccount?.address);
+  const batches = useGetUserStakingData(currentAccount?.address);
   const isPersonVote = useIsPersonVote(proposalId);
 
   const isLoggedOut = (!currentAccount && !isConnecting) ?? isDisconnected;

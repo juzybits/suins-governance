@@ -22,7 +22,7 @@ export type UserSummary = {
   totalPower: bigint;
 };
 
-export function useGetOwnedBatches(owner: string | undefined) {
+export function useGetUserStakingData(owner: string | undefined) {
   const suiClient = useSuiClient();
 
   return useQuery<UserStakingData>({
