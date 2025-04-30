@@ -29,6 +29,7 @@ import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { formatTimeDiff, TimeUnit } from "@polymedia/suitcase-core";
 import { useStakeModal } from "./StakeModalContext";
 import { PanelRecentProposals } from "./PanelRecentProposals";
+import { StakeUserStats } from "./StakeUserStats";
 
 type BatchAction = "view" | "lock" | "requestUnstake" | "unstake";
 
@@ -54,39 +55,10 @@ export function StakeContent() {
 
   return (
     <>
-      <PanelOverview />
+      <StakeUserStats />
       <PanelBatches />
       <PanelRecentProposals />
     </>
-  );
-}
-
-function PanelOverview() {
-  const currAcct = useCurrentAccount();
-  const userStaking = useGetUserStakingData(currAcct?.address);
-  const balance = useGetOwnedNSBalance(currAcct?.address);
-
-  if (userStaking.data === undefined || balance.data === undefined) {
-    return null;
-  }
-
-  const stats = userStaking.data.stats;
-
-  return (
-    <div className="panel">
-      <div>
-        <p>
-          Total Locked: {formatNSBalance(stats.lockedNS)} NS (
-          {formatNSBalance(stats.lockedPower)} Votes)
-        </p>
-        <p>
-          Total Staked: {formatNSBalance(stats.stakedNS)} NS (
-          {formatNSBalance(stats.stakedPower)} Votes)
-        </p>
-        <p>Your Total Votes: {formatNSBalance(stats.totalPower)}</p>
-        <p>Available Tokens: {balance.data.formatted} NS</p>
-      </div>
-    </div>
   );
 }
 
