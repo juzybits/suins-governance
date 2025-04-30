@@ -84,7 +84,7 @@ function PanelOverview() {
           {formatNSBalance(summary.stakedPower)} Votes)
         </p>
         <p>Your Total Votes: {formatNSBalance(summary.totalPower)}</p>
-        <p>Available Tokens: {formatNSBalance(BigInt(balance.data.totalBalance))} NS</p>
+        <p>Available Tokens: {balance.data.formatted} NS</p>
       </div>
     </div>
   );
@@ -110,7 +110,7 @@ function PanelBatches() {
   return (
     <div className="panel">
       {userStaking.data?.batches.length === 0 &&
-        (BigInt(balance.data.totalBalance) === 0n ? (
+        (balance.data.raw === 0n ? (
           <>
             <h3>No NS tokens found</h3>
             <p>Stake or Lock NS tokens to participate in SuiNS governance</p>

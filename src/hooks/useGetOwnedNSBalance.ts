@@ -12,25 +12,27 @@ export function useGetOwnedNSBalance(owner: string | undefined) {
   return useQuery({
     queryKey: ["owned-ns-balance", owner],
     queryFn: async () => {
-      const balance = suiClient.getBalance({
-        owner: owner!,
+      if (!owner) {
+        return {
+          raw: 0n,
+          formatted: "0",
+        };
+      }
+
+      const balance = await suiClient.getBalance({
+        owner: owner,
         coinType: SUINS_PACKAGES[NETWORK].coinType,
       });
-      return balance;
-    },
-    select: (data) => {
-      const formatted = formatBalance({
-        balance: data.totalBalance,
-        decimals: NS_DECIMALS,
-        format: CoinFormat.FULL,
-      });
       return {
-        ...data,
-        formatted,
+        raw: BigInt(balance.totalBalance),
+        formatted: formatBalance({
+          balance: balance.totalBalance,
+          decimals: NS_DECIMALS,
+          format: CoinFormat.FULL,
+        }),
       };
     },
     refetchInterval: 10_000,
     staleTime: 10_000,
-    enabled: !!owner,
   });
 }

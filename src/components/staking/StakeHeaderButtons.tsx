@@ -10,7 +10,7 @@ export function StakeHeaderButtons() {
   const currAddr = currAcct?.address;
 
   const balance = useGetOwnedNSBalance(currAddr);
-  const availableNS = balance.data ? BigInt(balance.data.totalBalance) : 0n;
+  const availableNS = balance.data ? balance.data.raw : 0n;
 
   const userStaking = useGetUserStakingData(currAddr);
   const ownedBatches = userStaking.data?.batches ?? [];
