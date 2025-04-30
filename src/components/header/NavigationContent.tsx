@@ -97,7 +97,7 @@ export function NavigationContent() {
           />
         </div>
         <div className="flex h-full flex-col gap-0 pt-2024_S">
-          <MenuContentButton title="SuiNS Governance Voting" href="vote" />
+          <MenuContentButton title="SuiNS Governance Voting" to="/vote" />
           <MenuContentButton
             title="SuiNS Constitution"
             href={CONSTITUTION_URL}
@@ -105,7 +105,7 @@ export function NavigationContent() {
           />
         </div>
         <div className="flex h-full flex-col gap-0 pt-2024_S">
-          <MenuContentButton title="SuiNS Staking" href="stake" />
+          <MenuContentButton title="SuiNS Staking" to="/stake" />
         </div>
         <div className="flex h-full flex-col gap-0 pt-2024_S">
           <MenuContentButton

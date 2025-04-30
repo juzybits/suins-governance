@@ -14,7 +14,6 @@ import { ProposalObjResp } from "@/types/Proposal";
 
 /**
  * Fetch all proposals with just 2 RPC queries.
- * TODO-J: cache finalized proposals forever
  */
 export function useGetAllProposals() {
   const suiClient = useSuiClient();
