@@ -20,10 +20,14 @@ export function PanelRecentProposals() {
     proposalIds: proposals?.map((proposal) => proposal.fields.id.id),
   });
 
+  if (proposals === undefined || userStats === undefined) {
+    return null;
+  }
+
   return (
     <div className="panel">
       <h2>Recent Proposals</h2>
-      {proposals?.map((proposal) => (
+      {proposals.map((proposal) => (
         <CardProposalSummary
           key={proposal.fields.id.id}
           proposal={proposal}
@@ -32,7 +36,7 @@ export function PanelRecentProposals() {
           )}
         />
       ))}
-      {userStats && (
+      {userStats.totalReward > 0n && (
         <div>
           <h2>Your Lifetime Rewards:</h2>
           <p>{formatNSBalance(userStats.totalReward)}</p>

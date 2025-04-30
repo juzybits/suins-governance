@@ -7,7 +7,7 @@ import { Transaction } from "@mysten/sui/transactions";
 import { bcs } from "@mysten/sui/bcs";
 
 export type UserStats = {
-  totalReward: string;
+  totalReward: bigint;
   proposalStats: UserProposalStats[];
 };
 
@@ -33,7 +33,10 @@ export function useGetUserStats({
     queryKey: ["user-stats", user, proposalIds],
     queryFn: async () => {
       if (!user || !proposalIds) {
-        throw new Error("User or proposal IDs are required");
+        return {
+          totalReward: 0n,
+          proposalStats: [],
+        };
       }
 
       const tx = new Transaction();
@@ -64,7 +67,7 @@ export function useGetUserStats({
         ),
       ]);
 
-      const totalReward = retVals.shift()![0] as string;
+      const totalReward = BigInt(retVals.shift()![0]);
       const proposalStats: UserProposalStats[] = proposalIds.map(
         (proposalId, idx) => ({
           proposalId,
@@ -80,6 +83,5 @@ export function useGetUserStats({
 
       return userStats;
     },
-    enabled: !!user && !!proposalIds,
   });
 }
