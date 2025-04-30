@@ -6,6 +6,12 @@ import { NETWORK } from "@/constants/env";
 import { Transaction } from "@mysten/sui/transactions";
 import { bcs } from "@mysten/sui/bcs";
 import { parseProposalObjResp } from "./useGetProposalDetail";
+import {
+  getCachedProposal,
+  cacheProposal,
+  isFinalized
+} from "@/utils/proposalCache";
+import { ProposalObjResp } from "@/types/Proposal";
 
 /**
  * Fetch all proposals with just 2 RPC queries.
@@ -16,8 +22,8 @@ export function useGetAllProposals() {
   return useQuery({
     queryKey: ["all-proposals"],
     queryFn: async () => {
+      // fetch proposal ids
       let proposalIds: string[] = [];
-
       try {
         const tx = new Transaction();
         tx.moveCall({
@@ -32,23 +38,49 @@ export function useGetAllProposals() {
         console.debug("[useGetAllProposals] devinspect failed:", e);
       }
 
+      // add governance v1 proposal IDs
       if (NETWORK === "mainnet") {
         proposalIds.push(...V1_PROPOSAL_IDS);
+      }
+
+      // reuse cached proposals
+      const proposals: ProposalObjResp[] = [];
+      const uncachedIds: string[] = [];
+      for (const id of proposalIds) {
+        const cached = getCachedProposal(id);
+        if (cached) {
+          proposals.push(cached);
+        } else {
+          uncachedIds.push(id);
+        }
+      }
+
+      if (uncachedIds.length === 0) {
+        return proposals;
       }
 
       try {
         // NOTE: can fetch up to 50 objects at once
         const objs = await suiClient.multiGetObjects({
-          ids: proposalIds,
+          ids: uncachedIds,
           options: {
             showContent: true,
             showType: true,
           },
         });
-        return objs.map(parseProposalObjResp);
+        const fetchedProposals = objs.map(parseProposalObjResp);
+
+        // cache finalized proposals
+        for (const proposal of fetchedProposals) {
+          if (isFinalized(proposal)) {
+            cacheProposal(proposal);
+          }
+        }
+
+        return [...proposals, ...fetchedProposals];
       } catch (e) {
         console.debug("[useGetAllProposals] multiGetObjects failed:", e);
-        return [];
+        return proposals;
       }
     },
   });

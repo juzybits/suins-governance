@@ -7,6 +7,11 @@ import { proposalV2Schema } from "@/schemas/proposalV2Schema";
 import { getProposalVersionFromType } from "@/utils/getProposalVersionFromType";
 import { type ProposalObjResp } from "@/types/Proposal";
 import { type SuiObjectResponse } from "@mysten/sui/client";
+import {
+  getCachedProposal,
+  cacheProposal,
+  isFinalized
+} from "@/utils/proposalCache";
 
 type TopVotes =
   ProposalObjResp["fields"]["vote_leaderboards"]["fields"]["contents"];
@@ -147,11 +152,15 @@ export function parseProposalVotes(objResp: ProposalObjResp) {
   return votes;
 }
 
-// TODO-J: cache finalized proposals forever
 export function useGetProposalDetail({ proposalId }: { proposalId: string }) {
   return useQuery({
     queryKey: ["proposal-detail-by-id", proposalId],
     queryFn: async () => {
+      const cached = getCachedProposal(proposalId);
+      if (cached) {
+        return cached;
+      }
+
       const resp = await client.getObject({
         id: proposalId,
         options: {
@@ -159,7 +168,13 @@ export function useGetProposalDetail({ proposalId }: { proposalId: string }) {
           showType: true,
         },
       });
-      return parseProposalObjResp(resp);
+      const proposal = parseProposalObjResp(resp);
+
+      if (isFinalized(proposal)) {
+        cacheProposal(proposal);
+      }
+
+      return proposal;
     },
     refetchInterval: 30_000,
   });

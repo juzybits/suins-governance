@@ -64,7 +64,7 @@ export function Header({
                   className="h-2024_2XL sm:h-2024_3XL"
                 />
               </Link>
-              {pathname === "/vote" && <ProposalsMenu />}
+              {(pathname === "/vote" || pathname.startsWith("/proposal/")) && <ProposalsMenu />}
             </div>
 
             <div className="flex items-center gap-2024_M">
