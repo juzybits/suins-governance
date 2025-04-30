@@ -30,30 +30,14 @@ import { formatTimeDiff, TimeUnit } from "@polymedia/suitcase-core";
 import { useStakeModal } from "./StakeModalContext";
 import { PanelRecentProposals } from "./PanelRecentProposals";
 
-type StakingData = {
-  lockedNS: bigint;
-  lockedPower: bigint;
-  stakedNS: bigint;
-  stakedPower: bigint;
-  totalPower: bigint;
-};
-
 type BatchAction = "view" | "lock" | "requestUnstake" | "unstake";
 
 export function StakeContent() {
   const currAcct = useCurrentAccount();
-  const currAddr = currAcct?.address;
+  const batches = useGetOwnedBatches(currAcct?.address);
+  const balance = useGetOwnedNSBalance(currAcct?.address);
 
-  const balance = useGetOwnedNSBalance(currAddr);
-  const availableNS = balance.data ? BigInt(balance.data.totalBalance) : 0n;
-
-  const batches = useGetOwnedBatches(currAddr);
-
-  if (
-    balance.isLoading ||
-    batches.isLoading ||
-    typeof batches.data === "undefined"
-  ) {
+  if (balance.isLoading || batches.isLoading) {
     return <Loader className="h-5 w-5" />;
   }
 
@@ -70,63 +54,63 @@ export function StakeContent() {
 
   return (
     <>
-      <PanelOverview
-        availableNS={availableNS}
-        stakingData={batches.data.summary}
-      />
-      <PanelBatches availableNS={availableNS} batches={batches.data.batches} />
+      <PanelOverview />
+      <PanelBatches />
       <PanelRecentProposals />
     </>
   );
 }
 
-function PanelOverview({
-  stakingData,
-  availableNS,
-}: {
-  stakingData: StakingData;
-  availableNS: bigint;
-}) {
-  const { lockedNS, lockedPower, stakedNS, stakedPower, totalPower } =
-    stakingData;
+function PanelOverview() {
+  const currAcct = useCurrentAccount();
+  const batches = useGetOwnedBatches(currAcct?.address);
+  const balance = useGetOwnedNSBalance(currAcct?.address);
+
+  if (batches.data === undefined || balance.data === undefined) {
+    return null;
+  }
+
+  const summary = batches.data.summary;
 
   return (
     <div className="panel">
       <div>
         <p>
-          Total Locked: {formatNSBalance(lockedNS)} NS (
-          {formatNSBalance(lockedPower)} Votes)
+          Total Locked: {formatNSBalance(summary.lockedNS)} NS (
+          {formatNSBalance(summary.lockedPower)} Votes)
         </p>
         <p>
-          Total Staked: {formatNSBalance(stakedNS)} NS (
-          {formatNSBalance(stakedPower)} Votes)
+          Total Staked: {formatNSBalance(summary.stakedNS)} NS (
+          {formatNSBalance(summary.stakedPower)} Votes)
         </p>
-        <p>Your Total Votes: {formatNSBalance(totalPower)}</p>
-        <p>Available Tokens: {formatNSBalance(availableNS)} NS</p>
+        <p>Your Total Votes: {formatNSBalance(summary.totalPower)}</p>
+        <p>Available Tokens: {formatNSBalance(BigInt(balance.data.totalBalance))} NS</p>
       </div>
     </div>
   );
 }
 
-function PanelBatches({
-  availableNS,
-  batches,
-}: {
-  availableNS: bigint;
-  batches: Batch[];
-}) {
+function PanelBatches() {
   const { openModal } = useStakeModal();
+  const currAcct = useCurrentAccount();
+  const batches = useGetOwnedBatches(currAcct?.address);
+  const balance = useGetOwnedNSBalance(currAcct?.address);
 
-  const votingBatches = batches.filter((batch) => batch.isVoting);
-  const availableBatches = batches.filter((batch) => batch.canVote);
-  const unavailableBatches = batches.filter(
+  if (batches.data === undefined || balance.data === undefined) {
+    return null;
+  }
+
+  const ownedBatches = batches.data.batches;
+  const votingBatches = ownedBatches.filter((batch) => batch.isVoting);
+  const availableBatches = ownedBatches.filter((batch) => batch.canVote);
+  const unavailableBatches = ownedBatches.filter(
     (batch) => batch.isCooldownRequested,
   );
 
   return (
     <div className="panel">
-      {batches.length === 0 &&
-        (availableNS === 0n ? (
+      {batches.data?.batches.length === 0 &&
+        (BigInt(balance.data.totalBalance) === 0n ? (
           <>
             <h3>No NS tokens found</h3>
             <p>Stake or Lock NS tokens to participate in SuiNS governance</p>

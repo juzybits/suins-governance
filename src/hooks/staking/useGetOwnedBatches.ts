@@ -9,13 +9,37 @@ import { client } from "@/app/SuinsClient";
 import { getNetworkTime } from "@/utils/getNetworkTime";
 import { type SuiObjectResponse } from "@mysten/sui/client";
 
+export type UserStakingData = {
+  batches: Batch[];
+  summary: UserSummary;
+};
+
+export type UserSummary = {
+  lockedNS: bigint;
+  lockedPower: bigint;
+  stakedNS: bigint;
+  stakedPower: bigint;
+  totalPower: bigint;
+};
+
 export function useGetOwnedBatches(owner: string | undefined) {
   const suiClient = useSuiClient();
 
-  return useQuery({
+  return useQuery<UserStakingData>({
     queryKey: ["owned-batches", owner],
     queryFn: async () => {
-      if (!owner) return [];
+      if (!owner) {
+        return {
+          batches: [],
+          summary: {
+            lockedNS: 0n,
+            lockedPower: 0n,
+            stakedNS: 0n,
+            stakedPower: 0n,
+            totalPower: 0n,
+          },
+        };
+      }
 
       const getAllOwnedBatches = async () => {
         const ownedBatches: SuiObjectResponse[] = [];
@@ -56,28 +80,14 @@ export function useGetOwnedBatches(owner: string | undefined) {
         }
       }
 
-      return batches;
-    },
-    select: (batches) => {
       // sort batches by voting power (highest first)
-
-      batches.sort((a, b) => {
-        if (b.votingPower > a.votingPower) {
-          return 1;
-        }
-        if (b.votingPower < a.votingPower) {
-          return -1;
-        }
-        return 0;
-      });
+      batches.sort((a, b) => Number(b.votingPower - a.votingPower));
 
       // calculate summary
-
       let lockedNS = 0n;
       let lockedPower = 0n;
       let stakedNS = 0n;
       let stakedPower = 0n;
-
       batches.forEach((batch) => {
         if (batch.isLocked) {
           lockedNS += batch.balanceNS;
@@ -101,8 +111,7 @@ export function useGetOwnedBatches(owner: string | undefined) {
         },
       };
     },
-    enabled: !!owner,
-    refetchInterval: 30_000,
+    staleTime: 30_000,
   });
 }
 
