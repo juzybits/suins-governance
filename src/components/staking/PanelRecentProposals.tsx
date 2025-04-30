@@ -11,7 +11,6 @@ import {
 } from "@/hooks/useGetUserStats";
 import { VotingStatus } from "@/components/VotingStatus";
 
-// TODO-J: group into "voting in progress" and "voting ended"
 export function PanelRecentProposals() {
   const currAcct = useCurrentAccount();
   const { data: proposals } = useGetAllProposals();
@@ -24,18 +23,56 @@ export function PanelRecentProposals() {
     return null;
   }
 
+  // group proposals into in-progress and ended
+  let openProposals: ProposalObjResp[] = [];
+  let closedProposals: ProposalObjResp[] = [];
+
+  if (proposals.length > 0) {
+    const newestProposal = proposals[0]!; // useGetAllProposals returns newest to oldest
+    const isClosed = isPast(
+      new Date(Number(newestProposal.fields.end_time_ms ?? 0)),
+    );
+    if (isClosed) {
+      // no in-progress proposals
+      closedProposals = proposals;
+    } else {
+      openProposals = [newestProposal];
+      closedProposals = proposals.slice(1);
+    }
+  }
+
   return (
     <div className="panel">
       <h2>Recent Proposals</h2>
-      {proposals.map((proposal) => (
-        <CardProposalSummary
-          key={proposal.fields.id.id}
-          proposal={proposal}
-          userStats={userStats?.proposalStats.find(
-            (stat) => stat.proposalId === proposal.fields.id.id,
-          )}
-        />
-      ))}
+      {proposals.length === 0 && <p>No proposals yet</p>}
+      {openProposals.length > 0 && (
+        <>
+          <h3>--- VOTING IN PROGRESS ---</h3>
+          {openProposals.map((proposal) => (
+            <CardProposalSummary
+              key={proposal.fields.id.id}
+              proposal={proposal}
+              userStats={userStats?.proposalStats.find(
+                (stat) => stat.proposalId === proposal.fields.id.id,
+              )}
+            />
+          ))}
+        </>
+      )}
+      {closedProposals.length > 0 && (
+        <>
+          <h3>--- VOTING ENDED ---</h3>
+          {closedProposals.map((proposal) => (
+            <CardProposalSummary
+              key={proposal.fields.id.id}
+              proposal={proposal}
+              userStats={userStats?.proposalStats.find(
+                (stat) => stat.proposalId === proposal.fields.id.id,
+              )}
+            />
+          ))}
+        </>
+      )}
       {userStats.totalReward > 0n && (
         <div>
           <h2>Your Lifetime Rewards:</h2>

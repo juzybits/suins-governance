@@ -111,7 +111,6 @@ export function useGetUserStakingData(owner: string | undefined) {
         },
       };
     },
-    staleTime: 30_000,
   });
 }
 
