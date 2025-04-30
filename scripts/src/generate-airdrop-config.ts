@@ -84,8 +84,10 @@ function generateAirdropConfig(events: ReturnTokenEvent[]): AirdropConfig[] {
     }
 
     const userVotes = BigInt(event.amount_raw);
-    const userShare = (userVotes * BigInt(1_000_000_000)) / proposal.total_ns_voted;
-    const userReward = (proposal.total_ns_reward * userShare) / BigInt(1_000_000_000);
+    const userShare =
+      (userVotes * BigInt(1_000_000_000)) / proposal.total_ns_voted;
+    const userReward =
+      (proposal.total_ns_reward * userShare) / BigInt(1_000_000_000);
 
     if (userReward < MIN_BALANCE_RAW) {
       continue;

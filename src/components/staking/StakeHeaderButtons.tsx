@@ -13,7 +13,7 @@ export function StakeHeaderButtons() {
   const availableNS = balance.data ? BigInt(balance.data.totalBalance) : 0n;
 
   const batches = useGetOwnedBatches(currAddr);
-  const ownedBatches = batches.data ?? [];
+  const ownedBatches = batches.data?.batches ?? [];
 
   const { openModal } = useStakeModal();
 

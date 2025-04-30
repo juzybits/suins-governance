@@ -92,11 +92,16 @@ BEGIN { in_block=0 }
 {
     if ($0 ~ "^[[:space:]]*"net":[[:space:]]*{") {
         print "  "net": {"
-        print "    votingPkgId: \"" voting "\","
-        print "    governanceObjId: \"" gov "\","
-        print "    stakingConfigObjId: \"" staking "\","
-        print "    statsObjId: \"" stats "\","
-        print "    coinType: \"" coin "\","
+        print "    votingPkgId:"
+        print "      \"" voting "\","
+        print "    governanceObjId:"
+        print "      \"" gov "\","
+        print "    stakingConfigObjId:"
+        print "      \"" staking "\","
+        print "    statsObjId:"
+        print "      \"" stats "\","
+        print "    coinType:"
+        print "      \"" coin "\","
         print "  },"
         in_block=1
         next

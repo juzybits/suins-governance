@@ -67,10 +67,7 @@ function analyzeAirdropDistribution(configs: AirdropConfig[]) {
 
     // group by start_ms to track amounts per proposal
     const date = new Date(config.start_ms).toISOString().split("T")[0]!;
-    airdropAmounts.set(
-      date,
-      (airdropAmounts.get(date) || BigInt(0)) + amount,
-    );
+    airdropAmounts.set(date, (airdropAmounts.get(date) || BigInt(0)) + amount);
   }
 
   // output results

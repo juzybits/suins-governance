@@ -1,9 +1,7 @@
 import { useCurrentAccount } from "@mysten/dapp-kit";
 
-import { Text } from "@/components/ui/Text";
 import { useGetVoteCastedByProposalId } from "@/hooks/useGetVoteCasted";
 import isPast from "date-fns/isPast";
-import { Divide } from "./ui/Divide";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { calculateReward } from "@/types/Proposal";
 import { formatNSBalance } from "@/utils/formatNumber";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { type Batch } from "@/types/Batch";
 import {
   type LockRequest,
@@ -48,34 +48,12 @@ export function StakeContent() {
   const availableNS = balance.data ? BigInt(balance.data.totalBalance) : 0n;
 
   const batches = useGetOwnedBatches(currAddr);
-  const stakingData = useMemo((): StakingData => {
-    let lockedNS = 0n;
-    let lockedPower = 0n;
-    let stakedNS = 0n;
-    let stakedPower = 0n;
 
-    batches.data?.forEach((batch) => {
-      if (batch.isLocked) {
-        lockedNS += batch.balanceNS;
-        lockedPower += batch.votingPower;
-      } else if (batch.isStaked) {
-        stakedNS += batch.balanceNS;
-        if (!batch.isCooldownRequested) {
-          stakedPower += batch.votingPower;
-        }
-      }
-    });
-
-    return {
-      lockedNS,
-      lockedPower,
-      stakedNS,
-      stakedPower,
-      totalPower: lockedPower + stakedPower,
-    };
-  }, [batches.data]);
-
-  if (balance.isLoading || batches.isLoading) {
+  if (
+    balance.isLoading ||
+    batches.isLoading ||
+    typeof batches.data === "undefined"
+  ) {
     return <Loader className="h-5 w-5" />;
   }
 
@@ -92,8 +70,11 @@ export function StakeContent() {
 
   return (
     <>
-      <PanelOverview availableNS={availableNS} stakingData={stakingData} />
-      <PanelBatches availableNS={availableNS} batches={batches.data ?? []} />
+      <PanelOverview
+        availableNS={availableNS}
+        stakingData={batches.data.summary}
+      />
+      <PanelBatches availableNS={availableNS} batches={batches.data.batches} />
       <PanelRecentProposals />
     </>
   );

@@ -322,7 +322,7 @@ async function getOwnedBalance({
 }: {
   client: SuiClient;
   owner: string;
-  coinType: string
+  coinType: string;
 }): Promise<bigint> {
   const balance = await client.getBalance({ owner, coinType });
   return BigInt(balance.totalBalance);

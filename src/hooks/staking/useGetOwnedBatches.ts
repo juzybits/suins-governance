@@ -59,8 +59,9 @@ export function useGetOwnedBatches(owner: string | undefined) {
       return batches;
     },
     select: (batches) => {
-      // Sort batches by voting power (highest first)
-      return batches.sort((a, b) => {
+      // sort batches by voting power (highest first)
+
+      batches.sort((a, b) => {
         if (b.votingPower > a.votingPower) {
           return 1;
         }
@@ -69,6 +70,36 @@ export function useGetOwnedBatches(owner: string | undefined) {
         }
         return 0;
       });
+
+      // calculate summary
+
+      let lockedNS = 0n;
+      let lockedPower = 0n;
+      let stakedNS = 0n;
+      let stakedPower = 0n;
+
+      batches.forEach((batch) => {
+        if (batch.isLocked) {
+          lockedNS += batch.balanceNS;
+          lockedPower += batch.votingPower;
+        } else if (batch.isStaked) {
+          stakedNS += batch.balanceNS;
+          if (!batch.isCooldownRequested) {
+            stakedPower += batch.votingPower;
+          }
+        }
+      });
+
+      return {
+        batches,
+        summary: {
+          lockedNS,
+          lockedPower,
+          stakedNS,
+          stakedPower,
+          totalPower: lockedPower + stakedPower,
+        },
+      };
     },
     enabled: !!owner,
     refetchInterval: 30_000,

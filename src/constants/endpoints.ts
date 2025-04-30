@@ -1,5 +1,4 @@
 import { getFullnodeUrl } from "@mysten/sui/client";
-import { env } from "../env.js";
 
 export const SUPPORTED_NETWORKS = [
   "mainnet",
@@ -54,11 +53,16 @@ export const SUINS_PACKAGES: {
   },
   // see dev/publish.sh
   localnet: {
-    votingPkgId: "0xca1e41691bad7e9ad65229d0f408c73ff6b6f8a61d6b78dd1d1be32542c35ceb",
-    governanceObjId: "0x1be15be0e7299ffa851e9988c3143262b9dfca99fa075397c350c4b877f3b85f",
-    stakingConfigObjId: "0x01f8275b1486d28e81e66cd774a566f2e3dc5742ee379e9de0462e135f8c7e40",
-    statsObjId: "0x5b9e9baad8131e340d124c49d61d569da72cdc462dd4b2ed5c23188ee69242fc",
-    coinType: "0xb1a3db33993bd0f7f2ef70ebddf0687cd04e7d26a2e9958f80db2d1c60305890::ns::NS",
+    votingPkgId:
+      "0x08a3a675fe51c70a676ad8e92e8ee91e88b35abc6c31ac0eccfba9beb566049e",
+    governanceObjId:
+      "0xa22d0a4bd5f1d5486c9c553e6745ce4ee39e711e07e898542dc1ba8947912338",
+    stakingConfigObjId:
+      "0xeeced86c38a12b607b3ab3f090bcf69d8702524c395041b33954f2fa8ef9ab3e",
+    statsObjId:
+      "0x0a93fecb9a65319f9104a8ef1fa10b3391c23eabe49dd4012e42e6251fa0feab",
+    coinType:
+      "0xce8253595968dce607dcded32f423c3da323b2e20a6af272ba0c5f6cd5138bb0::ns::NS",
   },
 };
 

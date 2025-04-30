@@ -74,7 +74,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
     return null;
   }
 
-  const allBatches = batches.data ?? [];
+  const allBatches = batches.data?.batches ?? [];
   const votingBatches = allBatches
     .filter((batch) => batch.canVote)
     .slice(0, MAX_BATCHES_PER_VOTE_TX);
