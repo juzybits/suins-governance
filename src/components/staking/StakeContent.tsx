@@ -70,20 +70,20 @@ function PanelOverview() {
     return null;
   }
 
-  const summary = userStaking.data.summary;
+  const stats = userStaking.data.stats;
 
   return (
     <div className="panel">
       <div>
         <p>
-          Total Locked: {formatNSBalance(summary.lockedNS)} NS (
-          {formatNSBalance(summary.lockedPower)} Votes)
+          Total Locked: {formatNSBalance(stats.lockedNS)} NS (
+          {formatNSBalance(stats.lockedPower)} Votes)
         </p>
         <p>
-          Total Staked: {formatNSBalance(summary.stakedNS)} NS (
-          {formatNSBalance(summary.stakedPower)} Votes)
+          Total Staked: {formatNSBalance(stats.stakedNS)} NS (
+          {formatNSBalance(stats.stakedPower)} Votes)
         </p>
-        <p>Your Total Votes: {formatNSBalance(summary.totalPower)}</p>
+        <p>Your Total Votes: {formatNSBalance(stats.totalPower)}</p>
         <p>Available Tokens: {balance.data.formatted} NS</p>
       </div>
     </div>

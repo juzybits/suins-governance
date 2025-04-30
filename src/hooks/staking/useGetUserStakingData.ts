@@ -11,10 +11,10 @@ import { type SuiObjectResponse } from "@mysten/sui/client";
 
 export type UserStakingData = {
   batches: Batch[];
-  summary: UserSummary;
+  stats: UserStats;
 };
 
-export type UserSummary = {
+export type UserStats = {
   lockedNS: bigint;
   lockedPower: bigint;
   stakedNS: bigint;
@@ -31,7 +31,7 @@ export function useGetUserStakingData(owner: string | undefined) {
       if (!owner) {
         return {
           batches: [],
-          summary: {
+          stats: {
             lockedNS: 0n,
             lockedPower: 0n,
             stakedNS: 0n,
@@ -83,7 +83,7 @@ export function useGetUserStakingData(owner: string | undefined) {
       // sort batches by voting power (highest first)
       batches.sort((a, b) => Number(b.votingPower - a.votingPower));
 
-      // calculate summary
+      // calculate user stats
       let lockedNS = 0n;
       let lockedPower = 0n;
       let stakedNS = 0n;
@@ -102,7 +102,7 @@ export function useGetUserStakingData(owner: string | undefined) {
 
       return {
         batches,
-        summary: {
+        stats: {
           lockedNS,
           lockedPower,
           stakedNS,
