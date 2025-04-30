@@ -5,7 +5,7 @@ import { useGetUserStakingData } from "@/hooks/staking/useGetUserStakingData";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 
-export function StakeUserStats() {
+export function StakeUserStats({ showTokens }: { showTokens: boolean }) {
   const currAcct = useCurrentAccount();
   const userStaking = useGetUserStakingData(currAcct?.address);
   const balance = useGetOwnedNSBalance(currAcct?.address);
@@ -28,7 +28,9 @@ export function StakeUserStats() {
           {formatNSBalance(stats.stakedPower)} Votes)
         </p>
         <p>Your Total Votes: {formatNSBalance(stats.totalPower)}</p>
-        <p>Available Tokens: {balance.data.formatted} NS</p>
+        {showTokens && (
+          <p>Available Tokens: {balance.data.formatted} NS</p>
+        )}
       </div>
     </div>
   );

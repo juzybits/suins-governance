@@ -27,9 +27,9 @@ import { useGetUserStakingData } from "@/hooks/staking/useGetUserStakingData";
 import { useCurrentAccount, useCurrentWallet } from "@mysten/dapp-kit";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { formatTimeDiff, TimeUnit } from "@polymedia/suitcase-core";
-import { useStakeModal } from "./StakeModalContext";
-import { PanelRecentProposals } from "./PanelRecentProposals";
-import { StakeUserStats } from "./StakeUserStats";
+import { useStakeModal } from "@/components/staking/StakeModalContext";
+import { PanelRecentProposals } from "@/components/staking/PanelRecentProposals";
+import { StakeUserStats } from "@/components/staking/StakeUserStats";
 
 type BatchAction = "view" | "lock" | "requestUnstake" | "unstake";
 
@@ -55,7 +55,7 @@ export function StakeContent() {
 
   return (
     <>
-      <StakeUserStats />
+      <StakeUserStats showTokens={true} />
       <PanelBatches />
       <PanelRecentProposals />
     </>
