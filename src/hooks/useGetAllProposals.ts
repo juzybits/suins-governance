@@ -8,8 +8,7 @@ import { bcs } from "@mysten/sui/bcs";
 import { parseProposalObjResp } from "./useGetProposalDetail";
 import {
   getCachedProposal,
-  cacheProposal,
-  isFinalized
+  cacheProposalIfFinalized,
 } from "@/utils/proposalCache";
 import { ProposalObjResp } from "@/types/Proposal";
 
@@ -71,11 +70,7 @@ export function useGetAllProposals() {
         const fetchedProposals = objs.map(parseProposalObjResp);
 
         // cache finalized proposals
-        for (const proposal of fetchedProposals) {
-          if (isFinalized(proposal)) {
-            cacheProposal(proposal);
-          }
-        }
+        fetchedProposals.forEach(cacheProposalIfFinalized);
 
         return [...proposals, ...fetchedProposals];
       } catch (e) {

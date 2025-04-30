@@ -16,9 +16,12 @@ export function getCachedProposal(id: string): ProposalObjResp | undefined {
 /**
  * Cache a finalized proposal.
  */
-export function cacheProposal(
+export function cacheProposalIfFinalized(
   proposal: ProposalObjResp,
 ): void {
+  if (!isFinalized(proposal)) {
+    return;
+  }
   const normalizedId = normalizeSuiAddress(proposal.fields.id.id);
   finalizedProposalCache.set(normalizedId, proposal);
 }
@@ -26,6 +29,6 @@ export function cacheProposal(
 /**
  * Check if a proposal is finalized (immutable).
  */
-export function isFinalized(proposal: ProposalObjResp): boolean {
+function isFinalized(proposal: ProposalObjResp): boolean {
   return proposal.fields.winning_option !== null;
 }

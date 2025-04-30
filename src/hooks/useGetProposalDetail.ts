@@ -9,8 +9,7 @@ import { type ProposalObjResp } from "@/types/Proposal";
 import { type SuiObjectResponse } from "@mysten/sui/client";
 import {
   getCachedProposal,
-  cacheProposal,
-  isFinalized
+  cacheProposalIfFinalized,
 } from "@/utils/proposalCache";
 
 type TopVotes =
@@ -170,9 +169,7 @@ export function useGetProposalDetail({ proposalId }: { proposalId: string }) {
       });
       const proposal = parseProposalObjResp(resp);
 
-      if (isFinalized(proposal)) {
-        cacheProposal(proposal);
-      }
+      cacheProposalIfFinalized(proposal);
 
       return proposal;
     },
