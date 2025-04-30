@@ -33,7 +33,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
   const isVotingOver = isPast(
     new Date(Number(proposal.data?.fields.end_time_ms ?? 0)),
   );
-  const batches = useGetUserStakingData(currentAccount?.address);
+  const userStaking = useGetUserStakingData(currentAccount?.address);
   const isPersonVote = useIsPersonVote(proposalId);
 
   const isLoggedOut = (!currentAccount && !isConnecting) ?? isDisconnected;
@@ -70,11 +70,11 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
     }
   }, [isSuccess, reset, resetField]);
 
-  if (proposal.isLoading || batches.isLoading || isVotingOver) {
+  if (proposal.isLoading || userStaking.isLoading || isVotingOver) {
     return null;
   }
 
-  const allBatches = batches.data?.batches ?? [];
+  const allBatches = userStaking.data?.batches ?? [];
   const votingBatches = allBatches
     .filter((batch) => batch.canVote)
     .slice(0, MAX_BATCHES_PER_VOTE_TX);

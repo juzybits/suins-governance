@@ -12,8 +12,8 @@ export function StakeHeaderButtons() {
   const balance = useGetOwnedNSBalance(currAddr);
   const availableNS = balance.data ? BigInt(balance.data.totalBalance) : 0n;
 
-  const batches = useGetUserStakingData(currAddr);
-  const ownedBatches = batches.data?.batches ?? [];
+  const userStaking = useGetUserStakingData(currAddr);
+  const ownedBatches = userStaking.data?.batches ?? [];
 
   const { openModal } = useStakeModal();
 

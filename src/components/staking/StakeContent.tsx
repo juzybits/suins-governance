@@ -34,19 +34,19 @@ type BatchAction = "view" | "lock" | "requestUnstake" | "unstake";
 
 export function StakeContent() {
   const currAcct = useCurrentAccount();
-  const batches = useGetUserStakingData(currAcct?.address);
+  const userStaking = useGetUserStakingData(currAcct?.address);
   const balance = useGetOwnedNSBalance(currAcct?.address);
 
-  if (balance.isLoading || batches.isLoading) {
+  if (balance.isLoading || userStaking.isLoading) {
     return <Loader className="h-5 w-5" />;
   }
 
-  if (balance.error || batches.error) {
+  if (balance.error || userStaking.error) {
     return (
       <div>
         Error:{" "}
         {balance.error?.message ??
-          batches.error?.message ??
+          userStaking.error?.message ??
           "Something went wrong"}
       </div>
     );
@@ -63,14 +63,14 @@ export function StakeContent() {
 
 function PanelOverview() {
   const currAcct = useCurrentAccount();
-  const batches = useGetUserStakingData(currAcct?.address);
+  const userStaking = useGetUserStakingData(currAcct?.address);
   const balance = useGetOwnedNSBalance(currAcct?.address);
 
-  if (batches.data === undefined || balance.data === undefined) {
+  if (userStaking.data === undefined || balance.data === undefined) {
     return null;
   }
 
-  const summary = batches.data.summary;
+  const summary = userStaking.data.summary;
 
   return (
     <div className="panel">
@@ -93,14 +93,14 @@ function PanelOverview() {
 function PanelBatches() {
   const { openModal } = useStakeModal();
   const currAcct = useCurrentAccount();
-  const batches = useGetUserStakingData(currAcct?.address);
+  const userStaking = useGetUserStakingData(currAcct?.address);
   const balance = useGetOwnedNSBalance(currAcct?.address);
 
-  if (batches.data === undefined || balance.data === undefined) {
+  if (userStaking.data === undefined || balance.data === undefined) {
     return null;
   }
 
-  const ownedBatches = batches.data.batches;
+  const ownedBatches = userStaking.data.batches;
   const votingBatches = ownedBatches.filter((batch) => batch.isVoting);
   const availableBatches = ownedBatches.filter((batch) => batch.canVote);
   const unavailableBatches = ownedBatches.filter(
@@ -109,7 +109,7 @@ function PanelBatches() {
 
   return (
     <div className="panel">
-      {batches.data?.batches.length === 0 &&
+      {userStaking.data?.batches.length === 0 &&
         (BigInt(balance.data.totalBalance) === 0n ? (
           <>
             <h3>No NS tokens found</h3>
