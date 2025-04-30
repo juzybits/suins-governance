@@ -54,15 +54,15 @@ export const SUINS_PACKAGES: {
   // see dev/publish.sh
   localnet: {
     votingPkgId:
-      "0x08a3a675fe51c70a676ad8e92e8ee91e88b35abc6c31ac0eccfba9beb566049e",
+      "0xafa891dfe575e702d5c213096178a3675881fa3a783c5acc4fd572afac7877c3",
     governanceObjId:
-      "0xa22d0a4bd5f1d5486c9c553e6745ce4ee39e711e07e898542dc1ba8947912338",
+      "0xb41f7dba05e75b797fad7ecd26dc091bb4ef9bce79885c9a729e308ef85fcb35",
     stakingConfigObjId:
-      "0xeeced86c38a12b607b3ab3f090bcf69d8702524c395041b33954f2fa8ef9ab3e",
+      "0x679b96dfe0ae6390c7928874971a4e8bb89e60550cb6a25c0d6d4f1c0e1c372f",
     statsObjId:
-      "0x0a93fecb9a65319f9104a8ef1fa10b3391c23eabe49dd4012e42e6251fa0feab",
+      "0x67693a887d8757c94ece3abea4c7d77d7d3277f2f4924e15eff115b75bd64ac1",
     coinType:
-      "0xce8253595968dce607dcded32f423c3da323b2e20a6af272ba0c5f6cd5138bb0::ns::NS",
+      "0x157291cfcf96c41106957f451a7243ae17e50a5bd1ba9f77cc7366eec2fcc10a::ns::NS",
   },
 };
 

@@ -67,7 +67,7 @@ export function useGetUserStats({
         ),
       ]);
 
-      const totalReward = BigInt(retVals.shift()![0]);
+      const totalReward = BigInt(retVals.shift()![0] as string);
       const proposalStats: UserProposalStats[] = proposalIds.map(
         (proposalId, idx) => ({
           proposalId,

@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dummy-ui/dummy-ui";
 import Loader from "@/components/ui/Loader";
 import { useGetUserStakingData } from "@/hooks/staking/useGetUserStakingData";
-import { useCurrentAccount } from "@mysten/dapp-kit";
+import { useCurrentAccount, useCurrentWallet } from "@mysten/dapp-kit";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { formatTimeDiff, TimeUnit } from "@polymedia/suitcase-core";
 import { useStakeModal } from "./StakeModalContext";
@@ -93,12 +93,15 @@ function PanelOverview() {
 function PanelBatches() {
   const { openModal } = useStakeModal();
   const currAcct = useCurrentAccount();
+  const { isConnecting, isDisconnected } = useCurrentWallet();
   const userStaking = useGetUserStakingData(currAcct?.address);
   const balance = useGetOwnedNSBalance(currAcct?.address);
 
   if (userStaking.data === undefined || balance.data === undefined) {
     return null;
   }
+
+  const isLoggedOut = (!currAcct && !isConnecting) ?? isDisconnected;
 
   const ownedBatches = userStaking.data.batches;
   const votingBatches = ownedBatches.filter((batch) => batch.isVoting);
@@ -110,14 +113,18 @@ function PanelBatches() {
   return (
     <div className="panel">
       {userStaking.data?.batches.length === 0 &&
-        (balance.data.raw === 0n ? (
+        (isLoggedOut ? (
+          <>
+            <p>Connect your wallet to stake or lock NS tokens</p>
+          </>
+        ) : balance.data.raw === 0n ? (
           <>
             <h3>No NS tokens found</h3>
-            <p>Stake or Lock NS tokens to participate in SuiNS governance</p>
+            <p>Stake or lock NS tokens to participate in SuiNS governance</p>
           </>
         ) : (
           <>
-            <h3>Stake or Lock NS to Vote</h3>
+            <h3>Stake or lock NS to Vote</h3>
             <p>
               Start Staking your NS to Participate in governance, earn rewards,
               and shape the future of SuiNS

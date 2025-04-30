@@ -177,7 +177,9 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
               </div>
               <div className="dummy-ui">
                 <div className="panel">
-                  {votingPower > 0n ? (
+                  {isLoggedOut ? (
+                    <p>Connect your wallet to vote.</p>
+                  ) : votingPower > 0n ? (
                     <p>
                       All your {formatNSBalance(votingPower)} available votes
                       will be used.
