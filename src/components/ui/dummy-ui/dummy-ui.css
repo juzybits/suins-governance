@@ -31,18 +31,6 @@
   gap: 10px;
 }
 
-.dummy-ui .radio-group {
-  display: flex;
-  flex-direction: row;
-  gap: 15px;
-}
-
-.dummy-ui .radio-group label {
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
-}
-
 /* basic elements */
 
 .dummy-ui h1 {
@@ -76,6 +64,10 @@
 .dummy-ui textarea {
   padding: 2px 8px;
   border: 1px solid #ccc;
+}
+
+.dummy-ui input[type="radio"] {
+  margin-right: 5px;
 }
 
 .dummy-ui a {
@@ -163,4 +155,8 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.dummy-ui .table-row *:hover {
+  cursor: pointer;
 }
