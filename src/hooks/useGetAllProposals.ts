@@ -10,7 +10,7 @@ import {
   getCachedProposal,
   cacheProposalIfFinalized,
 } from "@/utils/proposalCache";
-import { ProposalObjResp } from "@/types/Proposal";
+import { type ProposalObjResp } from "@/types/Proposal";
 
 /**
  * Fetch all proposals with just 2 RPC queries.
