@@ -23,16 +23,10 @@ export function StakeHeaderButtons() {
 
   return (
     <>
-      <button
-        className="rounded bg-green-400 px-4 py-2"
-        onClick={openModal}
-      >
+      <button className="rounded bg-green-400 px-4 py-2" onClick={openModal}>
         Stake
       </button>
-      <button
-        className="rounded bg-blue-400 px-4 py-2"
-        onClick={openModal}
-      >
+      <button className="rounded bg-blue-400 px-4 py-2" onClick={openModal}>
         Lock
       </button>
     </>

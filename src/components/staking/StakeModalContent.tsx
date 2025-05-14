@@ -2,20 +2,16 @@ import { useStakeModal } from "./StakeModalContext";
 import { useStakeOrLockMutation } from "@/hooks/staking/useStakeOrLockMutation";
 import { parseNSAmount } from "@/utils/parseAmount";
 import { batchHelpers } from "@/types/Batch";
-import {
-  Modal,
-  ModalFooter,
-  LockMonthSelector,
-} from "@/components/ui/dummy-ui/dummy-ui";
+import { Modal, ModalFooter } from "@/components/ui/dummy-ui/dummy-ui";
 import { toast } from "sonner";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { formatNSBalance } from "@/utils/formatNumber";
-import { DAY_MS, ONE_NS_RAW } from "@/constants/common";
+import { ONE_NS_RAW } from "@/constants/common";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 
 export function StakeModalContent() {
-  const { isModalOpen, closeModal, openModal } = useStakeModal();
+  const { isModalOpen, closeModal } = useStakeModal();
 
   const currAcct = useCurrentAccount();
   const currAddr = currAcct?.address;
@@ -26,42 +22,29 @@ export function StakeModalContent() {
   if (!isModalOpen) return null;
 
   return (
-    <ModalStakeOrLockNewBatch
-      availableNS={availableNS}
-      onActionChange={openModal}
-      onClose={closeModal}
-    />
+    <ModalStakeOrLockNewBatch availableNS={availableNS} onClose={closeModal} />
   );
 }
 
 function ModalStakeOrLockNewBatch({
   availableNS,
-  onActionChange,
   onClose,
 }: {
   availableNS: bigint;
-  onActionChange: (action: "stake" | "lock") => void;
   onClose: () => void;
 }) {
   const stakeOrLockMutation = useStakeOrLockMutation();
 
   const [amount, setAmount] = useState("");
   const [months, setMonths] = useState(0);
-  const action = months === 0 ? "stake" : "lock";
 
   const balance = parseNSAmount(amount);
-  const power = batchHelpers.calculateBalanceVotingPower({
-    balance,
-    months,
-    mode: action,
-  });
-  const actionText = action === "lock" ? "Lock Tokens" : "Stake Tokens";
 
   const onStakeOrLock = async (data: { amount: string; months: number }) => {
     try {
       await stakeOrLockMutation.mutateAsync(data);
       toast.success(
-        `Successfully ${action === "lock" ? "locked" : "staked"} tokens`,
+        `Successfully ${months === 0 ? "staked" : "locked"} tokens`,
       );
     } catch (error) {
       toast.error((error as Error).message || "Failed to stake tokens");
@@ -70,40 +53,11 @@ function ModalStakeOrLockNewBatch({
     }
   };
 
-  useEffect(() => {
-    setMonths(action === "lock" ? 1 : 0);
-  }, [action]);
-
   return (
     <Modal onClose={onClose}>
       <h2>Stake or Lock Tokens</h2>
 
-      <p>
-        Stake your NS tokens to receive Votes. the longer you leave them staked,
-        the more votes they accumulate over time.
-      </p>
-      <p>
-        Lock your NS tokens to receive an immediate boost to your voting power!
-      </p>
-
-      <div className="radio-group">
-        <label>
-          <input
-            type="radio"
-            checked={action === "stake"}
-            onChange={() => onActionChange("stake")}
-          />
-          Stake
-        </label>
-        <label>
-          <input
-            type="radio"
-            checked={action === "lock"}
-            onChange={() => onActionChange("lock")}
-          />
-          Lock
-        </label>
-      </div>
+      <p>Stake or lock your NS tokens to receive Votes.</p>
 
       <div className="box">
         <input
@@ -114,71 +68,83 @@ function ModalStakeOrLockNewBatch({
         /{formatNSBalance(availableNS)} NS
       </div>
 
-      {action === "lock" && (
-        <>
-          <div className="box">
-            <LockMonthSelector
-              months={months}
-              setMonths={setMonths}
-              currentMonths={0}
-            />
-          </div>
-          <div>
-            <p>Votes {formatNSBalance(power)}</p>
-          </div>
-          <div>
-            <p>Lock on: {new Date().toLocaleDateString()}</p>
-            <p>
-              Unlocks on:{" "}
-              {new Date(Date.now() + months * 30 * DAY_MS).toLocaleDateString()}
-            </p>
-          </div>
-        </>
-      )}
+      <h3>Stake Tokens</h3>
+      <p>
+        The longer you leave your NS tokens staked, the more votes they
+        accumulate over time. Tokens can be unstaked at any time.
+      </p>
 
-      {action === "stake" && (
-        <div>
-          <table>
-            <thead>
-              <tr>
-                <th>Duration</th>
-                <th>Multiplier</th>
-                <th>Votes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[0, 1, 2, 6, 12].map((months) => {
-                const powerPreview = batchHelpers.calculateBalanceVotingPower({
-                  balance,
-                  months,
-                  mode: "stake",
-                });
-                const multiplierPreview =
-                  Number(
-                    batchHelpers.calculateBalanceVotingPower({
-                      balance: BigInt(ONE_NS_RAW),
-                      months,
-                      mode: "stake",
-                    }),
-                  ) / ONE_NS_RAW;
-                const startDay = months * 30 + 1;
-                const endDay = months * 30 + 30;
-                const label = `Day ${startDay}-${endDay}`;
-                return (
-                  <tr key={months}>
-                    <td>{label}</td>
-                    <td>{multiplierPreview.toFixed(2)}x</td>
-                    <td>{formatNSBalance(powerPreview)}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+      <div className="dummy-table">
+        <div className="table-header">
+          <div>Selection</div>
+          <div>Vote Multiplier</div>
+          <div>Votes</div>
         </div>
-      )}
+        <div className="table-row">
+          <div>
+            <input
+              type="radio"
+              checked={months === 0}
+              onChange={() => setMonths(0)}
+            />
+            <span>Stake</span>
+          </div>
+          <div>1x</div>
+          <div>{formatNSBalance(balance)}</div>
+        </div>
+      </div>
+      <p className="stake-row-subtext">
+        earn +10% votes every 30 days. maximum multiplier of 2.85x after 360
+        days.
+      </p>
+
+      <h3>Lock Tokens</h3>
+      <p>
+        Lock your NS tokens to receive an immediate boost to your voting power!
+        Locked tokens cannot be unstaked until commitment date has been reached.
+      </p>
+
+      <div className="dummy-table">
+        <div className="table-header">
+          <div>Selection</div>
+          <div>Vote Multiplier</div>
+          <div>Votes</div>
+        </div>
+
+        {[1, 2, 6, 12].map((monthSelection) => {
+          const powerPreview = batchHelpers.calculateBalanceVotingPower({
+            balance,
+            months: monthSelection,
+            mode: "lock",
+          });
+          const multiplierPreview =
+            Number(
+              batchHelpers.calculateBalanceVotingPower({
+                balance: BigInt(ONE_NS_RAW),
+                months: monthSelection,
+                mode: "lock",
+              }),
+            ) / ONE_NS_RAW;
+          const days = monthSelection * 30;
+          return (
+            <div key={monthSelection} className="table-row">
+              <div>
+                <input
+                  type="radio"
+                  checked={monthSelection === months}
+                  onChange={() => setMonths(monthSelection)}
+                />
+                <span>{days} days</span>
+              </div>
+              <div>{multiplierPreview.toFixed(2)}x</div>
+              <div>{formatNSBalance(powerPreview)}</div>
+            </div>
+          );
+        })}
+      </div>
 
       <ModalFooter
-        actionText={actionText}
+        actionText={"Confirm"}
         onClose={onClose}
         onAction={() => onStakeOrLock({ amount, months })}
       />

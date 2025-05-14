@@ -98,6 +98,7 @@
 .dummy-ui table th {
   text-align: left;
 }
+
 /* staking batch */
 
 .dummy-ui .batch-group {
@@ -147,4 +148,19 @@
 .dummy-ui .modal-footer {
   display: flex;
   justify-content: flex-end;
+}
+
+/* stake/lock table */
+
+.dummy-ui .dummy-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dummy-ui .table-header,
+.dummy-ui .table-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
