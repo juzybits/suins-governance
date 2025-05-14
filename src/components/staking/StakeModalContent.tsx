@@ -7,7 +7,7 @@ import {
   ModalFooter,
 } from "@/components/ui/dummy-ui/dummy-ui";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { formatNSBalance } from "@/utils/formatNumber";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { useCurrentAccount } from "@mysten/dapp-kit";
@@ -28,6 +28,8 @@ export function StakeModalContent() {
   );
 }
 
+const MIN_BALANCE_RAW = 100_000; // 0.1 NS
+
 function ModalStakeOrLockNewBatch({
   availableNS,
   onClose,
@@ -37,12 +39,28 @@ function ModalStakeOrLockNewBatch({
 }) {
   const stakeOrLockMutation = useStakeOrLockMutation();
 
-  const [amount, setAmount] = useState("");
   const [months, setMonths] = useState(0);
+  const [amount, setAmount] = useState("");
 
-  const balance = parseNSAmount(amount);
+  const onAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Only allow numbers and decimal point
+    if (value === "" || /^\d*\.?\d*$/.test(value)) {
+      setAmount(value);
+    }
+  };
 
-  const onStakeOrLock = async (data: { amount: string; months: number }) => {
+  const { balance, amountErr, disableSubmit } = useMemo(() => {
+    const balance = parseNSAmount(amount);
+    const amountErr =
+      amount === "" || balance >= MIN_BALANCE_RAW
+        ? ""
+        : `Minimum amount is ${formatNSBalance(MIN_BALANCE_RAW)} NS`;
+    const disableSubmit = !amount || !!amountErr;
+    return { balance, amountErr, disableSubmit };
+  }, [amount]);
+
+  const onStakeOrLock = async (data: { balance: bigint; months: number }) => {
     try {
       await stakeOrLockMutation.mutateAsync(data);
       toast.success(
@@ -65,9 +83,11 @@ function ModalStakeOrLockNewBatch({
         <input
           type="text"
           value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          onChange={onAmountChange}
+          placeholder="0.0"
         />
         /{formatNSBalance(availableNS)} NS
+        {amountErr && <div className="error">{amountErr}</div>}
       </div>
 
       <h3>Stake Tokens</h3>
@@ -118,7 +138,8 @@ function ModalStakeOrLockNewBatch({
       <ModalFooter
         actionText={"Confirm"}
         onClose={onClose}
-        onAction={() => onStakeOrLock({ amount, months })}
+        onAction={() => onStakeOrLock({ balance, months })}
+        disabled={disableSubmit}
       />
     </Modal>
   );

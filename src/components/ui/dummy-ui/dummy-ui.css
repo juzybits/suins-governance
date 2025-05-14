@@ -59,6 +59,11 @@
   background-color: #f5f5f5;
 }
 
+.dummy-ui button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .dummy-ui input[type="text"],
 .dummy-ui input[type="number"],
 .dummy-ui textarea {
@@ -89,6 +94,11 @@
 
 .dummy-ui table th {
   text-align: left;
+}
+
+.dummy-ui .error {
+  color: red;
+  font-size: 0.8em;
 }
 
 /* staking batch */

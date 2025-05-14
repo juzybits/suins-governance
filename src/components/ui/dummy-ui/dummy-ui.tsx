@@ -3,7 +3,7 @@
 import { ONE_NS_RAW } from "@/constants/common";
 import { batchHelpers } from "@/types/Batch";
 import { formatNSBalance } from "@/utils/formatNumber";
-import { type ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect } from "react";
 
 export function Modal({
   onClose,
@@ -40,15 +40,19 @@ export function ModalFooter({
   actionText,
   onClose,
   onAction,
+  disabled,
 }: {
   actionText: string;
   onClose: () => void;
   onAction: () => void;
+  disabled?: boolean;
 }) {
   return (
     <div className="modal-footer button-group">
       <button onClick={onClose}>Cancel</button>
-      <button onClick={onAction}>{actionText}</button>
+      <button onClick={onAction} disabled={disabled}>
+        {actionText}
+      </button>
     </div>
   );
 }
@@ -66,9 +70,7 @@ export function LockSelector({
   setMonths: (months: number) => void;
   currentMonths: number;
 }) {
-  const validMonths = allMonthOptions.filter(
-    (month) => month > currentMonths,
-  );
+  const validMonths = allMonthOptions.filter((month) => month > currentMonths);
 
   return (
     <div className="dummy-table">
