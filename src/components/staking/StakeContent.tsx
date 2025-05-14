@@ -102,8 +102,8 @@ function PanelBatches() {
               and shape the future of SuiNS
             </p>
             <div className="button-group">
-              <button onClick={() => openModal("stake")}>Stake</button>
-              <button onClick={() => openModal("lock")}>Lock</button>
+              <button onClick={openModal}>Stake</button>
+              <button onClick={openModal}>Lock</button>
             </div>
           </>
         ))}

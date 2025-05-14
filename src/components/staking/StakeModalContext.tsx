@@ -2,11 +2,9 @@
 
 import { createContext, useContext, useState, type ReactNode } from "react";
 
-export type ModalAction = "stake" | "lock" | null;
-
 type StakeModalContextProps = {
-  modalAction: ModalAction;
-  openModal: (action: "stake" | "lock") => void;
+  isModalOpen: boolean;
+  openModal: () => void;
   closeModal: () => void;
 };
 
@@ -15,13 +13,13 @@ const StakeModalContext = createContext<StakeModalContextProps | undefined>(
 );
 
 export function StakeModalProvider({ children }: { children: ReactNode }) {
-  const [modalAction, setModalAction] = useState<ModalAction>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = (action: "stake" | "lock") => setModalAction(action);
-  const closeModal = () => setModalAction(null);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
-    <StakeModalContext.Provider value={{ modalAction, openModal, closeModal }}>
+    <StakeModalContext.Provider value={{ isModalOpen, openModal, closeModal }}>
       {children}
     </StakeModalContext.Provider>
   );

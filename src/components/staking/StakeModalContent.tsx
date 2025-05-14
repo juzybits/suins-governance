@@ -15,7 +15,7 @@ import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 
 export function StakeModalContent() {
-  const { modalAction, closeModal, openModal } = useStakeModal();
+  const { isModalOpen, closeModal, openModal } = useStakeModal();
 
   const currAcct = useCurrentAccount();
   const currAddr = currAcct?.address;
@@ -23,12 +23,11 @@ export function StakeModalContent() {
   const balance = useGetOwnedNSBalance(currAddr);
   const availableNS = balance.data ? balance.data.raw : 0n;
 
-  if (!modalAction) return null;
+  if (!isModalOpen) return null;
 
   return (
     <ModalStakeOrLockNewBatch
       availableNS={availableNS}
-      action={modalAction}
       onActionChange={openModal}
       onClose={closeModal}
     />
@@ -36,20 +35,19 @@ export function StakeModalContent() {
 }
 
 function ModalStakeOrLockNewBatch({
-  action,
   availableNS,
   onActionChange,
   onClose,
 }: {
   availableNS: bigint;
-  action: "stake" | "lock";
   onActionChange: (action: "stake" | "lock") => void;
   onClose: () => void;
 }) {
   const stakeOrLockMutation = useStakeOrLockMutation();
 
   const [amount, setAmount] = useState("");
-  const [months, setMonths] = useState(action === "lock" ? 1 : 0);
+  const [months, setMonths] = useState(0);
+  const action = months === 0 ? "stake" : "lock";
 
   const balance = parseNSAmount(amount);
   const power = batchHelpers.calculateBalanceVotingPower({
