@@ -1,6 +1,6 @@
 "use client";
 
-import { formatNSBalance } from "@/utils/formatNumber";
+import { formatNSBalance } from "@/utils/coins";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { isPast } from "date-fns";
 import { useGetAllProposals } from "@/hooks/useGetAllProposals";

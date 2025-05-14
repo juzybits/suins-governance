@@ -12,7 +12,7 @@ import {
   type SuiTransactionBlockResponse,
 } from "@mysten/sui/client";
 import { chunkArray, pairFromSecretKey } from "@polymedia/suitcase-core";
-import { formatNSBalance } from "../../src/utils/formatNumber";
+import { formatNSBalance } from "../../src/utils/coins";
 import type { AirdropConfig } from "./generate-airdrop-config";
 import { coinWithBalance, Transaction } from "@mysten/sui/transactions";
 import {

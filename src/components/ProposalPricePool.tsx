@@ -1,5 +1,5 @@
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
-import { formatNSBalance } from "@/utils/formatNumber";
+import { formatNSBalance } from "@/utils/coins";
 
 export function ProposalPricePool({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });

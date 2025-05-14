@@ -4,7 +4,7 @@
 
 import { SuiClient } from "@mysten/sui/client";
 import { SUINS_ENDPOINTS } from "../../src/constants/endpoints";
-import { CoinFormat, formatBalance } from "../../src/utils/formatNumber";
+import { formatNSBalance } from "../../src/utils/coins";
 
 const governancePkgV1 =
   "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41";
@@ -56,7 +56,7 @@ async function queryTxs(client: SuiClient) {
           date: new Date(Number(tx.timestampMs)).toISOString().slice(0, 10),
           voter_addr: json.voter,
           amount_raw: json.amount,
-          amount_ns: formatBalance(json.amount, 6, CoinFormat.FULL),
+          amount_ns: formatNSBalance(json.amount),
         });
       }
     }

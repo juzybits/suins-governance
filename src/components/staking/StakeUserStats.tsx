@@ -1,6 +1,6 @@
 "use client";
 
-import { formatNSBalance } from "@/utils/formatNumber";
+import { formatNSBalance } from "@/utils/coins";
 import { useGetUserStakingData } from "@/hooks/staking/useGetUserStakingData";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";

@@ -4,12 +4,8 @@
 
 import { readFileSync } from "fs";
 import type { ReturnTokenEvent } from "./fetch-events";
-import {
-  CoinFormat,
-  formatBalance,
-  formatNSBalance,
-} from "../../src/utils/formatNumber";
-import { NS_DECIMALS } from "../../src/constants/common";
+import { CoinFormat, formatNSBalance } from "../../src/utils/coins";
+
 function main() {
   const filePath = process.argv[2];
 
@@ -62,7 +58,7 @@ function analyzeTopVotes(events: ReturnTokenEvent[]) {
   for (const [amount, count] of sortedAmounts) {
     const percentage = ((count / events.length) * 100).toFixed(2);
     console.log(
-      `${formatBalance(amount, NS_DECIMALS, CoinFormat.FULL).padStart(6)}` +
+      `${formatNSBalance(amount, CoinFormat.FULL).padStart(6)}` +
         `${count.toString().padStart(15)}` +
         `${percentage.toString().padStart(14)}%`,
     );

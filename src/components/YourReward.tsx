@@ -4,7 +4,7 @@ import { useGetVoteCastedByProposalId } from "@/hooks/useGetVoteCasted";
 import isPast from "date-fns/isPast";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { calculateReward } from "@/types/Proposal";
-import { formatNSBalance } from "@/utils/formatNumber";
+import { formatNSBalance } from "@/utils/coins";
 
 export function YourReward({ proposalId }: { proposalId: string }) {
   const currAcct = useCurrentAccount();

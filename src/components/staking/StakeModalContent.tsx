@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dummy-ui/dummy-ui";
 import { toast } from "sonner";
 import { useMemo, useState } from "react";
-import { formatNSBalance } from "@/utils/formatNumber";
+import { formatNSBalance } from "@/utils/coins";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 

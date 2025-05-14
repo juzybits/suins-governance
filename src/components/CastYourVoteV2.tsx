@@ -20,7 +20,7 @@ import isPast from "date-fns/isPast";
 import { RadioGroupField } from "./form/RadioGroupField";
 import { useEffect } from "react";
 import { useGetUserStakingData } from "@/hooks/staking/useGetUserStakingData";
-import { formatNSBalance } from "@/utils/formatNumber";
+import { formatNSBalance } from "@/utils/coins";
 import Link from "next/link";
 import { useIsPersonVote } from "@/hooks/useIsPersonVote";
 

@@ -2,7 +2,7 @@
 
 import { ONE_NS_RAW } from "@/constants/common";
 import { batchHelpers } from "@/types/Batch";
-import { formatNSBalance } from "@/utils/formatNumber";
+import { formatNSBalance } from "@/utils/coins";
 import { type ReactNode, useEffect } from "react";
 
 export function Modal({

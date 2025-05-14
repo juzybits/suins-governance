@@ -11,7 +11,7 @@ import {
   useRequestUnstakeMutation,
 } from "@/hooks/staking/useRequestUnstakeMutation";
 import { toast } from "sonner";
-import { formatNSBalance } from "@/utils/formatNumber";
+import { formatNSBalance } from "@/utils/coins";
 import { MAX_LOCK_DURATION_DAYS, batchHelpers } from "@/types/Batch";
 import {
   type UnstakeRequest,
