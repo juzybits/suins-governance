@@ -1,7 +1,7 @@
 import { type ComponentProps, forwardRef, type ReactNode } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
-import { Checkbox } from "@/components/ui/Checkbox";
+import { Checkbox } from "@/components/ui.legacy/Checkbox";
 
 type CheckboxFieldProps = {
   name: string;

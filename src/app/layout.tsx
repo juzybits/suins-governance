@@ -1,6 +1,6 @@
 import "@mysten/dapp-kit/dist/index.css";
 import "@/styles/globals.css";
-import "@/components/ui/dummy-ui/dummy-ui.css";
+import "@/components/ui.legacy/dummy-ui/dummy-ui.css";
 import { type ReactNode } from "react";
 import { type Metadata } from "next";
 import { twkEverett, inter, redHatMono } from "@/fonts";
@@ -8,7 +8,7 @@ import { Providers } from "@/app/Providers";
 import clsx from "clsx";
 import { Header } from "@/components/header/Header";
 import { Footer } from "@/components/footer/Footer";
-import { Toast } from "@/components/ui/Toast";
+import { Toast } from "@/components/ui.legacy/Toast";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export const metadata: Metadata = {

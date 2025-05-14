@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 
 import { FooterLinks } from "@/components/footer/FooterLinks";
-import { MENU_OVERLAY_ANIMATIONS_DURATION } from "@/components/ui/MobileMenuOverlay";
-import { Text } from "@/components/ui/Text";
-import { ButtonOrLink } from "@/components/ui/utils/ButtonOrLink";
+import { MENU_OVERLAY_ANIMATIONS_DURATION } from "@/components/ui.legacy/MobileMenuOverlay";
+import { Text } from "@/components/ui.legacy/Text";
+import { ButtonOrLink } from "@/components/ui.legacy/utils/ButtonOrLink";
 import { cn } from "@/utils/cn";
 import {
   CLAIM_AEON_URL,

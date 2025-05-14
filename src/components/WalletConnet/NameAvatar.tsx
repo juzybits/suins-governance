@@ -1,6 +1,6 @@
 import { useGetNameAvatar } from "@/hooks/useGetNameAvatar";
 import SvgSuinsFallbackAvatar from "@/icons/SuinsFallbackAvatar";
-import { CustomImage } from "@/components/ui/CustomImage";
+import { CustomImage } from "@/components/ui.legacy/CustomImage";
 
 export function NameAvatar({ name }: { name?: string }) {
   const { data } = useGetNameAvatar(name);

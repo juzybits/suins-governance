@@ -1,9 +1,9 @@
 "use client";
 
 import { FooterLinks } from "@/components/footer/FooterLinks";
-import { Text } from "@/components/ui/Text";
+import { Text } from "@/components/ui.legacy/Text";
 import { GradientBorder } from "@/components/gradient-border";
-import { Button } from "@/components/ui/button/Button";
+import { Button } from "@/components/ui.legacy/button/Button";
 import { usePathname } from "next/navigation";
 
 export function Footer() {

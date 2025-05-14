@@ -2,6 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url("https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,100..900;1,100..900&display=swap");
+
+/* Define @font-face for TWKEverett-Super */
+@font-face {
+  font-family: "TWK Everett";
+  src:
+    local("TWKEverettSuper"),
+    url("/fonts/TWKEverett/super.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Define @font-face for TWKEverett-ExtraBold */
+@font-face {
+  font-family: "TWK Everett";
+  src:
+    local("TWKEverettExtraBold"),
+    url("/fonts/TWKEverett/TWKEverett-Extrabold.otf") format("opentype");
+  font-weight: 750;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "TWK Everett";
+  font-weight: 400;
+  src:
+    local("TWKEverettRegular"),
+    url("/fonts/TWKEverett/TWKEverett-Regular.otf") format("opentype");
+}
+
 @layer base {
   ul,
   ol {

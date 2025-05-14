@@ -1,7 +1,7 @@
 "use client";
 
 import { ProposalContent } from "@/components/ProposalContent";
-import Loader from "@/components/ui/Loader";
+import Loader from "@/components/ui.legacy/Loader";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { MetadataManager } from "@/components/MetadataManager";
 import { truncatedText } from "@/utils/truncatedText";

@@ -5,7 +5,7 @@ import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { useMenuContentContext } from "@/components/header/MenuContent";
 import HamburgerOpen24 from "@/icons/HamburgerOpen24";
 import HamburgerRest24 from "@/icons/HamburgerRest24";
-import { ButtonOrLink } from "@/components/ui/utils/ButtonOrLink";
+import { ButtonOrLink } from "@/components/ui.legacy/utils/ButtonOrLink";
 import { cn } from "@/utils/cn";
 
 const easingValue = [0.65, 0, 0.35, 1];

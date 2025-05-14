@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Text } from "@/components/ui/Text";
+import { Text } from "@/components/ui.legacy/Text";
 import { CountDownTimer } from "./CountDownTimer";
 import { SectionLayout } from "./SectionLayout";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";

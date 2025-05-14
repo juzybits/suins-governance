@@ -4,7 +4,7 @@ import SvgLocked from "@/icons/Locked";
 import SvgXFill16 from "@/icons/XFill16";
 import SvgCheckFill24 from "@/icons/CheckFill24";
 import SvgPersonIcon from "@/icons/PersonIcon";
-import { Text } from "@/components/ui/Text";
+import { Text } from "@/components/ui.legacy/Text";
 
 export function VoteIndicator({
   votedStatus,

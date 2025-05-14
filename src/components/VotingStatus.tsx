@@ -1,13 +1,13 @@
 "use client";
 
 import { SectionLayout } from "./SectionLayout";
-import { VoteIndicator } from "./ui/VoteIndicator";
+import { VoteIndicator } from "./ui.legacy/VoteIndicator";
 import { VoteProgressBar } from "./VoteProgressBar";
-import { GradientProgressBar } from "./ui/GradientProgressBar";
-import { Text } from "@/components/ui/Text";
+import { GradientProgressBar } from "./ui.legacy/GradientProgressBar";
+import { Text } from "@/components/ui.legacy/Text";
 import { YourVote } from "@/components/YourVote";
 import { YourReward } from "@/components/YourReward";
-import { NSAmount } from "@/components/ui/NSAmount";
+import { NSAmount } from "@/components/ui.legacy/NSAmount";
 
 import {
   useGetProposalDetail,

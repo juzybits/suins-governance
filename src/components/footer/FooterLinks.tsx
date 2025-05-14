@@ -1,6 +1,6 @@
 import Discord from "@/icons/Discord";
 import Twitter from "@/icons/Twitter";
-import { Text } from "@/components/ui/Text";
+import { Text } from "@/components/ui.legacy/Text";
 import Link from "next/link";
 import { DISCORD_URL, PRIVACY_POLICY_URL, X_URL } from "@/constants/urls";
 

@@ -1,8 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
-import { Heading } from "@/components/ui/Heading";
-import { Text } from "@/components/ui/Text";
+import { Heading } from "@/components/ui.legacy/Heading";
+import { Text } from "@/components/ui.legacy/Text";
 import { formatAddress } from "@mysten/sui/utils";
 import { useGetAllVotersDfs } from "@/hooks/useGetAllVotersDfs";
 
@@ -15,15 +15,15 @@ import { Avatar } from "@/components/Avatar";
 import { useGetAccountInfo } from "@/hooks/useGetAccountInfo";
 import { useExplorerLink } from "@/hooks/useExplorerLink";
 import { formatName } from "@/utils/common";
-import Loader from "./ui/Loader";
+import Loader from "./ui.legacy/Loader";
 import {
   useGetVoteCastedByVoterId,
   getVoteTypeWithMostVotes,
 } from "@/hooks/useGetVoteCasted";
-import { VoteIndicator } from "@/components/ui/VoteIndicator";
-import { NSAmount } from "./ui/NSAmount";
+import { VoteIndicator } from "@/components/ui.legacy/VoteIndicator";
+import { NSAmount } from "./ui.legacy/NSAmount";
 import { GradientBorder } from "./gradient-border";
-import { Divide } from "@/components/ui/Divide";
+import { Divide } from "@/components/ui.legacy/Divide";
 import { useState } from "react";
 import { truncatedText } from "@/utils/truncatedText";
 import { useBreakpoint } from "@/hooks/useBreakpoint";

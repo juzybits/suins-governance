@@ -1,8 +1,8 @@
 "use client";
 
-import { Text } from "@/components/ui/Text";
+import { Text } from "@/components/ui.legacy/Text";
 import { useCurrentAccount } from "@mysten/dapp-kit";
-import Loader from "@/components/ui/Loader";
+import Loader from "@/components/ui.legacy/Loader";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 
 export function OwnedNSBalance() {

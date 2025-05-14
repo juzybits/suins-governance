@@ -25,8 +25,8 @@ import SvgArrowUpLeft16 from "@/icons/ArrowUpLeft16";
 import SvgChevronDown from "@/icons/ChevronDown";
 import SvgCopy from "@/icons/Copy";
 import SvgDelete from "@/icons/Delete";
-import { Text } from "@/components/ui/Text";
-import { Button } from "@/components/ui/button/Button";
+import { Text } from "@/components/ui.legacy/Text";
+import { Button } from "@/components/ui.legacy/button/Button";
 
 // TODO: Support expanding account without switching account
 export function ConnectWallet() {

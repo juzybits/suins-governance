@@ -21,8 +21,8 @@ import {
   Modal,
   ModalFooter,
   LockMonthSelector,
-} from "@/components/ui/dummy-ui/dummy-ui";
-import Loader from "@/components/ui/Loader";
+} from "@/components/ui.legacy/dummy-ui/dummy-ui";
+import Loader from "@/components/ui.legacy/Loader";
 import { useGetUserStakingData } from "@/hooks/staking/useGetUserStakingData";
 import { useCurrentAccount, useCurrentWallet } from "@mysten/dapp-kit";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";

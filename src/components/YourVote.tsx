@@ -4,12 +4,12 @@ import { formatName } from "@/utils/common";
 import { useGetAccountInfo } from "@/hooks/useGetAccountInfo";
 import { Avatar } from "@/components/Avatar";
 
-import { Text } from "@/components/ui/Text";
+import { Text } from "@/components/ui.legacy/Text";
 import { useGetVoteCastedByProposalId } from "@/hooks/useGetVoteCasted";
-import { Divide } from "./ui/Divide";
+import { Divide } from "./ui.legacy/Divide";
 import { VotingState } from "./VotingStatus";
-import { NSAmount } from "./ui/NSAmount";
-import { VoteIndicator } from "./ui/VoteIndicator";
+import { NSAmount } from "./ui.legacy/NSAmount";
+import { VoteIndicator } from "./ui.legacy/VoteIndicator";
 import { useIsPersonVote } from "@/hooks/useIsPersonVote";
 
 export function YourVote({ proposalId }: { proposalId: string }) {

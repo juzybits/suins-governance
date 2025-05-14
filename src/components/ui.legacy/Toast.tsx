@@ -1,6 +1,6 @@
 import { Toaster } from "sonner";
 import SvgCheckFill16 from "@/icons/CheckFill24";
-import Loader from "@/components/ui/Loader";
+import Loader from "@/components/ui.legacy/Loader";
 import SvgXFill16 from "@/icons/XFill16";
 
 export function Toast() {

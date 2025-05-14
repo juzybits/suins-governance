@@ -6,7 +6,7 @@ import {
   Modal,
   ModalFooter,
   LockMonthSelector,
-} from "@/components/ui/dummy-ui/dummy-ui";
+} from "@/components/ui.legacy/dummy-ui/dummy-ui";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
 import { formatNSBalance } from "@/utils/formatNumber";

@@ -2,8 +2,8 @@ import { cva, type VariantProps } from "class-variance-authority";
 import Countdown, { zeroPad } from "react-countdown";
 import clsx from "clsx";
 
-import { Text } from "@/components/ui/Text";
-import { Heading } from "@/components/ui/Heading";
+import { Text } from "@/components/ui.legacy/Text";
+import { Heading } from "@/components/ui.legacy/Heading";
 import { GradientBorder } from "./gradient-border";
 import SvgColon from "@/icons/Colon";
 

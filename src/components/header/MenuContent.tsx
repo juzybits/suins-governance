@@ -6,7 +6,7 @@ import {
 } from "react";
 
 import { NavigationContent } from "@/components/header/NavigationContent";
-import { MobileMenuOverlay } from "@/components/ui/MobileMenuOverlay";
+import { MobileMenuOverlay } from "@/components/ui.legacy/MobileMenuOverlay";
 
 type Content = "navigation" | null;
 

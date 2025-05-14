@@ -1,4 +1,4 @@
-import { Text, type TextProps } from "@/components/ui/Text";
+import { Text, type TextProps } from "@/components/ui.legacy/Text";
 import NSToken from "@/icons/NSToken";
 import { CoinFormat, formatBalance } from "@/utils/coins";
 import { NS_DECIMALS } from "@/constants/common";
