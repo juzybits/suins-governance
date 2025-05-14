@@ -1,14 +1,11 @@
 import { Text, type TextProps } from "@/components/ui/Text";
 import NSToken from "@/icons/NSToken";
-import { CoinFormat, formatBalance } from "@/utils/coins";
-import { NS_DECIMALS } from "@/constants/common";
+import { formatNSBalance } from "@/utils/coins";
 import clsx from "clsx";
 
 export function NSAmount({
   amount,
   isMedium,
-  roundedCoinFormat,
-  noFormat,
   centerAlign,
   className,
   noTokenIcon,
@@ -17,17 +14,11 @@ export function NSAmount({
   amount: number;
   isMedium?: boolean;
   size?: Extract<TextProps["variant"], "B4/bold" | "P3/medium" | "P3/bold">;
-  roundedCoinFormat?: boolean;
-  noFormat?: boolean;
   centerAlign?: boolean;
   className?: string;
   noTokenIcon?: boolean;
 }) {
-  const amountFormatted = formatBalance({
-    balance: amount,
-    decimals: noFormat ? 0 : NS_DECIMALS,
-    format: roundedCoinFormat ? CoinFormat.ROUNDED : CoinFormat.FULL,
-  });
+  const amountFormatted = formatNSBalance(amount);
 
   return (
     <div
