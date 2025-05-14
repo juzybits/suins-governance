@@ -1,4 +1,5 @@
 import { NS_DECIMALS } from "@/constants/common";
+import { formatBalance as formatBalanceAlt } from "@/utils/coins";
 import BigNumber from "bignumber.js";
 
 export enum CoinFormat {
@@ -22,9 +23,13 @@ export function formatBalance(
 
 export function formatNSBalance(
   balance: bigint | number | string,
-  format: CoinFormat = CoinFormat.ROUNDED,
+  format: CoinFormat = CoinFormat.FULL,
 ) {
-  return formatBalance(balance, NS_DECIMALS, format);
+  return formatBalanceAlt({
+    balance,
+    decimals: NS_DECIMALS,
+    format,
+  });
 }
 
 export function formatNumber(number: number, suffix?: string) {
