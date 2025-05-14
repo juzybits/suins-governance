@@ -348,7 +348,7 @@ function ModalLockBatch({
     }
   };
 
-  const [months, setMonths] = useState(1);
+  const [months, setMonths] = useState(0);
 
   const votes = batchHelpers.calculateBalanceVotingPower({
     balance: batch.balanceNS,

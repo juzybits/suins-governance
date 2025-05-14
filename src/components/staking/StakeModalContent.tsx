@@ -108,20 +108,12 @@ function ModalStakeOrLockNewBatch({
         Locked tokens cannot be unstaked until commitment date has been reached.
       </p>
 
-      <div className="dummy-table">
-        <div className="table-header">
-          <div>Selection</div>
-          <div>Vote Multiplier</div>
-          <div>Votes</div>
-        </div>
-
-        <LockSelector
-          balance={balance}
-          months={months}
-          setMonths={setMonths}
-          currentMonths={0}
-        />
-      </div>
+      <LockSelector
+        balance={balance}
+        months={months}
+        setMonths={setMonths}
+        currentMonths={0}
+      />
 
       <ModalFooter
         actionText={"Confirm"}

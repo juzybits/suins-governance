@@ -66,19 +66,9 @@ export function LockSelector({
   setMonths: (months: number) => void;
   currentMonths: number;
 }) {
-  const [validMonths, setValidMonths] = useState<number[]>([]);
-
-  useEffect(() => {
-    const newValidMonths = allMonthOptions.filter(
-      (month) => month > currentMonths,
-    );
-    setValidMonths(newValidMonths);
-
-    const firstValidMonth = newValidMonths[0];
-    if (firstValidMonth !== undefined) {
-      setMonths(firstValidMonth);
-    }
-  }, [currentMonths, setMonths]);
+  const validMonths = allMonthOptions.filter(
+    (month) => month > currentMonths,
+  );
 
   return (
     <div className="dummy-table">
