@@ -32,25 +32,6 @@ export function formatNSBalance(
   });
 }
 
-export function formatNumber(number: number, suffix?: string) {
-  const bigNumber = new BigNumber(number);
-  let formattedNumber;
-
-  if (bigNumber.isLessThan(1000)) {
-    formattedNumber = bigNumber.toString();
-  } else if (bigNumber.isLessThan(1000000)) {
-    formattedNumber = bigNumber.div(1000).toFormat(0) + "K";
-  } else {
-    formattedNumber = bigNumber.div(1000000).toFormat(0) + "M";
-  }
-
-  if (suffix) {
-    formattedNumber += suffix;
-  }
-
-  return formattedNumber;
-}
-
 export function formatAmountParts(
   amount?: BigNumber | bigint | number | string | null,
 ) {
