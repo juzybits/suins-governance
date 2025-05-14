@@ -1,12 +1,14 @@
 import { useStakeModal } from "./StakeModalContext";
 import { useStakeOrLockMutation } from "@/hooks/staking/useStakeOrLockMutation";
 import { parseNSAmount } from "@/utils/parseAmount";
-import { batchHelpers } from "@/types/Batch";
-import { Modal, ModalFooter } from "@/components/ui/dummy-ui/dummy-ui";
+import {
+  LockSelector,
+  Modal,
+  ModalFooter,
+} from "@/components/ui/dummy-ui/dummy-ui";
 import { toast } from "sonner";
 import { useState } from "react";
 import { formatNSBalance } from "@/utils/formatNumber";
-import { ONE_NS_RAW } from "@/constants/common";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 
@@ -113,38 +115,12 @@ function ModalStakeOrLockNewBatch({
           <div>Votes</div>
         </div>
 
-        {[1, 2, 6, 12].map((monthSelection) => {
-          const powerPreview = batchHelpers.calculateBalanceVotingPower({
-            balance,
-            months: monthSelection,
-            mode: "lock",
-          });
-          const multiplierPreview =
-            Number(
-              batchHelpers.calculateBalanceVotingPower({
-                balance: BigInt(ONE_NS_RAW),
-                months: monthSelection,
-                mode: "lock",
-              }),
-            ) / ONE_NS_RAW;
-          const days = monthSelection * 30;
-          return (
-            <div key={monthSelection} className="table-row">
-              <div>
-                <label>
-                  <input
-                    type="radio"
-                    checked={monthSelection === months}
-                    onChange={() => setMonths(monthSelection)}
-                  />
-                  {days} days
-                </label>
-              </div>
-              <div>{multiplierPreview.toFixed(2)}x</div>
-              <div>{formatNSBalance(powerPreview)}</div>
-            </div>
-          );
-        })}
+        <LockSelector
+          balance={balance}
+          months={months}
+          setMonths={setMonths}
+          currentMonths={0}
+        />
       </div>
 
       <ModalFooter

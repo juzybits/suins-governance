@@ -20,7 +20,7 @@ import {
 import {
   Modal,
   ModalFooter,
-  LockMonthSelector,
+  LockSelector,
 } from "@/components/ui/dummy-ui/dummy-ui";
 import Loader from "@/components/ui/Loader";
 import { useGetUserStakingData } from "@/hooks/staking/useGetUserStakingData";
@@ -382,7 +382,8 @@ function ModalLockBatch({
       <div>
         <div>Select Lock Period</div>
         <div className="box">
-          <LockMonthSelector
+          <LockSelector
+            balance={batch.balanceNS}
             months={months}
             setMonths={setMonths}
             currentMonths={batch.lockDurationDays / 30}

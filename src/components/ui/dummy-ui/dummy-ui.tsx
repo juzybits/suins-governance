@@ -2,6 +2,7 @@
 
 import { ONE_NS_RAW } from "@/constants/common";
 import { batchHelpers } from "@/types/Batch";
+import { formatNSBalance } from "@/utils/formatNumber";
 import { type ReactNode, useEffect, useState } from "react";
 
 export function Modal({
@@ -54,11 +55,13 @@ export function ModalFooter({
 
 const allMonthOptions = [1, 2, 6, 12];
 
-export function LockMonthSelector({
+export function LockSelector({
+  balance,
   months,
   setMonths,
   currentMonths,
 }: {
+  balance: bigint;
   months: number;
   setMonths: (months: number) => void;
   currentMonths: number;
@@ -78,23 +81,45 @@ export function LockMonthSelector({
   }, [currentMonths, setMonths]);
 
   return (
-    <select
-      value={months}
-      onChange={(e) => setMonths(parseInt(e.target.value))}
-    >
-      {validMonths.map((month) => {
-        const multiplier = batchHelpers.calculateBalanceVotingPower({
-          balance: BigInt(ONE_NS_RAW),
-          months: month,
+    <div className="dummy-table">
+      <div className="table-header">
+        <div>Selection</div>
+        <div>Vote Multiplier</div>
+        <div>Votes</div>
+      </div>
+
+      {validMonths.map((monthSelection) => {
+        const power = batchHelpers.calculateBalanceVotingPower({
+          balance,
+          months: monthSelection,
           mode: "lock",
         });
-        const multiplierStr = (Number(multiplier) / ONE_NS_RAW).toFixed(2);
+        const multiplier =
+          Number(
+            batchHelpers.calculateBalanceVotingPower({
+              balance: BigInt(ONE_NS_RAW),
+              months: monthSelection,
+              mode: "lock",
+            }),
+          ) / ONE_NS_RAW;
+        const days = monthSelection * 30;
         return (
-          <option key={month} value={month}>
-            {month * 30} days ({multiplierStr}x)
-          </option>
+          <div key={monthSelection} className="table-row">
+            <div>
+              <label>
+                <input
+                  type="radio"
+                  checked={monthSelection === months}
+                  onChange={() => setMonths(monthSelection)}
+                />
+                {days} days
+              </label>
+            </div>
+            <div>{multiplier.toFixed(2)}x</div>
+            <div>{formatNSBalance(power)}</div>
+          </div>
         );
       })}
-    </select>
+    </div>
   );
 }
