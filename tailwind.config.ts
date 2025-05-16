@@ -3,7 +3,79 @@ const tailwindConfig = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
-      // TYPOGRAPHY
+      colors: {
+        primary: {
+          main: "#FFFFFF",
+          inactive: "#62519C",
+          dark: "#241D3D",
+          darker: "#221C36",
+        },
+        secondary: "#DAD0FF",
+        tertiary: "#6E609F",
+        link: "#D348FF",
+        semantic: {
+          good: "#4BFF6A",
+          warning: "#F2BD24",
+          issue: "#EB5A29",
+        },
+        bg: {
+          primary: "#221C36",
+          primary_dark: "#1A142E",
+          secondary: "#332C4E",
+          secondary_highlight: "#62519C",
+          good: "#4BFF6A",
+          warning: "#F2BD24",
+          issue: "#EB5A29",
+          blue: "#4CA2FF",
+        },
+      },
+      spacing: {
+        "5xl": "6.25rem",
+        "4xl": "5rem",
+        "3xl": "2.5rem",
+        "2xl": "2rem",
+        xl: "1.5rem",
+        l: "1.25rem",
+        m: "1rem",
+        s: "0.75rem",
+        xs: "0.5rem",
+        "2xs": "0.25rem",
+        none: "0rem",
+      },
+      borderRadius: {
+        xl: "2.5rem",
+        l: "2rem",
+        m: "1.5rem",
+        s: "1.25rem",
+        xs: "0.75rem",
+        "2xs": "0.375rem",
+      },
+      backgroundImage: {
+        gradient: {
+          green: "linear-gradient(90deg, #00FF87, #60FFCA)",
+          pink: "linear-gradient(90deg, #FF00C7, #FF85DD)",
+          orange: "linear-gradient(90deg, #FFA500, #FFCC70)",
+          blue: "linear-gradient(90deg, #00A2FF, #60CCFF)",
+          pink_green: "linear-gradient(90deg, #FF00C7, #00FF87)",
+          green_pink_blue: "linear-gradient(90deg, #00FF87, #FF00C7, #00A2FF)",
+          green_blue_pink: "linear-gradient(90deg, #00FF87, #00A2FF, #FF00C7)",
+          green_orange_pink_blue:
+            "linear-gradient(90deg, #00FF87, #FFA500, #FF00C7, #00A2FF)",
+        },
+        button: {
+          pink_green: "linear-gradient(90deg, #FF00C7, #00FF87)",
+          orange_pink_blue: "linear-gradient(90deg, #FFA500, #FF00C7, #00A2FF)",
+          green_orange_pink:
+            "linear-gradient(90deg, #00FF87, #FFA500, #FF00C7)",
+        },
+        bg: {
+          purples: "linear-gradient(90deg, #221C36, #332C4E)",
+          transparent: "transparent",
+        },
+      },
+      blur: {
+        high: "2.5rem",
+      },
       fontFamily: {
         main: ["Inter Tight", "sans-serif"],
         highlight: ["TWK Everett", "sans-serif"],

@@ -1,37 +1,41 @@
 import Discord from "@/icons/Discord";
 import Twitter from "@/icons/Twitter";
-import { Text } from "@/components/ui.legacy/Text";
 import Link from "next/link";
-import { DISCORD_URL, PRIVACY_POLICY_URL, X_URL } from "@/constants/urls";
+import {
+  DISCORD_URL,
+  PRIVACY_POLICY_URL,
+  TERMS_AND_CONDITIONS_URL,
+  X_URL,
+} from "@/constants/urls";
+import Typography from "../ui/typography";
 
 export function FooterLinks() {
   return (
-    <div className="flex flex-col items-center gap-2024_3XL lg:flex-row">
-      <div className="flex gap-2024_3XL">
+    <div className="gap-3xl flex flex-col items-center lg:flex-row">
+      <div className="gap-3xl flex">
         <Link href={DISCORD_URL} target="_blank">
-          <Discord className="h-[24px] w-[24px] fill-2024_fillContent-primary" />
+          <Discord className="fill-primary-main h-[1.5rem] w-[1.5rem]" />
         </Link>
         <Link href={X_URL} target="_blank">
-          <Twitter className="h-[24px] w-[24px] text-2024_fillContent-primary" />
+          <Twitter className="text-primary-main h-[1.5rem] w-[1.5rem]" />
         </Link>
       </div>
-      <div className="flex gap-2024_3XL">
-        <Link
-          href="https://suins.io/terms-and-conditions"
-          target="_blank"
-          className="hover:text-2024_fillContent-primary hover:underline"
-        >
-          <Text variant="B6/bold" color="fillContent-primary">
+      <div className="gap-3xl flex">
+        <Link href={TERMS_AND_CONDITIONS_URL}>
+          <Typography
+            variant="label/Small Bold"
+            className="text-primary-main hover:text-secondary hover:underline"
+          >
             Terms of Service
-          </Text>
+          </Typography>
         </Link>
-        <Link
-          href={PRIVACY_POLICY_URL}
-          className="hover:text-2024_fillContent-primary hover:underline"
-        >
-          <Text variant="B6/bold" color="fillContent-primary">
+        <Link href={PRIVACY_POLICY_URL}>
+          <Typography
+            variant="label/Small Bold"
+            className="text-primary-main hover:text-secondary hover:underline"
+          >
             Privacy Policy
-          </Text>
+          </Typography>
         </Link>
       </div>
     </div>

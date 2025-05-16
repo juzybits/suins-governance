@@ -7,5 +7,6 @@ export const CONSTITUTION_URL =
 export const DISCORD_URL = "https://discord.gg/69te6EwCxN";
 export const PRIVACY_POLICY_URL =
   "https://mystenlabs.com/legal?content=privacy";
+export const TERMS_AND_CONDITIONS_URL = "https://suins.io/terms-and-conditions";
 export const TOKENOMICS_URL = "https://token.suins.io";
 export const X_URL = "https://twitter.com/suinsdapp";
