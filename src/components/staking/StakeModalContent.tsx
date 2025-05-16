@@ -52,11 +52,8 @@ function ModalStakeOrLockNewBatch({
 
   const { balance, amountErr, disableSubmit } = useMemo(() => {
     const balance = parseNSAmount(amount);
-    const amountErr =
-      amount === "" || balance >= MIN_BALANCE_RAW
-        ? ""
-        : `Minimum amount is ${formatNSBalance(MIN_BALANCE_RAW)} NS`;
-    const disableSubmit = !amount || !!amountErr;
+    const amountErr = amount !== "" && balance < MIN_BALANCE_RAW;
+    const disableSubmit = !amount || amountErr;
     return { balance, amountErr, disableSubmit };
   }, [amount]);
 
@@ -87,7 +84,11 @@ function ModalStakeOrLockNewBatch({
           placeholder="0.0"
         />
         /{formatNSBalance(availableNS)} NS
-        {amountErr && <div className="error">{amountErr}</div>}
+        {
+          <div
+            className={amountErr ? "error" : "info"}
+          >{`Minimum amount required to stake or lock is ${formatNSBalance(MIN_BALANCE_RAW)} NS`}</div>
+        }
       </div>
 
       <h3>Stake Tokens</h3>

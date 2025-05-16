@@ -96,6 +96,10 @@
   text-align: left;
 }
 
+.dummy-ui .info {
+  font-size: 0.8em;
+}
+
 .dummy-ui .error {
   color: red;
   font-size: 0.8em;
