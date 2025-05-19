@@ -23,7 +23,7 @@ const tailwindConfig = {
           primary_dark: "#1A142E",
           secondary: "#332C4E",
           secondary_highlight: "#62519C",
-          good: "#4BFF6A",
+          good: "#4BFFA6",
           warning: "#F2BD24",
           issue: "#EB5A29",
           blue: "#4CA2FF",
@@ -41,6 +41,7 @@ const tailwindConfig = {
         xs: "0.5rem",
         "2xs": "0.25rem",
         none: "0rem",
+        page_max_width: "80rem",
       },
       borderRadius: {
         xl: "2.5rem",
@@ -62,12 +63,14 @@ const tailwindConfig = {
           green_orange_pink_blue:
             "linear-gradient(90deg, #00FF87, #FFA500, #FF00C7, #00A2FF)",
         },
-        button: {
-          pink_green: "linear-gradient(90deg, #FF00C7, #00FF87)",
-          orange_pink_blue: "linear-gradient(90deg, #FFA500, #FF00C7, #00A2FF)",
-          green_orange_pink:
-            "linear-gradient(90deg, #00FF87, #FFA500, #FF00C7)",
-        },
+        button_pink_green:
+          "linear-gradient(311.01deg, #4BFFA6 10.89%, #D34BFF 97.88%)",
+        button_orange_pink_blue:
+          "linear-gradient(92.74deg, #FF794B -10.3%, #D962FF 45.29%, #4CA2FF 100%)",
+        button_green_orange_pink:
+          "linear-gradient(92.74deg, #4BFFA6 -10.3%, #FF794B 51.54%, #D962FF 100%)",
+        stroke_green_blue_pink:
+          "linear-gradient(90deg, #4BFFA6 0%, #4CA2FF 50.31%, #D34BFF 100%)",
         bg: {
           purples: "linear-gradient(90deg, #221C36, #332C4E)",
           transparent: "transparent",

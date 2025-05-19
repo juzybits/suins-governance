@@ -2,7 +2,7 @@ import * as RadixCheckbox from "@radix-ui/react-checkbox";
 import type { ComponentProps, ReactNode } from "react";
 import { forwardRef } from "react";
 
-import SvgCheckStroke16 from "@/icons/CheckStroke16";
+import SvgCheckStroke16 from "@/icons/legacy/CheckStroke16";
 
 type CheckboxProps = {
   id: string;

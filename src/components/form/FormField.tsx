@@ -2,7 +2,7 @@ import clsx from "clsx";
 import React, { type ReactNode } from "react";
 import { useFormContext } from "react-hook-form";
 
-import SvgOutlineExclamationCircle from "@/icons/OutlineExclamationCircle";
+import SvgOutlineExclamationCircle from "@/icons/legacy/OutlineExclamationCircle";
 
 export function FormFieldError({
   name,

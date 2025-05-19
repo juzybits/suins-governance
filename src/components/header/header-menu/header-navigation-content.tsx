@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 
-import { FooterLinks } from "@/components/footer/FooterLinks";
-import { MENU_OVERLAY_ANIMATIONS_DURATION } from "@/components/ui.legacy/MobileMenuOverlay";
-import { Text } from "@/components/ui.legacy/Text";
-import { ButtonOrLink } from "@/components/ui.legacy/utils/ButtonOrLink";
+import { FooterLinks } from "@/components/footer/footer-links";
+import { MENU_OVERLAY_ANIMATIONS_DURATION } from "@/components/ui/legacy/MobileMenuOverlay";
+import { Text } from "@/components/ui/legacy/Text";
+import { ButtonOrLink } from "@/components/ui/legacy/utils/ButtonOrLink";
 import { cn } from "@/utils/cn";
 import {
   CLAIM_AEON_URL,
@@ -12,6 +12,7 @@ import {
   CONSTITUTION_URL,
   TOKENOMICS_URL,
 } from "@/constants/urls";
+import { type MenuContentButtonProps } from "../header.types";
 
 const CONTENT_INITIAL_ANIMATIONS = {
   opacity: 0,
@@ -23,44 +24,20 @@ const CONTENT_ANIMATIONS = {
   y: 0,
 };
 
-interface MenuContentButtonProps {
-  title: string;
-  to?: string;
-  href?: string;
-  target?: string;
-}
-
 function MenuContentButton({
-  title,
   to,
   href,
+  title,
   target,
 }: MenuContentButtonProps) {
-  const [isClicked, setIsClicked] = useState(false);
-  const handleStart = () => {
-    setIsClicked(true);
-  };
-
-  const handleEnd = () => {
-    setIsClicked(false);
-  };
-
   return (
     <ButtonOrLink
-      className={cn(
-        "p-2024_L py-2024_M text-start transition-all hover:rounded-16 hover:bg-[#2d2743]",
-        {
-          "bg-transparent": !isClicked,
-          "bg-[#2d2743]": isClicked,
-        },
-      )}
       to={to}
       href={href}
       target={target}
-      onMouseDown={handleStart}
-      onMouseUp={handleEnd}
-      onTouchStart={handleStart}
-      onTouchEnd={handleEnd}
+      className={
+        "rounded-xs px-l py-m text-start transition-all hover:bg-bg-secondary"
+      }
     >
       <Text variant="Large/regular">{title}</Text>
     </ButtonOrLink>
@@ -71,7 +48,7 @@ export function NavigationContent() {
   return (
     <div className="flex h-full flex-col items-end">
       <motion.section
-        className="flex w-full flex-col gap-2024_S divide-y divide-2024_fillContent-tertiary/40 rounded-2024_R border-2 border-2024_fillContent-tertiary bg-2024_fillBackground-primary p-2024_M md:w-[280px]"
+        className="flex w-full flex-col gap-s divide-y divide-tertiary/40 rounded-m border-2 border-tertiary bg-bg-primary_dark p-m text-primary-main md:w-[280px]"
         initial={CONTENT_INITIAL_ANIMATIONS}
         exit={CONTENT_INITIAL_ANIMATIONS}
         animate={{
@@ -96,7 +73,7 @@ export function NavigationContent() {
             target="_blank"
           />
         </div>
-        <div className="flex h-full flex-col gap-0 pt-2024_S">
+        <div className="flex h-full flex-col gap-0 pt-xs">
           <MenuContentButton title="SuiNS Governance Voting" to="/vote" />
           <MenuContentButton
             title="SuiNS Constitution"
@@ -104,10 +81,10 @@ export function NavigationContent() {
             target="_blank"
           />
         </div>
-        <div className="flex h-full flex-col gap-0 pt-2024_S">
+        <div className="flex h-full flex-col gap-0 pt-xs">
           <MenuContentButton title="SuiNS Staking" to="/stake" />
         </div>
-        <div className="flex h-full flex-col gap-0 pt-2024_S">
+        <div className="flex h-full flex-col gap-0 pt-xs">
           <MenuContentButton
             title="Claim Aeon NFT"
             href={CLAIM_AEON_URL}

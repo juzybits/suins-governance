@@ -1,7 +1,7 @@
 import { cn } from "@/utils/cn";
 
-import SvgSuinsFallbackAvatar from "@/icons/SuinsFallbackAvatar";
-import { CustomImage } from "@/components/ui.legacy/CustomImage";
+import SvgSuinsFallbackAvatar from "@/icons/legacy/SuinsFallbackAvatar";
+import { CustomImage } from "@/components/ui/legacy/CustomImage";
 import { useGetAccountInfo } from "@/hooks/useGetAccountInfo";
 
 export function Avatar({

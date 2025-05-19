@@ -1,36 +1,10 @@
-import { cva, type VariantProps } from "class-variance-authority";
+import SvgSuinsStakingLogoFill from "@/icons/legacy/SuinsStakingLogoFill";
 
-import SvgSuinsLogoFill from "@/icons/SuinsLogoFill";
-import SvgSuinsLogoOutline from "@/icons/SuinsLogoOutline";
-
-const logoStyles = cva(["w-[104px]"], {
-  variants: {
-    variant: {
-      fill: "text-2024_fillContent-primary",
-      fillSecondary: "text-2024_fillContent-secondary",
-      outline: "text-2024_fillContent-primary",
-    },
-  },
-  defaultVariants: {
-    variant: "fill",
-  },
-});
-
-export interface SuiNSLogoProps extends VariantProps<typeof logoStyles> {
+export interface SuiNSLogoProps {
   className?: string;
   children?: never;
 }
 
-export function SuiNSLogo({ variant, className }: SuiNSLogoProps) {
-  if (variant === "outline") {
-    return (
-      <SvgSuinsLogoOutline className={logoStyles({ variant, className })} />
-    );
-  }
-  return (
-    <SvgSuinsLogoFill
-      className={logoStyles({ variant, className })}
-      fill="#FFF"
-    />
-  );
+export function SuiNSLogo({ className }: SuiNSLogoProps) {
+  return <SvgSuinsStakingLogoFill className={className} />;
 }

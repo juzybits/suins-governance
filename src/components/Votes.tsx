@@ -1,8 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
-import { Heading } from "@/components/ui.legacy/Heading";
-import { Text } from "@/components/ui.legacy/Text";
+import { Heading } from "@/components/ui/legacy/Heading";
+import { Text } from "@/components/ui/legacy/Text";
 import { formatAddress } from "@mysten/sui/utils";
 import { useGetAllVotersDfs } from "@/hooks/useGetAllVotersDfs";
 
@@ -15,21 +15,21 @@ import { Avatar } from "@/components/Avatar";
 import { useGetAccountInfo } from "@/hooks/useGetAccountInfo";
 import { useExplorerLink } from "@/hooks/useExplorerLink";
 import { formatName } from "@/utils/common";
-import Loader from "./ui.legacy/Loader";
+import Loader from "./ui/legacy/Loader";
 import {
   useGetVoteCastedByVoterId,
   getVoteTypeWithMostVotes,
 } from "@/hooks/useGetVoteCasted";
-import { VoteIndicator } from "@/components/ui.legacy/VoteIndicator";
-import { NSAmount } from "./ui.legacy/NSAmount";
+import { VoteIndicator } from "@/components/ui/legacy/VoteIndicator";
+import { NSAmount } from "./ui/legacy/NSAmount";
 import { GradientBorder } from "./gradient-border";
-import { Divide } from "@/components/ui.legacy/Divide";
+import { Divide } from "@/components/ui/legacy/Divide";
 import { useState } from "react";
 import { truncatedText } from "@/utils/truncatedText";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { useCursorPagination } from "@/hooks/useCursorPagination";
-import SvgPaginationNext24 from "@/icons/PaginationNext24";
-import SvgPaginationPrev24 from "@/icons/PaginationPrev24";
+import SvgPaginationNext24 from "@/icons/legacy/PaginationNext24";
+import SvgPaginationPrev24 from "@/icons/legacy/PaginationPrev24";
 import { cn } from "@/utils/cn";
 import { useIsPersonVote } from "@/hooks/useIsPersonVote";
 const PAGE_SIZE = 10;

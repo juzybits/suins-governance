@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { PanelRecentProposals } from "@/components/staking/PanelRecentProposals";
 import { useCurrentAccount, useCurrentWallet } from "@mysten/dapp-kit";
-import { ConnectWalletButton } from "../WalletConnet/ConnectWallet";
+import { ConnectWalletButton } from "../wallet/connect-wallet-button";
 
 export function HomeContent() {
   return (

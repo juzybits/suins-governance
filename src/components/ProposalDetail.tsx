@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { Text } from "@/components/ui.legacy/Text";
+import { Text } from "@/components/ui/legacy/Text";
 import { CountDownTimer } from "./CountDownTimer";
 import { SectionLayout } from "./SectionLayout";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { format, isPast } from "date-fns";
 import { useExplorerLink } from "@/hooks/useExplorerLink";
-import SvgArrowUpLeft16 from "@/icons/ArrowUpLeft16";
+import SvgArrowUpLeft16 from "@/icons/legacy/ArrowUpLeft16";
 
 export function ProposalDetail({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });

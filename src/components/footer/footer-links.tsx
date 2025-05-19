@@ -1,5 +1,5 @@
-import Discord from "@/icons/Discord";
-import Twitter from "@/icons/Twitter";
+import Discord from "@/icons/legacy/Discord";
+import Twitter from "@/icons/legacy/Twitter";
 import Link from "next/link";
 import {
   DISCORD_URL,
@@ -11,16 +11,16 @@ import Typography from "../ui/typography";
 
 export function FooterLinks() {
   return (
-    <div className="gap-3xl flex flex-col items-center lg:flex-row">
-      <div className="gap-3xl flex">
+    <div className="flex flex-col items-center gap-3xl lg:flex-row">
+      <div className="flex gap-3xl">
         <Link href={DISCORD_URL} target="_blank">
-          <Discord className="fill-primary-main h-[1.5rem] w-[1.5rem]" />
+          <Discord className="h-[1.5rem] w-[1.5rem] fill-primary-main" />
         </Link>
         <Link href={X_URL} target="_blank">
-          <Twitter className="text-primary-main h-[1.5rem] w-[1.5rem]" />
+          <Twitter className="h-[1.5rem] w-[1.5rem] text-primary-main" />
         </Link>
       </div>
-      <div className="gap-3xl flex">
+      <div className="flex gap-3xl">
         <Link href={TERMS_AND_CONDITIONS_URL}>
           <Typography
             variant="label/Small Bold"

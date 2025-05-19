@@ -15,9 +15,11 @@ const colorsMap = {
 };
 
 type BaseGradientBorderProps = HTMLAttributes<HTMLDivElement> & {
+  bg?: string;
   style?: CSSProperties;
   animateOnHover?: boolean;
   alwaysAnimate?: boolean;
+  colorsOnHover?: string[];
   animationSpeed?: number;
 };
 
@@ -37,17 +39,19 @@ export type GradientBorderProps = BaseGradientBorderProps &
 export const GradientBorder = forwardRef<HTMLDivElement, GradientBorderProps>(
   (
     {
-      className,
-      variant,
-      colors,
+      bg,
       style,
-      animateOnHover,
-      alwaysAnimate,
-      animationSpeed = 1,
+      colors,
+      variant,
+      className,
       onMouseEnter,
       onMouseLeave,
+      alwaysAnimate,
+      colorsOnHover,
+      animateOnHover,
+      animationSpeed = 1,
       ...props
-    }: GradientBorderProps,
+    },
     ref,
   ) => {
     const [isMouseOver, setIsMouseOver] = useState(false);
@@ -71,8 +75,8 @@ export const GradientBorder = forwardRef<HTMLDivElement, GradientBorderProps>(
           onMouseLeave?.(e);
         }}
         style={{
-          backgroundImage: `linear-gradient(#221c36 0 0),
-          conic-gradient(from var(--angle), ${colorsToUse.join(", ")})`,
+          backgroundImage: `linear-gradient(${bg ?? "#221c36"} 0 0),
+          conic-gradient(from var(--angle), ${(isMouseOver ? (colorsOnHover ?? colorsToUse) : colorsToUse).join(", ")})`,
           ...(alwaysAnimate || (animateOnHover && isMouseOver)
             ? animation
             : {}),

@@ -5,7 +5,7 @@ import { type ReactNode } from "react";
 
 import styles from "./styles.module.css";
 
-import Loader from "@/components/ui.legacy/Loader";
+import Loader from "@/components/ui/legacy/Loader";
 import { GradientBorder } from "@/components/gradient-border"; // gradient-fill-buttons/orange_pink_blue
 import React from "react";
 import Link from "next/link";

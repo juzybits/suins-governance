@@ -1,14 +1,12 @@
 import "@mysten/dapp-kit/dist/index.css";
 import "@/styles/globals.css";
-import "@/components/ui.legacy/dummy-ui/dummy-ui.css";
+import "@/components/ui/legacy/dummy-ui/dummy-ui.css";
 import { type ReactNode } from "react";
 import { type Metadata } from "next";
-import { twkEverett, inter, redHatMono } from "@/fonts";
 import { Providers } from "@/app/Providers";
-import clsx from "clsx";
-import { Header } from "@/components/header/Header";
+import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { Toast } from "@/components/ui.legacy/Toast";
+import { Toast } from "@/components/ui/legacy/Toast";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export const metadata: Metadata = {
@@ -24,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-bg-primary_dark">
         <Providers>
-          <main className="gap-xl flex flex-col">
+          <main className="flex flex-col gap-xl">
             <Header />
             {children}
             <div className="bg-2024_gradient-fill-background-purple px-2024_XL py-2024_3XL flex w-full justify-center">

@@ -4,11 +4,11 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 import { SectionLayout } from "@/components/SectionLayout";
-import { Button } from "@/components/ui.legacy/button/Button";
+import { Button } from "@/components/ui/legacy/button/Button";
 import { GradientBorder } from "./gradient-border";
-import { VoteIndicator } from "./ui.legacy/VoteIndicator";
-import { Text } from "@/components/ui.legacy/Text";
-import NSToken from "@/icons/NSToken";
+import { VoteIndicator } from "./ui/legacy/VoteIndicator";
+import { Text } from "@/components/ui/legacy/Text";
+import NSToken from "@/icons/legacy/NSToken";
 import { useVoteMutation } from "@/hooks/useVoteMutation";
 import { useZodForm } from "@/hooks/useZodForm";
 import { Form } from "@/components/form/Form";

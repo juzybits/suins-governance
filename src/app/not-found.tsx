@@ -1,4 +1,4 @@
-import { Heading } from "@/components/ui.legacy/Heading";
+import { Heading } from "@/components/ui/legacy/Heading";
 
 export default function NotFound() {
   return (

@@ -9,7 +9,7 @@ import {
 } from "@/hooks/dev/useDevHooks";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { Suspense } from "react";
-import Loader from "@/components/ui.legacy/Loader";
+import Loader from "@/components/ui/legacy/Loader";
 import NotFound from "@/app/not-found";
 
 /**

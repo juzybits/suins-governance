@@ -1,3 +1,4 @@
+import { useMenuContentContext } from "@/context/menu";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect } from "react";
 import type { ReactNode } from "react";
@@ -18,19 +19,18 @@ const MENU_OVERLAY_INITIAL_ANIMATIONS = {
 export const MENU_OVERLAY_ANIMATIONS_DURATION = 0.2;
 
 export function MobileMenuOverlay({ open, children }: MobileMenuOverlayProps) {
+  const { setOpen, setContent } = useMenuContentContext();
+
   useEffect(() => {
-    if (open) {
-      lock();
-    } else {
-      unlock();
-    }
+    if (open) lock();
+    else unlock();
   }, [open]);
 
   return (
     <AnimatePresence>
       {open && (
         <motion.section
-          className="fixed bottom-0 left-0 right-0 top-0 z-50 bg-purple-800/100 px-2024_L pb-2024_4XL pt-[92px] sm:bg-purple-800/0"
+          className="px-2024_L pb-2024_4XL fixed inset-0 z-50 bg-purple-800/100 pt-[92px] sm:bg-purple-800/0"
           initial={MENU_OVERLAY_INITIAL_ANIMATIONS}
           animate={{
             y: 0,
@@ -47,6 +47,10 @@ export function MobileMenuOverlay({ open, children }: MobileMenuOverlayProps) {
               ease: easingValue,
               delay: MENU_OVERLAY_ANIMATIONS_DURATION,
             },
+          }}
+          onClick={() => {
+            setOpen(false);
+            setContent(null);
           }}
         >
           {children}

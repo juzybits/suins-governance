@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { Text } from "@/components/ui.legacy/Text";
+import { Text } from "@/components/ui/legacy/Text";
 
 export function ProposalStatus({
   status,

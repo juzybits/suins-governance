@@ -2,7 +2,7 @@
 
 import { ProposalContent } from "@/components/ProposalContent";
 import { Suspense } from "react";
-import Loader from "@/components/ui.legacy/Loader";
+import Loader from "@/components/ui/legacy/Loader";
 import { useGetProposalIds } from "@/hooks/useGetProposalIds";
 
 export default function VotePage() {

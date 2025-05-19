@@ -9,23 +9,23 @@ import {
 import Link from "next/link";
 
 import { isPast } from "date-fns";
-import SvgChevronDown from "@/icons/ChevronDown";
-import SvgChevronRight from "@/icons/ChevronRight";
-import FileText from "@/icons/FileText";
+import SvgChevronDown from "@/icons/legacy/ChevronDown";
+import SvgChevronRight from "@/icons/legacy/ChevronRight";
+import FileText from "@/icons/legacy/FileText";
 
 import { motion } from "framer-motion";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 import { useGetProposalIds } from "@/hooks/useGetProposalIds";
-import { ProposalStatus } from "./ui.legacy/ProposalStatus";
+import { ProposalStatus } from "./ui/legacy/ProposalStatus";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
-import { Text } from "@/components/ui.legacy/Text";
+import { Text } from "@/components/ui/legacy/Text";
 import { GradientBorder } from "./gradient-border";
-import { Heading } from "./ui.legacy/Heading";
-import { Divide } from "@/components/ui.legacy/Divide";
+import { Heading } from "./ui/legacy/Heading";
+import { Divide } from "@/components/ui/legacy/Divide";
 import { truncatedText } from "@/utils/truncatedText";
-import Loader from "./ui.legacy/Loader";
+import Loader from "./ui/legacy/Loader";
 import { formatContractText } from "@/utils/formatContractText";
-import { ContentBlockParser } from "./ui.legacy/ContentBlockParser";
+import { ContentBlockParser } from "./ui/legacy/ContentBlockParser";
 import { useParams } from "next/navigation";
 import { useIsPersonVote } from "@/hooks/useIsPersonVote";
 function ProposalPreview({

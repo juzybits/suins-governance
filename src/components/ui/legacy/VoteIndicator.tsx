@@ -1,10 +1,10 @@
 import clsx from "clsx";
 
-import SvgLocked from "@/icons/Locked";
-import SvgXFill16 from "@/icons/XFill16";
-import SvgCheckFill24 from "@/icons/CheckFill24";
-import SvgPersonIcon from "@/icons/PersonIcon";
-import { Text } from "@/components/ui.legacy/Text";
+import SvgLocked from "@/icons/legacy/Locked";
+import SvgXFill16 from "@/icons/legacy/XFill16";
+import SvgCheckFill24 from "@/icons/legacy/CheckFill24";
+import SvgPersonIcon from "@/icons/legacy/PersonIcon";
+import { Text } from "@/components/ui/legacy/Text";
 
 export function VoteIndicator({
   votedStatus,

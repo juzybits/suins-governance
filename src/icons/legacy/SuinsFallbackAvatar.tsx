@@ -1,13 +1,6 @@
 import type { SVGProps } from "react";
 const SvgSuinsFallbackAvatar = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="1em"
-    height="1em"
-    fill="none"
-    viewBox="0 0 48 48"
-    {...props}
-  >
+  <svg fill="none" viewBox="0 0 48 48" {...props}>
     <g clipPath="url(#suins-fallback-avatar_svg__a)">
       <rect width={48} height={48} fill="#62519C" rx={24} />
       <g

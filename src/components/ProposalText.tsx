@@ -1,15 +1,15 @@
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 
-import { Heading } from "@/components/ui.legacy/Heading";
-import { Text } from "@/components/ui.legacy/Text";
+import { Heading } from "@/components/ui/legacy/Heading";
+import { Text } from "@/components/ui/legacy/Text";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
-import { ProposalStatus } from "./ui.legacy/ProposalStatus";
-import { Button } from "./ui.legacy/button/Button";
+import { ProposalStatus } from "./ui/legacy/ProposalStatus";
+import { Button } from "./ui/legacy/button/Button";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { isPast } from "date-fns";
 import { formatContractText } from "@/utils/formatContractText";
-import { ContentBlockParser } from "./ui.legacy/ContentBlockParser";
+import { ContentBlockParser } from "./ui/legacy/ContentBlockParser";
 import { useIsPersonVote } from "@/hooks/useIsPersonVote";
 
 export function ProposalText({ proposalId }: { proposalId: string }) {

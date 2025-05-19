@@ -3,7 +3,7 @@ import { type FocusEvent, forwardRef, type HTMLAttributes } from "react";
 
 import { GradientBorder } from "@/components/gradient-border";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
-import { Text } from "@/components/ui.legacy/Text";
+import { Text } from "@/components/ui/legacy/Text";
 
 type SearchProps = HTMLAttributes<HTMLInputElement> & {
   clearable?: boolean;
