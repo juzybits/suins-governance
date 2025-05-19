@@ -28,20 +28,21 @@ export const textVariants = cva("", {
       "heading/Regular Medium":
         "font-highlight text-3xl leading-xl tracking-normal font-[500]",
       "heading/Regular Regular":
-        "font-highlight text-3xl leading-xl tracking-normal",
+        "font-highlight text-3xl leading-xl tracking-normal font-[400]",
       "heading/Small Bold":
         "font-highlight text-2xl leading-2xl tracking-normal font-[700]",
       "heading/Small Medium":
         "font-highlight text-2xl leading-2xl tracking-normal font-[500]",
       "heading/Small Regular":
-        "font-highlight text-2xl leading-2xl tracking-normal",
+        "font-highlight text-2xl leading-2xl tracking-normal font-[400]",
       "heading/XSmall Medium":
         "font-highlight text-xl leading-xl tracking-normal font-[500]",
       "label/Large Bold":
         "font-main text-l leading-xs tracking-wide font-[700]",
       "label/Large Medium":
         "font-main text-l leading-xs tracking-wide font-[500]",
-      "label/Large Regular": "font-main text-l leading-xs tracking-wide",
+      "label/Large Regular":
+        "font-main text-l leading-xs tracking-wide font-[400]",
       "label/Regular Bold":
         "font-main text-m leading-2xs tracking-wide font-[700]",
       "label/Regular Bold Mono":
@@ -54,15 +55,20 @@ export const textVariants = cva("", {
         "font-mono text-s leading-3xs tracking-wide font-[500]",
       "label/XSmall SemiBold":
         "font-main text-xs leading-4xs tracking-wide font-[600]",
-      "paragraph/XLarge": "font-main text-4xl leading-5xl tracking-normal",
-      "paragraph/Large": "font-main text-l leading-l tracking-normal",
+      "paragraph/XLarge":
+        "font-main text-4xl leading-5xl tracking-normal font-[400]",
+      "paragraph/Large":
+        "font-main text-l leading-l tracking-normal font-[400]",
       "paragraph/Large Link":
-        "font-main text-l leading-l tracking-normal underline",
-      "paragraph/Regular": "font-main text-m leading-m tracking-normal",
+        "font-main text-l leading-l tracking-normal underline font-[400]",
+      "paragraph/Regular":
+        "font-main text-m leading-m tracking-normal font-[400]",
       "paragraph/Regular Link":
-        "font-main text-m leading-m tracking-normal underline",
-      "paragraph/Small": "font-main text-s leading-s tracking-normal",
-      "paragraph/XSmall": "font-main text-xs leading-xs tracking-normal",
+        "font-main text-m leading-m tracking-normal underline font-[400]",
+      "paragraph/Small":
+        "font-main text-s leading-s tracking-normal  font-[400]",
+      "paragraph/XSmall":
+        "font-main text-xs leading-xs tracking-normal  font-[400]",
     },
   },
   defaultVariants: {

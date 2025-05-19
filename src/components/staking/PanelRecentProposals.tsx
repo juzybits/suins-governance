@@ -10,6 +10,7 @@ import {
   type UserProposalStats,
 } from "@/hooks/useGetUserStats";
 import { VotingStatus } from "@/components/VotingStatus";
+import Typography from "../ui/typography";
 
 export function PanelRecentProposals() {
   const currAcct = useCurrentAccount();
@@ -19,9 +20,7 @@ export function PanelRecentProposals() {
     proposalIds: proposals?.map((proposal) => proposal.fields.id.id),
   });
 
-  if (proposals === undefined || userStats === undefined) {
-    return null;
-  }
+  if (proposals === undefined) return null;
 
   // group proposals into in-progress and ended
   let openProposals: ProposalObjResp[] = [];
@@ -42,43 +41,66 @@ export function PanelRecentProposals() {
   }
 
   return (
-    <div className="panel">
-      <h2>Recent Proposals</h2>
-      {proposals.length === 0 && <p>No proposals yet</p>}
-      {openProposals.length > 0 && (
-        <>
-          <h3>--- VOTING IN PROGRESS ---</h3>
-          {openProposals.map((proposal) => (
-            <CardProposalSummary
-              key={proposal.fields.id.id}
-              proposal={proposal}
-              userStats={userStats?.proposalStats.find(
-                (stat) => stat.proposalId === proposal.fields.id.id,
-              )}
-            />
-          ))}
-        </>
-      )}
-      {closedProposals.length > 0 && (
-        <>
-          <h3>--- VOTING ENDED ---</h3>
-          {closedProposals.map((proposal) => (
-            <CardProposalSummary
-              key={proposal.fields.id.id}
-              proposal={proposal}
-              userStats={userStats?.proposalStats.find(
-                (stat) => stat.proposalId === proposal.fields.id.id,
-              )}
-            />
-          ))}
-        </>
-      )}
-      {userStats.totalReward > 0n && (
-        <div>
-          <h2>Your Lifetime Rewards:</h2>
-          <p>{formatNSBalance(userStats.totalReward)}</p>
-        </div>
-      )}
+    <div className="flex flex-col items-center gap-2xl">
+      <h2 className="all-unset">
+        <Typography
+          variant="display/XSmall"
+          className="flex text-center text-primary-main"
+        >
+          Recent Proposals
+        </Typography>
+      </h2>
+      <div className="w-full max-w-[56rem] rounded-m bg-[#62519C2E] p-m text-primary-main">
+        {proposals.length === 0 && <p>No proposals yet</p>}
+        {openProposals.length > 0 && (
+          <div className="flex flex-col gap-m">
+            <h3 className="all-unset">
+              <Typography
+                variant="label/Small Medium"
+                className="block text-center text-secondary"
+              >
+                VOTING IN PROGRESS
+              </Typography>
+            </h3>
+            {openProposals.map((proposal) => (
+              <CardProposalSummary
+                key={proposal.fields.id.id}
+                proposal={proposal}
+                userStats={userStats?.proposalStats.find(
+                  (stat) => stat.proposalId === proposal.fields.id.id,
+                )}
+              />
+            ))}
+          </div>
+        )}
+        {closedProposals.length > 0 && (
+          <div className="flex flex-col gap-m">
+            <h3 className="all-unset">
+              <Typography
+                variant="label/Small Medium"
+                className="block text-center text-secondary"
+              >
+                VOTING ENDED
+              </Typography>
+            </h3>
+            {closedProposals.map((proposal) => (
+              <CardProposalSummary
+                key={proposal.fields.id.id}
+                proposal={proposal}
+                userStats={userStats?.proposalStats.find(
+                  (stat) => stat.proposalId === proposal.fields.id.id,
+                )}
+              />
+            ))}
+          </div>
+        )}
+        {userStats && userStats.totalReward > 0n && (
+          <div>
+            <h2>Your Lifetime Rewards:</h2>
+            <p>{formatNSBalance(userStats.totalReward)}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -30,7 +30,7 @@ export function VoteProgressBar({
   )`;
 
   return (
-    <Progress.Root className="relative h-4 w-full overflow-hidden rounded-full bg-gray-800">
+    <Progress.Root className="relative h-3 w-full overflow-hidden rounded-full bg-gray-800">
       <motion.div
         initial={{ width: "0%" }}
         animate={{ width: `${votesCast}%` }}

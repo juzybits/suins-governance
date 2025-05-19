@@ -8,7 +8,7 @@ const SvgPersonIcon = (props: SVGProps<SVGSVGElement>) => (
     fill="none"
     {...props}
   >
-    <g clip-path="url(#clip0_2678_83831)">
+    <g clipPath="url(#clip0_2678_83831)">
       <path
         d="M12 14.25C14.2782 14.25 16.125 12.4032 16.125 10.125C16.125 7.84683 14.2782 6 12 6C9.72183 6 7.875 7.84683 7.875 10.125C7.875 12.4032 9.72183 14.25 12 14.25Z"
         fill="currentColor"

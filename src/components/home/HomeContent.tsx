@@ -1,17 +1,24 @@
 "use client";
 
-import Link from "next/link";
-import { PanelRecentProposals } from "@/components/staking/PanelRecentProposals";
 import { useCurrentAccount, useCurrentWallet } from "@mysten/dapp-kit";
 import { ConnectWalletButton } from "../wallet/connect-wallet-button";
+import Typography from "../ui/typography";
+import { HomeBg } from "./home-bg";
+import { HomeRecentProposals } from "./home-recent-proposals";
+import { Button } from "../ui/button";
+import StakeSVG from "@/icons/stake";
+import VoteSVG from "@/icons/vote";
 
 export function HomeContent() {
   return (
     <>
+      <HomeBg />
       <PanelHero />
-      <PanelRecentProposals />
-      <PanelNotes />
-      <PanelFAQ />
+      <HomeRecentProposals />
+      <div className="dummy-ui">
+        <PanelNotes />
+        <PanelFAQ />
+      </div>
     </>
   );
 }
@@ -22,21 +29,50 @@ function PanelHero() {
   const isLoggedOut = (!currAcct && !isConnecting) ?? isDisconnected;
 
   return (
-    <div className="panel">
-      <h1>Stake Your SuiNS Tokens & Earn Votes</h1>
-      <h2>
-        Participate in governance, earn rewards, and shape the future of SuiNS
-      </h2>
-      {isLoggedOut ? (
-        <>
-          <ConnectWalletButton />
-        </>
-      ) : (
-        <>
-          <Link href="/stake">Stake</Link>
-          <Link href="/vote">Vote</Link>
-        </>
-      )}
+    <div className="my-5xl pt-5xl">
+      <div className="flex flex-col items-center gap-xl">
+        <h1 className="all-unset">
+          <Typography
+            variant="display/XLarge"
+            className="flex max-w-[15ch] text-center text-primary-main"
+          >
+            Stake Your SuiNS Tokens & Earn Votes
+          </Typography>
+        </h1>
+        <h2 className="all-unset">
+          <Typography
+            variant="heading/Small Medium"
+            className="flex text-center text-secondary"
+          >
+            Participate in governance, earn rewards,
+            <br /> and shape the future of SuiNS
+          </Typography>
+        </h2>
+        {isLoggedOut ? (
+          <div>
+            <ConnectWalletButton variant="tall/gradientB" className="w-auto" />
+          </div>
+        ) : (
+          <div className="flex gap-s">
+            <Button
+              href="/stake"
+              className="bg-bg-good"
+              variant="solid/medium"
+              before={<StakeSVG width="100%" className="max-w-[1.25rem]" />}
+            >
+              <Typography variant="label/Large Bold">Stake</Typography>
+            </Button>
+            <Button
+              href="/vote"
+              className="bg-link"
+              variant="solid/medium"
+              before={<VoteSVG width="100%" className="max-w-[1.25rem]" />}
+            >
+              <Typography variant="label/Large Bold">Vote</Typography>
+            </Button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

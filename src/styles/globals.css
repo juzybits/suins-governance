@@ -118,3 +118,7 @@ input::-webkit-input-placeholder {
 .proposal-text ol {
   list-style-type: decimal;
 }
+
+.all-unset {
+  all: unset;
+}

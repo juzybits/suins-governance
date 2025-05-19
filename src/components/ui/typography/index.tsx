@@ -1,6 +1,6 @@
 import { type FC, type PropsWithChildren } from "react";
-import { type TypographyProps } from "./text.types";
-import { textVariants } from "./text.variants";
+import { type TypographyProps } from "./typography.types";
+import { textVariants } from "./typography.variants";
 
 const Typography: FC<
   PropsWithChildren<TypographyProps & Partial<Pick<HTMLElement, "className">>>

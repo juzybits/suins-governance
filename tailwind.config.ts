@@ -26,6 +26,7 @@ const tailwindConfig = {
           good: "#4BFFA6",
           warning: "#F2BD24",
           issue: "#EB5A29",
+          error: "#FF1D53",
           blue: "#4CA2FF",
         },
       },

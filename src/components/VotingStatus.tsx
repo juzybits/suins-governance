@@ -34,8 +34,8 @@ function MinimumThreshHold({
   );
 
   return (
-    <div className="flex w-full flex-col items-center justify-between gap-2024_R rounded-12 bg-2024_fillBackground-secondary-Highlight/40 px-2024_R py-2024_R">
-      <div className="flex w-full items-center justify-between gap-2024_R">
+    <div className="gap-2024_R rounded-12 bg-2024_fillBackground-secondary-Highlight/40 px-2024_R py-2024_R flex w-full flex-col items-center justify-between">
+      <div className="gap-2024_R flex w-full items-center justify-between">
         <Text
           variant="B6/bold"
           color="fillContent-primary"
@@ -43,7 +43,7 @@ function MinimumThreshHold({
         >
           Votes Cast
         </Text>
-        <div className="flex basis-1/5 items-center justify-end gap-2024_R">
+        <div className="gap-2024_R flex basis-1/5 items-center justify-end">
           <Text
             variant="P3/medium"
             color="fillContent-secondary"
@@ -72,7 +72,7 @@ function MinimumThreshHold({
         <Text
           variant="B7/regular"
           color="fillContent-secondary"
-          className="!tracking-tighter flex items-center font-paragraph"
+          className="font-paragraph flex items-center !tracking-tighter"
         >
           Minimum Voting Threshold:{" "}
           {formatBalance({
@@ -145,7 +145,13 @@ export function VotingState({
   );
 }
 
-export function VotingStatus({ proposalId }: { proposalId: string }) {
+export function VotingStatus({
+  proposalId,
+  progressOnly,
+}: {
+  proposalId: string;
+  progressOnly?: boolean;
+}) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
   const isPersonVote = useIsPersonVote(proposalId);
   const resp = data ? parseProposalVotes(data) : null;
@@ -156,6 +162,15 @@ export function VotingStatus({ proposalId }: { proposalId: string }) {
   });
 
   if (isLoading || !resp) return null;
+
+  if (progressOnly)
+    return (
+      <VoteProgressBar
+        yesVotes={stats.yesVotes}
+        noVotes={stats.noVotes}
+        abstainVotes={stats.abstainVotes}
+      />
+    );
 
   return (
     <SectionLayout title="Voting Status">

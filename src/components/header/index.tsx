@@ -19,6 +19,7 @@ import {
 import { HeaderMenuContent } from "./header-menu/header-menu-content";
 import LockSVG from "@/icons/lock";
 import StakeSVG from "@/icons/stake";
+import clsx from "clsx";
 
 export const Header: FC<HeaderProps> = ({ logoAction }) => {
   const pathname = usePathname();
@@ -35,12 +36,17 @@ export const Header: FC<HeaderProps> = ({ logoAction }) => {
         setContent: setMenuContent,
       }}
     >
-      <div className="bg-bg-secondary_highlight bg-opacity-[0.18] px-l py-m">
+      <div
+        className={clsx(
+          "bg-opacity-[0.18] px-l py-m",
+          pathname === "/" ? "absolute w-full" : "bg-bg-secondary_highlight",
+        )}
+      >
         <div className="">
           <div className="flex justify-between">
             <div className="flex items-center justify-center gap-s md:gap-m">
               <Link href="/" onClick={logoAction}>
-                <SuiNSLogo className="max-w-[200px]" />
+                <SuiNSLogo className="max-w-[20rem]" />
               </Link>
               {(pathname === "/vote" || pathname.startsWith("/proposal/")) && (
                 <ProposalsMenu />
