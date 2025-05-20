@@ -1,11 +1,11 @@
 "use client";
 
-import { StakeContent } from "@/components/staking/StakeContent";
+import { StakeContent } from "@/components/staking";
 import { StakeModalContent } from "@/components/staking/StakeModalContent";
 
 export default function StakePage() {
   return (
-    <div className="dummy-ui">
+    <div className="p-xl">
       <StakeContent />
       <StakeModalContent />
     </div>

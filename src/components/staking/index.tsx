@@ -28,8 +28,13 @@ import { useCurrentAccount, useCurrentWallet } from "@mysten/dapp-kit";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { formatTimeDiff, TimeUnit } from "@polymedia/suitcase-core";
 import { useStakeModal } from "@/components/staking/StakeModalContext";
-import { PanelRecentProposals } from "@/components/staking/PanelRecentProposals";
-import { StakeUserStats } from "@/components/staking/StakeUserStats";
+import { PanelRecentProposals } from "@/components/staking/staking-recent-proposals";
+import { StakingUserStats } from "@/components/staking/staking-user-stats";
+import Typography from "../ui/typography";
+import { Button } from "../ui/button";
+import StakeSVG from "@/icons/stake";
+import VoteSVG from "@/icons/vote";
+import LockSVG from "@/icons/lock";
 
 type BatchAction = "view" | "lock" | "requestUnstake" | "unstake";
 
@@ -54,11 +59,13 @@ export function StakeContent() {
   }
 
   return (
-    <>
-      <StakeUserStats showTokens={true} />
-      <PanelBatches />
-      <PanelRecentProposals />
-    </>
+    <div className="flex flex-col gap-2xl">
+      <StakingUserStats showTokens={true} />
+      <div className="grid grid-cols-[2fr_1fr] gap-l">
+        <PanelBatches />
+        <PanelRecentProposals />
+      </div>
+    </div>
   );
 }
 
@@ -83,31 +90,65 @@ function PanelBatches() {
   );
 
   return (
-    <div className="panel">
+    <div className="flex max-h-[100vh] flex-col items-center justify-center gap-s rounded-l-s rounded-r-s bg-[#62519C2E] p-s">
       {userStaking.data?.batches.length === 0 &&
         (isLoggedOut ? (
-          <>
-            <p>Connect your wallet to stake or lock NS tokens</p>
-          </>
+          <p className="max-w-[30rem] text-center">
+            <Typography variant="paragraph/Large" className="text-secondary">
+              Connect your wallet to stake or lock NS tokens
+            </Typography>
+          </p>
         ) : balance.data.raw === 0n ? (
           <>
-            <h3>No NS tokens found</h3>
-            <p>Stake or lock NS tokens to participate in SuiNS governance</p>
+            <h3>
+              <Typography
+                variant="heading/Small Bold"
+                className="text-primary-main"
+              >
+                No NS tokens found
+              </Typography>
+            </h3>
+            <p className="max-w-[30rem] text-center">
+              <Typography variant="paragraph/Large" className="text-secondary">
+                Stake or lock NS tokens to participate in SuiNS governance
+              </Typography>
+            </p>
           </>
         ) : (
           <>
-            <h3>Stake or lock NS to Vote</h3>
-            <p>
-              Start Staking your NS to Participate in governance, earn rewards,
-              and shape the future of SuiNS
+            <h3>
+              <Typography
+                variant="heading/Small Bold"
+                className="text-primary-main"
+              >
+                Stake or lock NS to Vote
+              </Typography>
+            </h3>
+            <p className="max-w-[30rem] text-center">
+              <Typography variant="paragraph/Large" className="text-secondary">
+                Start Staking your NS to Participate in governance, earn
+                rewards, and shape the future of SuiNS
+              </Typography>
             </p>
-            <div className="button-group">
-              <button onClick={() => openModal("stake")}>Stake</button>
-              <button onClick={() => openModal("lock")}>Lock</button>
+            <div className="flex gap-s">
+              <Button
+                variant="solid/large"
+                className="bg-bg-good"
+                onClick={() => openModal("stake")}
+                before={<StakeSVG width="100%" className="max-w-[1.25rem]" />}
+              >
+                <Typography variant="label/Large Bold">Stake</Typography>
+              </Button>
+              <Button
+                variant="solid/large"
+                onClick={() => openModal("lock")}
+                before={<LockSVG width="100%" className="max-w-[1rem]" />}
+              >
+                <Typography variant="label/Large Bold">Lock</Typography>
+              </Button>
             </div>
           </>
         ))}
-
       <BatchGroup batches={votingBatches} title="Voting on latest proposal" />
       <BatchGroup batches={availableBatches} title="Available for voting" />
       <BatchGroup batches={unavailableBatches} title="Unavailable for voting" />
@@ -118,18 +159,14 @@ function PanelBatches() {
 function BatchGroup({ batches, title }: { batches: Batch[]; title: string }) {
   const [sortBy, setSortBy] = useState<"Votes" | "Newest" | "Oldest">("Votes");
 
-  if (batches.length === 0) {
-    return null;
-  }
+  if (batches.length === 0) return null;
 
   batches.sort((a, b) => {
-    if (sortBy === "Votes") {
-      return Number(b.votingPower - a.votingPower);
-    }
-    if (sortBy === "Newest") {
+    if (sortBy === "Votes") return Number(b.votingPower - a.votingPower);
+
+    if (sortBy === "Newest")
       return b.startDate.getTime() - a.startDate.getTime();
-    }
-    // oldest
+
     return a.startDate.getTime() - b.startDate.getTime();
   });
 

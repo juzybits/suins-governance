@@ -6,7 +6,7 @@ import { VotingStatus } from "@/components/VotingStatus";
 import { CastYourVoteV2 } from "@/components/CastYourVoteV2";
 import { Votes } from "@/components/Votes";
 import { ProposalPricePool } from "@/components/ProposalPricePool";
-import { StakeUserStats } from "@/components/staking/StakeUserStats";
+import { StakeUserStats } from "@/components/staking/staking-user-stats";
 
 export function ProposalContent({ proposalId }: { proposalId: string }) {
   return (
