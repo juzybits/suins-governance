@@ -18,7 +18,7 @@ const ButtonWrapper = forwardRef<
 >(({ href, asChild, children, className, ...props }, ref) => {
   if (href)
     return (
-      <Link href={href} target="_blank" className={className}>
+      <Link href={href} className={className}>
         {children}
       </Link>
     );
