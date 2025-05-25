@@ -21,6 +21,7 @@ const tailwindConfig = {
         bg: {
           primary: "#221C36",
           primary_dark: "#1A142E",
+          modal: "#2D2743",
           secondary: "#332C4E",
           secondary_highlight: "#62519C",
           good: "#4BFFA6",

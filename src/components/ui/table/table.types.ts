@@ -1,4 +1,7 @@
+import type { ReactNode } from "react";
+
 export interface TableProps {
-  header: ReadonlyArray<string>;
-  content: ReadonlyArray<ReadonlyArray<string>>;
+  minimalist?: boolean;
+  header: ReadonlyArray<ReactNode>;
+  content: ReadonlyArray<ReadonlyArray<ReactNode>>;
 }

@@ -15,7 +15,7 @@ const GRADIENT_BORDERS: ReadonlyArray<ButtonWrapperProps["variant"]> = [
 const ButtonWrapper = forwardRef<
   HTMLButtonElement,
   PropsWithChildren<ButtonWrapperProps>
->(({ href, asChild, children, className, ...props }, ref) => {
+>(({ bg, href, asChild, children, className, ...props }, ref) => {
   if (href)
     return (
       <Link href={href} className={className}>
@@ -28,6 +28,7 @@ const ButtonWrapper = forwardRef<
   if (GRADIENT_BORDERS.some((word) => props.variant?.includes(String(word))))
     return (
       <GradientBorder
+        bg={bg}
         className={clsx(className, "border-2")}
         colors={[
           "#D962FF",

@@ -17,11 +17,7 @@ import {
   type UnstakeRequest,
   useUnstakeMutation,
 } from "@/hooks/staking/useUnstakeMutation";
-import {
-  Modal,
-  ModalFooter,
-  LockMonthSelector,
-} from "@/components/ui/legacy/dummy-ui/dummy-ui";
+import { Modal } from "@/components/ui/modal";
 import Loader from "@/components/ui/legacy/Loader";
 import { useGetUserStakingData } from "@/hooks/staking/useGetUserStakingData";
 import { useCurrentAccount, useCurrentWallet } from "@mysten/dapp-kit";
@@ -33,8 +29,9 @@ import { StakingUserStats } from "@/components/staking/staking-user-stats";
 import Typography from "../ui/typography";
 import { Button } from "../ui/button";
 import StakeSVG from "@/icons/stake";
-import VoteSVG from "@/icons/vote";
 import LockSVG from "@/icons/lock";
+import { ModalFooter } from "../ui/modal/modal-footer";
+import { LockMonthSelector } from "../ui/legacy/dummy-ui/dummy-ui";
 
 type BatchAction = "view" | "lock" | "requestUnstake" | "unstake";
 
@@ -463,18 +460,15 @@ function ModalRequestUnstakeBatch({
   return (
     <Modal onClose={onClose}>
       <h2>Request Unstake</h2>
-
       <p>Unstaking initiates a 3-day cooldown period.</p>
-
       <div className="box">
         <div>{formatNSBalance(batch.balanceNS)} NS</div>
         <div>Votes: {formatNSBalance(batch.votingPower)}</div>
         <div>Started: {batch.startDate.toLocaleDateString()}</div>
       </div>
-
       <ModalFooter
-        actionText="Start Cooldown"
         onClose={onClose}
+        actionText="Start Cooldown"
         onAction={() => onRequestUnstake({ batchId: batch.objectId })}
       />
     </Modal>

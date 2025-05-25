@@ -5,6 +5,7 @@ import type { buttonVariants } from ".";
 export interface ButtonWrapperProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
+  bg?: string;
   href?: string;
   asChild?: boolean;
 }
