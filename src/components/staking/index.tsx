@@ -11,7 +11,7 @@ import {
   useRequestUnstakeMutation,
 } from "@/hooks/staking/useRequestUnstakeMutation";
 import { toast } from "sonner";
-import { formatNSBalance } from "@/utils/formatNumber";
+import { formatNSBalance } from "@/utils/coins";
 import { MAX_LOCK_DURATION_DAYS, batchHelpers } from "@/types/Batch";
 import {
   type UnstakeRequest,
@@ -31,7 +31,6 @@ import { Button } from "../ui/button";
 import StakeSVG from "@/icons/stake";
 import LockSVG from "@/icons/lock";
 import { ModalFooter } from "../ui/modal/modal-footer";
-import { LockMonthSelector } from "../ui/legacy/dummy-ui/dummy-ui";
 
 type BatchAction = "view" | "lock" | "requestUnstake" | "unstake";
 
@@ -67,8 +66,8 @@ export function StakeContent() {
 }
 
 function PanelBatches() {
-  const { openModal } = useStakeModal();
   const currAcct = useCurrentAccount();
+  const { openModal } = useStakeModal();
   const { isConnecting, isDisconnected } = useCurrentWallet();
   const userStaking = useGetUserStakingData(currAcct?.address);
   const balance = useGetOwnedNSBalance(currAcct?.address);
@@ -129,16 +128,16 @@ function PanelBatches() {
             </p>
             <div className="flex gap-s">
               <Button
+                onClick={openModal("stake")}
                 variant="solid/large"
                 className="bg-bg-good"
-                onClick={() => openModal("stake")}
                 before={<StakeSVG width="100%" className="max-w-[1.25rem]" />}
               >
                 <Typography variant="label/Large Bold">Stake</Typography>
               </Button>
               <Button
                 variant="solid/large"
-                onClick={() => openModal("lock")}
+                onClick={openModal("lock")}
                 before={<LockSVG width="100%" className="max-w-[1rem]" />}
               >
                 <Typography variant="label/Large Bold">Lock</Typography>
@@ -382,7 +381,7 @@ function ModalLockBatch({
     }
   };
 
-  const [months, setMonths] = useState(1);
+  const [months, setMonths] = useState(0);
 
   const votes = batchHelpers.calculateBalanceVotingPower({
     balance: batch.balanceNS,
@@ -415,13 +414,6 @@ function ModalLockBatch({
 
       <div>
         <div>Select Lock Period</div>
-        <div className="box">
-          <LockMonthSelector
-            months={months}
-            setMonths={setMonths}
-            currentMonths={batch.lockDurationDays / 30}
-          />
-        </div>
       </div>
 
       <div>

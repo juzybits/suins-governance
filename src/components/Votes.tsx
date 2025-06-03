@@ -105,7 +105,6 @@ function VoterDetail({
             <NSAmount
               amount={voter?.totalVotes ?? 0}
               size="P3/bold"
-              roundedCoinFormat={!isSmallOrAbove}
               noTokenIcon
             />
           </div>
@@ -126,7 +125,6 @@ function VoterDetail({
                     amount={item?.votes ?? 0}
                     isMedium
                     size="P3/bold"
-                    roundedCoinFormat={!isSmallOrAbove}
                     noTokenIcon
                     className="min-w-[50px]"
                   />
@@ -167,7 +165,6 @@ function VoterDetail({
                   amount={voter?.totalVotes ?? 0}
                   isMedium
                   size="P3/bold"
-                  roundedCoinFormat={!isSmallOrAbove}
                   noTokenIcon
                 />
               </div>
@@ -373,7 +370,7 @@ function TopVoter({
             isPersonVote={isPersonVote}
           />
         )}
-        <NSAmount amount={votes} isMedium roundedCoinFormat centerAlign />
+        <NSAmount amount={votes} isMedium centerAlign />
       </div>
     </div>
   );

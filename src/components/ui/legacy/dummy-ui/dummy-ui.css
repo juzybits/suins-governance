@@ -31,18 +31,6 @@
   gap: 10px;
 }
 
-.dummy-ui .radio-group {
-  display: flex;
-  flex-direction: row;
-  gap: 15px;
-}
-
-.dummy-ui .radio-group label {
-  display: flex;
-  flex-direction: row;
-  gap: 5px;
-}
-
 /* basic elements */
 
 .dummy-ui h1 {
@@ -71,11 +59,20 @@
   background-color: #f5f5f5;
 }
 
+.dummy-ui button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .dummy-ui input[type="text"],
 .dummy-ui input[type="number"],
 .dummy-ui textarea {
   padding: 2px 8px;
   border: 1px solid #ccc;
+}
+
+.dummy-ui input[type="radio"] {
+  margin-right: 5px;
 }
 
 .dummy-ui a {
@@ -98,6 +95,16 @@
 .dummy-ui table th {
   text-align: left;
 }
+
+.dummy-ui .info {
+  font-size: 0.8em;
+}
+
+.dummy-ui .error {
+  color: red;
+  font-size: 0.8em;
+}
+
 /* staking batch */
 
 .dummy-ui .batch-group {
@@ -147,4 +154,23 @@
 .dummy-ui .modal-footer {
   display: flex;
   justify-content: flex-end;
+}
+
+/* stake/lock table */
+
+.dummy-ui .dummy-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dummy-ui .table-header,
+.dummy-ui .table-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.dummy-ui .table-row *:hover {
+  cursor: pointer;
 }

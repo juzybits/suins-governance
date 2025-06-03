@@ -1,6 +1,5 @@
 "use client";
 
-import { formatNSBalance } from "@/utils/formatNumber";
 import { useGetUserStakingData } from "@/hooks/staking/useGetUserStakingData";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
@@ -12,6 +11,7 @@ import StakeSVG from "@/icons/stake";
 import VoteSVG from "@/icons/vote";
 import clsx from "clsx";
 import WalletSVG from "@/icons/wallet";
+import { formatNSBalance } from "@/utils/coins";
 
 export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
   const currAcct = useCurrentAccount();

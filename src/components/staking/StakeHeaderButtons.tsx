@@ -25,13 +25,13 @@ export function StakeHeaderButtons() {
     <>
       <button
         className="rounded bg-green-400 px-4 py-2"
-        onClick={() => openModal("stake")}
+        onClick={openModal("stake")}
       >
         Stake
       </button>
       <button
         className="rounded bg-blue-400 px-4 py-2"
-        onClick={() => openModal("lock")}
+        onClick={openModal("lock")}
       >
         Lock
       </button>

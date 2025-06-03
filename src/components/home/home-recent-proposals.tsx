@@ -1,6 +1,5 @@
 "use client";
 
-import { formatNSBalance } from "@/utils/formatNumber";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { isPast } from "date-fns";
 import { useGetAllProposals } from "@/hooks/useGetAllProposals";
@@ -15,6 +14,7 @@ import clsx from "clsx";
 import { GradientBorder } from "../gradient-border";
 import NSToken from "@/icons/legacy/NSToken";
 import { VotingStatus } from "../VotingStatus";
+import { formatNSBalance } from "@/utils/coins";
 
 export function HomeRecentProposals() {
   const currAcct = useCurrentAccount();

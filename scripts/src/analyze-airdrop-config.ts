@@ -4,7 +4,7 @@
 
 import { readFileSync } from "fs";
 import type { AirdropConfig } from "./generate-airdrop-config";
-import { formatNSBalance } from "../../src/utils/formatNumber";
+import { formatNSBalance } from "../../src/utils/coins";
 
 function main() {
   const filePath = process.argv[2];

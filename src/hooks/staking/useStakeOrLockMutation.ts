@@ -8,12 +8,11 @@ import {
 
 import { NETWORK } from "@/constants/env";
 import { SUINS_PACKAGES } from "@/constants/endpoints";
-import { parseNSAmount } from "@/utils/parseAmount";
 import { useSignExecuteAndWaitTx } from "@/hooks/useSignExecuteAndWaitTx";
 
 export type StakeRequest = {
-  amount: string;
   months: number;
+  balance: bigint;
 };
 
 /**
@@ -29,11 +28,11 @@ export function useStakeOrLockMutation(
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ amount, months }: StakeRequest) => {
+    mutationFn: async ({ balance, months }: StakeRequest) => {
       const tx = new Transaction();
 
       const coin = coinWithBalance({
-        balance: parseNSAmount(amount),
+        balance,
         type: SUINS_PACKAGES[NETWORK].coinType,
       })(tx);
 

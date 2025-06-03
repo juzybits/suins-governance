@@ -100,8 +100,6 @@ type VotedStateProps = {
   percentage?: number;
   votes: number;
   onlyStatus?: boolean;
-  roundedCoinFormat?: boolean;
-  noFormat?: boolean;
   hidePercentage?: boolean;
   isPersonVote?: boolean;
 };
@@ -111,8 +109,6 @@ export function VotingState({
   percentage,
   votes,
   onlyStatus,
-  roundedCoinFormat,
-  noFormat,
   hidePercentage,
   isPersonVote,
 }: VotedStateProps) {
@@ -135,11 +131,7 @@ export function VotingState({
             {percentage}%
           </Text>
         )}
-        <NSAmount
-          amount={votes}
-          roundedCoinFormat={roundedCoinFormat}
-          noFormat={noFormat}
-        />
+        <NSAmount amount={votes} />
       </div>
     </div>
   );
@@ -187,7 +179,6 @@ export function VotingStatus({
             percentage={voting.percentage}
             votes={voting.votes}
             onlyStatus
-            noFormat
             isPersonVote={isPersonVote}
           />
         ))}

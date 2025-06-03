@@ -16,9 +16,7 @@ export function getCachedProposal(id: string): ProposalObjResp | undefined {
 /**
  * Cache a finalized proposal.
  */
-export function cacheProposalIfFinalized(
-  proposal: ProposalObjResp,
-): void {
+export function cacheProposalIfFinalized(proposal: ProposalObjResp): void {
   if (!isFinalized(proposal)) {
     return;
   }

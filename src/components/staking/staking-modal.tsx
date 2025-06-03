@@ -5,8 +5,7 @@ import { batchHelpers } from "@/types/Batch";
 import { Modal } from "@/components/ui/modal";
 import { toast } from "sonner";
 import { useState, useEffect, type FC, useId } from "react";
-import { formatNSBalance } from "@/utils/formatNumber";
-import { ONE_NS_RAW } from "@/constants/common";
+import { NS_DECIMALS, ONE_NS_RAW } from "@/constants/common";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { ModalFooter } from "../ui/modal/modal-footer";
@@ -15,6 +14,7 @@ import Typography from "../ui/typography";
 import Table from "../ui/table";
 import { makeId } from "@/utils/id";
 import Radio from "../ui/radio";
+import { formatBalance, formatNSBalance } from "@/utils/coins";
 
 export const StakingModal: FC = () => {
   const { modalAction, closeModal, openModal } = useStakeModal();
@@ -29,10 +29,10 @@ export const StakingModal: FC = () => {
 
   return (
     <ModalStakeOrLockNewBatch
-      availableNS={availableNS}
       action={modalAction}
-      onActionChange={openModal}
       onClose={closeModal}
+      availableNS={availableNS}
+      onActionChange={openModal}
     />
   );
 };
@@ -45,7 +45,7 @@ function ModalStakeOrLockNewBatch({
 }: {
   availableNS: bigint;
   action: "stake" | "lock";
-  onActionChange: (action: "stake" | "lock") => void;
+  onActionChange: (action: "stake" | "lock") => () => void;
   onClose: () => void;
 }) {
   const id = useId();
@@ -61,9 +61,18 @@ function ModalStakeOrLockNewBatch({
     mode: action,
   });
 
-  const onStakeOrLock = async (data: { amount: string; months: number }) => {
+  const onStakeOrLock = async ({
+    amount,
+    months,
+  }: {
+    amount: string;
+    months: number;
+  }) => {
     try {
-      await stakeOrLockMutation.mutateAsync(data);
+      await stakeOrLockMutation.mutateAsync({
+        balance: BigInt(Number(amount) * 10 ** NS_DECIMALS),
+        months,
+      });
       toast.success(
         `Successfully ${action === "lock" ? "locked" : "staked"} tokens`,
       );
@@ -90,7 +99,7 @@ function ModalStakeOrLockNewBatch({
           setValue={setAmount}
           suffix={
             <span onClick={() => setAmount(formatNSBalance(availableNS))}>
-              /${formatNSBalance(availableNS)} NS
+              /{formatNSBalance(availableNS)} NS
             </span>
           }
           info="Minimum amount required to stake or lock is 0.1 NS"
@@ -121,9 +130,7 @@ function ModalStakeOrLockNewBatch({
                 <div key={makeId("stake", "cell", 0, 0)} className="flex gap-s">
                   <Radio
                     value={action === "stake"}
-                    toggle={() => {
-                      onActionChange("stake");
-                    }}
+                    toggle={onActionChange("stake")}
                   />
                   <div className="flex flex-col gap-2xs">
                     <Typography variant="label/Large Medium">Stake</Typography>
@@ -141,14 +148,17 @@ function ModalStakeOrLockNewBatch({
                   key={makeId("stake", "cell", 0, 1)}
                   className="text-right text-primary-main"
                 >
-                  {34}x
+                  {amount
+                    ? power / BigInt(Number(amount) * 10 ** NS_DECIMALS)
+                    : 0}
+                  x
                 </Typography>,
                 <Typography
                   variant="label/Large Bold"
                   key={makeId("stake", "cell", 0, 2)}
                   className="text-right text-semantic-good"
                 >
-                  {formatNSBalance(234000000)}
+                  {formatNSBalance(power)}
                 </Typography>,
               ],
             ]}
@@ -177,21 +187,21 @@ function ModalStakeOrLockNewBatch({
               <>Multiplier</>,
               <>Votes</>,
             ]}
-            content={[1, 2, 6, 12].map((months, index) => {
+            content={[1, 2, 6, 12].map((month, index) => {
               const powerPreview = batchHelpers.calculateBalanceVotingPower({
                 balance,
-                months,
+                months: month,
                 mode: "stake",
               });
               const multiplierPreview =
                 Number(
                   batchHelpers.calculateBalanceVotingPower({
                     balance: BigInt(ONE_NS_RAW),
-                    months,
+                    months: month,
                     mode: "stake",
                   }),
                 ) / ONE_NS_RAW;
-              const days = months * 30;
+              const days = month * 30;
               const label = `${days} days`;
 
               return [
@@ -200,8 +210,13 @@ function ModalStakeOrLockNewBatch({
                   key={makeId("lock", "cell", index, 0)}
                 >
                   <Radio
-                    value={action === "lock"}
-                    toggle={() => onActionChange("lock")}
+                    value={action === "lock" && months === month}
+                    toggle={() => {
+                      console.log("click");
+
+                      onActionChange("lock");
+                      setMonths(month);
+                    }}
                   />
                   <Typography variant="label/Large Medium">{label}</Typography>
                 </div>,
