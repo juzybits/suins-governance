@@ -1,4 +1,4 @@
-import { useStakeModal } from "./StakeModalContext";
+import { useStakeModal } from "./staking-modal-context";
 import { useStakeOrLockMutation } from "@/hooks/staking/useStakeOrLockMutation";
 import { parseNSAmount } from "@/utils/parseAmount";
 import { batchHelpers } from "@/types/Batch";
@@ -14,7 +14,7 @@ import Typography from "../ui/typography";
 import Table from "../ui/table";
 import { makeId } from "@/utils/id";
 import Radio from "../ui/radio";
-import { formatBalance, formatNSBalance } from "@/utils/coins";
+import { formatNSBalance } from "@/utils/coins";
 
 export const StakingModal: FC = () => {
   const { modalAction, closeModal, openModal } = useStakeModal();
@@ -212,9 +212,7 @@ function ModalStakeOrLockNewBatch({
                   <Radio
                     value={action === "lock" && months === month}
                     toggle={() => {
-                      console.log("click");
-
-                      onActionChange("lock");
+                      onActionChange("lock")();
                       setMonths(month);
                     }}
                   />

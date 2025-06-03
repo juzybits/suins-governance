@@ -23,7 +23,7 @@ import { useGetUserStakingData } from "@/hooks/staking/useGetUserStakingData";
 import { useCurrentAccount, useCurrentWallet } from "@mysten/dapp-kit";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { formatTimeDiff, TimeUnit } from "@polymedia/suitcase-core";
-import { useStakeModal } from "@/components/staking/StakeModalContext";
+import { useStakeModal } from "@/components/staking/staking-modal-context";
 import { PanelRecentProposals } from "@/components/staking/staking-recent-proposals";
 import { StakingUserStats } from "@/components/staking/staking-user-stats";
 import Typography from "../ui/typography";

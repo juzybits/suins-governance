@@ -24,6 +24,7 @@ export function StakeModalProvider({ children }: { children: ReactNode }) {
   };
   const openModal = (action: "lock" | "stake") => () => {
     setModalAction(action);
+
     setIsModalOpen(true);
   };
 

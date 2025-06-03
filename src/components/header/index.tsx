@@ -8,7 +8,7 @@ import { SuiNSLogo } from "@/components/SuiNSLogo";
 import { Wallet } from "@/components/wallet";
 import { ProposalsMenu } from "@/components/ProposalsMenu";
 import { HeaderMenu } from "./header-menu";
-import { StakeHeaderButtons } from "@/components/staking/StakeHeaderButtons";
+import { StakeHeaderButtons } from "@/components/staking/staking-header-buttons";
 import Typography from "../ui/typography";
 import { Button } from "../ui/button";
 import { type HeaderProps } from "./header.types";

@@ -3,7 +3,7 @@
 import { useGetUserStakingData } from "@/hooks/staking/useGetUserStakingData";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
-import { useStakeModal } from "./StakeModalContext";
+import { useStakeModal } from "./staking-modal-context";
 
 export function StakeHeaderButtons() {
   const currAcct = useCurrentAccount();
