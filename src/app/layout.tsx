@@ -22,12 +22,10 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-bg-primary_dark">
         <Providers>
-          <main className="flex flex-col gap-xl">
+          <main className="flex min-h-[100vh] flex-col justify-between gap-xl">
             <Header />
             {children}
-            <div className="bg-2024_gradient-fill-background-purple px-2024_XL py-2024_3XL flex w-full justify-center">
-              <Footer />
-            </div>
+            <Footer />
           </main>
           <ReactQueryDevtools initialIsOpen={false} />
         </Providers>

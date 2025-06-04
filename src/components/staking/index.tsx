@@ -104,7 +104,7 @@ function PanelBatches() {
                 No NS tokens found
               </Typography>
             </h3>
-            <p className="max-w-[30rem] text-center">
+            <p className="max-w-[20rem] text-center">
               <Typography variant="paragraph/Large" className="text-secondary">
                 Stake or lock NS tokens to participate in SuiNS governance
               </Typography>
