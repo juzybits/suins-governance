@@ -7,7 +7,6 @@
 
 import { existsSync, readFileSync, renameSync, writeFileSync } from "fs";
 import {
-  getFullnodeUrl,
   SuiClient,
   type SuiTransactionBlockResponse,
 } from "@mysten/sui/client";
@@ -17,6 +16,7 @@ import type { AirdropConfig } from "./generate-airdrop-config";
 import { coinWithBalance, Transaction } from "@mysten/sui/transactions";
 import {
   isSupportedNetwork,
+  SUINS_ENDPOINTS,
   SUINS_PACKAGES,
   SUPPORTED_NETWORKS,
   type NetworkConfig,
@@ -90,7 +90,7 @@ async function main({
 
   const signer = pairFromSecretKey(privateKey);
   const owner = signer.toSuiAddress();
-  const client = new SuiClient({ url: getFullnodeUrl(network) });
+  const client = new SuiClient({ url: SUINS_ENDPOINTS[network] });
   const netCnf = SUINS_PACKAGES[network]; // SuiNS package and object IDs
 
   /* Load airdrop config */
