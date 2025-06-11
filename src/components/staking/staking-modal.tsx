@@ -95,14 +95,23 @@ function ModalStakeOrLockNewBatch({
     >
       <div className="flex flex-col gap-l py-l">
         <Input
+          setValue={(value) =>
+            setAmount((old) =>
+              value.endsWith(".") && value.split(".").length <= 2
+                ? value
+                : !isNaN(Number(value))
+                  ? String(Number(value))
+                  : old,
+            )
+          }
           value={amount || "0"}
-          setValue={setAmount}
+          error={!!(amount && Number(amount) < 0.1)}
+          info="Minimum amount required to stake or lock is 0.1 NS"
           suffix={
             <span onClick={() => setAmount(formatNSBalance(availableNS))}>
               /{formatNSBalance(availableNS)} NS
             </span>
           }
-          info="Minimum amount required to stake or lock is 0.1 NS"
         />
         <div className="flex flex-col gap-xs">
           <h3>
@@ -148,7 +157,7 @@ function ModalStakeOrLockNewBatch({
                   key={makeId("stake", "cell", 0, 1)}
                   className="text-right text-primary-main"
                 >
-                  {amount
+                  {Number(amount)
                     ? power / BigInt(Number(amount) * 10 ** NS_DECIMALS)
                     : 0}
                   x

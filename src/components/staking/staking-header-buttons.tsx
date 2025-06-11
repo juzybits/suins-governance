@@ -4,6 +4,10 @@ import { useGetUserStakingData } from "@/hooks/staking/useGetUserStakingData";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { useStakeModal } from "./staking-modal-context";
+import LockSVG from "@/icons/lock";
+import StakeSVG from "@/icons/stake";
+import { Button } from "../ui/button";
+import Typography from "../ui/typography";
 
 export function StakeHeaderButtons() {
   const currAcct = useCurrentAccount();
@@ -17,24 +21,25 @@ export function StakeHeaderButtons() {
 
   const { openModal } = useStakeModal();
 
-  if (availableNS === 0n || ownedBatches.length === 0) {
-    return null;
-  }
+  if (availableNS === 0n || ownedBatches.length === 0) return null;
 
   return (
     <>
-      <button
-        className="rounded bg-green-400 px-4 py-2"
+      <Button
         onClick={openModal("stake")}
+        variant="solid/medium"
+        className="bg-bg-good"
+        before={<StakeSVG width="100%" style={{ maxWidth: "1rem" }} />}
       >
-        Stake
-      </button>
-      <button
-        className="rounded bg-blue-400 px-4 py-2"
+        <Typography variant="label/Large Bold">Stake</Typography>
+      </Button>
+      <Button
         onClick={openModal("lock")}
+        variant="solid/medium"
+        before={<LockSVG width="100%" style={{ maxWidth: "1rem" }} />}
       >
-        Lock
-      </button>
+        <Typography variant="label/Large Bold">Lock</Typography>
+      </Button>
     </>
   );
 }

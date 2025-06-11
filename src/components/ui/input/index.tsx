@@ -2,8 +2,9 @@ import { type FC } from "react";
 import { type InputProps } from "./input.types";
 import Typography from "../typography";
 import InfoSVG from "@/icons/info";
+import clsx from "clsx";
 
-const Input: FC<InputProps> = ({ value, suffix, setValue, info }) => (
+const Input: FC<InputProps> = ({ value, suffix, setValue, info, error }) => (
   <div className="flex flex-col gap-s">
     <Typography variant="display/XSmall">
       <label className="flex rounded-l-s rounded-r-s border-2 border-tertiary bg-bg-primary p-s">
@@ -20,7 +21,12 @@ const Input: FC<InputProps> = ({ value, suffix, setValue, info }) => (
       </label>
     </Typography>
     {info && (
-      <div className="flex items-center gap-xs text-tertiary">
+      <div
+        className={clsx(
+          "flex items-center gap-xs",
+          error ? "text-bg-error" : "text-tertiary",
+        )}
+      >
         <InfoSVG width="100%" className="max-w-[1rem]" />
         <Typography variant="paragraph/Small">{info}</Typography>
       </div>

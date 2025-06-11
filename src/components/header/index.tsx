@@ -53,29 +53,6 @@ export const Header: FC<HeaderProps> = ({ logoAction }) => {
               )}
             </div>
             <div className="flex items-center gap-l">
-              {pathname !== "/" && (
-                <>
-                  <Button
-                    href="/stake"
-                    variant="solid/medium"
-                    className="bg-bg-good"
-                    before={
-                      <StakeSVG width="100%" style={{ maxWidth: "1rem" }} />
-                    }
-                  >
-                    <Typography variant="label/Large Bold">Stake</Typography>
-                  </Button>
-                  <Button
-                    href="/vote"
-                    variant="solid/medium"
-                    before={
-                      <LockSVG width="100%" style={{ maxWidth: "1rem" }} />
-                    }
-                  >
-                    <Typography variant="label/Large Bold">Lock</Typography>
-                  </Button>
-                </>
-              )}
               {pathname === "/stake" && <StakeHeaderButtons />}
               <div className="flex max-w-[200px] justify-end">
                 <Wallet />

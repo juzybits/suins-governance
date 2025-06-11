@@ -18,7 +18,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_VITE_NETWORK: z
       .enum(["mainnet", "testnet", "devnet", "localnet"])
-      .default("mainnet"),
+      .default("devnet"),
   },
 
   /**

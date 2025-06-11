@@ -5,7 +5,7 @@ import { StakingModal } from "@/components/staking/staking-modal";
 
 export default function StakePage() {
   return (
-    <div className="p-xl">
+    <div className="flex flex-1 flex-col p-xl">
       <StakeContent />
       <StakingModal />
     </div>
