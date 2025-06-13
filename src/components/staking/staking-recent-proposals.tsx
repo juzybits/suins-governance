@@ -21,7 +21,7 @@ export function PanelRecentProposals() {
   if (proposals === undefined) return null;
 
   // group proposals into in-progress and ended
-  let openProposals: ProposalObjResp[] = [];
+  let openProposals: ProposalObjResp[] = []; // only 1 proposal can be open at a time
   let closedProposals: ProposalObjResp[] = [];
 
   if (proposals.length > 0) {
@@ -63,7 +63,7 @@ export function PanelRecentProposals() {
               <CardProposalSummary
                 key={proposal.fields.id.id}
                 proposal={proposal}
-                index={proposals.length + 1}
+                index={proposals.length}
                 userStats={userStats?.proposalStats.find(
                   (stat) => stat.proposalId === proposal.fields.id.id,
                 )}
@@ -85,7 +85,7 @@ export function PanelRecentProposals() {
               <CardProposalSummary
                 key={proposal.fields.id.id}
                 proposal={proposal}
-                index={proposals.length - index}
+                index={closedProposals.length - index}
                 userStats={userStats?.proposalStats.find(
                   (stat) => stat.proposalId === proposal.fields.id.id,
                 )}
