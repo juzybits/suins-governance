@@ -14,7 +14,7 @@ export function formatContractText(text: string) {
       .replaceAll("[/B]", "</strong>")
 
       // Header-sized span
-      .replaceAll("[H]", '<span class="text-[25px]">')
+      .replaceAll("[H]", '<span style="font-size: 25px;">')
       .replaceAll("[/H]", "</span>")
 
       // Lists
