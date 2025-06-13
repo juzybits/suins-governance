@@ -55,13 +55,23 @@ const Card: FC<CardProps> = ({
           variant="label/Regular Bold"
           className={clsx(
             active ? "text-primary-main" : "text-tertiary",
-            subValueGradient &&
+            active &&
+              subValueGradient &&
               "bg-button_green_orange_pink bg-clip-text text-transparent",
           )}
         >
           {subValue}
         </Typography>{" "}
-        <Typography variant="label/Regular Bold">{subValueSuffix}</Typography>
+        <Typography
+          variant="label/Regular Bold"
+          className={clsx(
+            active ? "text-primary-main" : "text-tertiary",
+            valueGradient &&
+              "bg-button_green_orange_pink bg-clip-text text-transparent",
+          )}
+        >
+          {subValueSuffix}
+        </Typography>
       </div>
     )}
   </div>
