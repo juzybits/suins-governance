@@ -1,9 +1,5 @@
-import { Modal } from "@/components/ui/modal";
-import { ModalFooter } from "@/components/ui/modal/modal-footer";
-import {
-  useLockMutation,
-  type LockRequest,
-} from "@/hooks/staking/useLockMutation";
+import { Button } from "@/components/ui/button";
+import Typography from "@/components/ui/typography";
 import {
   useRequestUnstakeMutation,
   type RequestUnstakeRequest,
@@ -12,97 +8,124 @@ import {
   useUnstakeMutation,
   type UnstakeRequest,
 } from "@/hooks/staking/useUnstakeMutation";
-import {
-  type Batch,
-  MAX_LOCK_DURATION_DAYS,
-  batchHelpers,
-} from "@/types/Batch";
+import NSToken from "@/icons/legacy/NSToken";
+import LockSVG from "@/icons/lock";
+import StakeSVG from "@/icons/stake";
+import UnstakeSVG from "@/icons/unstake";
+import { type Batch, MAX_LOCK_DURATION_DAYS } from "@/types/Batch";
 import { formatNSBalance } from "@/utils/coins";
-import { formatTimeDiff, TimeUnit } from "@polymedia/suitcase-core";
+import { formatDistanceToNow } from "date-fns";
 import { useState } from "react";
 import { toast } from "sonner";
+import { StakingBatchItemModal } from "./staking-batch-item-modal";
 
 type BatchAction = "view" | "lock" | "requestUnstake" | "unstake";
 
-export function StakingBatchItem({ batch }: { batch: Batch }) {
+export function StakingBatchItem({
+  batch,
+  noAction,
+}: {
+  batch: Batch;
+  noAction?: boolean;
+}) {
   const [modalAction, setModalAction] = useState<BatchAction | null>(null);
-
-  const onBatchClick = () => {
-    if (modalAction === null) {
-      setModalAction("view");
-    }
-  };
 
   const onModalClose = () => {
     setModalAction(null);
   };
 
-  const batchOverview = (() => (
-    <>
-      <p>Votes: {formatNSBalance(batch.votingPower)}</p>
-      <p>Multiplier: {batch.votingMultiplier.toFixed(2)}x</p>
+  const Icon = batch.isLocked ? LockSVG : StakeSVG;
 
-      {batch.isLocked ? (
-        <>
-          <p>Locked for: {batch.lockDurationDays} days</p>
-          <p>Locked on: {batch.startDate.toLocaleDateString()}</p>
-          <p>Unlocks on: {batch.unlockDate.toLocaleDateString()}</p>
-        </>
-      ) : (
-        // staked
-        <>
-          <p>Staked for: {batch.daysSinceStart} days</p>
-          <p>Staked on: {batch.startDate.toLocaleDateString()}</p>
-          {batch.isCooldownRequested && !batch.isCooldownOver && (
-            <>
-              <p>In cooldown</p>
+  const batchOverview = (() => (
+    <div className="flex justify-between gap-m">
+      <div className="flex gap-xs text-secondary">
+        <Icon width="100%" className="max-w-[0.75rem]" />
+        {batch.isLocked ? (
+          <>
+            <p>
+              <Typography variant="label/Small Bold">
+                Unlocks On{" "}
+                <span className="text-primary-main">
+                  {batch.unlockDate.toLocaleDateString()}
+                </span>
+              </Typography>
+            </p>
+            <p>
+              <Typography variant="label/Small Medium">
+                Locked For{" "}
+                <Typography
+                  variant="label/Small Bold"
+                  className="text-primary-main"
+                >
+                  {batch.lockDurationDays} days
+                </Typography>{" "}
+                {!noAction && (
+                  <span className="text-tertiary">
+                    on: {batch.startDate.toLocaleDateString()} (
+                    {batch.votingMultiplier.toFixed(2)}x multiplier)
+                  </span>
+                )}
+              </Typography>
+            </p>
+          </>
+        ) : (
+          <>
+            <p>
+              <Typography variant="label/Small Bold">
+                Staked for {batch.daysSinceStart} days
+              </Typography>
+            </p>
+            {batch.isCooldownOver && (
               <p>
-                Available in:{" "}
-                {formatTimeDiff({
-                  timestamp: batch.cooldownEndDate!.getTime(),
-                  minTimeUnit: TimeUnit.ONE_MINUTE,
-                })}
+                <Typography variant="label/Small Medium">
+                  Cooled Down On{" "}
+                  <Typography
+                    variant="label/Small Bold"
+                    className="text-primary-main"
+                  >
+                    {new Date(batch.startDate).toLocaleDateString()}
+                  </Typography>
+                </Typography>
               </p>
-            </>
-          )}
-        </>
-      )}
-    </>
+            )}
+          </>
+        )}
+      </div>
+      <div className="gap-xs text-secondary">
+        <Typography variant="label/Small Medium">
+          Votes:{" "}
+          <Typography variant="label/Small Bold" className="text-primary-main">
+            {formatNSBalance(batch.votingPower)}
+          </Typography>
+        </Typography>
+      </div>
+    </div>
   ))();
 
   return (
-    <div
-      onClick={onBatchClick}
-      className="rounded-l-s rounded-r-s bg-[#62519C2E] p-s"
-    >
-      <div>
-        <h3>{formatNSBalance(batch.balanceNS)} NS</h3>
-        {batchOverview}
+    <div className="flex gap-m rounded-l-s rounded-r-s bg-[#62519C2E] p-s">
+      <NSToken width="4rem" />
+      <div className="w-full">
+        <div className="flex flex-col justify-center gap-xs">
+          {batchOverview}
+          <div className="flex items-center justify-between">
+            <h3>
+              <Typography
+                className="text-primary-main"
+                variant="display/XSmall Light"
+              >
+                {formatNSBalance(batch.balanceNS)} NS
+              </Typography>
+            </h3>
+            {!noAction && (
+              <BatchActions batch={batch} onActionChange={setModalAction} />
+            )}
+          </div>
+        </div>
+        {modalAction === "lock" && (
+          <StakingBatchItemModal batch={batch} onClose={onModalClose} />
+        )}
       </div>
-
-      <div className="button-group">
-        <BatchActions batch={batch} onActionChange={setModalAction} />
-      </div>
-
-      {modalAction === "view" && (
-        <ModalViewBatch
-          batch={batch}
-          onActionChange={setModalAction}
-          onClose={onModalClose}
-        />
-      )}
-
-      {modalAction === "lock" && (
-        <ModalLockBatch batch={batch} onClose={onModalClose} />
-      )}
-
-      {modalAction === "requestUnstake" && (
-        <ModalRequestUnstakeBatch batch={batch} onClose={onModalClose} />
-      )}
-
-      {modalAction === "unstake" && (
-        <ModalUnstakeBatch batch={batch} onClose={onModalClose} />
-      )}
     </div>
   );
 }
@@ -114,158 +137,7 @@ function BatchActions({
   batch: Batch;
   onActionChange: (action: BatchAction) => void;
 }) {
-  const onBtnClick = (action: BatchAction, event: React.MouseEvent) => {
-    event.stopPropagation();
-    onActionChange(action);
-  };
-
-  if (batch.isVoting) {
-    return null;
-  }
-
-  if (batch.isLocked) {
-    if (batch.lockDurationDays < MAX_LOCK_DURATION_DAYS) {
-      return (
-        <button onClick={(e) => onBtnClick("lock", e)}>Extend Lock</button>
-      );
-    }
-  }
-
-  if (batch.isStaked) {
-    return (
-      <>
-        {!batch.isCooldownRequested ? (
-          <>
-            <button onClick={(e) => onBtnClick("requestUnstake", e)}>
-              Request Unstake
-            </button>
-            <button onClick={(e) => onBtnClick("lock", e)}>Lock</button>
-          </>
-        ) : batch.isCooldownOver ? (
-          <button onClick={(e) => onBtnClick("unstake", e)}>Unstake Now</button>
-        ) : null}
-      </>
-    );
-  }
-
-  return null;
-}
-
-function ModalViewBatch({
-  batch,
-  onActionChange,
-  onClose,
-}: {
-  batch: Batch;
-  onActionChange: (action: BatchAction) => void;
-  onClose: () => void;
-}) {
-  return (
-    <Modal onClose={onClose}>
-      <h2>{batch.isStaked ? "Staked" : "Locked"}</h2>
-      <h1>{formatNSBalance(batch.balanceNS)} NS</h1>
-      <div>
-        <p>Votes: {formatNSBalance(batch.votingPower)}</p>
-        {batch.isStaked && (
-          <>
-            <p>Days Staked: {batch.daysSinceStart}</p>
-            <p>Votes multiplier: {batch.votingMultiplier.toFixed(2)}x</p>
-          </>
-        )}
-        {batch.isLocked && (
-          <>
-            <p>Locked for: {batch.lockDurationDays} days</p>
-            <p>Votes multiplier: {batch.votingMultiplier.toFixed(2)}x</p>
-            <p>Date Locked: {batch.startDate.toLocaleDateString()}</p>
-            <p>Unlocks On: {batch.unlockDate.toLocaleDateString()}</p>
-          </>
-        )}
-      </div>
-      <div className="button-group">
-        <BatchActions batch={batch} onActionChange={onActionChange} />
-      </div>
-    </Modal>
-  );
-}
-
-/**
- * Lock a staked batch, or extend the lock period of a locked batch.
- */
-function ModalLockBatch({
-  batch,
-  onClose,
-}: {
-  batch: Batch;
-  onClose: () => void;
-}) {
-  const lockMutation = useLockMutation();
-
-  const onLock = async (data: LockRequest) => {
-    try {
-      await lockMutation.mutateAsync(data);
-      toast.success("Successfully locked tokens");
-    } catch (error) {
-      toast.error((error as Error).message || "Failed to lock batch");
-    } finally {
-      onClose();
-    }
-  };
-
-  const [months, setMonths] = useState(0);
-
-  const votes = batchHelpers.calculateBalanceVotingPower({
-    balance: batch.balanceNS,
-    months,
-    mode: "lock",
-  });
-
-  return (
-    <Modal onClose={onClose}>
-      <h2>Lock Tokens</h2>
-
-      <p>
-        {batch.isStaked
-          ? "Lock your staked NS tokens "
-          : "Extend the lock period of your locked NS tokens "}
-        to receive an immediate boost to your voting power!
-      </p>
-
-      <div className="box">
-        <div>
-          {batch.isStaked
-            ? `Staked for ${batch.daysSinceStart} Days`
-            : `Locked for ${batch.lockDurationDays} Days`}
-        </div>
-        <div>Votes {formatNSBalance(batch.votingPower)}</div>
-        <div>
-          <h3>{formatNSBalance(batch.balanceNS)} NS</h3>
-        </div>
-      </div>
-
-      <div>
-        <div>Select Lock Period</div>
-      </div>
-
-      <div>
-        <div>Votes {formatNSBalance(votes)}</div>
-      </div>
-
-      <ModalFooter
-        actionText="Lock Tokens"
-        onClose={onClose}
-        onAction={() => onLock({ batchId: batch.objectId, months })}
-      />
-    </Modal>
-  );
-}
-
-function ModalRequestUnstakeBatch({
-  batch,
-  onClose,
-}: {
-  batch: Batch;
-  onClose: () => void;
-}) {
+  const unstakeMutation = useUnstakeMutation();
   const requestUnstakeMutation = useRequestUnstakeMutation();
 
   const onRequestUnstake = async (data: RequestUnstakeRequest) => {
@@ -274,37 +146,8 @@ function ModalRequestUnstakeBatch({
       toast.success("Successfully initiated cooldown");
     } catch (error) {
       toast.error((error as Error).message || "Failed to request cooldown");
-    } finally {
-      onClose();
     }
   };
-
-  return (
-    <Modal onClose={onClose}>
-      <h2>Request Unstake</h2>
-      <p>Unstaking initiates a 3-day cooldown period.</p>
-      <div className="box">
-        <div>{formatNSBalance(batch.balanceNS)} NS</div>
-        <div>Votes: {formatNSBalance(batch.votingPower)}</div>
-        <div>Started: {batch.startDate.toLocaleDateString()}</div>
-      </div>
-      <ModalFooter
-        onClose={onClose}
-        actionText="Start Cooldown"
-        onAction={() => onRequestUnstake({ batchId: batch.objectId })}
-      />
-    </Modal>
-  );
-}
-
-function ModalUnstakeBatch({
-  batch,
-  onClose,
-}: {
-  batch: Batch;
-  onClose: () => void;
-}) {
-  const unstakeMutation = useUnstakeMutation();
 
   const onUnstake = async (data: UnstakeRequest) => {
     try {
@@ -312,28 +155,73 @@ function ModalUnstakeBatch({
       toast.success("Successfully unstaked");
     } catch (error) {
       toast.error((error as Error).message || "Failed to unstake batch");
-    } finally {
-      onClose();
     }
   };
 
-  return (
-    <Modal onClose={onClose}>
-      <h2>Unstake Batch</h2>
+  const openLockModal = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    onActionChange("lock");
+  };
 
-      <p>Destroy the batch and get your NS back.</p>
+  if (batch.isVoting) return null;
 
-      <div className="box">
-        <div>{formatNSBalance(batch.balanceNS)} NS</div>
-        <div>Votes: {formatNSBalance(batch.votingPower)}</div>
-        <div>Started: {batch.startDate.toLocaleDateString()}</div>
+  if (batch.isLocked && batch.lockDurationDays < MAX_LOCK_DURATION_DAYS) {
+    return (
+      <Button
+        variant="short/solid"
+        onClick={(e) => openLockModal(e)}
+        before={<LockSVG width="0.825rem" />}
+      >
+        <Typography variant="label/Small Bold">Extend Lock</Typography>
+      </Button>
+    );
+  }
+
+  if (batch.isStaked) {
+    return (
+      <div className="flex gap-xs">
+        {!batch.isCooldownRequested ? (
+          <>
+            <Button
+              variant="outline/small"
+              before={<UnstakeSVG width="0.825rem" />}
+              onClick={() => onRequestUnstake({ batchId: batch.objectId })}
+            >
+              <Typography variant="label/Small Bold">
+                Request Unstake
+              </Typography>
+            </Button>
+            <Button
+              variant="short/solid"
+              before={<LockSVG width="0.825rem" />}
+              onClick={(e) => openLockModal(e)}
+            >
+              <Typography variant="label/Small Bold">Lock</Typography>
+            </Button>
+          </>
+        ) : batch.isCooldownOver ? (
+          <Button
+            variant="short/solid"
+            before={<LockSVG width="0.825rem" />}
+            onClick={() => onUnstake({ batchId: batch.objectId })}
+          >
+            <Typography variant="label/Small Bold">Unstake Now</Typography>
+          </Button>
+        ) : batch.cooldownEndDate ? (
+          <div className="flex flex-col items-end text-semantic-warning">
+            <p>
+              <Typography variant="label/Small Bold">In cooldown</Typography>
+            </p>
+            <p>
+              <Typography variant="paragraph/XSmall">
+                Available in {formatDistanceToNow(batch.cooldownEndDate)}
+              </Typography>
+            </p>
+          </div>
+        ) : null}
       </div>
+    );
+  }
 
-      <ModalFooter
-        actionText="Unstake"
-        onClose={onClose}
-        onAction={() => onUnstake({ batchId: batch.objectId })}
-      />
-    </Modal>
-  );
+  return null;
 }

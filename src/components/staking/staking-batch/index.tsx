@@ -24,34 +24,39 @@ export function StakingBatch({
   });
 
   return (
-    <div className="flex flex-1 flex-col gap-s overflow-hidden rounded-l-s rounded-r-s bg-[#62519C2E]">
-      {title === "Voting on latest proposal" && (
-        <i>
-          The Staked and Locked NS tokens participating in voting will be
-          unavailable until the voting finishes.
-        </i>
-      )}
-      <div className="flex items-center justify-between gap-m bg-[#62519C2E] p-m text-primary-main">
+    <div className="overflow flex flex-col gap-s rounded-l-s rounded-r-s bg-[#62519C2E]">
+      <div className="flex items-center justify-between gap-m rounded-tl-s rounded-tr-s bg-[#62519C2E] p-m text-primary-main">
         <h2>
           <Typography variant="label/Regular Bold">{title}</Typography>
         </h2>
         <div>
-          <label htmlFor="sort-by">Sort by:</label>
-          <select
-            id="sort-by"
-            onChange={(e) =>
-              setSortBy(e.target.value as "Votes" | "Newest" | "Oldest")
-            }
-          >
-            <option value="Votes">Votes</option>
-            <option value="Newest">Newest</option>
-            <option value="Oldest">Oldest</option>
-          </select>
+          <Typography variant="label/Regular Bold" className="text-secondary">
+            <label htmlFor="sort-by">Sort by: </label>
+            <select
+              className="all-unset"
+              id="sort-by"
+              onChange={(e) =>
+                setSortBy(e.target.value as "Votes" | "Newest" | "Oldest")
+              }
+            >
+              <option value="Votes">Votes</option>
+              <option value="Newest">Newest</option>
+              <option value="Oldest">Oldest</option>
+            </select>
+          </Typography>
         </div>
       </div>
-      {batches.map((batch) => (
-        <StakingBatchItem key={batch.objectId} batch={batch} />
-      ))}
+      <div className="flex flex-1 flex-col gap-s px-m py-s">
+        {title === "Voting on latest proposal" && (
+          <div className="align-center rounded-2xs bg-primary-main px-m py-s text-bg-primary_dark text-secondary">
+            The Staked and Locked NS tokens participating in voting will be
+            unavailable until the voting finishes.
+          </div>
+        )}
+        {batches.map((batch) => (
+          <StakingBatchItem key={batch.objectId} batch={batch} />
+        ))}
+      </div>
     </div>
   );
 }

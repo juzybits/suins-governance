@@ -63,7 +63,7 @@ function PanelBatches() {
   );
 
   return (
-    <>
+    <div className="flex flex-1 flex-col gap-m">
       {userStaking.data?.batches.length === 0 &&
         (isLoggedOut ? (
           <div className="flex flex-1 flex-col items-center justify-center gap-s rounded-l-s rounded-r-s bg-[#62519C2E] p-s">
@@ -124,12 +124,12 @@ function PanelBatches() {
             </div>
           </div>
         ))}
-      <StakingBatch batches={votingBatches} title="Voting on latest proposal" />
       <StakingBatch batches={availableBatches} title="Available for voting" />
+      <StakingBatch batches={votingBatches} title="Voting on latest proposal" />
       <StakingBatch
         batches={unavailableBatches}
         title="Unavailable for voting"
       />
-    </>
+    </div>
   );
 }

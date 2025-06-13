@@ -108,7 +108,11 @@ function ModalStakeOrLockNewBatch({
           error={!!(amount && Number(amount) < 0.1)}
           info="Minimum amount required to stake or lock is 0.1 NS"
           suffix={
-            <span onClick={() => setAmount(formatNSBalance(availableNS))}>
+            <span
+              onClick={() =>
+                setAmount((Number(availableNS) / 10 ** NS_DECIMALS).toString())
+              }
+            >
               /{formatNSBalance(availableNS)} NS
             </span>
           }
@@ -199,15 +203,15 @@ function ModalStakeOrLockNewBatch({
             content={[1, 2, 6, 12].map((month, index) => {
               const powerPreview = batchHelpers.calculateBalanceVotingPower({
                 balance,
+                mode: "lock",
                 months: month,
-                mode: "stake",
               });
               const multiplierPreview =
                 Number(
                   batchHelpers.calculateBalanceVotingPower({
                     balance: BigInt(ONE_NS_RAW),
                     months: month,
-                    mode: "stake",
+                    mode: "lock",
                   }),
                 ) / ONE_NS_RAW;
               const days = month * 30;
