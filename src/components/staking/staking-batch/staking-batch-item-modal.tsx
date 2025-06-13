@@ -83,7 +83,7 @@ export function StakingBatchItemModal({
                 batchHelpers.calculateBalanceVotingPower({
                   balance: BigInt(ONE_NS_RAW),
                   months: month,
-                  mode: "stake",
+                  mode: "lock",
                 }),
               ) / ONE_NS_RAW;
             const days = month * 30;
