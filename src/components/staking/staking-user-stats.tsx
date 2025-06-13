@@ -25,29 +25,41 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
   return (
     <div className={clsx("grid", showTokens ? "grid-cols-4" : "grid-cols-3")}>
       <Card
+        subValueGradient
+        valueSuffix="NS"
         title="Total Locked"
-        icon={<LockSVG width="100%" className="max-w-[1.5rem]" />}
+        subValueSuffix="Votes"
         value={formatNSBalance(stats.lockedNS)}
-        subValue={`${formatNSBalance(stats.lockedPower)} Votes`}
+        active={Boolean(Number(stats.lockedNS))}
+        subValue={formatNSBalance(stats.lockedPower)}
+        icon={<LockSVG width="100%" className="max-w-[1.5rem]" />}
       />
       <Card
         withBorder
+        subValueGradient
+        valueSuffix="NS"
         title="Total Staked"
+        subValueSuffix="Votes"
         value={formatNSBalance(stats.stakedNS)}
-        subValue={`${formatNSBalance(stats.stakedPower)} Votes`}
+        subValue={formatNSBalance(stats.stakedPower)}
+        active={Boolean(Boolean(Number(stats.stakedNS)))}
         icon={<StakeSVG width="100%" className="max-w-[1.5rem]" />}
       />
       <Card
         withBorder
+        valueGradient
         title="Your Total Votes"
+        active={Boolean(Number(stats.totalPower))}
         value={formatNSBalance(stats.totalPower)}
         icon={<VoteSVG width="100%" className="max-w-[1.5rem]" />}
       />
       {showTokens && (
         <Card
           withBorder
+          valueSuffix="NS"
           title="Available Tokens"
-          value={`${balance.data.formatted} NS`}
+          value={balance.data.formatted}
+          active={Boolean(Number(balance.data.raw))}
           icon={<WalletSVG width="100%" className="max-w-[1.5rem]" />}
         />
       )}
