@@ -13,6 +13,10 @@ export function formatContractText(text: string) {
       .replaceAll("[B]", "<strong>")
       .replaceAll("[/B]", "</strong>")
 
+      // Header-sized span
+      .replaceAll("[H]", '<span class="text-[25px]">')
+      .replaceAll("[/H]", "</span>")
+
       // Lists
       .replaceAll("[L]", "<ul class='ml-7 list-disc list-outside'>")
       .replaceAll("[/L]", "</ul>")
