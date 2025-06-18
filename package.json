@@ -25,7 +25,7 @@
     "@mysten/kiosk": "^0.9.17",
     "@mysten/sui": "^1.8.0",
     "@mysten/suins": "^0.3.1",
-    "@mysten/zksend": "^0.11.1",
+    "@mysten/slush-wallet": "^0.1.1",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/react-progress": "^1.0.1",
