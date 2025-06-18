@@ -331,8 +331,10 @@ function TopVoter({
   address,
   votes,
   voteType,
+  isPersonVote,
 }: {
   position: number;
+  isPersonVote: boolean;
   address: string;
   votes: number;
   voteType?: VoteType;
@@ -367,7 +369,7 @@ function TopVoter({
           </Text>
         </Link>
         {voteType && (
-          <VoteIndicator votedStatus={voteType} onlyStatus isPersonVote />
+          <VoteIndicator votedStatus={voteType} onlyStatus isPersonVote={isPersonVote} />
         )}
         <NSAmount amount={votes} isMedium roundedCoinFormat centerAlign />
       </div>
@@ -481,6 +483,7 @@ function TopVoters({
                 address={voter.address}
                 position={index + 1}
                 voteType={currentVoteType}
+                isPersonVote={!!isPersonVote}
               />
             </motion.div>
           ))}
