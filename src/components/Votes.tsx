@@ -369,7 +369,11 @@ function TopVoter({
           </Text>
         </Link>
         {voteType && (
-          <VoteIndicator votedStatus={voteType} onlyStatus isPersonVote={isPersonVote} />
+          <VoteIndicator
+            votedStatus={voteType}
+            onlyStatus
+            isPersonVote={isPersonVote}
+          />
         )}
         <NSAmount amount={votes} isMedium roundedCoinFormat centerAlign />
       </div>

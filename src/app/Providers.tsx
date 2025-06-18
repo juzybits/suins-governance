@@ -23,7 +23,8 @@ const WalletProvider = dynamic(
 
 if (env.NEXT_PUBLIC_VITE_NETWORK === "mainnet") {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  //  registerSlushWallet("SuiNS");
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  registerSlushWallet("SuiNS");
 }
 
 export function Providers({ children }: { children: ReactNode }) {
