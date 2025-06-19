@@ -26,16 +26,17 @@ export function StakeHeaderButtons() {
   return (
     <>
       <Button
-        onClick={openModal("stake")}
         variant="solid/medium"
-        className="bg-bg-good"
+        className="w-full bg-bg-good"
+        onClick={openModal("stake")}
         before={<StakeSVG width="100%" style={{ maxWidth: "1rem" }} />}
       >
         <Typography variant="label/Large Bold">Stake</Typography>
       </Button>
       <Button
-        onClick={openModal("lock")}
+        className="w-full"
         variant="solid/medium"
+        onClick={openModal("lock")}
         before={<LockSVG width="100%" style={{ maxWidth: "1rem" }} />}
       >
         <Typography variant="label/Large Bold">Lock</Typography>

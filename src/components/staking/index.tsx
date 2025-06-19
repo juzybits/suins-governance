@@ -36,7 +36,7 @@ export function StakeContent() {
   return (
     <div className="flex flex-1 flex-col gap-2xl">
       <StakingUserStats showTokens={true} />
-      <div className="grid flex-1 grid-cols-[2fr_1fr] gap-l">
+      <div className="grid flex-1 gap-l lg:grid-cols-[2fr_1fr]">
         <PanelBatches />
         <PanelRecentProposals />
       </div>
@@ -66,7 +66,7 @@ function PanelBatches() {
     <div className="flex flex-1 flex-col gap-m">
       {userStaking.data?.batches.length === 0 &&
         (isLoggedOut ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-s rounded-l-s rounded-r-s bg-[#62519C2E] p-s">
+          <div className="flex flex-1 flex-col items-center justify-center gap-s rounded-l-s rounded-r-s bg-[#62519C2E] px-3xl py-4xl">
             <p className="max-w-[30rem] text-center">
               <Typography variant="paragraph/Large" className="text-secondary">
                 Connect your wallet to stake or lock NS tokens
@@ -74,7 +74,7 @@ function PanelBatches() {
             </p>
           </div>
         ) : balance.data.raw === 0n ? (
-          <div className="flex flex-1 flex-col items-center justify-center gap-s rounded-l-s rounded-r-s bg-[#62519C2E] p-s">
+          <div className="flex flex-1 flex-col items-center justify-center gap-s rounded-l-s rounded-r-s bg-[#62519C2E] px-3xl py-4xl">
             <h3>
               <Typography
                 variant="heading/Small Bold"
@@ -90,7 +90,7 @@ function PanelBatches() {
             </p>
           </div>
         ) : (
-          <div className="flex flex-1 flex-col items-center justify-center gap-s rounded-l-s rounded-r-s bg-[#62519C2E] p-s">
+          <div className="flex flex-1 flex-col items-center justify-center gap-s rounded-l-s rounded-r-s bg-[#62519C2E] px-3xl py-4xl">
             <h3>
               <Typography
                 variant="heading/Small Bold"

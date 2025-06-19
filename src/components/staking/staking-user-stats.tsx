@@ -23,8 +23,16 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
   const stats = userStaking.data.stats;
 
   return (
-    <div className={clsx("grid", showTokens ? "grid-cols-4" : "grid-cols-3")}>
+    <div
+      className={clsx(
+        "grid md:gap-l",
+        showTokens
+          ? "md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          : "md:grid-cols-2 lg:grid-cols-3",
+      )}
+    >
       <Card
+        withBorder
         subValueGradient
         valueSuffix="NS"
         title="Total Locked"
@@ -32,7 +40,7 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
         value={formatNSBalance(stats.lockedNS)}
         active={Boolean(Number(stats.lockedNS))}
         subValue={formatNSBalance(stats.lockedPower)}
-        icon={<LockSVG width="100%" className="max-w-[1.5rem]" />}
+        icon={<LockSVG width="100%" className="max-w-[2rem]" />}
       />
       <Card
         withBorder
@@ -43,24 +51,25 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
         value={formatNSBalance(stats.stakedNS)}
         subValue={formatNSBalance(stats.stakedPower)}
         active={Boolean(Boolean(Number(stats.stakedNS)))}
-        icon={<StakeSVG width="100%" className="max-w-[1.5rem]" />}
+        icon={<StakeSVG width="100%" className="max-w-[2rem]" />}
       />
+      <hr className="col-span-4 hidden border-0 border-b border-[#6E609F80] md:block lg:hidden" />
       <Card
         withBorder
         valueGradient
         title="Your Total Votes"
         active={Boolean(Number(stats.totalPower))}
         value={formatNSBalance(stats.totalPower)}
-        icon={<VoteSVG width="100%" className="max-w-[1.5rem]" />}
+        icon={<VoteSVG width="100%" className="max-w-[2rem]" />}
       />
+      <hr className="col-span-4 hidden border-0 border-b border-[#6E609F80] lg:block xl:hidden" />
       {showTokens && (
         <Card
-          withBorder
           valueSuffix="NS"
           title="Available Tokens"
           value={balance.data.formatted}
           active={Boolean(Number(balance.data.raw))}
-          icon={<WalletSVG width="100%" className="max-w-[1.5rem]" />}
+          icon={<WalletSVG width="100%" className="max-w-[2rem]" />}
         />
       )}
     </div>

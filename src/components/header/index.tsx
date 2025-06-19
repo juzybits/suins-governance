@@ -38,7 +38,7 @@ export const Header: FC<HeaderProps> = ({ logoAction }) => {
     >
       <div
         className={clsx(
-          "bg-opacity-[0.18] px-l py-m",
+          "flex flex-col gap-l bg-opacity-[0.18] px-l py-m",
           pathname === "/" ? "absolute w-full" : "bg-bg-secondary_highlight",
         )}
       >
@@ -53,7 +53,11 @@ export const Header: FC<HeaderProps> = ({ logoAction }) => {
               )}
             </div>
             <div className="flex items-center gap-l">
-              {pathname === "/stake" && <StakeHeaderButtons />}
+              {pathname === "/stake" && (
+                <div className="hidden items-center gap-l md:flex">
+                  <StakeHeaderButtons />
+                </div>
+              )}
               <div className="flex max-w-[200px] justify-end">
                 <Wallet />
               </div>
@@ -61,6 +65,11 @@ export const Header: FC<HeaderProps> = ({ logoAction }) => {
             </div>
           </div>
         </div>
+        {pathname === "/stake" && (
+          <div className="flex items-center gap-l md:hidden">
+            <StakeHeaderButtons />
+          </div>
+        )}
         <HeaderMenuContent />
       </div>
     </MenuContentContext.Provider>

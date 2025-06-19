@@ -161,10 +161,7 @@ function ModalStakeOrLockNewBatch({
                   key={makeId("stake", "cell", 0, 1)}
                   className="text-right text-primary-main"
                 >
-                  {Number(amount)
-                    ? power / BigInt(Number(amount) * 10 ** NS_DECIMALS)
-                    : 0}
-                  x
+                  1.00x
                 </Typography>,
                 <Typography
                   variant="label/Large Bold"
