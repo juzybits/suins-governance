@@ -251,6 +251,7 @@ function ModalStakeOrLockNewBatch({
         onClose={onClose}
         actionText="Confirm"
         onAction={() => onStakeOrLock({ amount, months })}
+        disabled={!amount || Number(amount) < 0.1}
       />
     </Modal>
   );
