@@ -50,7 +50,7 @@ export function StakingBatchItem({
                 </span>
               </Typography>
             </p>
-            <p>
+            <p className="hidden md:block">
               <Typography variant="label/Small Medium">
                 Locked For{" "}
                 <Typography
@@ -76,7 +76,7 @@ export function StakingBatchItem({
               </Typography>
             </p>
             {batch.isCooldownOver && (
-              <p>
+              <p className="hidden md:block">
                 <Typography variant="label/Small Medium">
                   Cooled Down On{" "}
                   <Typography
@@ -91,7 +91,7 @@ export function StakingBatchItem({
           </>
         )}
       </div>
-      <div className="gap-xs text-secondary">
+      <div className="hidden gap-xs text-secondary md:block">
         <Typography variant="label/Small Medium">
           Votes:{" "}
           <Typography variant="label/Small Bold" className="text-primary-main">
@@ -103,29 +103,90 @@ export function StakingBatchItem({
   ))();
 
   return (
-    <div className="flex gap-m rounded-l-s rounded-r-s bg-[#62519C2E] p-s">
-      <NSToken width="4rem" />
-      <div className="w-full">
-        <div className="flex flex-col justify-center gap-xs">
-          {batchOverview}
-          <div className="flex items-center justify-between">
-            <h3>
-              <Typography
-                className="text-primary-main"
-                variant="display/XSmall Light"
-              >
-                {formatNSBalance(batch.balanceNS)} NS
-              </Typography>
-            </h3>
-            {!noAction && (
-              <BatchActions batch={batch} onActionChange={setModalAction} />
-            )}
+    <div className="flex flex-col gap-m rounded-l-s rounded-r-s bg-[#62519C2E] p-xs">
+      <div className="flex gap-m">
+        <NSToken width="4rem" />
+        <div className="w-full">
+          <div className="flex flex-col justify-center gap-xs">
+            {batchOverview}
+            <div className="flex items-center justify-between">
+              <h3>
+                <Typography
+                  className="text-primary-main"
+                  variant="display/XSmall Light"
+                >
+                  {formatNSBalance(batch.balanceNS)} NS
+                </Typography>
+              </h3>
+              {!noAction && (
+                <div className="hidden md:block">
+                  <BatchActions batch={batch} onActionChange={setModalAction} />
+                </div>
+              )}
+            </div>
           </div>
+          {modalAction === "lock" && (
+            <StakingBatchItemModal batch={batch} onClose={onModalClose} />
+          )}
         </div>
-        {modalAction === "lock" && (
-          <StakingBatchItemModal batch={batch} onClose={onModalClose} />
+      </div>
+      <div className="flex flex-col justify-between gap-xs">
+        {[
+          { name: "Votes", value: formatNSBalance(batch.votingPower) },
+          ...(batch.isLocked
+            ? [
+                { name: "Locked For", value: `${batch.lockDurationDays} days` },
+                {
+                  name: "Locked on",
+                  value: `${batch.startDate.toLocaleDateString()} (${batch.votingMultiplier.toFixed(2)}x multiplier)`,
+                },
+              ]
+            : batch.isCooldownOver
+              ? [
+                  {
+                    name: "Cooled Down On",
+                    value: new Date(batch.startDate).toLocaleDateString(),
+                  },
+                ]
+              : []),
+        ].map(({ name, value }, index) => (
+          <div
+            key={index}
+            className="flex justify-between border-t border-t-tertiary py-m"
+          >
+            <Typography className="text-secondary" variant="label/Small Medium">
+              {name}
+            </Typography>
+            <Typography
+              variant="label/Small Bold"
+              className="text-primary-main"
+            >
+              {value}
+            </Typography>
+          </div>
+        ))}
+        {!batch.isCooldownOver && batch.cooldownEndDate && (
+          <div className="flex justify-between border-t border-t-tertiary py-m">
+            <Typography
+              variant="label/Small Bold"
+              className="text-semantic-warning"
+            >
+              In cooldown
+            </Typography>
+            <Typography
+              variant="label/Small Medium"
+              className="text-semantic-warning"
+            >
+              Available in {formatDistanceToNow(batch.cooldownEndDate)}
+            </Typography>
+          </div>
         )}
       </div>
+      {!noAction && (
+        <div className="block md:hidden">
+          <BatchActions batch={batch} onActionChange={setModalAction} />
+        </div>
+      )}
     </div>
   );
 }
@@ -169,6 +230,7 @@ function BatchActions({
     return (
       <Button
         variant="short/solid"
+        className="w-full md:w-fit"
         onClick={(e) => openLockModal(e)}
         before={<LockSVG width="0.825rem" />}
       >
@@ -185,6 +247,7 @@ function BatchActions({
             <Button
               variant="outline/small"
               before={<UnstakeSVG width="0.825rem" />}
+              className="w-full whitespace-nowrap md:w-fit"
               onClick={() => onRequestUnstake({ batchId: batch.objectId })}
             >
               <Typography variant="label/Small Bold">
@@ -193,6 +256,7 @@ function BatchActions({
             </Button>
             <Button
               variant="short/solid"
+              className="w-full md:w-fit"
               before={<LockSVG width="0.825rem" />}
               onClick={(e) => openLockModal(e)}
             >
@@ -202,13 +266,14 @@ function BatchActions({
         ) : batch.isCooldownOver ? (
           <Button
             variant="short/solid"
+            className="w-full md:w-fit"
             before={<LockSVG width="0.825rem" />}
             onClick={() => onUnstake({ batchId: batch.objectId })}
           >
             <Typography variant="label/Small Bold">Unstake Now</Typography>
           </Button>
         ) : batch.cooldownEndDate ? (
-          <div className="flex flex-col items-end text-semantic-warning">
+          <div className="hidden flex-col items-end text-semantic-warning md:flex">
             <p>
               <Typography variant="label/Small Bold">In cooldown</Typography>
             </p>
