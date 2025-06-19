@@ -37,7 +37,9 @@ export function StakingBatchItemModal({
     }
   };
 
-  const [months, setMonths] = useState(0);
+  const currentMonths = batch.lockDurationDays / 30;
+  const validMonths = [1, 2, 6, 12].filter((month) => month > currentMonths);
+  const [months, setMonths] = useState(validMonths[0] ?? 1);
 
   return (
     <Modal
@@ -74,7 +76,7 @@ export function StakingBatchItemModal({
             <>Multiplier</>,
             <>Votes</>,
           ]}
-          content={[1, 2, 6, 12].flatMap((month, index) => {
+          content={validMonths.flatMap((month, index) => {
             const powerPreview = batchHelpers.calculateBalanceVotingPower({
               mode: "lock",
               months: month,
@@ -90,8 +92,6 @@ export function StakingBatchItemModal({
               ) / ONE_NS_RAW;
             const days = month * 30;
             const label = `${days} days`;
-
-            if (batch.lockDurationDays >= days) return [];
 
             return [
               [
