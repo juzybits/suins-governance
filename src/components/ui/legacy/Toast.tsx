@@ -1,18 +1,18 @@
 import { Toaster } from "sonner";
-import SvgCheckFill16 from "@/icons/legacy/CheckFill24";
+import CheckSVG from "@/icons/check";
 import Loader from "@/components/ui/legacy/Loader";
-import SvgXFill16 from "@/icons/legacy/XFill16";
+import SvgOutlineX from "@/icons/legacy/OutlineX";
 
 export function Toast() {
   return (
     <Toaster
       position="bottom-right"
       icons={{
-        loading: <Loader className="h-6 w-6" />,
-        success: <SvgCheckFill16 className="h-1 w-1" />,
-        error: <SvgXFill16 className="h-1 w-1" />,
+        loading: <Loader className="h-s w-s" />,
+        success: <CheckSVG className="h-s w-s" />,
+        error: <SvgOutlineX className="h-s w-s" />,
       }}
-      className="flex h-[44px] max-w-[600px] items-center justify-center rounded-2024_XS"
+      className="flex h-[44px] max-w-[600px] items-center justify-center rounded-xs"
       toastOptions={{
         unstyled: true,
         descriptionClassName: "w-full",
@@ -23,13 +23,12 @@ export function Toast() {
         duration: 3000,
         classNames: {
           toast:
-            "flex items-center rounded-2024_XS items-center px-2024_XL py-2024_R w-full",
-          title: "text-2024_body4 font-bold",
-          loading: "bg-fill-background-primary",
-          success: "bg-2024_fillBackground-good text-[#221C36]",
+            "flex items-center rounded-xs items-center px-xl py-m w-full",
+          title: "text-m font-bold",
+          loading: "bg-bg-primary",
+          success: "bg-bg-good text-primary-darker",
           icon: "hidden",
-          error:
-            "bg-2024_fillBackground-bad bg-2024_fillBackground-bad text-white",
+          error: "bg-bg-error text-primary-main",
         },
       }}
     />
