@@ -4,16 +4,42 @@ import { ProposalContent } from "@/components/ProposalContent";
 import { Suspense } from "react";
 import Loader from "@/components/ui/legacy/Loader";
 import { useGetProposalIds } from "@/hooks/useGetProposalIds";
+import Typography from "@/components/ui/typography";
 
 export default function VotePage() {
   const { data, isLoading, error } = useGetProposalIds();
 
   if (isLoading) return <Loader className="h-5 w-5" />;
 
-  if (error || !data?.[0]?.fields) return <div>Error: {error?.message}</div>;
+  if (error) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-s rounded-l-s rounded-r-s bg-[#62519C2E] px-3xl py-4xl text-center">
+        <Typography variant="heading/Small Bold" className="text-bg-error">
+          Error loading proposals
+        </Typography>
+        <Typography variant="paragraph/Large" className="text-secondary text-center max-w-[30rem]">
+          {error.message ?? "Unable to load proposal data"}
+        </Typography>
+      </div>
+    );
+  }
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-s rounded-l-s rounded-r-s bg-[#62519C2E] px-3xl py-4xl text-center">
+        <Typography variant="heading/Small Bold" className="text-primary-main">
+          No proposals available
+        </Typography>
+        <Typography variant="paragraph/Large" className="text-secondary text-center max-w-[30rem]">
+          There are currently no governance proposals to vote on. Check back later for new proposals.
+        </Typography>
+      </div>
+    );
+  }
+
   return (
     <Suspense fallback={<Loader className="h-5 w-5" />}>
-      <ProposalContent proposalId={data[0].fields.proposal_id} />
+      <ProposalContent proposalId={data[0]!.fields.proposal_id} />
     </Suspense>
   );
 }

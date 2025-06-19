@@ -24,11 +24,13 @@ export function StakeContent() {
 
   if (balance.error || userStaking.error) {
     return (
-      <div>
-        Error:{" "}
-        {balance.error?.message ??
-          userStaking.error?.message ??
-          "Something went wrong"}
+      <div className="flex flex-1 flex-col items-center justify-center gap-s rounded-l-s rounded-r-s bg-[#62519C2E] px-3xl py-4xl text-center">
+        <Typography variant="heading/Small Bold" className="text-bg-error">
+          Something went wrong
+        </Typography>
+        <Typography variant="paragraph/Large" className="text-secondary text-center max-w-[30rem]">
+          {balance.error?.message ?? userStaking.error?.message ?? "Unable to load staking data"}
+        </Typography>
       </div>
     );
   }
