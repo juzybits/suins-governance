@@ -83,7 +83,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
   const amount = watch("amount");
 
   return (
-    <SectionLayout title="Cast Your Votes" isLarge>
+    <SectionLayout title="Cast Your Votes">
       <Form
         form={form}
         onSubmit={() =>

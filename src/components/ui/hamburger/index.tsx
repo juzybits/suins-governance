@@ -1,4 +1,4 @@
-import HamburgerSVG from "@/icons/Hamburguer";
+import HamburgerSVG from "@/icons/hamburguer";
 import TimesSVG from "@/icons/times";
 import clsx from "clsx";
 import { type FC } from "react";
