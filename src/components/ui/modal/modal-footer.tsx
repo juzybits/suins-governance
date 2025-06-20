@@ -13,7 +13,12 @@ export const ModalFooter: FC<ModalFooterProps> = ({
     <Button variant="short/outline" onClick={onClose} bg="#2D2743">
       <Typography variant="label/Regular Bold">Cancel</Typography>
     </Button>
-    <Button variant="short/gradient" onClick={onAction} disabled={disabled}>
+    <Button
+      variant="short/gradient"
+      onClick={onAction}
+      disabled={disabled}
+      className={disabled ? "opacity-30" : ""}
+    >
       <Typography variant="label/Regular Bold">{actionText}</Typography>
     </Button>
   </div>

@@ -46,7 +46,7 @@ export function CardProposalSummary({
     >
       <div
         className={clsx(
-          "flex flex-col gap-xs rounded-xs p-m cursor-pointer transition-opacity hover:opacity-80",
+          "flex cursor-pointer flex-col gap-xs rounded-xs p-m transition-opacity hover:opacity-80",
           status === "active" ? "bg-primary-darker" : "bg-[#62519C2E]",
         )}
         onClick={handleClick}
