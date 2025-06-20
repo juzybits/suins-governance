@@ -50,7 +50,7 @@ export function HomeRecentProposals() {
           </Typography>
         </h2>
         <div className="w-full max-w-[56rem] overflow-hidden rounded-m text-primary-main backdrop-blur-[10px]">
-          <div className="max-h-[40rem] overflow-y-auto bg-[#62519C2E] p-m">
+          <div className="max-h-[40rem] overflow-y-auto bg-[#62519C2E] p-xl">
             {proposals.length === 0 && <p>No proposals yet</p>}
             {openProposals.length > 0 && (
               <div className="flex flex-col gap-m">
@@ -73,6 +73,9 @@ export function HomeRecentProposals() {
                   />
                 ))}
               </div>
+            )}
+            {openProposals.length > 0 && closedProposals.length > 0 && (
+              <div className="h-xl" />
             )}
             {closedProposals.length > 0 && (
               <div className="flex flex-col gap-m">

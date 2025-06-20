@@ -45,7 +45,7 @@ export function PanelRecentProposals() {
           </Typography>
         </h2>
       </div>
-      <div className="max-h-[40rem] overflow-y-auto p-m">
+      <div className="max-h-[40rem] overflow-y-auto p-xl">
         {proposals.length === 0 && <p>No proposals yet</p>}
         {openProposals.length > 0 && (
           <div className="flex flex-col gap-m">
@@ -68,6 +68,9 @@ export function PanelRecentProposals() {
               />
             ))}
           </div>
+        )}
+        {openProposals.length > 0 && closedProposals.length > 0 && (
+          <div className="h-xl" />
         )}
         {closedProposals.length > 0 && (
           <div className="flex flex-col gap-m">
