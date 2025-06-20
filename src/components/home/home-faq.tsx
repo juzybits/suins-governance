@@ -18,7 +18,7 @@ export const HomeFAQ: FC = () => {
         </h2>
         <hr className="border-inherit opacity-50" />
         <h3
-          className="flex justify-between gap-l py-l"
+          className="flex cursor-pointer justify-between gap-l py-l"
           onClick={() => setActive((a) => (a === 0 ? null : 0))}
         >
           <Typography
@@ -87,7 +87,7 @@ export const HomeFAQ: FC = () => {
         <hr className="border-inherit opacity-50" />
         <h3
           onClick={() => setActive((a) => (a === 1 ? null : 1))}
-          className="flex justify-between gap-l py-l"
+          className="flex cursor-pointer justify-between gap-l py-l"
         >
           <Typography
             variant="heading/Small Bold"
@@ -160,7 +160,7 @@ export const HomeFAQ: FC = () => {
         <hr className="border-inherit opacity-50" />
         <h3
           onClick={() => setActive((a) => (a === 2 ? null : 2))}
-          className="flex justify-between gap-l py-l"
+          className="flex cursor-pointer justify-between gap-l py-l"
         >
           <Typography
             variant="heading/Small Bold"
