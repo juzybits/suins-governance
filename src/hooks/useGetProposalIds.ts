@@ -15,6 +15,10 @@ export function useGetProposalIds() {
         limit: 20,
       });
 
+      if (proposalsContent.data.length === 0) {
+        return [];
+      }
+
       if (
         !proposalsContent.data[0]?.name.type ||
         !proposalsContent.data[0]?.name.value

@@ -29,22 +29,24 @@ export function StakingBatch({
         <h2>
           <Typography variant="label/Regular Bold">{title}</Typography>
         </h2>
-        <div>
-          <Typography variant="label/Regular Bold" className="text-secondary">
-            <label htmlFor="sort-by">Sort by: </label>
-            <select
-              className="all-unset"
-              id="sort-by"
-              onChange={(e) =>
-                setSortBy(e.target.value as "Votes" | "Newest" | "Oldest")
-              }
-            >
-              <option value="Votes">Votes</option>
-              <option value="Newest">Newest</option>
-              <option value="Oldest">Oldest</option>
-            </select>
-          </Typography>
-        </div>
+        {batches.length > 1 && (
+          <div>
+            <Typography variant="label/Regular Bold" className="text-secondary">
+              <label htmlFor="sort-by">Sort by: </label>
+              <select
+                className="all-unset"
+                id="sort-by"
+                onChange={(e) =>
+                  setSortBy(e.target.value as "Votes" | "Newest" | "Oldest")
+                }
+              >
+                <option value="Votes">Votes</option>
+                <option value="Newest">Newest</option>
+                <option value="Oldest">Oldest</option>
+              </select>
+            </Typography>
+          </div>
+        )}
       </div>
       <div className="flex flex-1 flex-col gap-s px-m py-s">
         {title === "Voting on latest proposal" && (

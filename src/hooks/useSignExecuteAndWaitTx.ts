@@ -60,8 +60,7 @@ async function devInspectOnDev(
     transactionBlock: tx,
   });
   if (dryRunResult.effects?.status.status !== "success") {
-    throw new Error(
-      "[devInspectOnDev] failed: " + JSON.stringify(dryRunResult, null, 2),
-    );
+    console.warn("[devInspectOnDev] failed: ", dryRunResult);
+    throw new Error("devInspect failed (check console)");
   }
 }

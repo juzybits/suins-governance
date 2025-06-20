@@ -37,13 +37,18 @@ export function StakingBatchItemModal({
     }
   };
 
-  const [months, setMonths] = useState(0);
+  const currentMonths = batch.lockDurationDays / 30;
+  const validMonths = [1, 2, 6, 12].filter((month) => month > currentMonths);
+  const [months, setMonths] = useState(validMonths[0] ?? 1);
 
   return (
     <Modal
       onClose={onClose}
-      title="Lock Tokens"
-      subtitle="Lock your staked NS tokens to receive an immediate boost to your voting power!"
+      title={`${batch.isStaked ? "Lock Tokens" : "Extend Lock"}`}
+      subtitle={`${batch.isStaked
+          ? "Lock your staked NS tokens "
+          : "Extend the lock period of your locked NS tokens "}
+        to receive an immediate boost to your voting power!`}
     >
       <div className="my-xl">
         <StakingBatchItem batch={batch} noAction />
@@ -55,8 +60,7 @@ export function StakingBatchItemModal({
         </h3>
         <p>
           <Typography variant="paragraph/Regular" className="text-secondary">
-            Lock your NS tokens to receive an immediate boost to your voting
-            power! Locked tokens cannot be unstaked until commitment date has
+            Locked tokens cannot be unstaked until commitment date has
             been reached.
           </Typography>
         </p>
@@ -72,7 +76,7 @@ export function StakingBatchItemModal({
             <>Multiplier</>,
             <>Votes</>,
           ]}
-          content={[1, 2, 6, 12].flatMap((month, index) => {
+          content={validMonths.flatMap((month, index) => {
             const powerPreview = batchHelpers.calculateBalanceVotingPower({
               mode: "lock",
               months: month,
@@ -88,8 +92,6 @@ export function StakingBatchItemModal({
               ) / ONE_NS_RAW;
             const days = month * 30;
             const label = `${days} days`;
-
-            if (batch.lockDurationDays >= days) return [];
 
             return [
               [
