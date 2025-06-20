@@ -2,6 +2,7 @@ import { type FC } from "react";
 import { type CardProps } from "./card.types";
 import Typography from "../typography";
 import clsx from "clsx";
+import Link from "next/link";
 
 const Card: FC<CardProps> = ({
   icon,
@@ -12,6 +13,7 @@ const Card: FC<CardProps> = ({
   withBorder,
   valueSuffix,
   valueGradient,
+  earnMoreVotes,
   subValueSuffix,
   subValueGradient,
 }) => (
@@ -52,30 +54,38 @@ const Card: FC<CardProps> = ({
           )}
         </div>
       </div>
-      {subValue && (
-        <div>
-          <Typography
-            variant="label/Regular Bold"
-            className={clsx(
-              active ? "text-primary-main" : "text-tertiary",
-              active &&
-                subValueGradient &&
-                "bg-button_green_orange_pink bg-clip-text text-transparent",
-            )}
-          >
-            {subValue}
-          </Typography>{" "}
-          <Typography
-            variant="label/Regular Bold"
-            className={clsx(
-              active ? "text-primary-main" : "text-tertiary",
-              valueGradient &&
-                "bg-button_green_orange_pink bg-clip-text text-transparent",
-            )}
-          >
-            {subValueSuffix}
+      {earnMoreVotes ? (
+        <Link href="/stake">
+          <Typography variant="label/Regular Bold" className="text-link">
+            Earn More Votes
           </Typography>
-        </div>
+        </Link>
+      ) : (
+        subValue && (
+          <div>
+            <Typography
+              variant="label/Regular Bold"
+              className={clsx(
+                active ? "text-primary-main" : "text-tertiary",
+                active &&
+                  subValueGradient &&
+                  "bg-button_green_orange_pink bg-clip-text text-transparent",
+              )}
+            >
+              {subValue}
+            </Typography>{" "}
+            <Typography
+              variant="label/Regular Bold"
+              className={clsx(
+                active ? "text-primary-main" : "text-tertiary",
+                valueGradient &&
+                  "bg-button_green_orange_pink bg-clip-text text-transparent",
+              )}
+            >
+              {subValueSuffix}
+            </Typography>
+          </div>
+        )
       )}
     </div>
   </div>

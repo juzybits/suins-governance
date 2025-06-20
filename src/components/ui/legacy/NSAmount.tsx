@@ -1,19 +1,21 @@
-import { Text, type TextProps } from "@/components/ui/legacy/Text";
 import NSToken from "@/icons/legacy/NSToken";
 import { formatNSBalance } from "@/utils/coins";
 import clsx from "clsx";
+import Typography from "../typography";
 
 export function NSAmount({
+  color,
   amount,
+  isSmall,
   isMedium,
   centerAlign,
   className,
   noTokenIcon,
-  size,
 }: {
+  color?: string;
   amount: number;
+  isSmall?: boolean;
   isMedium?: boolean;
-  size?: Extract<TextProps["variant"], "B4/bold" | "P3/medium" | "P3/bold">;
   centerAlign?: boolean;
   className?: string;
   noTokenIcon?: boolean;
@@ -28,13 +30,18 @@ export function NSAmount({
         className,
       )}
     >
-      <Text
-        variant={size ?? (isMedium ? "B4/bold" : "P3/medium")}
-        color="fillContent-secondary"
-        className="w-fit"
+      <Typography
+        variant={
+          isSmall
+            ? "label/Small Bold"
+            : isMedium
+              ? "label/Large Bold"
+              : "label/Small Medium"
+        }
+        className={clsx("w-fit", color ?? "text-secondary")}
       >
         {amountFormatted}
-      </Text>
+      </Typography>
       {!noTokenIcon && (
         <NSToken className={isMedium ? "h-4 w-4" : "h-3 w-3"} color="white" />
       )}

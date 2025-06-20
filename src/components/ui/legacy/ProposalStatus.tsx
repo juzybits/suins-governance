@@ -1,34 +1,33 @@
 import clsx from "clsx";
-import { Text } from "@/components/ui/legacy/Text";
+import Typography from "../typography";
 
 export function ProposalStatus({
   status,
 }: {
   status: "active" | "passed" | "failed" | "pending";
 }) {
-  // make first letter uppercase
   const formattedStatus = status.charAt(0).toUpperCase() + status.slice(1);
   return (
     <div
       className={clsx(
-        "flex w-fit items-center justify-center rounded-2024_S px-2024_M py-2024_S",
+        "flex w-fit items-center justify-center rounded-full px-m py-s",
         status === "active" || status === "passed"
-          ? "bg-2024_fillBackground-good"
+          ? "bg-semantic-good"
           : status === "pending"
-            ? "bg-2024_fillBackground-warning"
-            : "bg-[#FF1D53]",
+            ? "bg-semantic-warning"
+            : "bg-semantic-issue",
       )}
     >
-      <Text
-        variant="B5/bold"
-        color={
+      <Typography
+        variant="label/Regular Bold"
+        className={clsx(
           status === "active" || status === "passed" || status === "pending"
-            ? "fillContent-primary-darker"
-            : "fillContent-secondary"
-        }
+            ? "text-primary_darker"
+            : "text-secondary",
+        )}
       >
         {formattedStatus}
-      </Text>
+      </Typography>
     </div>
   );
 }

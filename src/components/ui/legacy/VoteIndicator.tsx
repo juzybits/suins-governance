@@ -4,7 +4,7 @@ import SvgLocked from "@/icons/legacy/Locked";
 import SvgXFill16 from "@/icons/legacy/XFill16";
 import SvgCheckFill24 from "@/icons/legacy/CheckFill24";
 import SvgPersonIcon from "@/icons/legacy/PersonIcon";
-import { Text } from "@/components/ui/legacy/Text";
+import Typography from "../typography";
 
 export function VoteIndicator({
   votedStatus,
@@ -17,15 +17,13 @@ export function VoteIndicator({
   size?: "small" | "medium";
   isPersonVote?: boolean;
 }) {
-  const fontSize = size === "small" ? "B6/bold" : "B3/bold";
-
   switch (votedStatus) {
     case "No":
       return (
         <div
           className={clsx(
             "flex items-center justify-end",
-            size === "small" ? "gap-2024_XS" : "gap-2024_S",
+            size === "small" ? "gap-2xs" : "gap-xs",
           )}
         >
           {onlyStatus ? null : isPersonVote ? (
@@ -40,9 +38,12 @@ export function VoteIndicator({
               className={clsx(size === "small" ? "h-3 w-3" : "h-6 w-6")}
             />
           )}
-          <Text variant={fontSize} color="issue-dark">
+          <Typography
+            variant="label/Regular Bold"
+            className="text-semantic-issue"
+          >
             {isPersonVote ? "Welp" : "No"}
-          </Text>
+          </Typography>
         </div>
       );
 
@@ -51,7 +52,7 @@ export function VoteIndicator({
         <div
           className={clsx(
             "flex items-center justify-end",
-            size === "small" ? "gap-2024_XS" : "gap-2024_S",
+            size === "small" ? "gap-2xs" : "gap-xs",
           )}
         >
           {onlyStatus ? null : isPersonVote ? (
@@ -66,9 +67,13 @@ export function VoteIndicator({
               className={clsx(size === "small" ? "h-3 w-3" : "h-6 w-6")}
             />
           )}
-          <Text variant={fontSize} color="warning">
+
+          <Typography
+            variant="label/Regular Bold"
+            className="text-semantic-warning"
+          >
             {isPersonVote ? "William" : "Abstain"}
-          </Text>
+          </Typography>
         </div>
       );
     case "Yes":
@@ -76,7 +81,7 @@ export function VoteIndicator({
         <div
           className={clsx(
             "flex items-center justify-end",
-            size === "small" ? "gap-2024_XS" : "gap-2024_S",
+            size === "small" ? "gap-2xs" : "gap-xs",
           )}
         >
           {onlyStatus ? null : isPersonVote ? (
@@ -92,9 +97,12 @@ export function VoteIndicator({
               color="#4BFFA6"
             />
           )}
-          <Text variant={fontSize} color="good">
+          <Typography
+            variant="label/Regular Bold"
+            className="text-semantic-good"
+          >
             {isPersonVote ? "Nigri" : "Yes"}
-          </Text>
+          </Typography>
         </div>
       );
   }

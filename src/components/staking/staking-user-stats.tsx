@@ -40,7 +40,7 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
         value={formatNSBalance(stats.lockedNS)}
         active={Boolean(Number(stats.lockedNS))}
         subValue={formatNSBalance(stats.lockedPower)}
-        icon={<LockSVG width="100%" className="max-w-[2rem]" />}
+        icon={<LockSVG width="100%" className="max-h-[2rem] max-w-[2rem]" />}
       />
       <Card
         withBorder
@@ -55,14 +55,17 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
       />
       <hr className="col-span-4 hidden border-0 border-b border-[#6E609F80] md:block lg:hidden" />
       <Card
-        withBorder
         valueGradient
+        withBorder={showTokens}
         title="Your Total Votes"
+        earnMoreVotes={!showTokens}
         active={Boolean(Number(stats.totalPower))}
         value={formatNSBalance(stats.totalPower)}
         icon={<VoteSVG width="100%" className="max-w-[2rem]" />}
       />
-      <hr className="col-span-4 hidden border-0 border-b border-[#6E609F80] lg:block xl:hidden" />
+      {showTokens && (
+        <hr className="col-span-4 hidden border-0 border-b border-[#6E609F80] lg:block xl:hidden" />
+      )}
       {showTokens && (
         <Card
           valueSuffix="NS"

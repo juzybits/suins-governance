@@ -34,7 +34,7 @@ export function StakeContent() {
   }
 
   return (
-    <div className="flex flex-1 flex-col gap-2xl">
+    <div className="mx-auto flex max-w-[88rem] flex-1 flex-col gap-2xl">
       <StakingUserStats showTokens={true} />
       <div className="grid flex-1 gap-l lg:grid-cols-[2fr_1fr]">
         <PanelBatches />
@@ -124,8 +124,8 @@ function PanelBatches() {
             </div>
           </div>
         ))}
-      <StakingBatch batches={availableBatches} title="Available for voting" />
       <StakingBatch batches={votingBatches} title="Voting on latest proposal" />
+      <StakingBatch batches={availableBatches} title="Available for voting" />
       <StakingBatch
         batches={unavailableBatches}
         title="Unavailable for voting"

@@ -1,12 +1,11 @@
 "use client";
 
 import { SectionLayout } from "./SectionLayout";
-import { VoteIndicator } from "./ui/legacy/VoteIndicator";
+import { VoteIndicator } from "../ui/legacy/VoteIndicator";
 import { VoteProgressBar } from "./VoteProgressBar";
-import { GradientProgressBar } from "./ui/legacy/GradientProgressBar";
-import { Text } from "@/components/ui/legacy/Text";
-import { YourVote } from "@/components/YourVote";
-import { YourReward } from "@/components/YourReward";
+import { GradientProgressBar } from "../ui/legacy/GradientProgressBar";
+import { YourVote } from "@/components/vote/YourVote";
+import { YourReward } from "@/components/vote/YourReward";
 import { NSAmount } from "@/components/ui/legacy/NSAmount";
 
 import {
@@ -14,10 +13,11 @@ import {
   parseProposalVotes,
 } from "@/hooks/useGetProposalDetail";
 import { roundFloat } from "@/utils/roundFloat";
-import NSToken from "@/icons/legacy/NSToken";
-import { CoinFormat, formatBalance } from "@/utils/coins";
+import { CoinFormat, formatBalance, formatNSBalance } from "@/utils/coins";
 import { useCalcVotingStats } from "@/hooks/useCalcVotingStats";
 import { useIsPersonVote } from "@/hooks/useIsPersonVote";
+import Typography from "../ui/typography";
+import clsx from "clsx";
 
 function MinimumThreshHold({
   isReached,
@@ -34,62 +34,47 @@ function MinimumThreshHold({
   );
 
   return (
-    <div className="gap-2024_R rounded-12 bg-2024_fillBackground-secondary-Highlight/40 px-2024_R py-2024_R flex w-full flex-col items-center justify-between">
-      <div className="gap-2024_R flex w-full items-center justify-between">
-        <Text
-          variant="B6/bold"
-          color="fillContent-primary"
-          className="flex basis-3/5 items-start"
-        >
-          Votes Cast
-        </Text>
-        <div className="gap-2024_R flex basis-1/5 items-center justify-end">
-          <Text
-            variant="P3/medium"
-            color="fillContent-secondary"
-            className="flex max-w-[43px] basis-1/5 justify-end"
-          >
-            {percentage}%
-          </Text>
-          <div className="flex basis-1/5 items-center justify-end gap-1">
-            <Text
-              variant="P3/medium"
-              color="fillContent-secondary"
-              className="flex justify-end"
+    <div className="flex w-full flex-col items-center justify-between gap-m rounded-l-xs rounded-r-xs bg-[#62519C66] px-s py-s">
+      {!isReached && (
+        <div className="flex w-full items-center justify-between gap-2">
+          <div className="flex items-start">
+            <Typography
+              variant="label/Regular Bold"
+              className="text-primary-main"
             >
-              {formatBalance({
-                balance: totalVotes,
-                decimals: 0,
-                format: CoinFormat.FULL,
-              })}
-            </Text>
-            <NSToken className="h-3 w-3" color="white" />
+              Votes Cast
+            </Typography>
+          </div>
+          <div className="flex min-w-[100px] basis-1/2 flex-row items-end justify-between gap-3">
+            <Typography
+              variant="label/Small Medium"
+              className="flex min-w-[60px] justify-end text-secondary"
+            >
+              {percentage}%
+            </Typography>
+            <NSAmount amount={totalVotes} />
           </div>
         </div>
-      </div>
-      <GradientProgressBar percentage={percentage} />
+      )}
+      {!isReached && <GradientProgressBar percentage={percentage} />}
       <div className="flex w-full items-center justify-between gap-1">
-        <Text
-          variant="B7/regular"
-          color="fillContent-secondary"
-          className="font-paragraph flex items-center !tracking-tighter"
-        >
+        <Typography variant="paragraph/XSmall" className="text-secondary">
           Minimum Voting Threshold:{" "}
           {formatBalance({
             balance: threshold,
             decimals: 0,
             format: CoinFormat.ROUNDED,
           })}{" "}
-          $NS
-        </Text>
-
-        <Text
-          variant="B7/regular"
-          className="font-paragraph"
-          color={isReached ? "cyan" : "warning"}
+          Votes
+        </Typography>
+        <Typography
+          variant="paragraph/XSmall"
+          className={clsx(
+            isReached ? "text-semantic-perfect" : "text-semantic-warning",
+          )}
         >
           {isReached ? "Reached" : "Not Reached"}
-        </Text>
+        </Typography>
       </div>
     </div>
   );
@@ -122,16 +107,20 @@ export function VotingState({
         />
       </div>
       <div className="flex min-w-[100px] basis-1/2 flex-row items-end justify-between gap-3">
+        <Typography
+          variant="label/Small Medium"
+          className="flex min-w-[60px] justify-end text-secondary"
+        >
+          {formatNSBalance(votes)}
+        </Typography>
         {percentage !== undefined && !hidePercentage && (
-          <Text
-            variant="P3/medium"
-            color="fillContent-secondary"
-            className="flex min-w-[60px] justify-end"
+          <Typography
+            variant="label/Small Medium"
+            className="flex min-w-[60px] justify-end text-secondary"
           >
             {percentage}%
-          </Text>
+          </Typography>
         )}
-        <NSAmount amount={votes} />
       </div>
     </div>
   );
@@ -188,7 +177,6 @@ export function VotingStatus({
         totalVotes={stats.totalVotes}
         threshold={stats.threshold}
       />
-
       <YourVote proposalId={proposalId} />
       <YourReward proposalId={proposalId} />
     </SectionLayout>

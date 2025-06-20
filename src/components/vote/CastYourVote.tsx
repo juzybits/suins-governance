@@ -3,10 +3,10 @@ import { useCurrentAccount, useCurrentWallet } from "@mysten/dapp-kit";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { SectionLayout } from "@/components/SectionLayout";
+import { SectionLayout } from "@/components/vote/SectionLayout";
 import { Button } from "@/components/ui/legacy/button/Button";
-import { GradientBorder } from "./gradient-border";
-import { VoteIndicator } from "./ui/legacy/VoteIndicator";
+import { GradientBorder } from "../gradient-border";
+import { VoteIndicator } from "../ui/legacy/VoteIndicator";
 import { Text } from "@/components/ui/legacy/Text";
 import NSToken from "@/icons/legacy/NSToken";
 import { useVoteMutation } from "@/hooks/useVoteMutation";
@@ -15,7 +15,7 @@ import { Form } from "@/components/form/Form";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { motion } from "framer-motion";
 import isPast from "date-fns/isPast";
-import { RadioGroupField } from "./form/RadioGroupField";
+import { RadioGroupField } from "../form/RadioGroupField";
 import { useEffect } from "react";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { useIsPersonVote } from "@/hooks/useIsPersonVote";
@@ -94,10 +94,10 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
           })
         }
       >
-        <div className="flex w-full flex-col items-center justify-start gap-2024_R py-2024_S">
+        <div className="gap-2024_R py-2024_S flex w-full flex-col items-center justify-start">
           <RadioGroupField
             name="vote"
-            className="flex w-full flex-col items-center justify-start gap-2024_R"
+            className="gap-2024_R flex w-full flex-col items-center justify-start"
             options={VOTE_OPTIONS.map((value) => ({
               value,
               disabled: isInactiveProposal,
@@ -114,9 +114,9 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                   <GradientBorder
                     variant="green_blue_pink"
                     alwaysAnimate
-                    className="flex w-full items-center justify-start overflow-hidden rounded-[16px] border-2024_3"
+                    className="border-2024_3 flex w-full items-center justify-start overflow-hidden rounded-[16px]"
                   >
-                    <div className="flex w-full justify-start rounded-none !bg-2024_fillBackground-secondary-Highlight bg-transparent px-2024_XL py-2024_L">
+                    <div className="!bg-2024_fillBackground-secondary-Highlight px-2024_XL py-2024_L flex w-full justify-start rounded-none bg-transparent">
                       <div className="w-content flex">
                         <VoteIndicator
                           votedStatus={option.value as "Yes" | "No" | "Abstain"}
@@ -134,7 +134,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.4, ease: "easeInOut" }}
                 >
-                  <div className="flex w-full justify-start rounded-[16px] border border-2024_fillContent-tertiary bg-transparent px-2024_XL py-2024_L">
+                  <div className="border-2024_fillContent-tertiary px-2024_XL py-2024_L flex w-full justify-start rounded-[16px] border bg-transparent">
                     <div className="w-content flex">
                       <VoteIndicator
                         votedStatus={option.value as "Yes" | "No" | "Abstain"}
@@ -148,22 +148,22 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
             }
           />
           {!isInactiveProposal && (
-            <div className="flex w-full flex-col gap-2024_S">
-              <div className="flex w-full flex-col items-center justify-between gap-2024_L md:flex-row">
+            <div className="gap-2024_S flex w-full flex-col">
+              <div className="gap-2024_L flex w-full flex-col items-center justify-between md:flex-row">
                 {!isLoggedOut && (
-                  <div className="relative w-full rounded-2024_20 bg-2024_fillContent-primary-darker">
-                    <NSToken className="absolute left-2024_XL top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-white" />
+                  <div className="rounded-2024_20 bg-2024_fillContent-primary-darker relative w-full">
+                    <NSToken className="left-2024_XL absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-white" />
                     <input
                       type="number"
                       step="0.000001"
                       {...register("amount")}
                       className={clsx(
-                        "flex h-full w-full items-center rounded-2024_20 bg-2024_fillContent-primary-darker px-2024_XL py-2024_M pl-[50px] text-2024_body3 font-bold leading-normal text-2024_fillContent-secondary caret-2024_pink transition-all placeholder:text-2024_body4 placeholder:!leading-normal placeholder:text-2024_fillContent-primary-inactive focus:outline-none focus:placeholder:text-transparent",
+                        "rounded-2024_20 bg-2024_fillContent-primary-darker px-2024_XL py-2024_M text-2024_body3 text-2024_fillContent-secondary caret-2024_pink placeholder:text-2024_body4 placeholder:text-2024_fillContent-primary-inactive flex h-full w-full items-center pl-[50px] font-bold leading-normal transition-all placeholder:!leading-normal focus:outline-none focus:placeholder:text-transparent",
                       )}
                       disabled={isInactiveProposal}
                       placeholder="Enter token amount"
                     />
-                    <div className="absolute right-2024_XL top-1/2 -translate-y-1/2">
+                    <div className="right-2024_XL absolute top-1/2 -translate-y-1/2">
                       <button
                         onClick={() => {
                           setValue("amount", tokenBalance, {
@@ -187,7 +187,7 @@ export function CastYourVote({ proposalId }: { proposalId: string }) {
                 <Button
                   gradient="fill/orange_pink_blue"
                   className={clsx(
-                    "h-2024_3.5XL w-full max-w-full items-center !rounded-2024_M md:max-w-[151px]",
+                    "h-2024_3.5XL !rounded-2024_M w-full max-w-full items-center md:max-w-[151px]",
                     isLoggedOut && "!max-w-full",
                   )}
                   disabled={

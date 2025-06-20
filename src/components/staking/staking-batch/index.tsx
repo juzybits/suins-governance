@@ -48,10 +48,13 @@ export function StakingBatch({
       </div>
       <div className="flex flex-1 flex-col gap-s px-m py-s">
         {title === "Voting on latest proposal" && (
-          <div className="align-center rounded-2xs bg-primary-main px-m py-s text-bg-primary_dark text-secondary">
+          <Typography
+            variant="label/Regular Bold"
+            className="rounded-2xs bg-primary-main px-m py-s text-center text-bg-primary_dark"
+          >
             The Staked and Locked NS tokens participating in voting will be
             unavailable until the voting finishes.
-          </div>
+          </Typography>
         )}
         {batches.map((batch) => (
           <StakingBatchItem key={batch.objectId} batch={batch} />

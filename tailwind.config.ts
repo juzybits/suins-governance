@@ -14,6 +14,7 @@ const tailwindConfig = {
         tertiary: "#6E609F",
         link: "#D348FF",
         semantic: {
+          perfect: "#00F9FB",
           good: "#4BFF6A",
           warning: "#F2BD24",
           issue: "#EB5A29",

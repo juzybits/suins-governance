@@ -1,6 +1,6 @@
 "use client";
 
-import { ProposalContent } from "@/components/ProposalContent";
+import { ProposalContent } from "@/components/vote";
 import { Suspense } from "react";
 import Loader from "@/components/ui/legacy/Loader";
 import { useGetProposalIds } from "@/hooks/useGetProposalIds";

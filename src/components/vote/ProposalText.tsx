@@ -1,16 +1,17 @@
 import { motion } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
 
-import { Heading } from "@/components/ui/legacy/Heading";
-import { Text } from "@/components/ui/legacy/Text";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
-import { ProposalStatus } from "./ui/legacy/ProposalStatus";
-import { Button } from "./ui/legacy/button/Button";
+import { ProposalStatus } from "../ui/legacy/ProposalStatus";
+
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { isPast } from "date-fns";
 import { formatContractText } from "@/utils/formatContractText";
-import { ContentBlockParser } from "./ui/legacy/ContentBlockParser";
+import { ContentBlockParser } from "../ui/legacy/ContentBlockParser";
 import { useIsPersonVote } from "@/hooks/useIsPersonVote";
+import Typography from "../ui/typography";
+import { Button } from "../ui/button";
+import { Voting } from ".";
 
 export function ProposalText({ proposalId }: { proposalId: string }) {
   const isSmallOrAbove = useBreakpoint("sm");
@@ -30,10 +31,12 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
   }, [isLoading]);
 
   const isClosed = isPast(new Date(Number(data?.fields.end_time_ms ?? 0)));
+
   if (!description || isLoading) return null;
+
   return (
-    <section className="relative flex w-full flex-col gap-2024_4XL sm:gap-2024_5XL">
-      <div className="flex flex-col gap-2024_XL">
+    <section className="relative flex w-full flex-col gap-xl xl:gap-4xl">
+      <div className="flex flex-col gap-xl">
         <ProposalStatus
           status={
             isClosed
@@ -47,14 +50,24 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
               : "active"
           }
         />
-
-        <Heading variant="H3/extraBold" className="text-start capitalize">
+        <Typography
+          variant="display/Regular"
+          className="text-start capitalize text-primary-main"
+        >
           {data?.fields.title}
-        </Heading>
+        </Typography>
       </div>
-      <div className="flex flex-col gap-2024_3XL">
-        <Heading variant="H4/super">Description</Heading>
-        <div className="flex flex-col gap-2024_L">
+      <div className="flex flex-col gap-s xl:hidden">
+        <Voting proposalId={proposalId} />
+      </div>
+      <div className="flex flex-col gap-xl">
+        <Typography
+          variant="display/XSmall Light"
+          className="text-start capitalize text-primary-main"
+        >
+          Description
+        </Typography>
+        <div className="flex flex-col gap-l">
           <motion.div
             ref={contentRef}
             initial={false}
@@ -63,33 +76,38 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
               opacity: isExpanded ? 1 : 0.85,
             }}
             transition={{ duration: 0.4, ease: [0.04, 0.62, 0.23, 0.98] }}
-            className="text-proposal-text relative flex flex-col gap-2024_M overflow-hidden"
+            className="text-proposal-text gap-2024_M relative flex flex-col overflow-hidden"
           >
             {description?.map((desc, index) => (
-              <Text
-                variant={isSmallOrAbove ? "P1/regular" : "P2/regular"}
-                color="fillContent-primary"
+              <Typography
+                variant={
+                  isSmallOrAbove ? "paragraph/Regular" : "paragraph/Large"
+                }
+                className="text-primary-main"
                 key={index + desc.substring(0, 20)}
               >
                 <ContentBlockParser text={desc} />
-              </Text>
+              </Typography>
             ))}
           </motion.div>
           {/* Fade effect */}
           {!isExpanded && isOverflowing && (
-            <div className="pointer-events-none absolute bottom-16 left-0 right-0 h-28 bg-show-more-gradient" />
+            <div className="bg-show-more-gradient pointer-events-none absolute bottom-16 left-0 right-0 h-28" />
           )}
 
           {/* Show "Show More" button only if content exceeds 350px */}
           {isOverflowing && (
             <Button
               onClick={toggleExpanded}
-              variant="short"
+              variant="outline/small"
               className="mt-4 self-start border-2 border-[#6E609F] bg-[#221C3603] transition-all"
             >
-              <Text variant="LABEL/bold" color="fillContent-secondary">
+              <Typography
+                variant="label/Regular Bold"
+                className="text-secondary"
+              >
                 {isExpanded ? "Show Less" : "Show More"}
-              </Text>
+              </Typography>
             </Button>
           )}
         </div>

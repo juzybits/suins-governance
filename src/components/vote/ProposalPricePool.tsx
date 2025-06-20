@@ -8,7 +8,7 @@ export function ProposalPricePool({ proposalId }: { proposalId: string }) {
   const balanceStr = formatNSBalance(data.fields.total_reward);
 
   return (
-    <div className="dummy-ui">
+    <div className="flex w-full flex-col items-start justify-center gap-2xl rounded-l-s rounded-r-s bg-[#62519C66] p-s">
       <div className="panel">
         <h2>Proposal Voting Rewards</h2>
         <h2>{balanceStr} NS</h2>

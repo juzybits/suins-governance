@@ -26,3 +26,13 @@ export const calculateReward = ({
   const totalReward = BigInt(proposal.fields.total_reward);
   return (userPower * totalReward) / totalPower;
 };
+
+export const getTotalReward = ({
+  proposal,
+}: {
+  proposal: ProposalObjResp;
+}): bigint => {
+  if (proposal.version === 1) return 0n;
+
+  return BigInt(proposal.fields.total_reward);
+};

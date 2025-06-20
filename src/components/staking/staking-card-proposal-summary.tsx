@@ -2,15 +2,13 @@
 
 import { isPast } from "date-fns";
 import { type ProposalObjResp } from "@/types/Proposal";
-import {
-  type UserProposalStats
-} from "@/hooks/useGetUserStats";
+import { type UserProposalStats } from "@/hooks/useGetUserStats";
 import Typography from "../ui/typography";
 import Badge from "../ui/badge";
 import clsx from "clsx";
 import { GradientBorder } from "../gradient-border";
 import NSToken from "@/icons/legacy/NSToken";
-import { VotingStatus } from "../VotingStatus";
+import { VotingStatus } from "../vote/VotingStatus";
 import { formatNSBalance } from "@/utils/coins";
 
 export function CardProposalSummary({

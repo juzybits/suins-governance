@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { Text } from "@/components/ui/legacy/Text";
 import { CountDownTimer } from "./CountDownTimer";
 import { SectionLayout } from "./SectionLayout";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { format, isPast } from "date-fns";
 import { useExplorerLink } from "@/hooks/useExplorerLink";
 import SvgArrowUpLeft16 from "@/icons/legacy/ArrowUpLeft16";
+import Typography from "../ui/typography";
 
 export function ProposalDetail({ proposalId }: { proposalId: string }) {
   const { data, isLoading } = useGetProposalDetail({ proposalId });
@@ -25,58 +25,85 @@ export function ProposalDetail({ proposalId }: { proposalId: string }) {
     <SectionLayout title="Information" isLoading={isLoading}>
       <div className="flex flex-col gap-4">
         <div className="flex justify-between">
-          <Text variant="LABEL/bold" color="fillContent-secondary">
+          <Typography variant="label/Regular Bold" className="text-secondary">
             Proposal #{data?.fields.serial_no}
-          </Text>
+          </Typography>
           <Link
             href={explorerLink}
             target="_blank"
-            className="flex items-center gap-2024_XS"
+            className="flex items-center gap-xs"
           >
-            <Text variant="LABEL/bold" color="fillContent-primary">
+            <Typography
+              variant="label/Regular Bold"
+              className="text-primary-main"
+            >
               View on Explorer
-            </Text>
-            <SvgArrowUpLeft16 className="h-2024_M w-2024_M text-2024_fillContent-primary" />
+            </Typography>
+            <SvgArrowUpLeft16 className="h-m w-m text-primary-main" />
           </Link>
         </div>
 
         {isProposalClosed ? (
           <>
             <div className="flex justify-between">
-              <Text variant="LABEL/bold" color="fillContent-secondary">
+              <Typography
+                variant="label/Regular Bold"
+                className="text-secondary"
+              >
                 Voting Started
-              </Text>
-              <Text variant="LABEL/bold" color="fillContent-primary">
+              </Typography>
+              <Typography
+                variant="label/Regular Bold"
+                className="text-primary-main"
+              >
                 {proposalStartDate}
-              </Text>
+              </Typography>
             </div>
             <div className="flex justify-between">
-              <Text variant="LABEL/bold" color="fillContent-secondary">
+              <Typography
+                variant="label/Regular Bold"
+                className="text-secondary"
+              >
                 Voting Ended
-              </Text>
-              <Text variant="LABEL/bold" color="fillContent-primary">
+              </Typography>
+              <Typography
+                variant="label/Regular Bold"
+                className="text-primary-main"
+              >
                 {votingEndedIn}
-              </Text>
+              </Typography>
             </div>
           </>
         ) : (
           <>
             <div className="flex justify-between">
-              <Text variant="LABEL/bold" color="fillContent-secondary">
+              <Typography
+                variant="label/Regular Bold"
+                className="text-secondary"
+              >
                 Voting Started
-              </Text>
-              <Text variant="LABEL/bold" color="fillContent-primary">
+              </Typography>
+              <Typography
+                variant="label/Regular Bold"
+                className="text-primary-main"
+              >
                 {proposalStartDate}
-              </Text>
+              </Typography>
             </div>
             <div className="flex flex-col gap-4">
               <div className="flex justify-between">
-                <Text variant="LABEL/bold" color="fillContent-secondary">
+                <Typography
+                  variant="label/Regular Bold"
+                  className="text-secondary"
+                >
                   Voting Ends
-                </Text>
-                <Text variant="LABEL/bold" color="fillContent-primary">
+                </Typography>
+                <Typography
+                  variant="label/Regular Bold"
+                  className="text-primary-main"
+                >
                   {votingEndedIn}
-                </Text>
+                </Typography>
               </div>
               <CountDownTimer timestamp={timestampMs} />
             </div>

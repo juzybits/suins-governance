@@ -8,6 +8,7 @@ export interface CardProps {
   subValue?: string;
   withBorder?: boolean;
   valueSuffix?: string;
+  earnMoreVotes?: boolean;
   valueGradient?: boolean;
   subValueSuffix?: string;
   subValueGradient?: boolean;
