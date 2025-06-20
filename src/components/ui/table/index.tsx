@@ -4,7 +4,12 @@ import clsx from "clsx";
 import { type TableProps } from "./table.types";
 import { makeId } from "@/utils/id";
 
-const Table: FC<TableProps> = ({ header, content, minimalist }) => {
+const Table: FC<TableProps> = ({
+  header,
+  content,
+  minimalist,
+  columnStyles = () => "text-left",
+}) => {
   const id = useId();
 
   return (
@@ -26,7 +31,8 @@ const Table: FC<TableProps> = ({ header, content, minimalist }) => {
             <th
               key={makeId(id, index, "head")}
               className={clsx(
-                "py-s text-left",
+                "py-s",
+                columnStyles(index),
                 !minimalist && "px-m",
                 index && !minimalist && "border-l border-[#FFFFFF1A]",
               )}
@@ -50,7 +56,8 @@ const Table: FC<TableProps> = ({ header, content, minimalist }) => {
               <td
                 key={makeId(id, index, "cell")}
                 className={clsx(
-                  "py-s text-left",
+                  "py-s",
+                  columnStyles(index),
                   !minimalist && "px-m",
                   index && !minimalist && "border-l border-[#FFFFFF1A]",
                 )}

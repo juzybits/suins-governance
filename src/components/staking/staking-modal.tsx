@@ -124,7 +124,10 @@ function ModalStakeOrLockNewBatch({
           </p>
           <Table
             minimalist
-            header={["Selection", "Vote Multiplier", "Votes"].map((item) => (
+            columnStyles={(index) =>
+              index === 0 ? "text-left" : "text-right pl-m"
+            }
+            header={["Selection", "Multiplier", "Votes"].map((item) => (
               <Typography
                 variant="label/Small Medium"
                 className="text-secondary opacity-70"
@@ -182,6 +185,9 @@ function ModalStakeOrLockNewBatch({
           </p>
           <Table
             minimalist
+            columnStyles={(index) =>
+              index === 0 ? "text-left" : "text-right pl-m"
+            }
             header={[
               <Typography
                 variant="label/Small Medium"

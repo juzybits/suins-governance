@@ -68,6 +68,9 @@ export function StakingBatchItemModal({
         </p>
         <Table
           minimalist
+          columnStyles={(index) =>
+            index === 0 ? "text-left" : "text-right pl-m"
+          }
           header={[
             <Typography
               variant="label/Small Medium"
