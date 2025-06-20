@@ -484,13 +484,11 @@ export function Votes({ proposalId }: { proposalId: string }) {
           allVotersSwitch={() => setTopVoters(false)}
         />
       ) : (
-        <SectionLayout title="All Voters">
-          <AllVoter
-            proposalId={proposalId}
-            isPersonVote={isPersonVote}
-            topVotersSwitch={() => setTopVoters(true)}
-          />
-        </SectionLayout>
+        <AllVoter
+          proposalId={proposalId}
+          isPersonVote={isPersonVote}
+          topVotersSwitch={() => setTopVoters(true)}
+        />
       )}
     </div>
   );
