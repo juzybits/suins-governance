@@ -1,6 +1,7 @@
 "use client";
 
 import { isPast } from "date-fns";
+import { useRouter } from "next/navigation";
 import { type ProposalObjResp } from "@/types/Proposal";
 import { type UserProposalStats } from "@/hooks/useGetUserStats";
 import Typography from "../ui/typography";
@@ -20,6 +21,7 @@ export function CardProposalSummary({
   proposal: ProposalObjResp;
   userStats: UserProposalStats | undefined;
 }) {
+  const router = useRouter();
   const isClosed = isPast(new Date(Number(fields.end_time_ms ?? 0)));
 
   let status = "active";
@@ -29,6 +31,10 @@ export function CardProposalSummary({
     else if (fields.winning_option === null) status = "pending";
     else status = "failed";
   }
+
+  const handleClick = () => {
+    router.push(`/proposal/${fields.id.id}`);
+  };
 
   return (
     <GradientBorder
@@ -40,9 +46,10 @@ export function CardProposalSummary({
     >
       <div
         className={clsx(
-          "flex flex-col gap-xs rounded-xs p-m",
+          "flex flex-col gap-xs rounded-xs p-m cursor-pointer transition-opacity hover:opacity-80",
           status === "active" ? "bg-primary-darker" : "bg-[#62519C2E]",
         )}
+        onClick={handleClick}
       >
         <h2 className="all-unset">
           <Typography variant="display/XXXSmall Light">
