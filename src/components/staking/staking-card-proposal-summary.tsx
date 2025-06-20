@@ -35,13 +35,13 @@ export function CardProposalSummary({
       variant="green_blue_pink"
       className={clsx(
         "rounded-xs",
-        status === "pending" ? "border-2" : "border-0",
+        status === "active" ? "border-2" : "border-0",
       )}
     >
       <div
         className={clsx(
           "flex flex-col gap-xs rounded-xs p-m",
-          status === "pending" ? "bg-primary-darker" : "bg-[#62519C2E]",
+          status === "active" ? "bg-primary-darker" : "bg-[#62519C2E]",
         )}
       >
         <h2 className="all-unset">
@@ -49,11 +49,11 @@ export function CardProposalSummary({
             #{index} {fields.title}
           </Typography>
         </h2>
-        {status === "pending" && (
+        {status === "active" && (
           <VotingStatus progressOnly proposalId={fields.id.id} />
         )}
         <div className="flex items-end gap-xs">
-          {status === "pending" ? (
+          {status === "active" ? (
             <Typography variant="label/Small Bold" className="flex-1">
               Voting in progress
             </Typography>
@@ -69,7 +69,7 @@ export function CardProposalSummary({
           )}
           <p>
             <Typography variant="paragraph/XSmall" className="text-secondary">
-              {status === "pending" && "Ends "}
+              {status === "active" && "Ends "}
             </Typography>
             <Typography
               variant="paragraph/XSmall"
@@ -81,7 +81,7 @@ export function CardProposalSummary({
         </div>
         {userStats && (
           <>
-            {status !== "pending" && (
+            {status !== "active" && (
               <hr className="mt-xs border-primary-inactive opacity-30" />
             )}
             <div className="flex items-center gap-2xs">
