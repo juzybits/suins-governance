@@ -16,7 +16,7 @@ export const HomeHero: FC = () => {
 
   return (
     <div className="my-5xl px-s pt-5xl">
-      <div className="flex flex-col items-center gap-xl">
+      <div className="flex flex-col items-center gap-3xl">
         <h1 className="all-unset">
           <Typography
             variant={isNotMobile ? "display/XLarge" : "display/Regular"}
