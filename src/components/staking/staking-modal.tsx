@@ -55,11 +55,6 @@ function ModalStakeOrLockNewBatch({
   const [months, setMonths] = useState(action === "lock" ? 1 : 0);
 
   const balance = parseNSAmount(amount);
-  const power = batchHelpers.calculateBalanceVotingPower({
-    balance,
-    months,
-    mode: action,
-  });
 
   const onStakeOrLock = async ({
     amount,
@@ -168,7 +163,7 @@ function ModalStakeOrLockNewBatch({
                   key={makeId("stake", "cell", 0, 2)}
                   className="text-right text-semantic-good"
                 >
-                  {formatNSBalance(power)}
+                  {formatNSBalance(balance)}
                 </Typography>,
               ],
             ]}
