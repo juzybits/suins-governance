@@ -17,7 +17,10 @@ export default function VotePage() {
         <Typography variant="heading/Small Bold" className="text-bg-error">
           Error loading proposals
         </Typography>
-        <Typography variant="paragraph/Large" className="text-secondary text-center max-w-[30rem]">
+        <Typography
+          variant="paragraph/Large"
+          className="max-w-[30rem] text-center text-secondary"
+        >
           {error.message ?? "Unable to load proposal data"}
         </Typography>
       </div>
@@ -30,8 +33,12 @@ export default function VotePage() {
         <Typography variant="heading/Small Bold" className="text-primary-main">
           No proposals available
         </Typography>
-        <Typography variant="paragraph/Large" className="text-secondary text-center max-w-[30rem]">
-          There are currently no governance proposals to vote on. Check back later for new proposals.
+        <Typography
+          variant="paragraph/Large"
+          className="max-w-[30rem] text-center text-secondary"
+        >
+          There are currently no governance proposals to vote on. Check back
+          later for new proposals.
         </Typography>
       </div>
     );

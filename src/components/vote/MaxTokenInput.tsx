@@ -33,7 +33,7 @@ export const MaxTokenInput = forwardRef<HTMLInputElement, SearchProps>(
           animateOnHover
           animationSpeed={1}
           variant="green_blue_pink"
-          className="relative h-full w-full rounded-2024_20 border-[3px] bg-amber-50 text-2024_body1 text-white transition-all placeholder:text-2024_fillContent-primary-inactive focus:pl-16 focus:outline-none focus:placeholder:text-transparent"
+          className="rounded-2024_20 text-2024_body1 placeholder:text-2024_fillContent-primary-inactive relative h-full w-full border-[3px] bg-amber-50 text-white transition-all focus:pl-16 focus:outline-none focus:placeholder:text-transparent"
         >
           <input
             {...props}
@@ -55,7 +55,7 @@ export const MaxTokenInput = forwardRef<HTMLInputElement, SearchProps>(
                 : undefined
             }
             className={clsx(
-              "h-full w-full rounded-2024_20 bg-2024_fillContent-primary-darker pr-28 text-2024_body3 text-white caret-2024_pink transition-all placeholder:text-2024_fillContent-primary-inactive focus:outline-none focus:placeholder:text-transparent sm:pr-36 sm:text-2024_body1",
+              "rounded-2024_20 bg-2024_fillContent-primary-darker text-2024_body3 caret-2024_pink placeholder:text-2024_fillContent-primary-inactive sm:text-2024_body1 h-full w-full pr-28 text-white transition-all focus:outline-none focus:placeholder:text-transparent sm:pr-36",
               disabled ? "pl-10" : "pl-16",
             )}
           />
@@ -63,7 +63,7 @@ export const MaxTokenInput = forwardRef<HTMLInputElement, SearchProps>(
           <div className="absolute right-1 top-1/2 -translate-y-1/2">
             <button
               type="submit"
-              className="relative flex h-[56px] w-[56px] cursor-pointer items-center justify-center rounded-full bg-2024_fillBackground-good transition-all hover:shadow-2024_searchButton sm:h-[76px] sm:w-[76px]"
+              className="bg-2024_fillBackground-good hover:shadow-2024_searchButton relative flex h-[56px] w-[56px] cursor-pointer items-center justify-center rounded-full transition-all sm:h-[76px] sm:w-[76px]"
             >
               <Text
                 variant="B7/medium"

@@ -16,7 +16,7 @@ export function OwnedNSBalance() {
   }
 
   return (
-    <div className="flex w-full items-center justify-center rounded-[56px] border-2 border-2024_fillContent-tertiary bg-transparent p-2024_M md:w-fit">
+    <div className="border-2024_fillContent-tertiary p-2024_M flex w-full items-center justify-center rounded-[56px] border-2 bg-transparent md:w-fit">
       {isLoading ? (
         <Loader className="h-3 w-3" />
       ) : (

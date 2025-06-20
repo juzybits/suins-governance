@@ -28,8 +28,13 @@ export function StakeContent() {
         <Typography variant="heading/Small Bold" className="text-bg-error">
           Something went wrong
         </Typography>
-        <Typography variant="paragraph/Large" className="text-secondary text-center max-w-[30rem]">
-          {balance.error?.message ?? userStaking.error?.message ?? "Unable to load staking data"}
+        <Typography
+          variant="paragraph/Large"
+          className="max-w-[30rem] text-center text-secondary"
+        >
+          {balance.error?.message ??
+            userStaking.error?.message ??
+            "Unable to load staking data"}
         </Typography>
       </div>
     );

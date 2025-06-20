@@ -45,9 +45,11 @@ export function StakingBatchItemModal({
     <Modal
       onClose={onClose}
       title={`${batch.isStaked ? "Lock Tokens" : "Extend Lock"}`}
-      subtitle={`${batch.isStaked
+      subtitle={`${
+        batch.isStaked
           ? "Lock your staked NS tokens "
-          : "Extend the lock period of your locked NS tokens "}
+          : "Extend the lock period of your locked NS tokens "
+      }
         to receive an immediate boost to your voting power!`}
     >
       <div className="my-xl">
@@ -60,8 +62,8 @@ export function StakingBatchItemModal({
         </h3>
         <p>
           <Typography variant="paragraph/Regular" className="text-secondary">
-            Locked tokens cannot be unstaked until commitment date has
-            been reached.
+            Locked tokens cannot be unstaked until commitment date has been
+            reached.
           </Typography>
         </p>
         <Table

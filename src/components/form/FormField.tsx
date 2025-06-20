@@ -19,7 +19,7 @@ export function FormFieldError({
     return (
       <div
         className={clsx(
-          "flex w-full items-center gap-2 self-center font-paragraph text-sm font-normal text-issue-dark",
+          "font-paragraph text-issue-dark flex w-full items-center gap-2 self-center text-sm font-normal",
           className,
         )}
       >

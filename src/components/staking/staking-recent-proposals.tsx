@@ -4,9 +4,7 @@ import { useCurrentAccount } from "@mysten/dapp-kit";
 import { isPast } from "date-fns";
 import { useGetAllProposals } from "@/hooks/useGetAllProposals";
 import { type ProposalObjResp } from "@/types/Proposal";
-import {
-  useGetUserStats
-} from "@/hooks/useGetUserStats";
+import { useGetUserStats } from "@/hooks/useGetUserStats";
 import Typography from "../ui/typography";
 import { CardProposalSummary } from "@/components/staking/staking-card-proposal-summary";
 

@@ -13,14 +13,14 @@ export const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
   ({ label, id, ...props }, forwardedRef) => (
     <div className="flex items-start gap-2">
       <RadixCheckbox.Root
-        className="border-2024_fillBackground-primary-inactive group peer m-0 h-6 w-6 appearance-none rounded-lg border-2 bg-transparent p-0 data-[state='checked']:border-transparent data-[state='checked']:bg-2024_fillContent-good"
+        className="border-2024_fillBackground-primary-inactive data-[state='checked']:bg-2024_fillContent-good group peer m-0 h-6 w-6 appearance-none rounded-lg border-2 bg-transparent p-0 data-[state='checked']:border-transparent"
         ref={forwardedRef}
         id={id}
         {...props}
       >
         <RadixCheckbox.Indicator
           forceMount
-          className="flex h-full w-full items-center justify-center text-2024_fillContent-primary-inactive data-[state='checked']:text-2024_fillBackground-primary"
+          className="text-2024_fillContent-primary-inactive data-[state='checked']:text-2024_fillBackground-primary flex h-full w-full items-center justify-center"
         >
           <SvgCheckStroke16 className="h-2024_XL w-2024_XL" />
         </RadixCheckbox.Indicator>

@@ -22,8 +22,7 @@ export function Toast() {
         },
         duration: 3000,
         classNames: {
-          toast:
-            "flex items-center rounded-xs items-center px-xl py-m w-full",
+          toast: "flex items-center rounded-xs items-center px-xl py-m w-full",
           title: "text-m font-bold",
           loading: "bg-bg-primary",
           success: "bg-bg-good text-primary-darker",
