@@ -53,7 +53,7 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
         active={Boolean(Boolean(Number(stats.stakedNS)))}
         icon={<StakeSVG width="100%" className="max-w-[2rem]" />}
       />
-      <hr className="col-span-4 hidden border-0 border-b border-[#6E609F80] md:block lg:hidden" />
+      <hr className="col-span-2 hidden border-0 border-b border-[#6E609F80] md:block lg:hidden" />
       <Card
         valueGradient
         withBorder={showTokens}
@@ -64,7 +64,7 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
         icon={<VoteSVG width="100%" className="max-w-[2rem]" />}
       />
       {showTokens && (
-        <hr className="col-span-4 hidden border-0 border-b border-[#6E609F80] lg:block xl:hidden" />
+        <hr className="col-span-3 hidden border-0 border-b border-[#6E609F80] lg:block xl:hidden" />
       )}
       {showTokens && (
         <Card
