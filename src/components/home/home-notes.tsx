@@ -23,7 +23,7 @@ export const HomeNotes: FC = () => (
         ].map((note) => (
           <li
             key={note}
-            className="flex list-none gap-s rounded-xs bg-primary-dark p-s"
+            className="flex list-none gap-m rounded-xs bg-primary-dark p-m"
           >
             <InfoSVG width="100%" className="max-w-[1.25rem] text-tertiary" />
             <Typography variant="paragraph/Large" className="text-primary-main">
