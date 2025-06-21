@@ -13,15 +13,13 @@ export function useCalcVotingStats(votes: {
   const noVotes = votes?.noVote ?? 0;
   const abstainVotes = votes?.abstainVote ?? 0;
   const totalVotes = yesVotes + noVotes + abstainVotes;
-  const totalVotesWithoutAbstain =
-    totalVotes - (votes.isPersonVote ? 0 : abstainVotes);
 
   const yesPercentage =
     totalVotes > 0
-      ? roundFloat((yesVotes / totalVotesWithoutAbstain) * 100)
+      ? roundFloat((yesVotes / totalVotes) * 100)
       : 0;
   const noPercentage =
-    totalVotes > 0 ? roundFloat((noVotes / totalVotesWithoutAbstain) * 100) : 0;
+    totalVotes > 0 ? roundFloat((noVotes / totalVotes) * 100) : 0;
   const abstainPercentage =
     totalVotes > 0 ? roundFloat((abstainVotes / totalVotes) * 100) : 0;
 
@@ -67,7 +65,6 @@ export function useCalcVotingStats(votes: {
     yesVotes,
     noVotes,
     abstainVotes,
-    totalVotesWithoutAbstain,
     yesPercentage,
     noPercentage,
     abstainPercentage,
