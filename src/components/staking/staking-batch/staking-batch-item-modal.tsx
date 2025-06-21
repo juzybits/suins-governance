@@ -31,7 +31,8 @@ export function StakingBatchItemModal({
       await lockMutation.mutateAsync(data);
       toast.success("Successfully locked tokens");
     } catch (error) {
-      toast.error((error as Error).message || "Failed to lock batch");
+      console.warn("[onLock] failed:", error);
+      toast.error("Failed to lock batch");
     } finally {
       onClose();
     }

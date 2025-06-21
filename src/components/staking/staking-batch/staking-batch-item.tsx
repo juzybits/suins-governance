@@ -206,7 +206,8 @@ function BatchActions({
       await requestUnstakeMutation.mutateAsync(data);
       toast.success("Successfully initiated cooldown");
     } catch (error) {
-      toast.error((error as Error).message || "Failed to request cooldown");
+      console.warn("[onRequestUnstake] failed:", error);
+      toast.error("Failed to request cooldown");
     }
   };
 

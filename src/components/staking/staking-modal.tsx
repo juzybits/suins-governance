@@ -72,7 +72,8 @@ function ModalStakeOrLockNewBatch({
         `Successfully ${action === "lock" ? "locked" : "staked"} tokens`,
       );
     } catch (error) {
-      toast.error((error as Error).message || "Failed to stake tokens");
+      console.warn("[onStakeOrLock] failed:", error);
+      toast.error("Failed to stake tokens");
     } finally {
       onClose();
     }

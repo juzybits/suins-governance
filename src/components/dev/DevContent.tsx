@@ -11,6 +11,7 @@ import { useCurrentAccount } from "@mysten/dapp-kit";
 import { Suspense } from "react";
 import Loader from "@/components/ui/legacy/Loader";
 import NotFound from "@/app/not-found";
+import { toast } from "sonner";
 
 /**
  * A dev-only page to create mock proposals.
@@ -91,8 +92,10 @@ function DevContentForm({
       });
       console.debug("[onCreateProposal] success:", newProposalId);
       setFormData((prev) => ({ ...prev, proposalId: newProposalId ?? "" }));
+      toast.success("Proposal created successfully");
     } catch (error) {
       console.warn("[onCreateProposal] failed:", error);
+      toast.error("Failed to create proposal");
     }
   };
 
@@ -102,8 +105,10 @@ function DevContentForm({
         proposalId: formData.proposalId,
       });
       console.debug("[onDistributeRewards] success:", digest);
+      toast.success("Rewards distributed successfully");
     } catch (error) {
       console.warn("[onDistributeRewards] failed:", error);
+      toast.error("Failed to distribute rewards");
     }
   };
 

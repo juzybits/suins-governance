@@ -39,6 +39,11 @@ export function useSignExecuteAndWaitTx() {
       options: RESPONSE_OPTIONS,
     });
 
+    if (resp.effects?.status.status !== "success") {
+      const err = JSON.stringify(resp.effects?.status.error, null, 2);
+      throw new Error(`[useSignExecuteAndWaitTx] failed with error: ${err}`);
+    }
+
     await suiClient.waitForTransaction({
       digest: resp.digest,
       pollInterval: POLL_INTERVAL_MS,
@@ -60,7 +65,7 @@ async function devInspectOnDev(
     transactionBlock: tx,
   });
   if (dryRunResult.effects?.status.status !== "success") {
-    console.warn("[devInspectOnDev] failed: ", dryRunResult);
-    throw new Error("devInspect failed (check console)");
+    const err = JSON.stringify(dryRunResult.effects.status.error, null, 2);
+    throw new Error(`[devInspectOnDev] failed with error: ${err}`);
   }
 }

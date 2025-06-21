@@ -82,7 +82,6 @@ export function useVoteMutation(
       //   const dryRun = await client.dryRunTransactionBlock({
       //     transactionBlock: await txb.build({ client }),
       //   });
-      //   console.log(dryRun, "dryRun");
       // } catch (error) {
       //   console.error(error);
       // }
