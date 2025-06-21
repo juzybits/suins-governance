@@ -1,14 +1,14 @@
-import { Heading } from "@/components/ui/legacy/Heading";
+import Typography from "@/components/ui/typography";
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-2">
-      <Heading variant="H1/super" as="h1">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-3xl bg-bg-primary p-s">
+      <Typography variant="display/Regular" className="text-primary-main">
         Page Not Found
-      </Heading>
-      <p className="text-slate-400">
+      </Typography>
+      <Typography variant="paragraph/Regular" className="text-secondary">
         The page you are looking for does not exist
-      </p>
+      </Typography>
     </div>
   );
 }

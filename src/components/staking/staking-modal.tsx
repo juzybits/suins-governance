@@ -4,7 +4,7 @@ import { parseNSAmount } from "@/utils/parseAmount";
 import { batchHelpers } from "@/types/Batch";
 import { Modal } from "@/components/ui/modal";
 import { toast } from "sonner";
-import { useState, useEffect, type FC, useId } from "react";
+import { useState, useEffect, type FC } from "react";
 import { NS_DECIMALS, ONE_NS_RAW } from "@/constants/common";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { useCurrentAccount } from "@mysten/dapp-kit";
@@ -48,7 +48,6 @@ function ModalStakeOrLockNewBatch({
   onActionChange: (action: "stake" | "lock") => () => void;
   onClose: () => void;
 }) {
-  const id = useId();
   const stakeOrLockMutation = useStakeOrLockMutation();
 
   const [amount, setAmount] = useState("");

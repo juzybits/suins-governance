@@ -5,6 +5,7 @@ import Loader from "@/components/ui/legacy/Loader";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { MetadataManager } from "@/components/vote/MetadataManager";
 import { truncatedText } from "@/utils/truncatedText";
+import Typography from "@/components/ui/typography";
 
 export default function ProposalPage({
   params,
@@ -18,13 +19,13 @@ export default function ProposalPage({
 
   if (isError)
     return (
-      <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4 p-2">
-        <h1 className="text-2024_h3-super-48 text-2024_fillContent-primary md:text-2024_h1-super-88 font-sans font-[750]">
+      <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3xl bg-bg-primary p-s">
+        <Typography variant="display/Regular" className="text-primary-main">
           Page Not Found
-        </h1>
-        <p className="text-slate-400">
+        </Typography>
+        <Typography variant="paragraph/Regular" className="text-secondary">
           The page you are looking for does not exist
-        </p>
+        </Typography>
       </div>
     );
 
