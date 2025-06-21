@@ -65,7 +65,7 @@ export function CardProposalSummary({
               Voting in progress
             </Typography>
           ) : (
-            <Badge variant="positive">
+            <Badge variant={status === "passed" ? "positive" : "negative"}>
               <Typography
                 variant="label/XSmall SemiBold"
                 className="capitalize"
