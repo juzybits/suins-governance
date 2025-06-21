@@ -49,11 +49,24 @@ function DevContentForm({
 }) {
   const { mutateAsync: createProposal } = useCreateProposalMutation();
   const { mutateAsync: distributeRewards } = useDistributeRewardsMutation();
+
+  const loremIpsum =
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam auctor ornare felis nec consectetur. Aliquam erat volutpat. Mauris sagittis consectetur nisi, id venenatis erat. In hac habitasse platea dictumst. Donec at blandit nisl. Etiam aliquam volutpat lacus sed tincidunt. Nullam ut nisl ex. Vestibulum porta mattis interdum.";
+
+  const generateRandomTitle = () => {
+    const words = loremIpsum.toLowerCase().replace(/[.,]/g, "").split(" ");
+    return Array.from(
+      { length: 3 },
+      () => words[Math.floor(Math.random() * words.length)]!,
+    )
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
   const [formData, setFormData] = useState({
-    title: `Proposal 1`,
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    duration_seconds: 60,
+    title: generateRandomTitle(),
+    description: `${loremIpsum}<br/><br/>${loremIpsum}<br/><br/>${loremIpsum}<br/><br/>${loremIpsum}<br/><br/>${loremIpsum}<br/><br/>${loremIpsum}`,
+    duration_minutes: 1,
     reward_ns: 100,
     proposalId: "",
   });
@@ -73,7 +86,7 @@ function DevContentForm({
         govCapId,
         title: formData.title,
         description: formData.description,
-        end_time_ms: Date.now() + formData.duration_seconds * 1000,
+        end_time_ms: Date.now() + formData.duration_minutes * 60 * 1000,
         reward: BigInt(formData.reward_ns * ONE_NS_RAW),
       });
       console.debug("[onCreateProposal] success:", newProposalId);
@@ -110,8 +123,7 @@ function DevContentForm({
 
         <div className="flex flex-col gap-2">
           <label>Description:</label>
-          <input
-            type="text"
+          <textarea
             value={formData.description}
             onChange={(e) => {
               setFormData((prev) => ({ ...prev, description: e.target.value }));
@@ -120,14 +132,14 @@ function DevContentForm({
         </div>
 
         <div className="flex flex-col gap-2">
-          <label>Duration (seconds):</label>
+          <label>Duration (minutes):</label>
           <input
             type="number"
-            value={formData.duration_seconds}
+            value={formData.duration_minutes}
             onChange={(e) => {
               setFormData((prev) => ({
                 ...prev,
-                duration_seconds: Number(e.target.value),
+                duration_minutes: Number(e.target.value),
               }));
             }}
           />
