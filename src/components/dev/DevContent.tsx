@@ -94,7 +94,13 @@ function DevContentForm({
         reward: BigInt(formData.reward_ns * ONE_NS_RAW),
       });
       console.debug("[onCreateProposal] success:", newProposalId);
-      setFormData((prev) => ({ ...prev, proposalId: newProposalId ?? "" }));
+
+      setFormData((prev) => ({
+        ...prev,
+        title: generateRandomTitle(),
+        proposalId: newProposalId ?? "",
+      }));
+
       toast.success("Proposal created successfully");
     } catch (error) {
       console.warn("[onCreateProposal] failed:", error);
@@ -172,7 +178,7 @@ function DevContentForm({
 
       <div className="panel">
         <div className="flex flex-col gap-2">
-          <label>Proposal ID:</label>
+          <label>Last proposal ID:</label>
           <input
             type="text"
             value={formData.proposalId}
