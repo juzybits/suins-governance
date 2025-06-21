@@ -189,16 +189,15 @@ function ModalStakeOrLockNewBatch({
             columnStyles={(index) =>
               index === 0 ? "text-left" : "text-right pl-m"
             }
-            header={[
+            header={["Duration", "Multiplier", "Votes"].map((item) => (
               <Typography
                 variant="label/Small Medium"
-                key={makeId(id, "duration")}
+                className="text-secondary opacity-70"
+                key={makeId("stake", "heading", item)}
               >
-                Duration
-              </Typography>,
-              <>Multiplier</>,
-              <>Votes</>,
-            ]}
+                {item}
+              </Typography>
+            ))}
             content={[1, 2, 6, 12].map((month, index) => {
               const powerPreview = batchHelpers.calculateBalanceVotingPower({
                 balance,
