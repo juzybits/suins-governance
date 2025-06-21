@@ -125,27 +125,9 @@ export function parseProposalVotes(objResp: ProposalObjResp) {
 
   const votes = {
     proposal: proposalFieldName,
-    yesVote: Number(
-      formatBalance({
-        balance: yesVote,
-        decimals: NS_DECIMALS,
-        format: CoinFormat.FULL,
-      }).replace(/,/g, ""),
-    ),
-    noVote: Number(
-      formatBalance({
-        balance: noVote,
-        decimals: NS_DECIMALS,
-        format: CoinFormat.FULL,
-      }).replace(/,/g, ""),
-    ),
-    abstainVote: Number(
-      formatBalance({
-        balance: abstainVote,
-        decimals: NS_DECIMALS,
-        format: CoinFormat.FULL,
-      }).replace(/,/g, ""),
-    ),
+    yesVote,
+    noVote,
+    abstainVote,
   };
 
   return votes;
