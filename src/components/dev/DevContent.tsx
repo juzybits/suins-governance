@@ -20,7 +20,10 @@ export function DevContent() {
   const currAcct = useCurrentAccount();
   const govCap = useGetGovernanceAdminCap(currAcct?.address);
 
-  if (process.env.NODE_ENV !== "development") {
+  if (
+    process.env.NODE_ENV !== "development" &&
+    !process.env.NEXT_PUBLIC_SHOW_DEV_PAGES
+  ) {
     return <NotFound />;
   }
 
@@ -34,7 +37,7 @@ export function DevContent() {
 
   return (
     <Suspense fallback={<Loader className="h-5 w-5" />}>
-      <div className="dummy-ui">
+      <div className="dummy-ui" style={{ paddingTop: "6rem" }}>
         <DevContentForm govCapId={govCap.data} currAddr={currAcct?.address} />
       </div>
     </Suspense>
