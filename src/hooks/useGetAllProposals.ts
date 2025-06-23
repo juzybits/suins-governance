@@ -12,8 +12,12 @@ import {
 } from "@/utils/proposalCache";
 import { type ProposalObjResp } from "@/types/Proposal";
 
+const OFFSET = 0;
+const LIMIT = 50;
+
 /**
  * Fetch all proposals with just 2 RPC queries.
+ * Limited to the latest 50 proposals. Needs pagination to support more.
  */
 export function useGetAllProposals() {
   const suiClient = useSuiClient();
@@ -26,7 +30,11 @@ export function useGetAllProposals() {
         const tx = new Transaction();
         tx.moveCall({
           target: `${SUINS_PACKAGES[NETWORK].votingPkgId}::early_voting::get_proposal_ids`,
-          arguments: [tx.object(SUINS_PACKAGES[NETWORK].governanceObjId)],
+          arguments: [
+            tx.object(SUINS_PACKAGES[NETWORK].governanceObjId),
+            tx.pure.u64(OFFSET),
+            tx.pure.u64(LIMIT),
+          ],
         });
         const retVals = await devInspectAndGetReturnValues(suiClient, tx, [
           [bcs.vector(bcs.Address)],
@@ -58,9 +66,8 @@ export function useGetAllProposals() {
       }
 
       try {
-        // NOTE: can fetch up to 50 objects at once
         const objs = await suiClient.multiGetObjects({
-          ids: uncachedIds,
+          ids: uncachedIds.slice(0, LIMIT),
           options: {
             showContent: true,
             showType: true,
