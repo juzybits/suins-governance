@@ -34,6 +34,8 @@ export function YourReward({ proposalId }: { proposalId: string }) {
     );
 
   const totalRewards = getTotalReward({ proposal });
+  if (totalRewards === 0n) return null;
+
   const userVotes = userVote?.totalVotes ?? 0;
   const reward = calculateReward({
     proposal,
