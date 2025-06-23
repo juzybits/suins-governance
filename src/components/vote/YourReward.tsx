@@ -42,8 +42,7 @@ export function YourReward({ proposalId }: { proposalId: string }) {
     userPower: BigInt(userVotes),
   });
 
-  const rewardPercentage =
-    Number((reward * BigInt(10 ** 6)) / totalRewards) / 10 ** 4;
+  const rewardPercentage = Number((reward * 10000n) / totalRewards) / 100;
 
   const isVotingOver = isPast(
     new Date(Number(proposal.fields.end_time_ms ?? 0)),
@@ -77,7 +76,7 @@ export function YourReward({ proposalId }: { proposalId: string }) {
           <NSToken width="1.5rem" />
         </div>
         <Typography variant="paragraph/XSmall" className="text-semantic-good">
-          Your current potential reward: {rewardPercentage}%
+          Your current potential reward: {rewardPercentage.toFixed(2)}%
         </Typography>
       </div>
     );

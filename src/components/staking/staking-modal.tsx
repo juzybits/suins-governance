@@ -56,17 +56,12 @@ function ModalStakeOrLockNewBatch({
   const balance = parseNSAmount(amount);
 
   const onStakeOrLock = async ({
-    amount,
     months,
   }: {
-    amount: string;
     months: number;
   }) => {
     try {
-      await stakeOrLockMutation.mutateAsync({
-        balance: BigInt(Number(amount) * 10 ** NS_DECIMALS),
-        months,
-      });
+      await stakeOrLockMutation.mutateAsync({ balance, months });
       toast.success(
         `Successfully ${action === "lock" ? "locked" : "staked"} tokens`,
       );
@@ -250,7 +245,7 @@ function ModalStakeOrLockNewBatch({
       <ModalFooter
         onClose={onClose}
         actionText="Confirm"
-        onAction={() => onStakeOrLock({ amount, months })}
+        onAction={() => onStakeOrLock({ months })}
         disabled={!amount || Number(amount) < 0.1}
       />
     </Modal>
