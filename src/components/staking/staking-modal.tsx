@@ -54,6 +54,7 @@ function ModalStakeOrLockNewBatch({
   const [months, setMonths] = useState(action === "lock" ? 1 : 0);
 
   const balance = parseNSAmount(amount);
+  const minBalance = 0.1;
 
   const onStakeOrLock = async ({
     months,
@@ -95,8 +96,8 @@ function ModalStakeOrLockNewBatch({
             )
           }
           value={amount || "0"}
-          error={!!(amount && Number(amount) < 0.1)}
-          info="Minimum amount required to stake or lock is 0.1 NS"
+          error={!!(amount && Number(amount) < minBalance)}
+          info={`Minimum amount required to stake or lock is ${minBalance} NS`}
           suffix={
             <span
               onClick={() =>
@@ -246,7 +247,7 @@ function ModalStakeOrLockNewBatch({
         onClose={onClose}
         actionText="Confirm"
         onAction={() => onStakeOrLock({ months })}
-        disabled={!amount || Number(amount) < 0.1}
+        disabled={!amount || Number(amount) < minBalance}
       />
     </Modal>
   );
