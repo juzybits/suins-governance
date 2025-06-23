@@ -56,11 +56,7 @@ function ModalStakeOrLockNewBatch({
   const balance = parseNSAmount(amount);
   const minBalance = 0.1;
 
-  const onStakeOrLock = async ({
-    months,
-  }: {
-    months: number;
-  }) => {
+  const onStakeOrLock = async ({ months }: { months: number }) => {
     try {
       await stakeOrLockMutation.mutateAsync({ balance, months });
       toast.success(

@@ -179,8 +179,7 @@ export function ProposalsMenu() {
                             <ProposalPreview
                               proposalId={data?.[0]?.fields.id.id}
                               isActive={
-                                params.proposal ===
-                                  data?.[0]?.fields.id.id ||
+                                params.proposal === data?.[0]?.fields.id.id ||
                                 !params.proposal
                               }
                             />
@@ -210,8 +209,7 @@ export function ProposalsMenu() {
                                 proposalId={proposals.fields.id.id}
                                 key={proposals.fields.id.id}
                                 isActive={
-                                  params.proposal ===
-                                  proposals.fields.id.id
+                                  params.proposal === proposals.fields.id.id
                                 }
                               />
                             </Link>
