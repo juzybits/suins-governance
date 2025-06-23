@@ -5,7 +5,9 @@ import { NETWORK } from "@/constants/env";
 import { governanceSchema } from "@/schemas/governanceSchema";
 import isFuture from "date-fns/isFuture";
 
-// TODO: support pagination
+/**
+ * @deprecated use `useGetAllProposals` instead
+ */
 export function useGetProposalIds() {
   return useQuery({
     queryKey: ["proposal-ids"],
@@ -40,9 +42,9 @@ export function useGetProposalIds() {
       if (governanceData.error) return [];
 
       const proposals = governanceData.data?.fields.value.fields.pos0;
-      if (NETWORK === "mainnet") {
-        proposals.push(...V1_PROPOSAL_IDS);
-      }
+      // if (NETWORK === "mainnet") {
+      //   proposals.push(...V1_PROPOSAL_IDS);
+      // }
 
       return proposals;
     },
@@ -59,51 +61,3 @@ export function useGetProposalIds() {
     },
   });
 }
-
-const V1_PROPOSAL_IDS = [
-  // #1: SuiNS DAO Constitution
-  {
-    type: "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41::early_voting::ProposalPointer",
-    fields: {
-      end_time: "1732816800000",
-      proposal_id:
-        "0xd4c794821436f03f1dc8321f4939c17d67c54aa6661a7b8dee12b3d179601001",
-    },
-  },
-  // #2: SuiNS Pricing & Renewal Rates
-  {
-    type: "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41::early_voting::ProposalPointer",
-    fields: {
-      end_time: "1734811200000",
-      proposal_id:
-        "0x8e71b81bd327fc8ae721518ccbfc0964fe19c8300773307eb6f0746e7f620b8f",
-    },
-  },
-  // #3: SuiNS RFP Selection
-  {
-    type: "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41::early_voting::ProposalPointer",
-    fields: {
-      end_time: "1740175200000",
-      proposal_id:
-        "0x9ee1af58d737418649101836c8ba926cbe28e522e22e315dd7bd649c94425a0b",
-    },
-  },
-  // #4: Community Council voting
-  {
-    type: "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41::early_voting::ProposalPointer",
-    fields: {
-      end_time: "1745726399000",
-      proposal_id:
-        "0x94952ab99ac0303b9857d6e40ef478b0156f4680f4a069d042525ffdfd44ecc5",
-    },
-  },
-  // #5: SuiNS Buyback & Burn
-  {
-    type: "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41::early_voting::ProposalPointer",
-    fields: {
-      end_time: "1750521600000",
-      proposal_id:
-        "0xb36e45e41dfb033153e9174eef9932a5c93d4b8ad078e3344a3d91aa8996139f",
-    },
-  },
-];

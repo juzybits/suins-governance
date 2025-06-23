@@ -15,7 +15,7 @@ import FileText from "@/icons/legacy/FileText";
 
 import { motion } from "framer-motion";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
-import { useGetProposalIds } from "@/hooks/useGetProposalIds";
+import { useGetAllProposals } from "@/hooks/useGetAllProposals";
 import { ProposalStatus } from "../ui/legacy/ProposalStatus";
 import { useGetProposalDetail } from "@/hooks/useGetProposalDetail";
 import { Text } from "@/components/ui/legacy/Text";
@@ -112,7 +112,7 @@ function ProposalPreview({
 
 export function ProposalsMenu() {
   const isSmallOrAbove = useBreakpoint("sm");
-  const { data, isLoading } = useGetProposalIds();
+  const { data, isLoading } = useGetAllProposals();
   const inactiveProposals = data?.filter((proposal) => !proposal.isActive);
   const params = useParams<{ proposal: string }>();
 
@@ -173,14 +173,14 @@ export function ProposalsMenu() {
                         </Typography>
                         <Link
                           className="block"
-                          href={`/proposal/${data?.[0]?.fields.proposal_id}`}
+                          href={`/proposal/${data?.[0]?.fields.id.id}`}
                         >
                           <DropdownMenuItem className="focus:outline-none focus-visible:outline-none">
                             <ProposalPreview
-                              proposalId={data?.[0]?.fields.proposal_id}
+                              proposalId={data?.[0]?.fields.id.id}
                               isActive={
                                 params.proposal ===
-                                  data?.[0]?.fields.proposal_id ||
+                                  data?.[0]?.fields.id.id ||
                                 !params.proposal
                               }
                             />
@@ -199,19 +199,19 @@ export function ProposalsMenu() {
                         {inactiveProposals.map((proposals) => (
                           <DropdownMenuItem
                             asChild
-                            key={proposals.fields.proposal_id}
+                            key={proposals.fields.id.id}
                             className="focus:outline-none focus-visible:outline-none"
                           >
                             <Link
-                              href={`/proposal/${proposals.fields.proposal_id}`}
+                              href={`/proposal/${proposals.fields.id.id}`}
                               className="block"
                             >
                               <ProposalPreview
-                                proposalId={proposals.fields.proposal_id}
-                                key={proposals.fields.proposal_id}
+                                proposalId={proposals.fields.id.id}
+                                key={proposals.fields.id.id}
                                 isActive={
                                   params.proposal ===
-                                  proposals.fields.proposal_id
+                                  proposals.fields.id.id
                                 }
                               />
                             </Link>

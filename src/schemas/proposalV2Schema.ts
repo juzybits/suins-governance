@@ -1,4 +1,5 @@
 import { z } from "zod";
+import isFuture from "date-fns/isFuture";
 
 export const proposalV2Schema = z
   .object({
@@ -103,4 +104,5 @@ export const proposalV2Schema = z
   .transform((data) => ({
     ...data,
     version: 2 as const,
+    isActive: isFuture(new Date(Number(data.fields.end_time_ms))),
   }));

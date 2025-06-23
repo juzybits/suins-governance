@@ -3,11 +3,11 @@
 import { ProposalContent } from "@/components/vote";
 import { Suspense } from "react";
 import Loader from "@/components/ui/legacy/Loader";
-import { useGetProposalIds } from "@/hooks/useGetProposalIds";
+import { useGetAllProposals } from "@/hooks/useGetAllProposals";
 import Typography from "@/components/ui/typography";
 
 export default function VotePage() {
-  const { data, isLoading, error } = useGetProposalIds();
+  const { data, isLoading, error } = useGetAllProposals();
 
   if (isLoading) return <Loader className="h-5 w-5" />;
 
@@ -46,7 +46,7 @@ export default function VotePage() {
 
   return (
     <Suspense fallback={<Loader className="h-5 w-5" />}>
-      <ProposalContent proposalId={data[0]!.fields.proposal_id} />
+      <ProposalContent proposalId={data[0]!.fields.id.id} />
     </Suspense>
   );
 }
