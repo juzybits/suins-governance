@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { roundFloat } from "../utils/roundFloat";
-import { ONE_NS_RAW, NS_VOTE_THRESHOLD } from "@/constants/common";
 
 export function useCalcVotingStats(votes: {
   yesVote?: number;
@@ -25,7 +24,8 @@ export function useCalcVotingStats(votes: {
   const abstainPercentage =
     totalVotes > 0 ? roundFloat((abstainVotes / totalVotes) * 100) : 0;
 
-  const threshold = (votes?.threshold ?? NS_VOTE_THRESHOLD) / ONE_NS_RAW;
+  const thresholdPlaceholder = 1_500_000_000_000; // 1.5M NS - warning: this could change
+  const threshold = votes?.threshold ?? thresholdPlaceholder;
   const thresholdReached = totalVotes >= threshold;
 
   const votingStatus = useMemo(() => {
