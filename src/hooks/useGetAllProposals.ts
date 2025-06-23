@@ -81,6 +81,8 @@ export function useGetAllProposals() {
 }
 
 const V1_PROPOSAL_IDS = [
+  // #5: SuiNS Buyback & Burn
+  "0xb36e45e41dfb033153e9174eef9932a5c93d4b8ad078e3344a3d91aa8996139f",
   // #4: Community Council voting
   "0x94952ab99ac0303b9857d6e40ef478b0156f4680f4a069d042525ffdfd44ecc5",
   // #3: SuiNS RFP Selection

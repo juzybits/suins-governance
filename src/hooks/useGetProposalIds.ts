@@ -88,4 +88,22 @@ const V1_PROPOSAL_IDS = [
         "0x9ee1af58d737418649101836c8ba926cbe28e522e22e315dd7bd649c94425a0b",
     },
   },
+  // #4: Community Council voting
+  {
+    type: "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41::early_voting::ProposalPointer",
+    fields: {
+      end_time: "1745726399000",
+      proposal_id:
+        "0x94952ab99ac0303b9857d6e40ef478b0156f4680f4a069d042525ffdfd44ecc5",
+    },
+  },
+  // #5: SuiNS Buyback & Burn
+  {
+    type: "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41::early_voting::ProposalPointer",
+    fields: {
+      end_time: "1750521600000",
+      proposal_id:
+        "0xb36e45e41dfb033153e9174eef9932a5c93d4b8ad078e3344a3d91aa8996139f",
+    },
+  },
 ];
