@@ -43,7 +43,10 @@ export const Header: FC<HeaderProps> = ({ logoAction }) => {
         <div className="flex justify-between">
           <div className="flex items-center justify-center gap-s md:gap-m">
             <Link href="/" onClick={logoAction}>
-              <SuiNSLogo className="max-w-[20rem]" />
+              <SuiNSLogo
+                className="max-w-[20rem]"
+                isStaking={pathname !== "/vote"}
+              />
             </Link>
             {(pathname === "/vote" || pathname.startsWith("/proposal/")) && (
               <ProposalsMenu />
