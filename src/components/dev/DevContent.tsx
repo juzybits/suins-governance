@@ -70,7 +70,7 @@ function DevContentForm({
   const [formData, setFormData] = useState({
     title: generateRandomTitle(),
     description: `${loremIpsum}<br/><br/>${loremIpsum}<br/><br/>${loremIpsum}<br/><br/>${loremIpsum}<br/><br/>${loremIpsum}<br/><br/>${loremIpsum}`,
-    duration_minutes: 1,
+    duration_minutes: 5,
     reward_ns: 100,
     proposalId: "",
   });
