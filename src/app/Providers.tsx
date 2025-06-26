@@ -39,7 +39,7 @@ export function Providers({ children }: { children: ReactNode }) {
     <TRPCReactProvider>
       <SuiClientProvider defaultNetwork={NETWORK} networks={networkConfig}>
         <WalletProvider
-          autoConnect
+          autoConnect={true}
           storageKey={DAPP_KIT_WALLET_STORAGE_KEY}
           theme={suiNSTheme}
         >
