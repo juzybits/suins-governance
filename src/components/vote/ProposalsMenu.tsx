@@ -162,7 +162,7 @@ export function ProposalsMenu() {
                   >
                     Proposals
                   </Typography>
-                  <div className="flex h-full max-h-[800px] w-full flex-col gap-m overflow-y-auto">
+                  <div className="flex h-full max-h-[90vh] w-full flex-col gap-m overflow-y-auto lg:max-h-[40rem]">
                     {data?.[0]?.isActive && (
                       <div className="flex flex-col gap-m">
                         <Typography
