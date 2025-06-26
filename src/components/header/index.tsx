@@ -45,7 +45,9 @@ export const Header: FC<HeaderProps> = ({ logoAction }) => {
             <Link href="/" onClick={logoAction}>
               <SuiNSLogo
                 className="max-w-[20rem]"
-                isStaking={pathname !== "/vote"}
+                isStaking={
+                  pathname !== "/vote" && !pathname.startsWith("/proposal/")
+                }
               />
             </Link>
             {(pathname === "/vote" || pathname.startsWith("/proposal/")) && (
