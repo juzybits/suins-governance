@@ -255,14 +255,16 @@ function BatchActions({
                 Request Unstake
               </Typography>
             </Button>
-            <Button
-              variant="short/solid"
-              className="w-full md:w-fit"
-              before={<LockSVG width="0.825rem" />}
-              onClick={(e) => openLockModal(e)}
-            >
-              <Typography variant="label/Small Bold">Lock</Typography>
-            </Button>
+            {batch.daysSinceStart < MAX_LOCK_DURATION_DAYS && (
+              <Button
+                variant="short/solid"
+                className="w-full md:w-fit"
+                before={<LockSVG width="0.825rem" />}
+                onClick={(e) => openLockModal(e)}
+              >
+                <Typography variant="label/Small Bold">Lock</Typography>
+              </Button>
+            )}
           </>
         ) : batch.isCooldownOver ? (
           <Button
