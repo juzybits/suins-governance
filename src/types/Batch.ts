@@ -12,6 +12,7 @@ const MONTH_MS = 2592000000; // 30 days in milliseconds
 const DAY_MS = 86400000; // 1 day in milliseconds
 
 export const MAX_LOCK_DURATION_DAYS = MAX_LOCK_MONTHS * 30;
+export const VALID_MONTHS = [1, 2, 6, 12];
 
 // === types ===
 

@@ -6,7 +6,7 @@ import {
   type LockRequest,
 } from "@/hooks/staking/useLockMutation";
 
-import { type Batch, batchHelpers } from "@/types/Batch";
+import { type Batch, batchHelpers, VALID_MONTHS } from "@/types/Batch";
 import { formatNSBalance } from "@/utils/coins";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -39,7 +39,7 @@ export function StakingBatchItemModal({
   };
 
   const currentMonths = batch.daysSinceStart / 30;
-  const validMonths = [1, 2, 6, 12].filter((month) => month > currentMonths);
+  const validMonths = VALID_MONTHS.filter((month) => month > currentMonths);
   const [months, setMonths] = useState(validMonths[0] ?? 1);
 
   return (
