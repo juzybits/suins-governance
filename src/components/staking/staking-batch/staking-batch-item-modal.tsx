@@ -38,7 +38,7 @@ export function StakingBatchItemModal({
     }
   };
 
-  const currentMonths = batch.lockDurationDays / 30;
+  const currentMonths = batch.daysSinceStart / 30;
   const validMonths = [1, 2, 6, 12].filter((month) => month > currentMonths);
   const [months, setMonths] = useState(validMonths[0] ?? 1);
 
