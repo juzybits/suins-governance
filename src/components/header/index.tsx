@@ -40,7 +40,7 @@ export const Header: FC<HeaderProps> = ({ logoAction }) => {
             : "bg-bg-secondary_highlight",
         )}
       >
-        <div className="flex justify-between">
+        <div className="flex items-center justify-between">
           <div className="flex items-center justify-center gap-s md:gap-m">
             <Link href="/" onClick={logoAction}>
               <SuiNSLogo
