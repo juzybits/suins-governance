@@ -56,6 +56,7 @@ const tailwindConfig = {
       },
       backgroundImage: {
         gradient: {
+          fade: "linear-gradient(90deg, #1A142E00, #1A142E)",
           green: "linear-gradient(90deg, #00FF87, #60FFCA)",
           pink: "linear-gradient(90deg, #FF00C7, #FF85DD)",
           orange: "linear-gradient(90deg, #FFA500, #FFCC70)",
