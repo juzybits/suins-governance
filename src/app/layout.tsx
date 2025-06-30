@@ -4,10 +4,10 @@ import "@/components/ui/legacy/dummy-ui/dummy-ui.css";
 import { type ReactNode } from "react";
 import { type Metadata } from "next";
 import { Providers } from "@/app/Providers";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
+
 import { Toast } from "@/components/ui/legacy/Toast";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import MainLayout from "@/components/main-layout";
 
 export const metadata: Metadata = {
   title: "SuiNS Governance",
@@ -22,11 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-bg-primary_dark">
         <Providers>
-          <main className="flex min-h-[100vh] flex-col justify-between gap-xl">
-            <Header />
-            {children}
-            <Footer />
-          </main>
+          <MainLayout>{children}</MainLayout>
           <ReactQueryDevtools initialIsOpen={false} />
         </Providers>
         <Toast />
