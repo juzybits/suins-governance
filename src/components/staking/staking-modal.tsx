@@ -15,6 +15,7 @@ import Table from "../ui/table";
 import { makeId } from "@/utils/id";
 import Radio from "../ui/radio";
 import { formatNSBalance } from "@/utils/coins";
+import { VALID_MONTHS } from "@/types/Batch";
 
 export const StakingModal: FC = () => {
   const { modalAction, closeModal, openModal } = useStakeModal();
@@ -189,7 +190,7 @@ function ModalStakeOrLockNewBatch({
                 {item}
               </Typography>
             ))}
-            content={[1, 2, 6, 12].map((month, index) => {
+            content={VALID_MONTHS.map((month, index) => {
               const powerPreview = batchHelpers.calculateBalanceVotingPower({
                 balance,
                 mode: "lock",
