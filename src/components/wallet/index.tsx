@@ -49,7 +49,7 @@ export const Wallet: FC = () => {
         asChild
         align="end"
         sideOffset={12}
-        className="w-2024_menuWidth z-50 max-sm:w-[90vw]"
+        className="sm:mx-unset z-50 mx-l max-sm:w-[90vw]"
       >
         <motion.div
           initial={{ opacity: 0, y: -10 }}

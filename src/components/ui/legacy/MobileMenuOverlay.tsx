@@ -30,7 +30,7 @@ export function MobileMenuOverlay({ open, children }: MobileMenuOverlayProps) {
     <AnimatePresence>
       {open && (
         <motion.section
-          className="px-2024_L pb-2024_4XL fixed inset-0 z-50 bg-purple-800/100 pt-[92px] sm:bg-purple-800/0"
+          className="fixed inset-0 z-50 px-l pb-4xl pt-[92px]"
           initial={MENU_OVERLAY_INITIAL_ANIMATIONS}
           animate={{
             y: 0,
