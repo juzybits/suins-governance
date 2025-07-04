@@ -10,12 +10,14 @@ import { type FC } from "react";
 import { type AccountContentProps } from "./wallet.types";
 import { AccountContentButton } from "./account-content-button";
 import { GradientBorder } from "../gradient-border";
+import { useRouter } from "next/navigation";
 
 export const AccountContent: FC<AccountContentProps> = ({
   isOpen,
   address,
   nickName,
 }) => {
+  const router = useRouter();
   const { mutate: disconnect } = useDisconnectWallet();
 
   const explorerLink = useExplorerLink({
@@ -85,7 +87,10 @@ export const AccountContent: FC<AccountContentProps> = ({
                 />
                 <AccountContentButton
                   label="Disconnect"
-                  onClick={disconnect}
+                  onClick={() => {
+                    disconnect();
+                    router.replace("/");
+                  }}
                   icon={<SvgDelete className="h-m w-m text-secondary" />}
                 />
               </div>
