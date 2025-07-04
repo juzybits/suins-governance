@@ -15,7 +15,7 @@ export const HomeHero: FC = () => {
   const isLoggedOut = (!currAcct && !isConnecting) ?? isDisconnected;
 
   return (
-    <div className="my-5xl px-s pt-5xl">
+    <div className="px-s pt-5xl sm:my-5xl">
       <div className="flex flex-col items-center gap-3xl">
         <h1 className="all-unset">
           <Typography
