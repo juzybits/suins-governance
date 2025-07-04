@@ -20,7 +20,7 @@ import { type FC } from "react";
 import { GradientBorder } from "../gradient-border";
 
 // TODO: Support expanding account without switching account
-export const Wallet: FC = () => {
+export const Wallet: FC<{ isNav?: boolean }> = ({ isNav }) => {
   const currentAccount = useCurrentAccount();
   const { currentWallet, isConnecting, isDisconnected } = useCurrentWallet();
   const { mutate: switchAccount } = useSwitchAccount();
@@ -28,7 +28,7 @@ export const Wallet: FC = () => {
 
   // we are using currentAccount and !isConnecting to determine if the wallet is connected,
   if ((!currentAccount && !isConnecting) || isDisconnected)
-    return <ConnectWalletButton />;
+    return isNav ? null : <ConnectWalletButton />;
 
   return (
     <Root>

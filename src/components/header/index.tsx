@@ -61,7 +61,7 @@ export const Header: FC<HeaderProps> = ({ logoAction }) => {
               </div>
             )}
             <div className="flex max-w-[200px] justify-end">
-              <Wallet />
+              <Wallet isNav />
             </div>
             <HeaderMenu />
           </div>
