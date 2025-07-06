@@ -28,7 +28,7 @@ export const Wallet: FC<{ isNav?: boolean }> = ({ isNav }) => {
 
   // we are using currentAccount and !isConnecting to determine if the wallet is connected,
   if ((!currentAccount && !isConnecting) || isDisconnected)
-    return isNav ? null : <ConnectWalletButton />;
+    return isNav && !isSmallOrAbove ? null : <ConnectWalletButton />;
 
   return (
     <Root>
