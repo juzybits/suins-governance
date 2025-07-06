@@ -51,7 +51,7 @@ export const AccountContent: FC<AccountContentProps> = ({
         >
           <GradientBorder
             bg="#332C4E"
-            className="relative flex h-full flex-col gap-s overflow-hidden rounded-l-s rounded-r-s border-2 px-l py-m transition-colors hover:outline-none focus:outline-none"
+            className="relative flex h-full flex-col gap-s overflow-hidden rounded-l-s rounded-r-s border-2 px-m py-m transition-colors hover:outline-none focus:outline-none"
             colors={[
               "#d34bff",
               "#d34bff",
@@ -67,7 +67,7 @@ export const AccountContent: FC<AccountContentProps> = ({
               "#d34bff",
             ]}
           >
-            <div className="bg-2024_fill relative z-20 mb-s flex cursor-pointer items-center justify-between rounded-s focus:outline-none">
+            <div className="relative z-20 mb-s flex cursor-pointer items-center justify-between rounded-s focus:outline-none">
               <AccountInfo address={address} nickName={nickName} showAddress />
               <SvgChevronDown className="relative h-[1rem] w-[1rem] text-primary-main" />
             </div>

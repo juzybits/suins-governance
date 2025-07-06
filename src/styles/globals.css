@@ -122,3 +122,12 @@ input::-webkit-input-placeholder {
 .all-unset {
   all: unset;
 }
+
+.bg-fill_border_active {
+  background-image: linear-gradient(
+    93deg,
+    rgba(255, 121, 75, 0.2) -10.3%,
+    rgba(217, 98, 255, 0.2) 45.29%,
+    rgba(76, 162, 255, 0.2) 100%
+  );
+}

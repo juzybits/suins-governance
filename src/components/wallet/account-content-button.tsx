@@ -20,7 +20,10 @@ export const AccountContentButton: FC<AccountContentButtonProps> = ({
       className="flex flex-col items-center justify-center gap-xs"
     >
       {icon}
-      <Typography variant="label/Small Medium" className="text-secondary">
+      <Typography
+        variant="label/Small Medium"
+        className="text-xs text-secondary"
+      >
         {label}
       </Typography>
     </Link>

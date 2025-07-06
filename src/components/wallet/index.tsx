@@ -16,12 +16,13 @@ import SvgChevronDown from "@/icons/legacy/ChevronDown";
 import { motion } from "framer-motion";
 import { AccountInfo } from "./account-info";
 import { AccountContent } from "./account-content";
-import { type FC } from "react";
+import { useState, type FC } from "react";
 import { GradientBorder } from "../gradient-border";
 
 // TODO: Support expanding account without switching account
 export const Wallet: FC<{ isNav?: boolean }> = ({ isNav }) => {
   const currentAccount = useCurrentAccount();
+  const [open, setOpen] = useState(false);
   const { currentWallet, isConnecting, isDisconnected } = useCurrentWallet();
   const { mutate: switchAccount } = useSwitchAccount();
   const isSmallOrAbove = useBreakpoint("sm");
@@ -31,25 +32,61 @@ export const Wallet: FC<{ isNav?: boolean }> = ({ isNav }) => {
     return isNav && !isSmallOrAbove ? null : <ConnectWalletButton />;
 
   return (
-    <Root>
+    <Root onOpenChange={setOpen}>
       <Trigger asChild>
-        <Button
-          variant="outline/large"
-          className="border-tertiary pb-2xs pl-2xs pr-s pt-2xs"
-          after={<SvgChevronDown className="h-[1rem] w-[1rem]" />}
-        >
-          <AccountInfo
-            nickName={currentAccount?.label}
-            hideAccountPreview={!isSmallOrAbove}
-            address={currentAccount?.address ?? ""}
-          />
-        </Button>
+        {open ? (
+          <GradientBorder
+            className="rounded-l-l rounded-r-l border-2"
+            colors={[
+              "#D34BFF",
+              "#D34BFF",
+              "#4ca2ff",
+              "#4ca2ff",
+              "#D34BFF",
+              "#D34BFF",
+              "#4BFFA6",
+              "#4BFFA6",
+              "#D34BFF",
+            ]}
+          >
+            <Button
+              variant="outline/large"
+              className="bg-fill_border_active h-[2.5rem] !border-0 pl-[0.15rem] pr-s text-tertiary"
+              after={
+                <SvgChevronDown
+                  color="tertiary"
+                  className="h-[1rem] w-[1rem]"
+                />
+              }
+            >
+              <AccountInfo
+                nickName={currentAccount?.label}
+                hideAccountPreview={!isSmallOrAbove}
+                address={currentAccount?.address ?? ""}
+              />
+            </Button>
+          </GradientBorder>
+        ) : (
+          <Button
+            variant="outline/large"
+            className="h-[2.5rem] border-tertiary pb-2xs pl-[0.15rem] pr-s pt-2xs text-tertiary"
+            after={
+              <SvgChevronDown color="tertiary" className="h-[1rem] w-[1rem]" />
+            }
+          >
+            <AccountInfo
+              nickName={currentAccount?.label}
+              hideAccountPreview={!isSmallOrAbove}
+              address={currentAccount?.address ?? ""}
+            />
+          </Button>
+        )}
       </Trigger>
       <DropdownMenuContent
         asChild
         align="end"
         sideOffset={12}
-        className="sm:mx-unset z-50 mx-l max-sm:w-[90vw]"
+        className="z-50 mx-l max-w-[90vw] sm:mx-[0] sm:w-[23rem]"
       >
         <motion.div
           initial={{ opacity: 0, y: -10 }}

@@ -54,7 +54,7 @@ export const Header: FC<HeaderProps> = ({ logoAction }) => {
               <ProposalsMenu />
             )}
           </div>
-          <div className="flex items-center gap-xs lg:gap-l">
+          <div className="flex items-center gap-xs">
             {pathname === "/stake" && (
               <div className="hidden items-center gap-l md:flex">
                 <StakeHeaderButtons />
