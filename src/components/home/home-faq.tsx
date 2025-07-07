@@ -9,8 +9,8 @@ export const HomeFAQ: FC = () => {
   const [active, setActive] = useState<number | null>(null);
 
   return (
-    <div className="flex w-full max-w-[50rem] flex-col px-m">
-      <div className="my-3xl flex w-full max-w-[50rem] flex-col border-secondary">
+    <div className="flex w-full max-w-[62.5rem] flex-col px-m">
+      <div className="my-3xl flex w-full max-w-[62.5rem] flex-col border-secondary">
         <h2 className="mb-xl text-center">
           <Typography variant="display/Regular" className="text-primary-main">
             FAQ

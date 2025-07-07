@@ -12,6 +12,87 @@ import NSToken from "@/icons/legacy/NSToken";
 import { VotingStatus } from "../vote/VotingStatus";
 import { formatNSBalance } from "@/utils/coins";
 
+const CardProposalSummaryContent = ({
+  index,
+  status,
+  fields,
+  userStats,
+}: {
+  index: number;
+  status: string;
+  fields: ProposalObjResp["fields"];
+  userStats: UserProposalStats | undefined;
+}) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push(`/proposal/${fields.id.id}`);
+  };
+
+  return (
+    <div
+      onClick={handleClick}
+      className={clsx(
+        "flex cursor-pointer flex-col gap-xs rounded-xs p-m transition-opacity hover:opacity-80",
+        status !== "active" && "bg-[#62519C2E]",
+      )}
+    >
+      <h2 className="all-unset">
+        <Typography variant="display/XXXSmall Light">
+          #{index} {fields.title}
+        </Typography>
+      </h2>
+      {status === "active" && (
+        <VotingStatus progressOnly proposalId={fields.id.id} />
+      )}
+      <div className="flex items-end gap-xs">
+        {status === "active" ? (
+          <Typography variant="label/Small Bold" className="flex-1">
+            Voting in progress
+          </Typography>
+        ) : (
+          <Badge variant={status === "passed" ? "positive" : "negative"}>
+            <Typography variant="label/XSmall SemiBold" className="capitalize">
+              {status}
+            </Typography>
+          </Badge>
+        )}
+        <p>
+          <Typography variant="paragraph/XSmall" className="text-secondary">
+            {status === "active" && "Ends "}
+          </Typography>
+          <Typography
+            variant="paragraph/XSmall"
+            className="uppercase text-secondary"
+          >
+            {new Date(Number(fields.end_time_ms)).toLocaleDateString()}
+          </Typography>
+        </p>
+      </div>
+      {userStats && (
+        <>
+          {status !== "active" && (
+            <hr className="mt-xs border-primary-inactive opacity-30" />
+          )}
+          <div className="flex items-center gap-2xs">
+            <Typography variant="label/Small Medium" className="text-secondary">
+              Your Votes: {formatNSBalance(userStats?.power ?? 0)}
+            </Typography>
+            <span className="text-secondary opacity-30">•</span>
+            <Typography
+              variant="label/Small Medium"
+              className="flex items-center gap-xs whitespace-nowrap text-secondary"
+            >
+              Your Rewards: {formatNSBalance(userStats?.reward ?? 0)}{" "}
+              <NSToken />
+            </Typography>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
 export function CardProposalSummary({
   index,
   proposal: { fields },
@@ -21,7 +102,6 @@ export function CardProposalSummary({
   proposal: ProposalObjResp;
   userStats: UserProposalStats | undefined;
 }) {
-  const router = useRouter();
   const isClosed = isPast(new Date(Number(fields.end_time_ms ?? 0)));
 
   let status = "active";
@@ -32,84 +112,31 @@ export function CardProposalSummary({
     else status = "failed";
   }
 
-  const handleClick = () => {
-    router.push(`/proposal/${fields.id.id}`);
-  };
+  if (status !== "active")
+    return (
+      <CardProposalSummaryContent
+        index={index}
+        userStats={userStats}
+        fields={fields}
+        status={status}
+      />
+    );
 
   return (
     <GradientBorder
+      bg="#221C36F8"
       variant="green_blue_pink"
       className={clsx(
         "rounded-xs",
         status === "active" ? "border-2" : "border-0",
       )}
     >
-      <div
-        className={clsx(
-          "flex cursor-pointer flex-col gap-xs rounded-xs p-m transition-opacity hover:opacity-80",
-          status === "active" ? "bg-primary-darker" : "bg-[#62519C2E]",
-        )}
-        onClick={handleClick}
-      >
-        <h2 className="all-unset">
-          <Typography variant="display/XXXSmall Light">
-            #{index} {fields.title}
-          </Typography>
-        </h2>
-        {status === "active" && (
-          <VotingStatus progressOnly proposalId={fields.id.id} />
-        )}
-        <div className="flex items-end gap-xs">
-          {status === "active" ? (
-            <Typography variant="label/Small Bold" className="flex-1">
-              Voting in progress
-            </Typography>
-          ) : (
-            <Badge variant={status === "passed" ? "positive" : "negative"}>
-              <Typography
-                variant="label/XSmall SemiBold"
-                className="capitalize"
-              >
-                {status}
-              </Typography>
-            </Badge>
-          )}
-          <p>
-            <Typography variant="paragraph/XSmall" className="text-secondary">
-              {status === "active" && "Ends "}
-            </Typography>
-            <Typography
-              variant="paragraph/XSmall"
-              className="uppercase text-secondary"
-            >
-              {new Date(Number(fields.end_time_ms)).toLocaleDateString()}
-            </Typography>
-          </p>
-        </div>
-        {userStats && (
-          <>
-            {status !== "active" && (
-              <hr className="mt-xs border-primary-inactive opacity-30" />
-            )}
-            <div className="flex items-center gap-2xs">
-              <Typography
-                variant="label/Small Medium"
-                className="text-secondary"
-              >
-                Your Votes: {formatNSBalance(userStats?.power ?? 0)}
-              </Typography>
-              <span className="text-secondary opacity-30">•</span>
-              <Typography
-                variant="label/Small Medium"
-                className="flex items-center gap-xs whitespace-nowrap text-secondary"
-              >
-                Your Rewards: {formatNSBalance(userStats?.reward ?? 0)}{" "}
-                <NSToken />
-              </Typography>
-            </div>
-          </>
-        )}
-      </div>
+      <CardProposalSummaryContent
+        index={index}
+        userStats={userStats}
+        fields={fields}
+        status={status}
+      />
     </GradientBorder>
   );
 }

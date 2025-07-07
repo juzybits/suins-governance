@@ -49,7 +49,7 @@ export function HomeRecentProposals() {
             Recent Proposals
           </Typography>
         </h2>
-        <div className="w-full max-w-[56rem] overflow-hidden rounded-m text-primary-main backdrop-blur-[10px]">
+        <div className="w-full max-w-[62.5rem] overflow-hidden rounded-m text-primary-main backdrop-blur-[10px]">
           <div className="max-h-[40rem] overflow-y-auto bg-[#62519C2E] p-xl">
             {proposals.length === 0 && <p>No proposals yet</p>}
             {openProposals.length > 0 && (

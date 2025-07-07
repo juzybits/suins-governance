@@ -3,7 +3,7 @@ import Typography from "../ui/typography";
 import InfoSVG from "@/icons/info";
 
 export const HomeNotes: FC = () => (
-  <div className="mx-s grid max-w-[56rem] gap-l overflow-hidden rounded-m bg-[#2D2743] lg:grid-cols-2">
+  <div className="mx-s grid max-w-[62.5rem] gap-l overflow-hidden rounded-m bg-[#2D2743] lg:grid-cols-2">
     <div className="min-h-[30rem] bg-[url('/images/Home/notes.png')] bg-cover bg-center" />
     <div className="px-m py-2xl">
       <h2>
