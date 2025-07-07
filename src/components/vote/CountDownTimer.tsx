@@ -67,7 +67,7 @@ export function CountDownTimer({ timestamp }: { timestamp: number }) {
 
           return (
             <div className="flex min-w-[312px] flex-row items-start justify-center gap-s py-xl">
-              {days && <CountdownElement item={days} label="D" showColon />}
+              {!!days && <CountdownElement item={days} label="D" showColon />}
               <CountdownElement item={hours} label="H" showColon />
               <CountdownElement item={minutes} label="M" showColon={!days} />
               {!days && (
