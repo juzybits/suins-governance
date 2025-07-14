@@ -21,7 +21,10 @@ export function ProposalStatus({
       <Typography
         variant="label/Regular Bold"
         className={clsx(
-          status === "active" || status === "passed" || status === "pending"
+          status === "active" ||
+            status === "passed" ||
+            status === "pending" ||
+            status === "failed"
             ? "text-primary_darker"
             : "text-secondary",
         )}

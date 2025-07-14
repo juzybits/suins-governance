@@ -94,13 +94,17 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
           {!isExpanded && isOverflowing && (
             <div className="bg-show-more-gradient pointer-events-none absolute bottom-16 left-0 right-0 h-28" />
           )}
-
-          {/* Show "Show More" button only if content exceeds 350px */}
-          {isOverflowing && (
+        </div>
+        {/* Show "Show More" button only if content exceeds 350px */}
+        {isOverflowing && (
+          <div className="relative">
+            {!isExpanded && (
+              <div className="z-1 absolute mt-[-8rem] h-[10rem] w-full bg-gradient-to-b from-[#221C3600] to-[#0078ff]"></div>
+            )}
             <Button
               onClick={toggleExpanded}
               variant="outline/small"
-              className="mt-4 self-start border-2 border-[#6E609F] bg-[#221C3603] transition-all"
+              className="relative mt-4 self-start border-2 border-[#6E609F] bg-[#221C3603] transition-all"
             >
               <Typography
                 variant="label/Regular Bold"
@@ -109,8 +113,8 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
                 {isExpanded ? "Show Less" : "Show More"}
               </Typography>
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -12,7 +12,7 @@ SCRIPT_DIR="$( dirname "$(readlink -f "${BASH_SOURCE[0]}")" )"
 APP_DIR="$SCRIPT_DIR/.."
 CONFIG_FILE="$APP_DIR/src/constants/endpoints.ts"
 
-CONTRACTS_DIR="$SCRIPT_DIR/../../suins-contracts/packages"
+CONTRACTS_DIR="$SCRIPT_DIR/../../contracts/packages"
 TOKEN_DIR="$CONTRACTS_DIR/token"
 VOTING_DIR="$CONTRACTS_DIR/voting"
 

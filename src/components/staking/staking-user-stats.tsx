@@ -12,11 +12,16 @@ import VoteSVG from "@/icons/vote";
 import clsx from "clsx";
 import WalletSVG from "@/icons/wallet";
 import { formatNSBalance } from "@/utils/coins";
+import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
   const currAcct = useCurrentAccount();
   const userStaking = useGetUserStakingData(currAcct?.address);
   const balance = useGetOwnedNSBalance(currAcct?.address);
+
+  const mdGte = useBreakpoint("md");
+  const lgGte = useBreakpoint("lg");
+  const xlGte = useBreakpoint("xl");
 
   if (userStaking.data === undefined || balance.data === undefined) return null;
 
@@ -43,11 +48,11 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
         icon={<LockSVG width="100%" className="max-h-[2rem] max-w-[2rem]" />}
       />
       <Card
-        withBorder
         subValueGradient
         valueSuffix="NS"
         title="Total Staked"
         subValueSuffix="Votes"
+        withBorder={lgGte || !mdGte}
         value={formatNSBalance(stats.stakedNS)}
         subValue={formatNSBalance(stats.stakedPower)}
         active={Boolean(Boolean(Number(stats.stakedNS)))}
@@ -56,11 +61,11 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
       <hr className="col-span-2 hidden border-0 border-b border-[#6E609F80] md:block lg:hidden" />
       <Card
         valueGradient
-        withBorder={showTokens}
         title="Your Total Votes"
         earnMoreVotes={!showTokens}
-        active={Boolean(Number(stats.totalPower))}
         value={formatNSBalance(stats.totalPower)}
+        active={Boolean(Number(stats.totalPower))}
+        withBorder={showTokens && (xlGte || !lgGte)}
         icon={<VoteSVG width="100%" className="max-w-[2rem]" />}
       />
       {showTokens && (
