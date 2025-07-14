@@ -12,6 +12,7 @@ import { useIsPersonVote } from "@/hooks/useIsPersonVote";
 import Typography from "../ui/typography";
 import { Button } from "../ui/button";
 import { Voting } from ".";
+import clsx from "clsx";
 
 export function ProposalText({ proposalId }: { proposalId: string }) {
   const isSmallOrAbove = useBreakpoint("sm");
@@ -67,7 +68,12 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
         >
           Description
         </Typography>
-        <div className="flex flex-col gap-l">
+        <div
+          className={clsx(
+            "flex flex-col gap-l",
+            isOverflowing && !isExpanded && "fade-out-div",
+          )}
+        >
           <motion.div
             ref={contentRef}
             initial={false}
@@ -98,9 +104,6 @@ export function ProposalText({ proposalId }: { proposalId: string }) {
         {/* Show "Show More" button only if content exceeds 350px */}
         {isOverflowing && (
           <div className="relative">
-            {!isExpanded && (
-              <div className="z-1 absolute mt-[-8rem] h-[10rem] w-full bg-gradient-to-b from-[#221C3600] to-[#0078ff]"></div>
-            )}
             <Button
               onClick={toggleExpanded}
               variant="outline/small"
