@@ -220,7 +220,13 @@ export const HomeFAQ: FC = () => {
                   "Rewards",
                 ]}
                 content={[
-                  ["Basic Staking (Month 1)", "100 NS", "None", "1000 Votes", "1x share"],
+                  [
+                    "Basic Staking (Month 1)",
+                    "100 NS",
+                    "None",
+                    "1000 Votes",
+                    "1x share",
+                  ],
                   [
                     "6mo Staking",
                     "1000 NS",

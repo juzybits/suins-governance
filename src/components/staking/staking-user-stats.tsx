@@ -71,6 +71,13 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
           valueSuffix="NS"
           title="Available Tokens"
           value={balance.data.formatted}
+          subValue={
+            stats.cooldownNS > 0n
+              ? formatNSBalance(stats.cooldownNS)
+              : undefined
+          }
+          subValueSuffix={stats.cooldownNS > 0n ? "In cooldown" : undefined}
+          subValueGradient
           active={Boolean(Number(balance.data.raw))}
           icon={<WalletSVG width="100%" className="max-w-[2rem]" />}
         />
