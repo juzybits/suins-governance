@@ -95,15 +95,7 @@ function ModalStakeOrLockNewBatch({
           value={amount || "0"}
           error={!!(amount && Number(amount) < minBalance)}
           info={`Minimum amount required to stake or lock is ${minBalance} NS`}
-          suffix={
-            <span
-              onClick={() =>
-                setAmount((Number(availableNS) / 10 ** NS_DECIMALS).toString())
-              }
-            >
-              /{formatNSBalance(availableNS)} NS
-            </span>
-          }
+          suffix={<span>/{formatNSBalance(availableNS)} NS</span>}
         />
         <div className="flex flex-col gap-xs">
           <h3>
