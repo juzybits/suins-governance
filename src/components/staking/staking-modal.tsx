@@ -5,7 +5,7 @@ import { batchHelpers } from "@/types/Batch";
 import { Modal } from "@/components/ui/modal";
 import { toast } from "sonner";
 import { useState, useEffect, type FC } from "react";
-import { NS_DECIMALS, ONE_NS_RAW } from "@/constants/common";
+import { ONE_NS_RAW } from "@/constants/common";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { ModalFooter } from "../ui/modal/modal-footer";
@@ -72,10 +72,6 @@ function ModalStakeOrLockNewBatch({
     }
   };
 
-  useEffect(() => {
-    setMonths(action === "lock" ? 1 : 0);
-  }, [action]);
-
   const [inputError, inputInfo] = (() => {
     const minInfo = `Minimum amount required to stake or lock is ${minBalance} NS`;
     if (amount.length === 0) {
@@ -141,7 +137,12 @@ function ModalStakeOrLockNewBatch({
                 <div key={makeId("stake", "cell", 0, 0)} className="flex gap-s">
                   <Radio
                     value={action === "stake"}
-                    toggle={onActionChange("stake")}
+                    toggle={() => {
+                      if (action !== "stake") {
+                        onActionChange("stake")();
+                      }
+                      setMonths(0);
+                    }}
                   />
                   <div className="flex flex-col gap-2xs">
                     <Typography variant="label/Large Medium">Stake</Typography>
@@ -222,7 +223,9 @@ function ModalStakeOrLockNewBatch({
                   <Radio
                     value={action === "lock" && months === month}
                     toggle={() => {
-                      onActionChange("lock")();
+                      if (action !== "lock") {
+                        onActionChange("lock")();
+                      }
                       setMonths(month);
                     }}
                   />
