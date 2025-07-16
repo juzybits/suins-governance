@@ -62,7 +62,7 @@ function MinimumThreshHold({
           Minimum Voting Threshold:{" "}
           {formatBalance({
             balance: threshold,
-            decimals: 0,
+            decimals: 6,
             format: CoinFormat.ROUNDED,
           })}{" "}
           Votes
