@@ -57,7 +57,7 @@ export const HomeFAQ: FC = () => {
                   "Earn +10% Votes every 30 days",
                   "Maximum multiplier of 2.85x after 360 days",
                   "3-day cooldown period for unstaking",
-                  "tack multiple staking positions independently",
+                  "track multiple staking positions independently",
                 ]}
               />
             </div>
