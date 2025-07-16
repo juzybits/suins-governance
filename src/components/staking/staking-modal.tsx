@@ -56,6 +56,7 @@ function ModalStakeOrLockNewBatch({
 
   const balance = parseNSAmount(amount);
   const minBalance = 0.1;
+  const minBalanceRaw = 100_000n;
 
   const onStakeOrLock = async ({ months }: { months: number }) => {
     try {
@@ -75,6 +76,20 @@ function ModalStakeOrLockNewBatch({
     setMonths(action === "lock" ? 1 : 0);
   }, [action]);
 
+  const [inputError, inputInfo] = (() => {
+    const minInfo = `Minimum amount required to stake or lock is ${minBalance} NS`;
+    if (amount.length === 0) {
+      return [false, minInfo];
+    }
+    if (balance < minBalanceRaw) {
+      return [true, minInfo];
+    }
+    if (balance > availableNS) {
+      return [true, "You don't have enough NS"];
+    }
+    return [false, minInfo];
+  })();
+
   return (
     <Modal
       onClose={onClose}
@@ -93,8 +108,8 @@ function ModalStakeOrLockNewBatch({
             )
           }
           value={amount || "0"}
-          error={!!(amount && Number(amount) < minBalance)}
-          info={`Minimum amount required to stake or lock is ${minBalance} NS`}
+          error={inputError}
+          info={inputInfo}
           suffix={<span>/{formatNSBalance(availableNS)} NS</span>}
         />
         <div className="flex flex-col gap-xs">
@@ -236,7 +251,7 @@ function ModalStakeOrLockNewBatch({
         onClose={onClose}
         actionText="Confirm"
         onAction={() => onStakeOrLock({ months })}
-        disabled={!amount || Number(amount) < minBalance}
+        disabled={!amount || inputError}
       />
     </Modal>
   );
