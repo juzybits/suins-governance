@@ -135,15 +135,16 @@ function ModalStakeOrLockNewBatch({
             content={[
               [
                 <div key={makeId("stake", "cell", 0, 0)} className="flex gap-s">
-                  <Radio
-                    value={action === "stake"}
-                    toggle={() => {
-                      if (action !== "stake") {
-                        onActionChange("stake")();
-                      }
-                      setMonths(0);
-                    }}
-                  />
+                  <div>
+                    <Radio
+                      value={action === "stake"}
+                      toggle={() => {
+                        if (action !== "stake") onActionChange("stake")();
+
+                        setMonths(0);
+                      }}
+                    />
+                  </div>
                   <div className="flex flex-col gap-2xs">
                     <Typography variant="label/Large Medium">Stake</Typography>
                     <Typography

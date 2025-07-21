@@ -34,6 +34,7 @@ const Table: FC<TableProps> = ({
                 "py-s",
                 columnStyles(index),
                 !minimalist && "px-m",
+                minimalist && !index && "w-[50%]",
                 index && !minimalist && "border-l border-[#FFFFFF1A]",
               )}
             >
