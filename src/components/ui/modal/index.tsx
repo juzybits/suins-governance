@@ -24,8 +24,8 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-bg-primary_dark bg-opacity-80">
-      <div className="flex max-h-[90vh] w-full max-w-[45rem] flex-col overflow-y-auto overflow-x-hidden rounded-l-s rounded-r-s bg-bg-modal p-l text-primary-main">
+    <div className="fixed inset-0 z-[100] flex items-end justify-center bg-bg-primary_dark bg-opacity-80 md:items-center">
+      <div className="flex max-h-[98.5vh] w-full max-w-[45rem] flex-col overflow-y-auto overflow-x-hidden rounded-t-s bg-bg-modal p-l text-primary-main md:max-h-[90vh] md:rounded-b-s">
         <div className="flex items-start gap-3xl">
           <div className="flex-1">
             <h2>
