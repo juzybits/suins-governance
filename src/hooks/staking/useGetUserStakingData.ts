@@ -19,6 +19,7 @@ export type UserStats = {
   lockedPower: bigint;
   stakedNS: bigint;
   stakedPower: bigint;
+  cooldownNS: bigint;
   totalPower: bigint;
 };
 
@@ -36,6 +37,7 @@ export function useGetUserStakingData(owner: string | undefined) {
             lockedPower: 0n,
             stakedNS: 0n,
             stakedPower: 0n,
+            cooldownNS: 0n,
             totalPower: 0n,
           },
         };
@@ -88,13 +90,16 @@ export function useGetUserStakingData(owner: string | undefined) {
       let lockedPower = 0n;
       let stakedNS = 0n;
       let stakedPower = 0n;
+      let cooldownNS = 0n;
       batches.forEach((batch) => {
         if (batch.isLocked) {
           lockedNS += batch.balanceNS;
           lockedPower += batch.votingPower;
         } else if (batch.isStaked) {
-          stakedNS += batch.balanceNS;
-          if (!batch.isCooldownRequested) {
+          if (batch.isCooldownRequested) {
+            cooldownNS += batch.balanceNS;
+          } else {
+            stakedNS += batch.balanceNS;
             stakedPower += batch.votingPower;
           }
         }
@@ -107,6 +112,7 @@ export function useGetUserStakingData(owner: string | undefined) {
           lockedPower,
           stakedNS,
           stakedPower,
+          cooldownNS,
           totalPower: lockedPower + stakedPower,
         },
       };

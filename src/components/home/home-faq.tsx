@@ -57,7 +57,7 @@ export const HomeFAQ: FC = () => {
                   "Earn +10% Votes every 30 days",
                   "Maximum multiplier of 2.85x after 360 days",
                   "3-day cooldown period for unstaking",
-                  "tack multiple staking positions independently",
+                  "track multiple staking positions independently",
                 ]}
               />
             </div>
@@ -214,13 +214,19 @@ export const HomeFAQ: FC = () => {
               <Table
                 header={[
                   "Scenario",
-                  "Scenario",
+                  "Tokens Staked",
                   "Lock Period",
                   "Votes",
                   "Rewards",
                 ]}
                 content={[
-                  ["Basic Staking", "100 NS", "None", "1000 Votes", "1x share"],
+                  [
+                    "Basic Staking (Month 1)",
+                    "100 NS",
+                    "None",
+                    "1000 Votes",
+                    "1x share",
+                  ],
                   [
                     "6mo Staking",
                     "1000 NS",

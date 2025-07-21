@@ -21,9 +21,10 @@ function main() {
     throw new Error("No valid voter data found in the file.");
   }
 
-  analyzeTopVotes(events);
-  analyzeVotesByProposal(events);
+  // analyzeTopVotes(events);
+  // analyzeVotesByProposal(events);
   // analyze154Votes(events);
+  print154votersAsTsv(events);
 }
 
 function analyzeTopVotes(events: ReturnTokenEvent[]) {
@@ -98,9 +99,9 @@ function analyzeVotesByProposal(events: ReturnTokenEvent[]) {
     );
   }
 }
+const amount154raw = "154000000";
 
 function analyze154Votes(events: ReturnTokenEvent[]) {
-  const amount154raw = "154000000";
   const voters = new Set<string>();
   const votersByDate = new Map<string, Set<string>>();
 
@@ -128,6 +129,34 @@ function analyze154Votes(events: ReturnTokenEvent[]) {
   }
 
   console.log(`\nTotal unique voters using 154 NS: ${voters.size}`);
+}
+
+function print154votersAsTsv(events: ReturnTokenEvent[]) {
+  const votersByDate = new Map<string, Set<string>>();
+
+  // collect all voters who voted with 154 NS, grouped by date
+  for (const event of events) {
+    if (event.amount_raw !== amount154raw) {
+      continue;
+    }
+
+    const date = String(event.date.split("T")[0]);
+    if (!votersByDate.has(date)) {
+      votersByDate.set(date, new Set<string>());
+    }
+    votersByDate.get(date)!.add(event.voter_addr);
+  }
+
+  // print TSV header
+  console.log("date\taddress");
+
+  // print each voter on a separate line in TSV format
+  for (const date of Array.from(votersByDate.keys()).sort()) {
+    const voterSet = votersByDate.get(date)!;
+    for (const voter of Array.from(voterSet).sort()) {
+      console.log(`${date}\t${voter}`);
+    }
+  }
 }
 
 main();

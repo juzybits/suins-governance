@@ -5,7 +5,7 @@ import { batchHelpers } from "@/types/Batch";
 import { Modal } from "@/components/ui/modal";
 import { toast } from "sonner";
 import { useState, useEffect, type FC } from "react";
-import { NS_DECIMALS, ONE_NS_RAW } from "@/constants/common";
+import { ONE_NS_RAW } from "@/constants/common";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { useCurrentAccount } from "@mysten/dapp-kit";
 import { ModalFooter } from "../ui/modal/modal-footer";
@@ -56,6 +56,7 @@ function ModalStakeOrLockNewBatch({
 
   const balance = parseNSAmount(amount);
   const minBalance = 0.1;
+  const minBalanceRaw = 100_000n;
 
   const onStakeOrLock = async ({ months }: { months: number }) => {
     try {
@@ -71,9 +72,19 @@ function ModalStakeOrLockNewBatch({
     }
   };
 
-  useEffect(() => {
-    setMonths(action === "lock" ? 1 : 0);
-  }, [action]);
+  const [inputError, inputInfo] = (() => {
+    const minInfo = `Minimum amount required to stake or lock is ${minBalance} NS`;
+    if (amount.length === 0) {
+      return [false, minInfo];
+    }
+    if (balance < minBalanceRaw) {
+      return [true, minInfo];
+    }
+    if (balance > availableNS) {
+      return [true, "You don't have enough NS"];
+    }
+    return [false, minInfo];
+  })();
 
   return (
     <Modal
@@ -93,17 +104,9 @@ function ModalStakeOrLockNewBatch({
             )
           }
           value={amount || "0"}
-          error={!!(amount && Number(amount) < minBalance)}
-          info={`Minimum amount required to stake or lock is ${minBalance} NS`}
-          suffix={
-            <span
-              onClick={() =>
-                setAmount((Number(availableNS) / 10 ** NS_DECIMALS).toString())
-              }
-            >
-              /{formatNSBalance(availableNS)} NS
-            </span>
-          }
+          error={inputError}
+          info={inputInfo}
+          suffix={<span>/{formatNSBalance(availableNS)} NS</span>}
         />
         <div className="flex flex-col gap-xs">
           <h3>
@@ -134,7 +137,12 @@ function ModalStakeOrLockNewBatch({
                 <div key={makeId("stake", "cell", 0, 0)} className="flex gap-s">
                   <Radio
                     value={action === "stake"}
-                    toggle={onActionChange("stake")}
+                    toggle={() => {
+                      if (action !== "stake") {
+                        onActionChange("stake")();
+                      }
+                      setMonths(0);
+                    }}
                   />
                   <div className="flex flex-col gap-2xs">
                     <Typography variant="label/Large Medium">Stake</Typography>
@@ -215,7 +223,9 @@ function ModalStakeOrLockNewBatch({
                   <Radio
                     value={action === "lock" && months === month}
                     toggle={() => {
-                      onActionChange("lock")();
+                      if (action !== "lock") {
+                        onActionChange("lock")();
+                      }
                       setMonths(month);
                     }}
                   />
@@ -244,7 +254,7 @@ function ModalStakeOrLockNewBatch({
         onClose={onClose}
         actionText="Confirm"
         onAction={() => onStakeOrLock({ months })}
-        disabled={!amount || Number(amount) < minBalance}
+        disabled={!amount || inputError}
       />
     </Modal>
   );
