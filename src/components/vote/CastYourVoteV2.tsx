@@ -202,16 +202,18 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
                     be used.
                   </Typography>
                 ) : (
-                  <Typography
-                    variant="paragraph/Regular"
-                    className="text-center text-secondary"
-                  >
-                    You do not have any available votes to cast.{" "}
-                    <Link href="/stake" className="text-link">
-                      Stake or Lock to earn more votes
-                    </Link>
-                    .
-                  </Typography>
+                  <>
+                    <Typography
+                      variant="paragraph/Regular"
+                      className="text-center text-secondary"
+                    >
+                      You do not have any available votes to cast. <br />
+                      <Link href="/stake" className="text-link">
+                        Stake or Lock
+                      </Link>{" "}
+                      to earn more votes.
+                    </Typography>
+                  </>
                 )}
                 {!isLoggedOut && !!errors && errors.vote && (
                   <div className="mt-2 flex w-full flex-col gap-0.5">
