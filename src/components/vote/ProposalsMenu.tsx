@@ -116,9 +116,7 @@ export function ProposalsMenu() {
   const inactiveProposals = data?.filter((proposal) => !proposal.isActive);
   const params = useParams<{ proposal: string }>();
 
-  if (!data || data?.length < 2) {
-    return null;
-  }
+  if (!data || data?.length < 2) return null;
 
   return (
     <Root>
@@ -143,7 +141,6 @@ export function ProposalsMenu() {
           sideOffset={12}
           alignOffset={isSmallOrAbove ? 0 : -112}
           align="start"
-          className="w-2024_menuWidth z-50 max-w-[416px] max-sm:w-[90vw]"
         >
           <>
             {isLoading && <Loader className="h-6 w-6" />}
@@ -155,14 +152,14 @@ export function ProposalsMenu() {
                 transition={{ duration: 0.2 }}
                 className="w-full text-left"
               >
-                <div className="relative flex h-full w-full min-w-full flex-col items-start justify-start gap-2xl overflow-x-hidden rounded-l-s rounded-r-s border border-tertiary bg-bg-modal p-2xl text-left focus:outline-none focus:placeholder:text-transparent md:w-[25rem] md:min-w-[416px]">
+                <div className="relative flex h-full max-h-[85vh] w-full min-w-full flex-col items-start justify-start gap-2xl overflow-x-hidden rounded-l-s rounded-r-s border border-tertiary bg-bg-modal py-2xl text-left focus:outline-none focus:placeholder:text-transparent md:w-[25rem] md:min-w-[416px]">
                   <Typography
                     variant="display/XSmall Light"
-                    className="text-primary-main"
+                    className="px-2xl text-primary-main"
                   >
                     Proposals
                   </Typography>
-                  <div className="flex h-full max-h-[90vh] w-full flex-col gap-m overflow-y-auto lg:max-h-[40rem]">
+                  <div className="flex h-full max-h-[90vh] w-full flex-col gap-m overflow-y-auto px-2xl lg:max-h-[40rem]">
                     {data?.[0]?.isActive && (
                       <div className="flex flex-col gap-m">
                         <Typography
