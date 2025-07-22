@@ -23,32 +23,38 @@ export const buttonVariants = cva([BASE_STYLE], {
       "short/gradient": [
         SHORT_STYLE,
         "bg-button_orange_pink_blue text-primary-darker",
+        "disabled:bg-button_orange_pink_blue disabled:text-primary-darker",
         "hover:bg-button_green_orange_pink",
       ],
       "short/solid": [
         SHORT_STYLE,
         "bg-bg-blue  text-primary-darker",
+        "disabled:bg-bg-blue disabled:text-primary-darker",
         "hover:bg-button_pink_green",
       ],
       "short/solid-secondary": [
         SHORT_STYLE,
         "bg-bg-secondary_highlight text-primary-main",
+        "disabled:bg-bg-secondary_highlight disabled:text-primary-main",
         "hover:bg-button_orange_pink_blue hover:text-primary-darker",
       ],
       "short/outline": [SHORT_STYLE, "text-primary-main"],
       "tall/gradientA": [
         TALL_STYLE,
         "bg-stroke_green_blue_pink text-primary-darker",
+        "disabled:bg-stroke_green_blue_pink disabled:text-primary-darker",
         "hover:bg-button_pink_green",
       ],
       "tall/gradientB": [
         TALL_STYLE,
         "bg-button_orange_pink_blue text-primary-darker",
+        "disabled:bg-button_orange_pink_blue disabled:text-primary-darker",
         "hover:bg-button_green_orange_pink",
       ],
       "tall/solid": [
         TALL_STYLE,
         "bg-bg-good text-primary-darker",
+        "disabled:bg-bg-good disabled:text-primary-darker",
         "hover:bg-button_pink_green",
       ],
       "tall/stroke": [TALL_STYLE, "text-primary-main"],

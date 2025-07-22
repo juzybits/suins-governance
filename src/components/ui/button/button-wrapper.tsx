@@ -15,7 +15,7 @@ const GRADIENT_BORDERS: ReadonlyArray<ButtonWrapperProps["variant"]> = [
 const ButtonWrapper = forwardRef<
   HTMLButtonElement,
   PropsWithChildren<ButtonWrapperProps>
->(({ bg, href, asChild, children, className, ...props }, ref) => {
+>(({ bg, href, asChild, children, className, disabled, ...props }, ref) => {
   if (href)
     return (
       <Link href={href} className={className}>
@@ -42,27 +42,29 @@ const ButtonWrapper = forwardRef<
           "#D962FF",
           "#D962FF",
         ]}
-        colorsOnHover={[
-          "#4CA2FF",
-          "#4CA2FF",
-          "#D962FF",
-          "#D962FF",
-          "#4CA2FF",
-          "#4CA2FF",
-          "#4BFFA6",
-          "#4BFFA6",
-          "#4CA2FF",
-          "#4CA2FF",
-        ]}
+        {...(!disabled && {
+          colorsOnHover: [
+            "#4CA2FF",
+            "#4CA2FF",
+            "#D962FF",
+            "#D962FF",
+            "#4CA2FF",
+            "#4CA2FF",
+            "#4BFFA6",
+            "#4BFFA6",
+            "#4CA2FF",
+            "#4CA2FF",
+          ],
+        })}
       >
-        <Component ref={ref} {...props}>
+        <Component ref={ref} disabled={disabled} {...props}>
           {children}
         </Component>
       </GradientBorder>
     );
 
   return (
-    <Component ref={ref} className={className} {...props}>
+    <Component ref={ref} className={className} disabled={disabled} {...props}>
       {children}
     </Component>
   );
