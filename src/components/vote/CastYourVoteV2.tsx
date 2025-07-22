@@ -123,6 +123,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
                   >
                     <GradientBorder
                       alwaysAnimate
+                      animationSpeed={2}
                       variant="green_blue_pink"
                       className="overflow-hidden rounded-xs border-2"
                     >

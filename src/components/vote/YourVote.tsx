@@ -55,25 +55,34 @@ export function YourVote({ proposalId }: { proposalId: string }) {
           </div>
           <hr className="border-secondary/10" />
           {voteCasted.yesVote ? (
-            <VotingState
-              votedState="Yes"
-              votes={voteCasted.yesVote}
-              isPersonVote={isPersonVote}
-            />
+            <div className="flex justify-between">
+              <VoteIndicator
+                size="small"
+                votedStatus="Yes"
+                isPersonVote={isPersonVote}
+              />
+              <NSAmount amount={voteCasted.yesVote} />
+            </div>
           ) : null}
           {voteCasted.noVote ? (
-            <VotingState
-              votedState="No"
-              votes={voteCasted.noVote}
-              isPersonVote={isPersonVote}
-            />
+            <div className="flex justify-between">
+              <VoteIndicator
+                size="small"
+                votedStatus="No"
+                isPersonVote={isPersonVote}
+              />
+              <NSAmount amount={voteCasted.noVote} />
+            </div>
           ) : null}
           {voteCasted.abstainVote ? (
-            <VotingState
-              votedState="Abstain"
-              votes={voteCasted.abstainVote}
-              isPersonVote={isPersonVote}
-            />
+            <div className="flex justify-between">
+              <VoteIndicator
+                size="small"
+                votedStatus="Abstain"
+                isPersonVote={isPersonVote}
+              />
+              <NSAmount amount={voteCasted.abstainVote} />
+            </div>
           ) : null}
         </div>
       ) : (
