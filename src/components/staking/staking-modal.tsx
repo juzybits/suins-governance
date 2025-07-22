@@ -4,7 +4,7 @@ import { parseNSAmount } from "@/utils/parseAmount";
 import { batchHelpers } from "@/types/Batch";
 import { Modal } from "@/components/ui/modal";
 import { toast } from "sonner";
-import { useState, useEffect, type FC } from "react";
+import { useState, type FC } from "react";
 import { ONE_NS_RAW } from "@/constants/common";
 import { useGetOwnedNSBalance } from "@/hooks/useGetOwnedNSBalance";
 import { useCurrentAccount } from "@mysten/dapp-kit";
