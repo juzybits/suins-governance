@@ -14,7 +14,10 @@ import WalletSVG from "@/icons/wallet";
 import { formatNSBalance } from "@/utils/coins";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 
-export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens, forceCompact }) => {
+export const StakingUserStats: FC<StakingUserStarsProps> = ({
+  showTokens,
+  forceCompact,
+}) => {
   const currAcct = useCurrentAccount();
   const userStaking = useGetUserStakingData(currAcct?.address);
   const balance = useGetOwnedNSBalance(currAcct?.address);
@@ -61,7 +64,12 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens, forceC
         icon={<StakeSVG width="100%" className="max-w-[2rem]" />}
         forceCompact={forceCompact}
       />
-      <hr className={clsx("col-span-2 hidden border-0 border-b border-[#6E609F80]", !forceCompact && "md:block lg:hidden")} />
+      <hr
+        className={clsx(
+          "col-span-2 hidden border-0 border-b border-[#6E609F80]",
+          !forceCompact && "md:block lg:hidden",
+        )}
+      />
       <Card
         valueGradient
         title="Your Total Votes"
@@ -73,7 +81,12 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens, forceC
         forceCompact={forceCompact}
       />
       {showTokens && (
-        <hr className={clsx("col-span-3 hidden border-0 border-b border-[#6E609F80]", !forceCompact && "lg:block xl:hidden")} />
+        <hr
+          className={clsx(
+            "col-span-3 hidden border-0 border-b border-[#6E609F80]",
+            !forceCompact && "lg:block xl:hidden",
+          )}
+        />
       )}
       {showTokens && (
         <Card
