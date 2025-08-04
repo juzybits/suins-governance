@@ -98,13 +98,13 @@ export const batchHelpers = {
 
   getDaysSinceStart: (obj: BatchObjResp, networkTime: number): number => {
     const startMs = Number(obj.content.fields.start_ms);
-    return Math.round((networkTime - startMs) / DAY_MS);
+    return (networkTime - startMs) / DAY_MS;
   },
 
   getLockDurationDays: (obj: BatchObjResp): number => {
     const startMs = Number(obj.content.fields.start_ms);
     const unlockMs = Number(obj.content.fields.unlock_ms);
-    return Math.round((unlockMs - startMs) / DAY_MS);
+    return (unlockMs - startMs) / DAY_MS;
   },
 
   /**

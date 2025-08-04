@@ -57,7 +57,7 @@ export function StakingBatchItem({
                   variant="label/Small Bold"
                   className="text-primary-main"
                 >
-                  {batch.lockDurationDays} days
+                  {Math.floor(batch.lockDurationDays)} days
                 </Typography>{" "}
                 {!noAction && (
                   <span className="text-tertiary">
@@ -72,7 +72,7 @@ export function StakingBatchItem({
           <>
             <p>
               <Typography variant="label/Small Bold">
-                Staked for {batch.daysSinceStart} days
+                Staked for {Math.floor(batch.daysSinceStart)} days
               </Typography>
             </p>
             {batch.isCooldownOver && (
@@ -139,7 +139,7 @@ export function StakingBatchItem({
           },
           ...(batch.isLocked
             ? [
-                { name: "Locked For", value: `${batch.lockDurationDays} days` },
+                { name: "Locked For", value: `${Math.floor(batch.lockDurationDays)} days` },
                 {
                   name: "Locked on",
                   value: `${batch.startDate.toLocaleDateString()} (${batch.votingMultiplier.toFixed(2)}x multiplier)`,
