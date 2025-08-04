@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { StakingBatchItem } from "./staking-batch-item";
 import Radio from "@/components/ui/radio";
 import Table from "@/components/ui/table";
-import { ONE_NS_RAW } from "@/constants/common";
+import { DAY_MS, ONE_NS_RAW } from "@/constants/common";
 import { makeId } from "@/utils/id";
 import { id } from "date-fns/locale";
 import InfoSVG from "@/icons/info";
@@ -107,10 +107,9 @@ export function StakingBatchItemModal({
             const label = `${days} days`;
 
             const unlockTimestamp =
-              Number(batch.content.fields.start_ms) +
-              days * 24 * 60 * 60 * 1000;
+              Number(batch.content.fields.start_ms) + days * DAY_MS;
             const unlocksInDays = Math.ceil(
-              (unlockTimestamp - Date.now()) / (24 * 60 * 60 * 1000),
+              (unlockTimestamp - Date.now()) / DAY_MS,
             );
 
             return [

@@ -139,7 +139,10 @@ export function StakingBatchItem({
           },
           ...(batch.isLocked
             ? [
-                { name: "Locked For", value: `${Math.floor(batch.lockDurationDays)} days` },
+                {
+                  name: "Locked For",
+                  value: `${Math.floor(batch.lockDurationDays)} days`,
+                },
                 {
                   name: "Locked on",
                   value: `${batch.startDate.toLocaleDateString()} (${batch.votingMultiplier.toFixed(2)}x multiplier)`,
