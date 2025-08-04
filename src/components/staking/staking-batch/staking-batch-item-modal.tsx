@@ -109,7 +109,7 @@ export function StakingBatchItemModal({
             const unlockTimestamp =
               Number(batch.content.fields.start_ms) + days * DAY_MS;
             const unlocksInDays = Math.ceil(
-              (unlockTimestamp - Date.now()) / DAY_MS,
+              (unlockTimestamp - batch.networkTime) / DAY_MS,
             );
 
             return [

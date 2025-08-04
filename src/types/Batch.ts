@@ -31,6 +31,7 @@ export type Batch = BatchObjResp & {
   startDate: Date;
   unlockDate: Date;
   cooldownEndDate: Date | null;
+  networkTime: number;
 };
 
 // === functions ===
@@ -61,6 +62,7 @@ export const enrichBatchObjResp = (
     startDate: new Date(Number(obj.content.fields.start_ms)),
     unlockDate: new Date(Number(obj.content.fields.unlock_ms)),
     cooldownEndDate: cooldownEndMs > 0 ? new Date(cooldownEndMs) : null,
+    networkTime,
   };
 };
 
