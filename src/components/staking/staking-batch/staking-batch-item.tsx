@@ -132,7 +132,11 @@ export function StakingBatchItem({
       </div>
       <div className="flex flex-col justify-between gap-xs">
         {[
-          { name: "Votes", value: formatNSBalance(batch.votingPower), className: "block md:hidden" },
+          {
+            name: "Votes",
+            value: formatNSBalance(batch.votingPower),
+            className: "block md:hidden",
+          },
           ...(batch.isLocked
             ? [
                 { name: "Locked For", value: `${batch.lockDurationDays} days` },
@@ -152,7 +156,7 @@ export function StakingBatchItem({
         ].map(({ name, value, className }, index) => (
           <div
             key={index}
-            className={`flex justify-between border-t border-t-tertiary py-m ${className || ""}`}
+            className={`flex justify-between border-t border-t-tertiary py-m ${className ?? ""}`}
           >
             <Typography className="text-secondary" variant="label/Small Medium">
               {name}

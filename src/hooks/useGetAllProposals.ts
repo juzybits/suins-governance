@@ -104,5 +104,7 @@ const V1_PROPOSAL_IDS = [
  * Sort proposals by end time in descending order (newest first)
  */
 function sortProposals(proposals: ProposalObjResp[]) {
-  return proposals.sort((a, b) => a.fields.end_time_ms > b.fields.end_time_ms ? -1 : 1);
+  return proposals.sort((a, b) =>
+    a.fields.end_time_ms > b.fields.end_time_ms ? -1 : 1,
+  );
 }
