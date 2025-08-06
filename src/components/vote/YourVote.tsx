@@ -5,7 +5,6 @@ import { useGetAccountInfo } from "@/hooks/useGetAccountInfo";
 import { Avatar } from "@/components/Avatar";
 
 import { useGetVoteCastedByProposalId } from "@/hooks/useGetVoteCasted";
-import { VotingState } from "./VotingStatus";
 import { NSAmount } from "../ui/legacy/NSAmount";
 import { VoteIndicator } from "../ui/legacy/VoteIndicator";
 import { useIsPersonVote } from "@/hooks/useIsPersonVote";

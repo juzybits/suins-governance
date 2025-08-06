@@ -7,6 +7,7 @@ import { calculateReward, getTotalReward } from "@/types/Proposal";
 import { formatNSBalance } from "@/utils/coins";
 import Typography from "../ui/typography";
 import NSToken from "@/icons/legacy/NSToken";
+import NSTokenSVG from "@/icons/ns-token";
 
 export function YourReward({ proposalId }: { proposalId: string }) {
   const currAcct = useCurrentAccount();
@@ -83,18 +84,20 @@ export function YourReward({ proposalId }: { proposalId: string }) {
   }
 
   return (
-    <div className="flex w-full flex-col items-start justify-center gap-s rounded-l-xs rounded-r-xs bg-[#62519C66] px-m py-l">
+    <div
+    //  className="flex w-full flex-col items-start justify-center gap-s rounded-l-xs rounded-r-xs bg-[#62519C66] px-m py-l"
+    >
       <Typography variant="label/Regular Bold" className="text-primary-main">
         Your Reward For Voting
       </Typography>
-      <div className="flex gap-xs">
+      <div className="flex items-center gap-xs">
         <Typography
           variant="heading/Regular Bold"
           className="text-primary-main"
         >
           {formatNSBalance(reward)}
         </Typography>
-        <NSToken width="1.5rem" />
+        <NSTokenSVG width="3rem" />
       </div>
     </div>
   );
