@@ -14,7 +14,10 @@ import WalletSVG from "@/icons/wallet";
 import { formatNSBalance } from "@/utils/coins";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
 
-export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
+export const StakingUserStats: FC<StakingUserStarsProps> = ({
+  showTokens,
+  forceCompact,
+}) => {
   const currAcct = useCurrentAccount();
   const userStaking = useGetUserStakingData(currAcct?.address);
   const balance = useGetOwnedNSBalance(currAcct?.address);
@@ -30,10 +33,11 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
   return (
     <div
       className={clsx(
-        "grid md:gap-l",
-        showTokens
+        "grid",
+        !forceCompact && "md:gap-l",
+        !forceCompact && showTokens
           ? "md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-          : "md:grid-cols-2 lg:grid-cols-3",
+          : !forceCompact && "md:grid-cols-2 lg:grid-cols-3",
       )}
     >
       <Card
@@ -46,6 +50,7 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
         active={Boolean(Number(stats.lockedNS))}
         subValue={formatNSBalance(stats.lockedPower)}
         icon={<LockSVG width="100%" className="max-h-[2rem] max-w-[2rem]" />}
+        forceCompact={forceCompact}
       />
       <Card
         subValueGradient
@@ -57,8 +62,14 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
         subValue={formatNSBalance(stats.stakedPower)}
         active={Boolean(Boolean(Number(stats.stakedNS)))}
         icon={<StakeSVG width="100%" className="max-w-[2rem]" />}
+        forceCompact={forceCompact}
       />
-      <hr className="col-span-2 hidden border-0 border-b border-[#6E609F80] md:block lg:hidden" />
+      <hr
+        className={clsx(
+          "col-span-2 hidden border-0 border-b border-[#6E609F80]",
+          !forceCompact && "md:block lg:hidden",
+        )}
+      />
       <Card
         valueGradient
         title="Your Total Votes"
@@ -67,9 +78,15 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
         active={Boolean(Number(stats.totalPower))}
         withBorder={showTokens && (xlGte || !lgGte)}
         icon={<VoteSVG width="100%" className="max-w-[2rem]" />}
+        forceCompact={forceCompact}
       />
       {showTokens && (
-        <hr className="col-span-3 hidden border-0 border-b border-[#6E609F80] lg:block xl:hidden" />
+        <hr
+          className={clsx(
+            "col-span-3 hidden border-0 border-b border-[#6E609F80]",
+            !forceCompact && "lg:block xl:hidden",
+          )}
+        />
       )}
       {showTokens && (
         <Card
@@ -85,6 +102,7 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({ showTokens }) => {
           subValueGradient
           active={Boolean(Number(balance.data.raw))}
           icon={<WalletSVG width="100%" className="max-w-[2rem]" />}
+          forceCompact={forceCompact}
         />
       )}
     </div>

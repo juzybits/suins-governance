@@ -236,7 +236,7 @@ export function CastYourVoteV2({ proposalId }: { proposalId: string }) {
       </SectionLayout>
       {!(votingPower === 0n || isLoggedOut) && (
         <SectionLayout>
-          <StakingUserStats showTokens={false} />
+          <StakingUserStats showTokens={false} forceCompact={true} />
         </SectionLayout>
       )}
     </div>

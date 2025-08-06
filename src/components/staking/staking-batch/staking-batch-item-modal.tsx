@@ -13,9 +13,10 @@ import { toast } from "sonner";
 import { StakingBatchItem } from "./staking-batch-item";
 import Radio from "@/components/ui/radio";
 import Table from "@/components/ui/table";
-import { ONE_NS_RAW } from "@/constants/common";
+import { DAY_MS, ONE_NS_RAW } from "@/constants/common";
 import { makeId } from "@/utils/id";
 import { id } from "date-fns/locale";
+import InfoSVG from "@/icons/info";
 
 export function StakingBatchItemModal({
   batch,
@@ -38,10 +39,15 @@ export function StakingBatchItemModal({
     }
   };
 
-  const currentMonths =
-    Math.max(batch.lockDurationDays, batch.daysSinceStart) / 30;
+  const currentMonths = Math.floor(
+    Math.max(batch.lockDurationDays, batch.daysSinceStart) / 30,
+  );
   const validMonths = VALID_MONTHS.filter((month) => month > currentMonths);
   const [months, setMonths] = useState(validMonths[0] ?? 1);
+
+  if (validMonths.length === 0) {
+    return null;
+  }
 
   return (
     <Modal
@@ -100,6 +106,12 @@ export function StakingBatchItemModal({
             const days = month * 30;
             const label = `${days} days`;
 
+            const unlockTimestamp =
+              Number(batch.content.fields.start_ms) + days * DAY_MS;
+            const unlocksInDays = Math.ceil(
+              (unlockTimestamp - batch.networkTime) / DAY_MS,
+            );
+
             return [
               [
                 <div
@@ -110,7 +122,17 @@ export function StakingBatchItemModal({
                     value={months === month}
                     toggle={() => setMonths(month)}
                   />
-                  <Typography variant="label/Large Medium">{label}</Typography>
+                  <div className="flex flex-row items-center gap-s">
+                    <Typography variant="label/Large Medium">
+                      {label}
+                    </Typography>
+                    <Typography
+                      variant="label/Small Medium"
+                      className="text-secondary"
+                    >
+                      unlocks in {unlocksInDays} days
+                    </Typography>
+                  </div>
                 </div>,
                 <Typography
                   variant="label/Large Bold"
@@ -130,6 +152,13 @@ export function StakingBatchItemModal({
             ];
           })}
         />
+        <div className="my-s flex gap-s">
+          <InfoSVG width="100%" className="max-w-[1.25rem] text-tertiary" />
+          <Typography variant="paragraph/Small" className="text-secondary">
+            Your selected lock period builds on your existing staked or locked
+            timeframe.
+          </Typography>
+        </div>
       </div>
       <ModalFooter
         actionText="Lock Tokens"

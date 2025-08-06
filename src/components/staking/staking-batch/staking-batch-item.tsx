@@ -57,7 +57,7 @@ export function StakingBatchItem({
                   variant="label/Small Bold"
                   className="text-primary-main"
                 >
-                  {batch.lockDurationDays} days
+                  {Math.floor(batch.lockDurationDays)} days
                 </Typography>{" "}
                 {!noAction && (
                   <span className="text-tertiary">
@@ -72,7 +72,7 @@ export function StakingBatchItem({
           <>
             <p>
               <Typography variant="label/Small Bold">
-                Staked for {batch.daysSinceStart} days
+                Staked for {Math.floor(batch.daysSinceStart)} days
               </Typography>
             </p>
             {batch.isCooldownOver && (
@@ -132,10 +132,17 @@ export function StakingBatchItem({
       </div>
       <div className="flex flex-col justify-between gap-xs">
         {[
-          { name: "Votes", value: formatNSBalance(batch.votingPower) },
+          {
+            name: "Votes",
+            value: formatNSBalance(batch.votingPower),
+            className: "block md:hidden",
+          },
           ...(batch.isLocked
             ? [
-                { name: "Locked For", value: `${batch.lockDurationDays} days` },
+                {
+                  name: "Locked For",
+                  value: `${Math.floor(batch.lockDurationDays)} days`,
+                },
                 {
                   name: "Locked on",
                   value: `${batch.startDate.toLocaleDateString()} (${batch.votingMultiplier.toFixed(2)}x multiplier)`,
@@ -149,10 +156,10 @@ export function StakingBatchItem({
                   },
                 ]
               : []),
-        ].map(({ name, value }, index) => (
+        ].map(({ name, value, className }, index) => (
           <div
             key={index}
-            className="flex justify-between border-t border-t-tertiary py-m"
+            className={`flex justify-between border-t border-t-tertiary py-m ${className ?? ""}`}
           >
             <Typography className="text-secondary" variant="label/Small Medium">
               {name}

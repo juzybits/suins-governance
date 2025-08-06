@@ -188,7 +188,9 @@ function DevContentForm({
           />
         </div>
 
-        <button onClick={onDistributeRewards}>Distribute Rewards</button>
+        <button onClick={onDistributeRewards}>
+          Distribute Rewards & Finalize
+        </button>
       </div>
     </>
   );

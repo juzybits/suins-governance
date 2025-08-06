@@ -12,4 +12,5 @@ export interface CardProps {
   valueGradient?: boolean;
   subValueSuffix?: string;
   subValueGradient?: boolean;
+  forceCompact?: boolean;
 }

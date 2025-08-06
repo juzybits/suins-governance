@@ -16,16 +16,30 @@ const Card: FC<CardProps> = ({
   earnMoreVotes,
   subValueSuffix,
   subValueGradient,
+  forceCompact,
 }) => (
   <div
     className={clsx(
-      "flex items-start gap-2xl py-l text-secondary md:flex-col md:items-center md:gap-xl md:p-xl md:text-center lg:items-start",
-      withBorder && "border-b border-[#6E609F80] md:border-b-0 md:border-r",
+      "flex items-start gap-2xl py-l text-secondary",
+      !forceCompact &&
+        "md:flex-col md:items-center md:gap-xl md:p-xl md:text-center lg:items-start",
+      withBorder && "border-b border-[#6E609F80]",
+      withBorder && !forceCompact && "md:border-b-0 md:border-r",
     )}
   >
     {icon}
-    <div className="flex flex-col gap-xs md:items-center lg:items-start">
-      <div className="flex flex-col gap-m lg:items-start">
+    <div
+      className={clsx(
+        "flex flex-col gap-xs",
+        !forceCompact && "md:items-center lg:items-start",
+      )}
+    >
+      <div
+        className={clsx(
+          "flex flex-col gap-m",
+          !forceCompact && "lg:items-start",
+        )}
+      >
         <Typography variant="label/Regular Bold">{title}</Typography>
         <div className="whitespace-nowrap">
           <Typography

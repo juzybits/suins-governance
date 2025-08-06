@@ -1,5 +1,6 @@
 import { type z } from "zod";
 import { type batchSchema } from "../schemas/batchSchema";
+import { DAY_MS, MONTH_MS } from "@/constants/common";
 
 // === constants ===
 // WARNING: these must be kept in sync with the StakingConfig Sui object.
@@ -7,9 +8,6 @@ import { type batchSchema } from "../schemas/batchSchema";
 const MAX_LOCK_MONTHS = 12;
 const MONTHLY_BOOST_BPS = 110_00n; // 1.1x or 10% boost (in basis points)
 const MAX_BOOST_BPS = 300_00n; // 3.0x for 12-month lock (in basis points)
-
-const MONTH_MS = 2592000000; // 30 days in milliseconds
-const DAY_MS = 86400000; // 1 day in milliseconds
 
 export const MAX_LOCK_DURATION_DAYS = MAX_LOCK_MONTHS * 30;
 export const VALID_MONTHS = [1, 2, 6, 12];
@@ -33,6 +31,7 @@ export type Batch = BatchObjResp & {
   startDate: Date;
   unlockDate: Date;
   cooldownEndDate: Date | null;
+  networkTime: number;
 };
 
 // === functions ===
@@ -63,6 +62,7 @@ export const enrichBatchObjResp = (
     startDate: new Date(Number(obj.content.fields.start_ms)),
     unlockDate: new Date(Number(obj.content.fields.unlock_ms)),
     cooldownEndDate: cooldownEndMs > 0 ? new Date(cooldownEndMs) : null,
+    networkTime,
   };
 };
 
@@ -98,13 +98,13 @@ export const batchHelpers = {
 
   getDaysSinceStart: (obj: BatchObjResp, networkTime: number): number => {
     const startMs = Number(obj.content.fields.start_ms);
-    return Math.round((networkTime - startMs) / DAY_MS);
+    return (networkTime - startMs) / DAY_MS;
   },
 
   getLockDurationDays: (obj: BatchObjResp): number => {
     const startMs = Number(obj.content.fields.start_ms);
     const unlockMs = Number(obj.content.fields.unlock_ms);
-    return Math.round((unlockMs - startMs) / DAY_MS);
+    return (unlockMs - startMs) / DAY_MS;
   },
 
   /**

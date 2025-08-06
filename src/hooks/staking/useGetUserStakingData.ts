@@ -8,6 +8,7 @@ import { useSuiClient } from "@mysten/dapp-kit";
 import { client } from "@/app/SuinsClient";
 import { getNetworkTime } from "@/utils/getNetworkTime";
 import { type SuiObjectResponse } from "@mysten/sui/client";
+import { IS_DEV } from "@/constants/common";
 
 export type UserStakingData = {
   batches: Batch[];
@@ -117,6 +118,7 @@ export function useGetUserStakingData(owner: string | undefined) {
         },
       };
     },
+    refetchInterval: IS_DEV ? 10000 : false,
   });
 }
 

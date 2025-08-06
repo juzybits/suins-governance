@@ -62,7 +62,7 @@ export function useGetAllProposals() {
       }
 
       if (uncachedIds.length === 0) {
-        return proposals;
+        return sortProposals(proposals);
       }
 
       try {
@@ -78,10 +78,10 @@ export function useGetAllProposals() {
         // cache finalized proposals
         fetchedProposals.forEach(cacheProposalIfFinalized);
 
-        return [...proposals, ...fetchedProposals];
+        return sortProposals([...proposals, ...fetchedProposals]);
       } catch (e) {
         console.debug("[useGetAllProposals] multiGetObjects failed:", e);
-        return proposals;
+        return sortProposals(proposals);
       }
     },
   });
@@ -99,3 +99,12 @@ const V1_PROPOSAL_IDS = [
   // #1: SuiNS DAO Constitution
   "0xd4c794821436f03f1dc8321f4939c17d67c54aa6661a7b8dee12b3d179601001",
 ];
+
+/**
+ * Sort proposals by end time in descending order (newest first)
+ */
+function sortProposals(proposals: ProposalObjResp[]) {
+  return proposals.sort((a, b) =>
+    a.fields.end_time_ms > b.fields.end_time_ms ? -1 : 1,
+  );
+}
