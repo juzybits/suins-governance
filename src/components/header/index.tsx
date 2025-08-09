@@ -16,6 +16,7 @@ import {
 } from "@/context/menu";
 import { HeaderMenuContent } from "./header-menu/header-menu-content";
 import clsx from "clsx";
+import ConnectWalletMobile from "../wallet/connect-wallet-mobile";
 
 export const Header: FC<HeaderProps> = ({ logoAction }) => {
   const pathname = usePathname();
@@ -66,6 +67,7 @@ export const Header: FC<HeaderProps> = ({ logoAction }) => {
             <HeaderMenu />
           </div>
         </div>
+        <ConnectWalletMobile />
       </div>
       {pathname === "/stake" && (
         <div className="flex items-center gap-l px-l md:hidden">

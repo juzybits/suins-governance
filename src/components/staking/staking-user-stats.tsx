@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 "use client";
 
 import { useGetUserStakingData } from "@/hooks/staking/useGetUserStakingData";
@@ -26,7 +27,8 @@ export const StakingUserStats: FC<StakingUserStarsProps> = ({
   const lgGte = useBreakpoint("lg");
   const xlGte = useBreakpoint("xl");
 
-  if (userStaking.data === undefined || balance.data === undefined) return null;
+  if (!currAcct || userStaking.data === undefined || balance.data === undefined)
+    return null;
 
   const stats = userStaking.data.stats;
 
