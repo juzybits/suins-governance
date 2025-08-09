@@ -259,7 +259,7 @@ function ModalStakeOrLockNewBatch({
         loading={loading}
         actionText="Confirm"
         disabled={!amount || inputError}
-        onAction={() => onStakeOrLock({ months })}
+        onAction={() => !loading && onStakeOrLock({ months })}
       />
     </Modal>
   );

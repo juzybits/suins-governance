@@ -165,7 +165,7 @@ export function StakingBatchItemModal({
         loading={loading}
         onClose={onClose}
         actionText="Lock Tokens"
-        onAction={() => onLock({ batchId: batch.objectId, months })}
+        onAction={() => !loading && onLock({ batchId: batch.objectId, months })}
       />
     </Modal>
   );
