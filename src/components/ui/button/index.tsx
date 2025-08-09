@@ -34,14 +34,14 @@ const Button = React.forwardRef<
       {...props}
     >
       {loading && (
-        <div className="absolute left-1/2 top-1/2 h-10 -translate-x-1/2 -translate-y-1/2">
-          <Loader className="h-6 w-6" />
+        <div className="pr-s">
+          <Loader className="h-5 w-5" />
         </div>
       )}
       <div
         className={clsx(
           "inline-flex flex-nowrap items-center gap-2",
-          loading && "text-transparent",
+          // loading && "text-transparent",
         )}
       >
         {before}

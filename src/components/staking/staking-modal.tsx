@@ -52,6 +52,7 @@ function ModalStakeOrLockNewBatch({
   const stakeOrLockMutation = useStakeOrLockMutation();
 
   const [amount, setAmount] = useState("");
+  const [loading, setLoading] = useState(false);
   const [months, setMonths] = useState(action === "lock" ? 1 : 0);
 
   const balance = parseNSAmount(amount);
@@ -60,6 +61,7 @@ function ModalStakeOrLockNewBatch({
 
   const onStakeOrLock = async ({ months }: { months: number }) => {
     try {
+      setLoading(true);
       await stakeOrLockMutation.mutateAsync({ balance, months });
       toast.success(
         `Successfully ${action === "lock" ? "locked" : "staked"} tokens`,
@@ -68,6 +70,7 @@ function ModalStakeOrLockNewBatch({
       console.warn("[onStakeOrLock] failed:", error);
       toast.error("Failed to stake tokens");
     } finally {
+      setLoading(false);
       onClose();
     }
   };
@@ -92,7 +95,7 @@ function ModalStakeOrLockNewBatch({
       title="Stake or Lock Tokens"
       subtitle="Stake your NS tokens to receive Votes."
     >
-      <div className="flex flex-col gap-l py-l">
+      <div className="flex flex-col gap-3xl py-l">
         <Input
           setValue={(value) =>
             setAmount((old) =>
@@ -123,7 +126,7 @@ function ModalStakeOrLockNewBatch({
             columnStyles={(index) =>
               index === 0 ? "text-left" : "text-right pl-m"
             }
-            header={["Selection", "Multiplier", "Votes"].map((item) => (
+            header={["Selection", "Vote Multiplier", "Votes"].map((item) => (
               <Typography
                 variant="label/Small Medium"
                 className="text-secondary opacity-70"
@@ -161,7 +164,7 @@ function ModalStakeOrLockNewBatch({
                   key={makeId("stake", "cell", 0, 1)}
                   className="text-right text-primary-main"
                 >
-                  1.00x
+                  1x
                 </Typography>,
                 <Typography
                   variant="label/Large Bold"
@@ -190,7 +193,7 @@ function ModalStakeOrLockNewBatch({
             columnStyles={(index) =>
               index === 0 ? "text-left" : "text-right pl-m"
             }
-            header={["Duration", "Multiplier", "Votes"].map((item) => (
+            header={["Selection", "Vote Multiplier", "Votes"].map((item) => (
               <Typography
                 variant="label/Small Medium"
                 className="text-secondary opacity-70"
@@ -253,9 +256,10 @@ function ModalStakeOrLockNewBatch({
       </div>
       <ModalFooter
         onClose={onClose}
+        loading={loading}
         actionText="Confirm"
-        onAction={() => onStakeOrLock({ months })}
         disabled={!amount || inputError}
+        onAction={() => onStakeOrLock({ months })}
       />
     </Modal>
   );

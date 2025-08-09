@@ -103,7 +103,7 @@ export function StakingBatchItem({
   ))();
 
   return (
-    <div className="flex flex-col gap-m rounded-l-s rounded-r-s bg-[#62519C2E] p-xs">
+    <div className="flex flex-col gap-m rounded-l-s rounded-r-s bg-[#62519C2E] px-l py-xs">
       <div className="flex gap-m">
         <NSToken width="4rem" />
         <div className="w-full">

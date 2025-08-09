@@ -23,7 +23,7 @@ const Table: FC<TableProps> = ({
         <tr
           className={clsx(
             minimalist
-              ? "border-b border-tertiary"
+              ? "border-b border-[#62519C88]"
               : "bg-[#FFFFFF05] text-primary-main",
           )}
         >
@@ -34,7 +34,7 @@ const Table: FC<TableProps> = ({
                 "py-s",
                 columnStyles(index),
                 !minimalist && "px-m",
-                minimalist && !index && "w-[50%]",
+                minimalist && !index && "w-[70%]",
                 index && !minimalist && "border-l border-[#FFFFFF1A]",
               )}
             >
@@ -48,7 +48,7 @@ const Table: FC<TableProps> = ({
           <tr
             className={clsx(
               minimalist
-                ? "border-b border-tertiary"
+                ? "border-b border-[#62519C88]"
                 : "backdrop-blur-30 odd:bg-[#FFFFFF01] even:bg-[#FFFFFF03]",
             )}
             key={makeId(id, idx, "row")}

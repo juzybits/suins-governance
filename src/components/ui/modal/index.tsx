@@ -31,16 +31,16 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
             <h2>
               <Typography variant="display/XSmall">{title}</Typography>
             </h2>
-            <p>
-              <Typography variant="paragraph/Large" className="text-secondary">
-                {subtitle}
-              </Typography>
-            </p>
           </div>
           <button onClick={onClose} className="modal-close-button">
             <TimesSVG width="100%" className="max-w-[0.8rem]" />
           </button>
         </div>
+        <p>
+          <Typography variant="paragraph/Large" className="text-secondary">
+            {subtitle}
+          </Typography>
+        </p>
         {children}
       </div>
     </div>

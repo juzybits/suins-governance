@@ -15,7 +15,6 @@ import Radio from "@/components/ui/radio";
 import Table from "@/components/ui/table";
 import { DAY_MS, ONE_NS_RAW } from "@/constants/common";
 import { makeId } from "@/utils/id";
-import { id } from "date-fns/locale";
 import InfoSVG from "@/icons/info";
 
 export function StakingBatchItemModal({
@@ -26,15 +25,18 @@ export function StakingBatchItemModal({
   onClose: () => void;
 }) {
   const lockMutation = useLockMutation();
+  const [loading, setLoading] = useState(false);
 
   const onLock = async (data: LockRequest) => {
     try {
+      setLoading(true);
       await lockMutation.mutateAsync(data);
       toast.success("Successfully locked tokens");
     } catch (error) {
       console.warn("[onLock] failed:", error);
       toast.error("Failed to lock batch");
     } finally {
+      setLoading(false);
       onClose();
     }
   };
@@ -60,10 +62,10 @@ export function StakingBatchItemModal({
       }
         to receive an immediate boost to your voting power!`}
     >
-      <div className="my-xl">
+      <div className="my-2xl">
         <StakingBatchItem batch={batch} noAction />
       </div>
-      <hr className="border-tertiary" />
+      <hr className="border-[#62519C88]" />
       <div className="my-2xl flex flex-col gap-xs">
         <h3>
           <Typography variant="heading/Small Bold">Lock Tokens</Typography>
@@ -79,16 +81,15 @@ export function StakingBatchItemModal({
           columnStyles={(index) =>
             index === 0 ? "text-left" : "text-right pl-m"
           }
-          header={[
+          header={["Selection", "Vote Multiplier", "Votes"].map((item) => (
             <Typography
               variant="label/Small Medium"
-              key={makeId(id, "duration")}
+              className="text-secondary opacity-70"
+              key={makeId("stake", "heading", item)}
             >
-              Duration
-            </Typography>,
-            <>Multiplier</>,
-            <>Votes</>,
-          ]}
+              {item}
+            </Typography>
+          ))}
           content={validMonths.flatMap((month, index) => {
             const powerPreview = batchHelpers.calculateBalanceVotingPower({
               mode: "lock",
@@ -161,8 +162,9 @@ export function StakingBatchItemModal({
         </div>
       </div>
       <ModalFooter
-        actionText="Lock Tokens"
+        loading={loading}
         onClose={onClose}
+        actionText="Lock Tokens"
         onAction={() => onLock({ batchId: batch.objectId, months })}
       />
     </Modal>

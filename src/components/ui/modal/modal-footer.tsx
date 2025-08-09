@@ -4,19 +4,21 @@ import { Button } from "../button";
 import Typography from "../typography";
 
 export const ModalFooter: FC<ModalFooterProps> = ({
+  loading,
   onClose,
   onAction,
-  actionText,
   disabled,
+  actionText,
 }) => (
   <div className="flex justify-end gap-s">
     <Button variant="short/outline" onClick={onClose} bg="#2D2743">
       <Typography variant="label/Regular Bold">Cancel</Typography>
     </Button>
     <Button
-      variant="short/gradient"
+      loading={loading}
       onClick={onAction}
-      disabled={disabled}
+      variant="short/gradient"
+      disabled={loading || disabled}
       className={disabled ? "opacity-30" : ""}
     >
       <Typography variant="label/Regular Bold">{actionText}</Typography>
