@@ -5,5 +5,6 @@ export interface InputProps {
   value: string;
   error?: boolean;
   suffix?: ReactNode;
+  suffixTitle?: string;
   setValue: (amount: string) => void;
 }

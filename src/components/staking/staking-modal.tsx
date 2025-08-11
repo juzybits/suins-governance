@@ -97,6 +97,11 @@ function ModalStakeOrLockNewBatch({
     >
       <div className="flex flex-col gap-3xl py-l">
         <Input
+          info={inputInfo}
+          error={inputError}
+          value={amount || "0"}
+          suffixTitle="Available NS"
+          suffix={<span>{formatNSBalance(availableNS)} NS</span>}
           setValue={(value) =>
             setAmount((old) =>
               value.endsWith(".") && value.split(".").length <= 2
@@ -106,10 +111,6 @@ function ModalStakeOrLockNewBatch({
                   : old,
             )
           }
-          value={amount || "0"}
-          error={inputError}
-          info={inputInfo}
-          suffix={<span>/{formatNSBalance(availableNS)} NS</span>}
         />
         <div className="flex flex-col gap-xs">
           <h3>
