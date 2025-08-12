@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { registerStashedWallet } from "@mysten/zksend";
+import { registerSlushWallet } from "@mysten/slush-wallet";
 import { SuiClientProvider } from "@mysten/dapp-kit";
 import { KioskClientProvider } from "@/app/KioskClientProvider";
 import { SuinsClientProvider } from "@/app/SuinsClient";
@@ -24,7 +24,7 @@ const WalletProvider = dynamic(
 
 if (NETWORK === "mainnet") {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  registerStashedWallet("SuiNS", {});
+  registerSlushWallet("SuiNS");
 }
 
 export function Providers({ children }: { children: ReactNode }) {
