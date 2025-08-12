@@ -67,7 +67,7 @@ export const Header: FC<HeaderProps> = ({ logoAction }) => {
             <HeaderMenu />
           </div>
         </div>
-        <ConnectWalletMobile />
+        {pathname != "/" && <ConnectWalletMobile />}
       </div>
       {pathname === "/stake" && (
         <div className="flex items-center gap-l px-l md:hidden">

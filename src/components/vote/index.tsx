@@ -18,7 +18,7 @@ export function ProposalContent({ proposalId }: { proposalId: string }) {
   return (
     <div>
       <VoteBg />
-      <div className="mx-auto flex w-full max-w-[62.5rem] flex-col gap-3xl px-l sm:mt-[15rem] xl:flex-row">
+      <div className="mx-auto mt-[9rem] flex w-full max-w-[62.5rem] flex-col gap-3xl px-l sm:mt-[15rem] xl:flex-row">
         <div className="flex w-full flex-col gap-3xl sm:gap-4xl md:basis-2/3">
           <ProposalText proposalId={proposalId} />
           <CastYourVoteV2 proposalId={proposalId} />
