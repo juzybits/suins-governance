@@ -22,9 +22,9 @@ function main() {
   }
 
   // analyzeTopVotes(events);
-  // analyzeVotesByProposal(events);
+  analyzeVotesByProposal(events);
   // analyze154Votes(events);
-  print154votersAsTsv(events);
+  // print154votersAsTsv(events);
 }
 
 function analyzeTopVotes(events: ReturnTokenEvent[]) {

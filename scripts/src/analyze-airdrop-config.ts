@@ -73,7 +73,7 @@ function analyzeAirdropDistribution(configs: AirdropConfig[]) {
   // output results
   console.log("\n### Airdrop summary ###\n");
   console.log(`Total recipients:          ${totalRecipients.toLocaleString()}`);
-  console.log(`Total airdrops:           ${totalAirdrops.toLocaleString()}`);
+  console.log(`Total airdrops:            ${totalAirdrops.toLocaleString()}`);
   console.log(
     `Total NS to distribute:    ${formatNSBalance(totalAmount)} (raw: ${totalAmount.toLocaleString()})`,
   );

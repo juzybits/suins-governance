@@ -23,33 +23,40 @@ type ProposalReward = {
   total_ns_reward: bigint;
 };
 
-const PROPOSAL_REWARDS = new Map<string, ProposalReward>([
+const PROPOSAL_REWARDS = new Map<string, ProposalReward>([ // TODO: set rewards
   [
-    "2024-11-28",
+    "2024-11-28", // proposal 1
     {
-      total_ns_voted: 26_277_549_590_448n,
-      total_ns_reward: 1_529_857_340_000n,
+      total_ns_voted: 26277549590448n,
+      total_ns_reward: 1000000000000n,
     },
   ],
   [
-    "2024-12-21",
+    "2024-12-21", // proposal 2
     {
-      total_ns_voted: 31_595_015_428_494n,
-      total_ns_reward: 1_839_435_830_000n,
+      total_ns_voted: 31595015428494n,
+      total_ns_reward: 1000000000000n,
     },
   ],
   [
-    "2025-02-21",
+    "2025-02-21", // proposal 3
     {
-      total_ns_voted: 35_043_832_029_705n,
-      total_ns_reward: 2_040_223_100_000n,
+      total_ns_voted: 35043832029705n,
+      total_ns_reward: 1000000000000n,
     },
   ],
   [
-    "2025-04-27",
+    "2025-04-27", // proposal 4
     {
-      total_ns_voted: 25_204_857_872_530n,
-      total_ns_reward: 1_222_333_444_555n, // TODO
+      total_ns_voted: 25204857872530n,
+      total_ns_reward: 1000000000000n,
+    },
+  ],
+  [
+    "2025-06-21", // proposal 5
+    {
+      total_ns_voted: 25116376625333n,
+      total_ns_reward: 1000000000000n,
     },
   ],
 ]);

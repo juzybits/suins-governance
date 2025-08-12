@@ -9,7 +9,7 @@ cp .env.example .env.local
 ## Usage
 
 ```shell
-# Find addresses who voted on proposals 1-4, and how much NS they voted with.
+# Find addresses who voted on proposals 1-5, and how much NS they voted with.
 bun src/fetch-events.ts > data/events.json
 
 # Analyze the output of `fetch-events.ts`.
