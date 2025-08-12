@@ -425,7 +425,7 @@ function TopVoters({
                   votes={voter.votes}
                   address={voter.address}
                   voteType={currentVoteType}
-                  isPersonVote={isPersonVote}
+                  isPersonVote={!!isPersonVote}
                 />
               </motion.div>
             ))}
