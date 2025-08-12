@@ -1,6 +1,6 @@
 import { type FC } from "react";
 
-const NSTokenSVG: FC<{ width?: string }> = ({ width = "1.5rem" }) => (
+const NSTokenSVG: FC<{ _width?: string }> = ({ _width = "1.5rem" }) => (
   <svg
     width="22"
     height="22"

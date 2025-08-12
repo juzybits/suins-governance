@@ -97,7 +97,7 @@ export function YourReward({ proposalId }: { proposalId: string }) {
         >
           {formatNSBalance(reward)}
         </Typography>
-        <NSTokenSVG width="3rem" />
+        <NSTokenSVG _width="3rem" />
       </div>
     </div>
   );

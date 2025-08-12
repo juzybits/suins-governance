@@ -23,7 +23,8 @@ type ProposalReward = {
   total_ns_reward: bigint;
 };
 
-const PROPOSAL_REWARDS = new Map<string, ProposalReward>([ // TODO: set rewards
+// TODO: set rewards
+const PROPOSAL_REWARDS = new Map<string, ProposalReward>([
   [
     "2024-11-28", // proposal 1
     {
