@@ -103,7 +103,7 @@ export function VotingState({
         <VoteIndicator
           votedStatus={votedState}
           onlyStatus={onlyStatus}
-          isPersonVote={isPersonVote}
+          isPersonVote={!!isPersonVote}
         />
       </div>
       <div className="flex min-w-[100px] basis-1/2 flex-row items-end justify-between gap-3">

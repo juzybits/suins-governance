@@ -109,7 +109,7 @@ function VoterDetail({
             >
               <VoteIndicator
                 onlyStatus
-                isPersonVote={isPersonVote}
+                isPersonVote={!!isPersonVote}
                 votedStatus={item.key as VoteType}
               />
               <NSAmount
@@ -190,7 +190,7 @@ function AllVoter({
                   objID={voter.objectId}
                   voterAddress={voter.name.value}
                   position={index + 1 + pagination.currentPage * PAGE_SIZE}
-                  isPersonVote={isPersonVote}
+                  isPersonVote={!!isPersonVote}
                 />
               </motion.div>
             ))}
@@ -306,7 +306,7 @@ function TopVoter({
           <VoteIndicator
             votedStatus={voteType}
             onlyStatus={true}
-            isPersonVote={isPersonVote}
+            isPersonVote={!!isPersonVote}
           />
         )}
         <Typography
