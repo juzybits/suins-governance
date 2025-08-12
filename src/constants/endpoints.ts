@@ -28,7 +28,7 @@ export const SUINS_PACKAGES: {
     votingPkgId:
       "0xd43eeaa30cb62d94ecf7d2a2283913486bfd9288926f9f7ff237ac7a6cb44b41", // v1
     governanceObjId:
-      "0xbdaee786ef44ad0f0070829f11c884f1eff2941ebc4bc4e09f8d39544dcf2bdf",
+      "0xbdaee786ef44ad0f0070829f11c884f1eff2941ebc4bc4e09f8d39544dcf2bdf", // v1
     stakingConfigObjId: "",
     statsObjId: "",
     coinType:
