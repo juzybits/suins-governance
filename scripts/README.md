@@ -25,7 +25,7 @@ bun src/generate-airdrop-config.ts data/events.json > data/airdrop-config.json
 # 4. (optional) Review the output of `generate-airdrop-config.ts`.
 bun src/analyze-airdrop-config.ts data/airdrop-config.json
 
-# 5. Airdrop staked NS to users according to given config.
+# 5. Airdrop staked NS to users according to given config. Must hold `StakingAdminCap`.
 bun src/execute-airdrop.ts -n localnet -c data/airdrop-config.json -o data/airdrop-output.json
 ```
 
