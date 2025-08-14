@@ -10,7 +10,7 @@ import {
   useSuiClient,
 } from "@mysten/dapp-kit";
 
-const POLL_INTERVAL_MS = 200;
+const POLL_INTERVAL_MS = 250;
 
 const RESPONSE_OPTIONS: SuiTransactionBlockResponseOptions = {
   showEffects: true,
@@ -64,7 +64,7 @@ async function devInspectOnDev(
     sender,
     transactionBlock: tx,
   });
-  if (dryRunResult.effects?.status.status !== "success") {
+  if (dryRunResult.effects.status.status !== "success") {
     const err = JSON.stringify(dryRunResult.effects.status.error, null, 2);
     throw new Error(`[devInspectOnDev] failed with error: ${err}`);
   }
